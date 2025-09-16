@@ -28,126 +28,111 @@
   <meta name="twitter:description" content="Yoga, breath, journaling, rhythms and care — privacy-first, ad-free, offline-ready." />
   <meta name="twitter:image" content="https://tulaa.life/og/tulaa_og.jpg" />
 
-  <!-- Favicon (you can replace with your own) -->
   <link rel="icon" href="/favicon.ico" />
 
   <style>
     :root{
-      --bg1: #f6eef3;   /* light blush */
-      --bg2: #eaf4f4;   /* mint haze */
-      --fg:  #1f1f23;
-      --muted:#5c5c66;
-      --accent:#8a6fa0;
-      --card:#ffffffcc;
-      --ring:#00000014;
+      --bg1:#f6eef3; --bg2:#eaf4f4; --fg:#1f1f23; --muted:#5c5c66; --accent:#8a6fa0;
+      --card:#ffffffcc; --ring:#00000014; --btn:#1f1f23; --btnText:#ffffff;
     }
     @media (prefers-color-scheme: dark){
       :root{
-        --bg1:#0f1013;
-        --bg2:#15181b;
-        --fg:#eaeaf0;
-        --muted:#b6b6c3;
-        --accent:#c7a8ff;
-        --card:#1a1c21cc;
-        --ring:#ffffff14;
+        --bg1:#0f1013; --bg2:#15181b; --fg:#eaeaf0; --muted:#b6b6c3; --accent:#c7a8ff;
+        --card:#1a1c21cc; --ring:#ffffff14; --btn:#eaeaf0; --btnText:#0f1013;
       }
     }
-
-    /* Base */
-    * { box-sizing: border-box; }
-    html, body { height: 100%; }
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
     body{
-      margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, Apple Color Emoji, Segoe UI Emoji;
-      color: var(--fg);
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      display:grid;
-      place-items:center;
+      margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--fg); background:linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:grid; place-items:center;
     }
-
-    /* Layout */
     .wrap{
-      width:min(92vw, 720px);
-      padding:24px;
-      text-align:center;
-      background: var(--card);
-      backdrop-filter: blur(8px);
-      border: 1px solid var(--ring);
-      border-radius: 24px;
-      box-shadow: 0 12px 40px rgba(0,0,0,.08);
-      animation: fade 700ms ease-out both;
+      width:min(92vw,820px); padding:28px 24px; text-align:center;
+      background:var(--card); backdrop-filter:blur(8px);
+      border:1px solid var(--ring); border-radius:24px;
+      box-shadow:0 12px 40px rgba(0,0,0,.08); animation:fade 700ms ease-out both;
     }
-    h1{
-      font-size: clamp(28px, 4vw, 44px);
-      margin: 4px 0 10px;
-      letter-spacing: .2px;
+    .brand{
+      display:flex; align-items:center; justify-content:center; gap:12px; margin-bottom:6px;
     }
-    p.lede{
-      margin: 0 0 16px;
-      font-size: clamp(16px, 2.2vw, 18px);
-      color: var(--muted);
-      line-height: 1.6;
-    }
-    .badges{
-      display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin: 16px 0 20px;
-    }
+    .brand img{ width:56px; height:56px; border-radius:12px; display:block; }
+    .title{ font-size:clamp(22px,3.6vw,34px); margin:0; letter-spacing:.2px; }
+    .lede{ margin:6px 0 0; font-size:clamp(16px,2.1vw,18px); color:var(--muted); line-height:1.6; }
+
+    .chips{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; margin:18px 0 8px; }
     .chip{
       padding:10px 14px; border-radius:999px; border:1px solid var(--ring);
-      background: transparent; color: var(--fg); font-size:14px;
+      font-size:14px; background:transparent;
     }
-    .cta{
-      display:inline-block; padding:14px 18px; border-radius:14px; border:1px solid var(--ring);
-      text-decoration:none; color:var(--fg); background:transparent;
-    }
-    .cta.primary{
-      background: var(--fg); color: #fff; border-color: transparent;
-    }
-    .links{
-      margin-top:18px; font-size:14px; color: var(--muted);
-      display:flex; gap:14px; justify-content:center; flex-wrap:wrap;
-    }
-    .links a{ color: inherit; }
-    footer{ margin-top: 10px; font-size: 12px; color: var(--muted); }
 
-    @keyframes fade{
-      from{ opacity:0; transform: translateY(12px); }
-      to{ opacity:1; transform: translateY(0); }
+    .soon{ margin:16px 0 10px; font-size:clamp(22px,4.6vw,36px); font-weight:700; letter-spacing:.2px; }
+
+    .featureCard{
+      margin:14px auto 8px; text-align:left; background:transparent;
+      border:1px dashed var(--ring); border-radius:16px; padding:14px 16px; max-width:680px;
     }
-    @media (prefers-reduced-motion: reduce){
-      .wrap{ animation: none; }
+    .featureTitle{ margin:0 0 8px; font-size:16px; color:var(--muted); }
+    ul.features{ margin:0; padding-left:18px; line-height:1.7; }
+    ul.features li{ margin:2px 0; }
+
+    .ctaRow{ margin:18px 0 6px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+    .cta{
+      display:inline-block; padding:14px 18px; border-radius:14px; text-decoration:none;
+      border:1px solid var(--ring); font-weight:600;
     }
+    .cta.primary{ background:var(--btn); color:var(--btnText); border-color:transparent; }
+    .cta.secondary{ background:transparent; color:var(--fg); }
+    .cta:focus-visible{ outline:3px solid var(--accent); outline-offset:2px; }
+
+    footer{ margin-top:10px; font-size:12px; color:var(--muted); }
+    footer a{ color:inherit; }
+
+    @keyframes fade{ from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
+    @media (prefers-reduced-motion: reduce){ .wrap{ animation:none; } }
   </style>
 </head>
 <body>
-  <main class="wrap" role="main" aria-labelledby="brand">
-    <h1 id="brand">🌿 Tulaa</h1>
-    <p class="lede">Gentle wellness for every body — yoga, breath, journaling, and rhythms. <br/>Privacy-first. Ad-free. Offline-ready.</p>
+  <main class="wrap" role="main" aria-labelledby="brandName">
+    <div class="brand">
+      <img src="https://images.tulaa.life/logo.png" alt="Tulaa logo" width="56" height="56" />
+      <h1 id="brandName" class="title">Tulaa</h1>
+    </div>
 
-    <div class="badges" aria-label="Highlights">
+    <p class="lede">Gentle wellness for every body — yoga, breath, journaling, and rhythms.</p>
+
+    <!-- Trust chips -->
+    <div class="chips" aria-label="Trust badges">
       <span class="chip">🛡️ Privacy-first</span>
-      <span class="chip">🧘 Guided yoga</span>
-      <span class="chip">✨ Moments journaling</span>
-      <span class="chip">💧 Water tracking</span>
-      <span class="chip">⏰ Rhythm reminders</span>
-      <span class="chip">📴 Works offline</span>
+      <span class="chip">🙅 Ad-free</span>
+      <span class="chip">📴 Offline-ready</span>
     </div>
 
-    <p class="lede">Launching soon on iOS & Android.</p>
+    <!-- Big Launching Soon -->
+    <div class="soon" aria-live="polite">Launching soon</div>
 
-    <div class="badges" style="margin-top:4px">
-      <a class="cta" href="legal/terms.html">Terms</a>
-      <a class="cta" href="legal/privacy.html">Privacy</a>
+    <!-- Features -->
+    <section class="featureCard" aria-labelledby="featureList">
+      <h2 id="featureList" class="featureTitle">What’s inside</h2>
+      <ul class="features">
+        <li>Guided Yoga sessions</li>
+        <li>Guided meditation and relaxation</li>
+        <li>Water tracking</li>
+        <li>Period Tracking</li>
+        <li>Moments (privacy-first journaling)</li>
+        <li>Rhythm (healthy habit builder with reminders)</li>
+        <li>Health tips</li>
+      </ul>
+    </section>
+
+    <!-- Legal CTAs -->
+    <div class="ctaRow" aria-label="Legal links">
+      <a class="cta primary" href="legal/privacy.html">Read Privacy Policy</a>
+      <a class="cta secondary" href="legal/terms.html">Read Terms of Use</a>
     </div>
 
-    <div class="links">
-      <a href="https://twitter.com" rel="me nofollow">Twitter</a>
-      <span aria-hidden="true">·</span>
-      <a href="https://instagram.com" rel="me nofollow">Instagram</a>
-      <span aria-hidden="true">·</span>
-      <a href="mailto:support@tulaa.life">support@tulaa.life</a>
-    </div>
-
-    <footer>© <span id="y"></span> Tulaa • Bengaluru, India</footer>
+    <footer>© <span id="y"></span> Tulaa • Bengaluru, India · <a href="mailto:support@tulaa.life">support@tulaa.life</a></footer>
   </main>
 
   <noscript>This site looks nicer with JavaScript, but everything works without it.</noscript>

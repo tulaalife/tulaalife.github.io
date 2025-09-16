@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Tulaa — Privacy Policy (v1.0)</title>
 <link rel="canonical" href="https://tulaa.life/legal/privacy" />
-<meta name="description" content="Tulaa Privacy Policy — local-only logs, optional anonymous analytics, no PII." />
+<meta name="description" content="Tulaa Privacy Policy — local-only logs, optional anonymous analytics with PostHog, no PII." />
 <style>
   body{ margin:0; font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial; line-height:1.6; color:#1e1e22; background:#fbfafc; }
   main{ max-width: 840px; margin: 0 auto; padding: 24px; }
@@ -28,21 +28,21 @@
   <p class="meta">Version 1.0 · Effective 16 September 2025 · Operator: Tulaa (to be updated to Tulaa Life Private Limited) · Contact: <a href="mailto:support@tulaa.life">support@tulaa.life</a></p>
 
   <div class="card">
-    <p><strong>Short version:</strong> Your logs stay on your device. Analytics are off by default. Crash logs help us fix issues and don’t include your journals or period data. No ads. No PII.</p>
+    <p><strong>Short version:</strong> Your logs stay on your device. Analytics are off by default. Crash logs (Sentry) and anonymous event analytics (PostHog) help us improve stability and features — never your journals or period data. No ads. No PII.</p>
   </div>
 
   <h2>1) What We Collect</h2>
   <ul>
     <li><strong>By default:</strong> nothing leaves your device.</li>
-    <li><strong>If you opt in:</strong> anonymous analytics (feature usage, basic device info).</li>
-    <li><strong>Crash reports (Sentry):</strong> technical details like device model, OS, and stack traces — never your personal notes or health logs.</li>
+    <li><strong>If you opt in:</strong> anonymous analytics with PostHog (feature usage events, basic device info — never personal notes).</li>
+    <li><strong>Crash reports (Sentry):</strong> technical details like device model, OS, and stack traces — never your personal health logs.</li>
   </ul>
 
   <h2>2) What Stays on Your Device</h2>
   <p>Yoga logs, water logs, moments/journals, rhythms, and period data. Private to your device unless you export/share them.</p>
 
   <h2>3) How We Use Data</h2>
-  <p>To improve stability (crash logs) and features (analytics, if enabled). Never for advertising, profiling, or sale.</p>
+  <p>To improve stability (via crash reports) and features (via opt-in analytics). Analytics are optional, anonymous, and only used to understand general usage patterns. Never for advertising, profiling, or resale.</p>
 
   <h2>4) Permissions</h2>
   <p>Notifications are used only if you set up Rhythms. No access to contacts, camera, or location.</p>
@@ -50,11 +50,11 @@
   <h2>5) Third Parties</h2>
   <ul>
     <li><a href="https://sentry.io/privacy" rel="nofollow">Sentry</a> — error/crash reporting</li>
-    <li>Analytics provider (to be disclosed once finalised)</li>
+    <li><a href="https://posthog.com/privacy" rel="nofollow">PostHog</a> — anonymous, opt-in product analytics</li>
   </ul>
 
   <h2>6) Retention</h2>
-  <p>Your local data stays until you delete it or uninstall the app. Crash logs are retained by Sentry for stability (typically up to ~90 days).</p>
+  <p>Your local data stays until you delete it or uninstall the app. Crash logs are typically retained by Sentry for ~90 days. PostHog analytics events are retained only as long as needed for product improvement (typically up to 90 days).</p>
 
   <h2>7) Security</h2>
   <p>Local data is sandboxed. Cached media may be encrypted at rest. We don’t store or transmit personal identifiers.</p>
@@ -64,15 +64,15 @@
 
   <h2>9) Your Controls</h2>
   <ul>
-    <li>Export data any time.</li>
+    <li>Export your data any time.</li>
     <li>Delete local data any time.</li>
-    <li>Toggle analytics any time.</li>
+    <li>Toggle analytics on/off any time.</li>
   </ul>
 
   <h2>10) Changes</h2>
   <p>We may update this policy. You’ll see a notice in the app when we do.</p>
 
-  <p class="meta"><a href="/legal/terms">Terms of Use</a> · Need help? <a href="mailto:support@tulaa.life">support@tulaa.life</a></p>
+  <p class="meta"><a href="terms.html">Terms of Use</a> · Need help? <a href="mailto:support@tulaa.life">support@tulaa.life</a></p>
 </main>
 </body>
 </html>
