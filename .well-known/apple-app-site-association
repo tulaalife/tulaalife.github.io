@@ -1,0 +1,19 @@
+{
+    "applinks": {
+        "details": [
+            {
+                "appIDs": [
+                    "V2PVK6RNU4.life.tulaa"
+                ],
+                "components": [
+                    {
+                        "/": "/yoga/*"
+                    },
+                    {
+                        "/": "/audio/*"
+                    }
+                ]
+            }
+        ]
+    }
+}
