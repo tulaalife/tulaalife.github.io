@@ -1,0 +1,9 @@
+# Default owners
+*                 @tulaalife @yogawithlatika
+
+# Workflows
+.github/workflows/*  @tulaalife @yogawithlatika
+
+# Legal pages
+src/pages/legal/*    @tulaalife @yogawithlatika
+public/legal/*       @tulaalife @yogawithlatika
