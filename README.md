@@ -1,43 +1,19 @@
-# Astro Starter Kit: Minimal
+# 🌸 Tulaa — Gentle Wellness for Every Body
 
-```sh
-npm create astro@latest -- --template minimal
-```
+Welcome to the official website of **[Tulaa](https://tulaalife.com)** —  
+a privacy-first, ad-free wellness app designed to help you find balance in body and mind.
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+Tulaa brings together:
+- 🧘‍♀️ Guided Yoga and Meditation  
+- 💧 Hydration and Wellness Tracking  
+- 🩸 Period and Mood Tracking  
+- ✍️ Private Journaling (Moments)  
+- 🔔 Rhythms and Daily Reminders  
+- 🌿 Curated Health Tips
 
-## 🚀 Project Structure
+Everything is designed to work **offline**, respect your **privacy**,  
+and support your personal journey toward gentle, consistent wellbeing.
 
-Inside of your Astro project, you'll see the following folders and files:
+Learn more at 👉 [https://tulaalife.com](https://tulaalife.com)
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+© 2025 TULAALIFE WELLNESS PRIVATE LIMITED. All rights reserved.
