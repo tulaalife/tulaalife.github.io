@@ -1,0 +1,185 @@
+---
+interface Props {
+    title: string;
+    description?: string;
+    canonicalPath?: string; // e.g. "/" or "/legal/privacy"
+    ogImage?: string;
+}
+const {
+    title,
+    description = "Yoga, meditation, journaling, rhythms and care — privacy-first, ad-free, offline-ready.",
+    canonicalPath = "/",
+    ogImage = "https://images.tulaa.life/logo.webp",
+} = Astro.props;
+
+const site = "https://tulaalife.com";
+const url = new URL(canonicalPath, site).toString();
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>{title}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={url} />
+
+        <!-- Theme color -->
+        <meta
+            name="theme-color"
+            content="#f5e7ef"
+            media="(prefers-color-scheme: light)"
+        />
+        <meta
+            name="theme-color"
+            content="#0c0c0d"
+            media="(prefers-color-scheme: dark)"
+        />
+
+        <!-- Perf -->
+        <link rel="preconnect" href="https://images.tulaa.life" crossorigin />
+
+        <!-- Open Graph -->
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Tulaa" />
+        <meta property="og:url" content={url} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={ogImage} />
+
+        <!-- Twitter -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={ogImage} />
+
+        <!-- Icons -->
+        <link
+            rel="icon"
+            href="https://images.tulaa.life/favicon.ico"
+            sizes="any"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="16x16"
+            href="https://images.tulaa.life/favicon-16x16.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="32x32"
+            href="https://images.tulaa.life/favicon-32x32.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="192x192"
+            href="https://images.tulaa.life/android-chrome-192x192.png"
+        />
+        <link
+            rel="icon"
+            type="image/png"
+            sizes="512x512"
+            href="https://images.tulaa.life/android-chrome-512x512.png"
+        />
+        <link
+            rel="apple-touch-icon"
+            href="https://images.tulaa.life/apple-touch-icon.png"
+        />
+
+        <style>
+            :root {
+                --bg1: #f6eef3;
+                --bg2: #eaf4f4;
+                --fg: #1f1f23;
+                --muted: #5c5c66;
+                --accent: #8a6fa0;
+                --card: #ffffffcc;
+                --ring: #00000014;
+                --btn: #1f1f23;
+                --btnText: #fff;
+            }
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --bg1: #0f1013;
+                    --bg2: #15181b;
+                    --fg: #eaeaf0;
+                    --muted: #b6b6c3;
+                    --accent: #c7a8ff;
+                    --card: #1a1c21cc;
+                    --ring: #ffffff14;
+                    --btn: #eaeaf0;
+                    --btnText: #0f1013;
+                }
+            }
+            * {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                height: 100%;
+            }
+            body {
+                margin: 0;
+                font-family:
+                    ui-sans-serif,
+                    system-ui,
+                    -apple-system,
+                    Segoe UI,
+                    Roboto,
+                    Helvetica,
+                    Arial;
+                color: var(--fg);
+                background: linear-gradient(135deg, var(--bg1), var(--bg2));
+            }
+            .wrap {
+                width: min(92vw, 820px);
+                margin: 0 auto;
+                padding: 28px 24px;
+                text-align: center;
+                background: var(--card);
+                backdrop-filter: blur(8px);
+                border: 1px solid var(--ring);
+                border-radius: 24px;
+                box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+                animation: fade 700ms ease-out both;
+            }
+            @keyframes fade {
+                from {
+                    opacity: 0;
+                    transform: translateY(12px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+            @media (prefers-reduced-motion: reduce) {
+                .wrap {
+                    animation: none;
+                }
+            }
+            a {
+                color: inherit;
+            }
+        </style>
+
+        <!-- Organization & WebSite structured data -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebSite",
+                "name": "Tulaa",
+                "url": "https://tulaalife.com",
+                "inLanguage": "en"
+            }
+        </script>
+    </head>
+    <body>
+        <slot />
+    </body>
+</html>

@@ -1,0 +1,132 @@
+---
+import Site from "../layouts/Site.astro";
+const title = "Tulaa – Gentle wellness for every body";
+const description =
+  "Yoga, meditation, journaling, rhythms and care — privacy-first, ad-free, offline-ready.";
+---
+
+<Site title={title} description={description} canonicalPath="/">
+  <main
+    class="wrap"
+    role="main"
+    aria-labelledby="brandName"
+    style="display:grid;place-items:center;min-height:100vh;"
+  >
+    <div>
+      <div
+        class="brand"
+        style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:6px;"
+      >
+        <img
+          src="https://images.tulaa.life/logo.webp"
+          alt="Tulaa logo"
+          width="56"
+          height="56"
+          style="border-radius:12px;"
+        />
+        <h1
+          id="brandName"
+          class="title"
+          style="font-size:clamp(22px,3.6vw,34px);margin:0;letter-spacing:.2px;"
+        >
+          Tulaa
+        </h1>
+      </div>
+
+      <p
+        class="lede"
+        style="margin:6px 0 0;font-size:clamp(16px,2.1vw,18px);color:var(--muted);line-height:1.6;"
+      >
+        Find Your Inner Balance
+      </p>
+
+      <div
+        class="chips"
+        aria-label="Trust badges"
+        style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px;"
+      >
+        <span
+          class="chip"
+          style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
+          >🛡️ Privacy-first</span
+        >
+        <span
+          class="chip"
+          style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
+          >🙅 Ad-free</span
+        >
+        <span
+          class="chip"
+          style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
+          >📴 Offline-ready</span
+        >
+      </div>
+
+      <div
+        class="soon"
+        aria-live="polite"
+        style="margin:16px 0 10px;font-size:clamp(22px,4.6vw,36px);font-weight:700;letter-spacing:.2px;"
+      >
+        Launching soon
+      </div>
+
+      <section
+        class="featureCard"
+        aria-labelledby="featureList"
+        style="margin:14px auto 8px;text-align:left;background:transparent;border:1px dashed var(--ring);border-radius:16px;padding:14px 16px;max-width:680px;"
+      >
+        <h2
+          id="featureList"
+          class="featureTitle"
+          style="margin:0 0 8px;font-size:16px;color:var(--muted);"
+        >
+          What’s inside
+        </h2>
+        <ul
+          class="features"
+          style="margin:0;padding-left:18px;line-height:1.7;"
+        >
+          <li>Guided Yoga sessions</li>
+          <li>Guided meditation and relaxation</li>
+          <li>Water tracking</li>
+          <li>Period Tracking</li>
+          <li>Moments (privacy-first journaling)</li>
+          <li>Rhythm (healthy habit builder with reminders)</li>
+          <li>Health tips</li>
+        </ul>
+      </section>
+
+      <div
+        class="ctaRow"
+        aria-label="Legal links"
+        style="margin:18px 0 6px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"
+      >
+        <a
+          class="cta primary"
+          href="/legal/privacy"
+          style="display:inline-block;padding:14px 18px;border-radius:14px;text-decoration:none;border:1px solid var(--ring);font-weight:600;background:var(--btn);color:var(--btnText);border-color:transparent;"
+          >Read Privacy Policy</a
+        >
+        <a
+          class="cta secondary"
+          href="/legal/terms"
+          style="display:inline-block;padding:14px 18px;border-radius:14px;text-decoration:none;border:1px solid var(--ring);font-weight:600;background:transparent;color:var(--fg);"
+          >Read Terms of Use</a
+        >
+      </div>
+
+      <footer style="margin-top:10px;font-size:12px;color:var(--muted);">
+        © <span id="y"></span> Tulaa • Bengaluru, India · <a
+          href="mailto:support@tulaa.life">support@tulaa.life</a
+        >
+      </footer>
+    </div>
+  </main>
+
+  <noscript
+    >This site looks nicer with JavaScript, but everything works without it.</noscript
+  >
+  <script is:inline>
+    document.getElementById("y").textContent = new Date().getFullYear();
+  </script>
+</Site>
