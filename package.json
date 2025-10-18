@@ -1,7 +1,11 @@
 {
-  "name": "celestial-corot",
+  "name": "tulaalife-website",
+  "private": true,
   "type": "module",
   "version": "0.0.1",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
@@ -12,6 +16,7 @@
     "astro": "^5.14.5"
   },
   "devDependencies": {
-    "@astrojs/sitemap": "^3.6.0"
+    "@astrojs/sitemap": "^3.6.0",
+    "@supabase/supabase-js": "^2.75.0"
   }
 }

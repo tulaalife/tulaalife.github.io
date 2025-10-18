@@ -26,3 +26,6 @@ node_modules/
 dist/
 .env
 
+# build-time generated module
+src/data/generated.ts
+
