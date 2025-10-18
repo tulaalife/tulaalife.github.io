@@ -1,10 +1,60 @@
 ---
 import Site from "../layouts/Site.astro";
+import OneUpCarousel from "../components/OneUpCarousel.astro";
+import FeatureTiles from "../components/FeatureTiles.astro";
+import { yogaPlans, guidedAudios, tips } from "../data/generated";
 
 const title = "Tulaa — Yoga, Meditation & Daily Wellness";
 const description =
-  "Free expert-guided yoga & meditation with habit rhythms, journaling, water and period tracking. Offline, ad-free, and privacy-first — no login required.";
-const ogImage = "https://images.tulaa.life/logo.webp";
+  "Expert-guided yoga & meditations — offline, ad-free, and privacy-first. Plus journaling, rhythms, and lightweight trackers.";
+const ogImage = "https://images.tulaa.life/og/home_hero.webp";
+
+/** Seeded (daily) shuffle: changes order once per day */
+function seededShuffle<T>(arr: readonly T[], seed: number): T[] {
+  const copy = Array.from(arr);
+  let x = seed || 1; // xorshift32
+  const rand = () => {
+    x ^= x << 13;
+    x ^= x >>> 17;
+    x ^= x << 5;
+    return (x >>> 0) / 0xffffffff;
+  };
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+const daySeed = Number(
+  new Date().toISOString().slice(0, 10).replaceAll("-", ""),
+);
+
+// Prepare data for carousels (daily shuffled)
+const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
+  href: `/yoga/${p.slug}`,
+  title: p.title,
+  subtitle: p.teaser,
+  image: p.image,
+}));
+
+const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
+  href: `/audio/${a.slug}`,
+  title: a.title,
+  subtitle: a.teaser,
+  image: a.image,
+}));
+
+const tipItems = seededShuffle(tips, daySeed + 13).map((t) => ({
+  href: `/tips/${t.slug}`,
+  title: t.tip,
+  subtitle: t.benefit ?? "Short, sourced self-care tip",
+  emojiFallback: t.icon ?? "💡",
+}));
+
+const hasYoga = yogaItems.length > 0;
+const hasAudio = audioItems.length > 0;
+const hasTips = tipItems.length > 0;
 ---
 
 <Site
@@ -13,62 +63,30 @@ const ogImage = "https://images.tulaa.life/logo.webp";
   canonicalPath="/"
   ogImage={ogImage}
 >
-  <section role="main" aria-labelledby="hero-title" style="text-align:center;">
-    <!-- Brand -->
-    <div
-      style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:6px;"
+  <!-- Hero -->
+  <section
+    role="banner"
+    aria-labelledby="hero-title"
+    style="text-align:center;"
+  >
+    <h1
+      id="hero-title"
+      style="margin:.2rem 0;font-size:clamp(24px,4.2vw,40px);"
     >
-      <img
-        src="https://images.tulaa.life/logo.webp"
-        alt="Tulaa logo"
-        width="56"
-        height="56"
-        style="border-radius:12px;"
-      />
-      <h1 id="hero-title" style="font-size:clamp(24px,4.2vw,40px);margin:0;">
-        Tulaa — Your calm corner in a noisy world
-      </h1>
-    </div>
-
-    <!-- Tagline -->
+      Your calm corner in a noisy world
+    </h1>
     <p
-      style="margin:8px 0 0;font-size:clamp(15px,2.1vw,18px);color:var(--muted);line-height:1.6;"
+      style="margin:8px 0 0;font-size:clamp(15px,2.1vw,18px);color:var(--muted);"
     >
-      Yoga, meditation, journaling & healthy rhythms — free, offline, and
-      privacy-first.
+      Expert-guided yoga & meditation — offline, ad-free, privacy-first.
     </p>
-
-    <!-- Trust chips -->
     <div
-      aria-label="Trust badges"
-      style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px;"
-    >
-      <span
-        style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
-        >🛡️ Privacy-first</span
-      >
-      <span
-        style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
-        >🙅 Ad-free</span
-      >
-      <span
-        style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
-        >📴 Offline-ready</span
-      >
-      <span
-        style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
-        >🔐 No login required</span
-      >
-    </div>
-
-    <!-- Primary CTA -->
-    <div
-      style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:18px 0 8px;"
+      style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:14px 0 0;"
     >
       <a
         href="https://apps.apple.com/in/app/tulaa/id6748626498"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         style="display:inline-block;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:600;background:var(--btn);color:var(--btnText);"
       >
         Get Tulaa on iOS
@@ -76,7 +94,7 @@ const ogImage = "https://images.tulaa.life/logo.webp";
       <a
         href="https://play.google.com/store/apps/details?id=life.tulaa.app"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         style="display:inline-block;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:600;border:1px solid var(--ring);color:var(--fg);background:transparent;"
       >
         Get Tulaa on Android
@@ -84,112 +102,70 @@ const ogImage = "https://images.tulaa.life/logo.webp";
     </div>
   </section>
 
-  <!-- Why Tulaa -->
-  <section aria-labelledby="why" style="margin:28px auto 6px;max-width:740px;">
-    <h2 id="why" style="margin:0 0 10px;font-size:clamp(18px,2.4vw,22px);">
-      Why Tulaa
-    </h2>
-    <ul style="margin:0;padding-left:18px;line-height:1.8;">
-      <li>
-        <strong>Free expert-guided Yoga Plans</strong> for real needs — back pain,
-        prenatal/postnatal, thyroid, knees, seniors, focus & concentration, and more.
-      </li>
-      <li>
-        Sessions curated by <strong>Latika Bissa</strong> (B.A. & M.A. in Yoga, 10+
-        years experience) with students across India, US, Canada, Australia, Singapore,
-        and the Middle East.
-      </li>
-      <li><strong>Guided meditations</strong> for calm, sleep, and focus.</li>
-      <li>
-        <strong>Track what matters</strong> — water, periods, moods — plus gentle
-        <strong>Rhythms</strong> to build healthy habits with customizable reminders.
-      </li>
-      <li>
-        <strong>Make it yours</strong> with soothing themes, fonts, and backgrounds.
-        Works fully <strong>offline</strong>.
-      </li>
-      <li>
-        <strong>Privacy at the core</strong> — no login, no ads, no tracking without
-        explicit consent. Export or delete your data anytime.
-      </li>
-      <li>
-        <strong>Inclusive & non-judgmental</strong> — every age, gender, and body
-        is welcome.
-      </li>
-    </ul>
-  </section>
+  <!-- One-at-a-time carousels -->
+  {
+    hasYoga && (
+      <OneUpCarousel
+        title="Yoga Plans"
+        subtitle="Expert-guided sequences for everyday needs"
+        items={yogaItems}
+        ctaHref="/yoga"
+        ctaLabel="Explore yoga"
+        intervalMs={5200}
+      />
+    )
+  }
 
-  <!-- What you can do -->
-  <section
-    aria-labelledby="inside"
-    style="margin:20px auto;max-width:740px;background:transparent;border:1px dashed var(--ring);border-radius:16px;padding:16px;"
-  >
-    <h2 id="inside" style="margin:0 0 8px;font-size:16px;color:var(--muted);">
-      What’s inside
-    </h2>
-    <div
-      style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;"
-    >
-      <div
-        style="background:var(--card);border:1px solid var(--ring);border-radius:12px;padding:12px;"
-      >
-        🧘‍♀️ Expert Yoga Plans<br /><small
-          >Back pain, prenatal/postnatal, knees, seniors, focus, thyroid & more</small
-        >
-      </div>
-      <div
-        style="background:var(--card);border:1px solid var(--ring);border-radius:12px;padding:12px;"
-      >
-        🎧 Guided Meditations<br /><small
-          >Relaxation, sleep, and focus audios</small
-        >
-      </div>
-      <div
-        style="background:var(--card);border:1px solid var(--ring);border-radius:12px;padding:12px;"
-      >
-        💧 Water & 🌸 Period Tracking<br /><small
-          >Lightweight, private logs</small
-        >
-      </div>
-      <div
-        style="background:var(--card);border:1px solid var(--ring);border-radius:12px;padding:12px;"
-      >
-        📝 Moments (Journaling)<br /><small>Mood check-ins & gratitude</small>
-      </div>
-      <div
-        style="background:var(--card);border:1px solid var(--ring);border-radius:12px;padding:12px;"
-      >
-        ⏰ Rhythms<br /><small>Gentle, customizable habit reminders</small>
-      </div>
-      <div
-        style="background:var(--card);border:1px solid var(--ring);border-radius:12px;padding:12px;"
-      >
-        🎨 Themes & Fonts<br /><small>Make Tulaa truly yours</small>
-      </div>
-    </div>
-  </section>
+  {
+    hasAudio && (
+      <OneUpCarousel
+        title="Guided Audios"
+        subtitle="Gentle voice sessions for calm, focus & rest"
+        items={audioItems}
+        ctaHref="/audio"
+        ctaLabel="Explore audios"
+        intervalMs={5200}
+      />
+    )
+  }
 
-  <!-- Principles -->
-  <section
-    aria-labelledby="principles"
-    style="margin:20px auto;max-width:740px;"
-  >
-    <h2
-      id="principles"
-      style="margin:0 0 10px;font-size:clamp(18px,2.4vw,22px);"
-    >
-      Our principles
-    </h2>
-    <ul style="margin:0;padding-left:18px;line-height:1.8;">
-      <li>Wellbeing over productivity</li>
-      <li>No judgment, no pressure — only support</li>
-      <li>No ads, no upsells, no dark patterns</li>
-      <li>Privacy-first, user-controlled data</li>
-      <li>Inclusive for every age, gender, and body</li>
-    </ul>
-  </section>
+  {
+    hasTips && (
+      <OneUpCarousel
+        title="Wellness Tips"
+        subtitle="Short, sourced insights for daily care"
+        items={tipItems}
+        ctaHref="/tips"
+        ctaLabel="Browse tips"
+        intervalMs={5200}
+      />
+    )
+  }
 
-  <noscript
-    >This site looks nicer with JavaScript, but everything works without it.</noscript
-  >
+  <!-- Other features -->
+  <FeatureTiles
+    tiles={[
+      {
+        emoji: "💧",
+        title: "Water tracking",
+        subtitle: "Lightweight, private hydration log",
+      },
+      {
+        emoji: "🩸",
+        title: "Period tracking",
+        subtitle: "Simple cycle logs with insights",
+        href: "/tips?tag=cycle",
+      },
+      {
+        emoji: "📝",
+        title: "Moments (journaling)",
+        subtitle: "Mood check-ins & gratitude",
+      },
+      {
+        emoji: "⏰",
+        title: "Rhythms",
+        subtitle: "Gentle, customizable habit reminders",
+      },
+    ]}
+  />
 </Site>

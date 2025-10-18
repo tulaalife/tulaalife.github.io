@@ -1,0 +1,151 @@
+<script>
+    (() => {
+        // TS-safe, IIFE-wrapped carousel
+        const ctx = document.currentScript as HTMLScriptElement | null;
+        const root =
+            (ctx?.previousElementSibling as HTMLElement | null) ??
+            (ctx?.parentElement as HTMLElement | null);
+
+        const wrap =
+            (root?.querySelector(".oc-wrap") as HTMLElement | null) ?? root;
+        if (!wrap) return;
+
+        const slides = Array.from(
+            wrap.querySelectorAll<HTMLLIElement>(".oc-slide"),
+        );
+        const dots = Array.from(
+            wrap.querySelectorAll<HTMLButtonElement>(".oc-dot"),
+        );
+        const prevBtn = wrap.querySelector<HTMLButtonElement>("[data-prev]");
+        const nextBtn = wrap.querySelector<HTMLButtonElement>("[data-next]");
+        const bar = wrap.querySelector<HTMLSpanElement>(".oc-progress > span");
+
+        let i = 0;
+        const total = slides.length;
+
+        // 0/1-item edge cases
+        if (total === 0) {
+            wrap.querySelector(".oc-controls")?.setAttribute(
+                "aria-hidden",
+                "true",
+            );
+            if (bar) bar.parentElement?.setAttribute("aria-hidden", "true");
+            return;
+        }
+        if (total === 1) {
+            slides[0].setAttribute("aria-hidden", "false");
+            dots[0]?.setAttribute("aria-selected", "true");
+            wrap.querySelector(".oc-controls")?.setAttribute(
+                "aria-hidden",
+                "true",
+            );
+            if (bar) bar.parentElement?.setAttribute("aria-hidden", "true");
+            return;
+        }
+
+        const prefersReduced =
+            typeof window.matchMedia === "function" &&
+            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+        const rawInterval = (wrap.dataset && wrap.dataset.interval) || "5000";
+        const INTERVAL = Math.max(
+            1500,
+            Number.parseInt(rawInterval, 10) || 5000,
+        );
+
+        function setActive(next: number) {
+            slides[i]?.setAttribute("aria-hidden", "true");
+            dots[i]?.setAttribute("aria-selected", "false");
+            i = (next + total) % total;
+            slides[i]?.setAttribute("aria-hidden", "false");
+            dots[i]?.setAttribute("aria-selected", "true");
+
+            if (!prefersReduced && bar) {
+                bar.style.setProperty("--dur", INTERVAL / 1000 + "s");
+                bar.style.width = "0%";
+                requestAnimationFrame(() =>
+                    requestAnimationFrame(() => {
+                        if (bar) bar.style.width = "100%";
+                    }),
+                );
+            }
+        }
+
+        let timer: number | null = null;
+        function start() {
+            if (prefersReduced || total < 2) return;
+            stop();
+            if (bar) bar.style.width = "100%";
+            timer = window.setInterval(() => setActive(i + 1), INTERVAL);
+        }
+        function stop() {
+            if (timer !== null) {
+                clearInterval(timer);
+                timer = null;
+            }
+        }
+
+        prevBtn?.addEventListener("click", () => {
+            setActive(i - 1);
+            start();
+        });
+        nextBtn?.addEventListener("click", () => {
+            setActive(i + 1);
+            start();
+        });
+        dots.forEach((d, idx) =>
+            d.addEventListener("click", () => {
+                setActive(idx);
+                start();
+            }),
+        );
+
+        // Pause/resume
+        wrap.addEventListener("mouseenter", stop);
+        wrap.addEventListener("mouseleave", start);
+        wrap.addEventListener("focusin", stop);
+        wrap.addEventListener("focusout", (e: FocusEvent) => {
+            const nextTarget = e.relatedTarget as Node | null;
+            if (!nextTarget || !wrap.contains(nextTarget)) start();
+        });
+
+        // Keyboard
+        wrap.addEventListener("keydown", (e: KeyboardEvent) => {
+            if (e.key === "ArrowRight") {
+                e.preventDefault();
+                setActive(i + 1);
+                start();
+            } else if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                setActive(i - 1);
+                start();
+            } else if (e.code === "Space") {
+                e.preventDefault();
+                timer === null ? start() : stop();
+            }
+        });
+
+        // Visibility / viewport pause
+        const io =
+            "IntersectionObserver" in window
+                ? new IntersectionObserver(
+                      (entries) => {
+                          const visible = entries.some(
+                              (en) => en.isIntersecting,
+                          );
+                          visible ? start() : stop();
+                      },
+                      { threshold: 0.1 },
+                  )
+                : null;
+        io?.observe(wrap);
+
+        document.addEventListener("visibilitychange", () => {
+            document.hidden ? stop() : start();
+        });
+
+        // init
+        setActive(0);
+        start();
+    })();
+</script>
