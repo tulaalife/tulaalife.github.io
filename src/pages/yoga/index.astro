@@ -1,0 +1,58 @@
+---
+import Site from "../../layouts/Site.astro";
+import { yogaPlans } from "../../data/generated";
+
+const PER_PAGE = 20;
+const page = Number(Astro.url.searchParams.get("page") ?? 1);
+const start = (page - 1) * PER_PAGE;
+const items = yogaPlans.slice(start, start + PER_PAGE);
+const totalPages = Math.max(1, Math.ceil(yogaPlans.length / PER_PAGE));
+---
+
+<Site
+    title="Yoga Plans · Tulaa"
+    description="Gentle previews of Tulaa yoga plans."
+    canonicalPath="/yoga"
+>
+    <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
+        <h1 style="margin:0 0 12px;">Yoga Plans</h1>
+        <ul style="list-style:none;padding:0;display:grid;gap:12px;">
+            {
+                items.map((p) => (
+                    <li style="border:1px solid var(--ring);border-radius:14px;padding:12px;">
+                        <a
+                            href={`/yoga/${p.slug}`}
+                            style="text-decoration:none;color:inherit;"
+                        >
+                            <div style="display:flex;gap:12px;align-items:center;">
+                                <img
+                                    src={p.image}
+                                    alt={p.title}
+                                    width="96"
+                                    height="54"
+                                    loading="lazy"
+                                    style="border-radius:8px;object-fit:cover;"
+                                />
+                                <div>
+                                    <h3 style="margin:0 0 6px;">{p.title}</h3>
+                                    <p style="margin:0;color:var(--muted);">
+                                        {p.teaser}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+
+        <nav
+            aria-label="Pagination"
+            style="margin-top:16px;display:flex;gap:8px;justify-content:center;"
+        >
+            {page > 1 && <a href={`/yoga?page=${page - 1}`}>← Prev</a>}
+            <span>Page {page} / {totalPages}</span>
+            {page < totalPages && <a href={`/yoga?page=${page + 1}`}>Next →</a>}
+        </nav>
+    </main>
+</Site>
