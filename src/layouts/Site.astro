@@ -2,9 +2,10 @@
 interface Props {
     title: string;
     description?: string;
-    canonicalPath?: string;
+    canonicalPath?: string; // e.g. "/" or "/legal/privacy"
     ogImage?: string;
 }
+
 const {
     title,
     description = "Yoga, meditation, journaling, rhythms and care — privacy-first, ad-free, offline-ready.",
@@ -20,7 +21,9 @@ const url = new URL(canonicalPath, site).toString();
 <html lang="en" data-theme="light">
     <head>
         <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={url} />
@@ -46,6 +49,23 @@ const url = new URL(canonicalPath, site).toString();
             rel="apple-touch-icon"
             href="https://images.tulaa.life/apple-touch-icon.png"
         />
+
+        <!-- Optional: SoftwareApplication structured data -->
+        <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "SoftwareApplication",
+                "name": "Tulaa",
+                "applicationCategory": "HealthApplication",
+                "operatingSystem": "iOS, Android",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "description": "Yoga, meditation, journaling, rhythms and care — privacy-first, ad-free, offline-ready."
+            }
+        </script>
 
         <style>
             :root {
@@ -86,7 +106,17 @@ const url = new URL(canonicalPath, site).toString();
                     Helvetica,
                     Arial;
                 color: var(--fg);
-                background: linear-gradient(135deg, var(--bg1), var(--bg2));
+                background: radial-gradient(
+                        1200px 800px at 20% 0%,
+                        var(--bg1),
+                        transparent 60%
+                    ),
+                    radial-gradient(
+                        1200px 900px at 100% 20%,
+                        var(--bg2),
+                        transparent 60%
+                    ),
+                    linear-gradient(135deg, var(--bg1), var(--bg2));
                 display: flex;
                 flex-direction: column;
                 min-height: 100vh;
@@ -100,6 +130,9 @@ const url = new URL(canonicalPath, site).toString();
                 backdrop-filter: blur(8px);
                 background: var(--card);
                 border-bottom: 1px solid var(--ring);
+                position: sticky;
+                top: 0;
+                z-index: 10;
             }
             header .brand {
                 display: flex;
@@ -113,7 +146,20 @@ const url = new URL(canonicalPath, site).toString();
             header img {
                 width: 28px;
                 height: 28px;
+                border-radius: 6px;
             }
+            nav a {
+                color: var(--fg);
+                text-decoration: none;
+                margin-left: 16px;
+                font-size: 0.95rem;
+                opacity: 0.9;
+            }
+            nav a:hover {
+                opacity: 1;
+                text-decoration: underline;
+            }
+
             button.theme-toggle {
                 border: none;
                 background: var(--card);
@@ -128,8 +174,8 @@ const url = new URL(canonicalPath, site).toString();
             main {
                 flex: 1;
                 padding: 28px 24px;
-                width: min(92vw, 820px);
-                margin: 0 auto;
+                width: min(92vw, 920px);
+                margin: 24px auto;
                 background: var(--card);
                 backdrop-filter: blur(8px);
                 border-radius: 24px;
@@ -157,6 +203,8 @@ const url = new URL(canonicalPath, site).toString();
             footer .buttons {
                 display: flex;
                 gap: 12px;
+                flex-wrap: wrap;
+                justify-content: center;
             }
             footer .buttons a {
                 text-decoration: none;
@@ -166,6 +214,22 @@ const url = new URL(canonicalPath, site).toString();
                 background: var(--btn);
                 color: var(--btnText);
             }
+            footer .legal {
+                margin-top: 12px;
+                display: flex;
+                gap: 14px;
+                justify-content: center;
+                flex-wrap: wrap;
+                font-size: 12px;
+            }
+            footer .legal a {
+                color: var(--muted);
+                text-decoration: none;
+            }
+            footer .legal a:hover {
+                text-decoration: underline;
+            }
+
             @keyframes fade {
                 from {
                     opacity: 0;
@@ -179,6 +243,11 @@ const url = new URL(canonicalPath, site).toString();
         </style>
 
         <script>
+            declare global {
+                interface Window {
+                    toggleTheme: () => void;
+                }
+            }
             // theme toggle persistence
             const saved = localStorage.getItem("tulaa-theme");
             if (saved) document.documentElement.dataset.theme = saved;
@@ -194,18 +263,24 @@ const url = new URL(canonicalPath, site).toString();
 
     <body>
         <header>
-            <a class="brand" href="/">
+            <a class="brand" href="/" aria-label="Tulaa home">
                 <img
                     src="https://images.tulaa.life/logo.webp"
                     alt="Tulaa logo"
                 />
                 <span>Tulaa</span>
             </a>
-            <button
-                class="theme-toggle"
-                onclick="toggleTheme()"
-                aria-label="Toggle theme">🌓</button
-            >
+            <div style="display:flex; align-items:center; gap:12px;">
+                <nav aria-label="Site">
+                    <!-- Add top-level links here if needed -->
+                    <!-- <a href="/plans">Plans</a> -->
+                </nav>
+                <button
+                    class="theme-toggle"
+                    onclick="toggleTheme()"
+                    aria-label="Toggle theme">🌓</button
+                >
+            </div>
         </header>
 
         <main>
@@ -213,36 +288,37 @@ const url = new URL(canonicalPath, site).toString();
         </main>
 
         <footer>
-            <div class="download-card">
+            <div class="download-card" aria-label="Download Tulaa app">
                 <h3 style="margin:0;">Download the Tulaa App</h3>
                 <p
                     style="margin:4px 0 10px;color:var(--muted);font-size:0.95rem;"
                 >
-                    Your calm companion — yoga, meditation & journaling, ad-free
-                    and offline-ready.
+                    Your calm companion — yoga, meditation & journaling.
+                    Ad-free. Offline-ready. Privacy-first.
                 </p>
                 <div class="buttons">
                     <a
                         href="https://apps.apple.com/in/app/tulaa/id6748626498"
-                        target="_blank"> App Store</a
+                        target="_blank"
+                        rel="noopener"> App Store</a
                     >
                     <a
                         href="https://play.google.com/store/apps/details?id=life.tulaa.app"
-                        target="_blank">▶ Play Store</a
+                        target="_blank"
+                        rel="noopener">▶ Play Store</a
                     >
                 </div>
             </div>
-            <!-- <p style="style="margin-top:10px;font-size:12px;color:var(--muted);"> -->
 
             <p style="margin-top:10px;font-size:12px;color:var(--muted);">
                 © {new Date().getFullYear()} Tulaalife Wellness Private Limited
                 · All rights reserved.
             </p>
-            <a
-                href="mailto:support@tulaa.life"
-                style="margin-top:10px;font-size:12px;color:var(--muted);"
-                >Contact Us</a
-            >
+            <div class="legal" aria-label="Legal and contact">
+                <a href="/legal/privacy">Privacy Policy</a>
+                <a href="/legal/terms">Terms of Use</a>
+                <a href="mailto:support@tulaa.life">Contact Us</a>
+            </div>
         </footer>
     </body>
 </html>
