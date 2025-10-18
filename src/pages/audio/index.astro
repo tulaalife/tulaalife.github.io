@@ -1,0 +1,42 @@
+---
+import Site from "../../layouts/Site.astro";
+import { guidedAudios } from "../../data/generated";
+---
+
+<Site
+    title="Guided Audios · Tulaa"
+    description="Gentle voice-guided sessions for calm, focus, and rest."
+>
+    <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
+        <h1 style="margin:0 0 12px;">Guided Audios</h1>
+        <ul style="list-style:none;padding:0;display:grid;gap:12px;">
+            {
+                guidedAudios.map((a) => (
+                    <li style="border:1px solid var(--ring);border-radius:14px;padding:12px;">
+                        <a
+                            href={`/audio/${a.slug}`}
+                            style="text-decoration:none;color:inherit;"
+                        >
+                            <div style="display:flex;gap:12px;align-items:center;">
+                                <img
+                                    src={a.image}
+                                    alt={a.title}
+                                    width="96"
+                                    height="54"
+                                    loading="lazy"
+                                    style="border-radius:8px;object-fit:cover;"
+                                />
+                                <div>
+                                    <h3 style="margin:0 0 6px;">{a.title}</h3>
+                                    <p style="margin:0;color:var(--muted);">
+                                        {a.teaser}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </main>
+</Site>

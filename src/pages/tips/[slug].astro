@@ -1,0 +1,78 @@
+---
+import Site from "../../layouts/Site.astro";
+import { tips } from "../../data/generated";
+
+export async function getStaticPaths() {
+    return tips.map((t) => ({
+        params: { slug: t.slug },
+        props: { tip: t },
+    }));
+}
+
+const { tip } = Astro.props;
+const canonical = `/tips/${tip.slug}`;
+---
+
+<Site
+    title={`${tip.tip.slice(0, 40)} · Health Tip · Tulaa`}
+    description={tip.benefit || "Gentle wellness tip from Tulaa."}
+    canonicalPath={canonical}
+>
+    <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
+        <a href="/tips" style="text-decoration:none;">← All Health Tips</a>
+
+        <header style="margin-top:12px;">
+            <h1
+                style="margin:6px 0 10px;display:flex;align-items:center;gap:6px;"
+            >
+                {tip.icon && <span>{tip.icon}</span>}
+                <span>{tip.tip}</span>
+            </h1>
+            {
+                tip.category && (
+                    <p style="margin:0;color:var(--muted);">
+                        Category: {tip.category}
+                    </p>
+                )
+            }
+        </header>
+
+        <p style="margin-top:16px;font-size:1.05rem;line-height:1.7;">
+            {tip.benefit}
+        </p>
+
+        {
+            tip.precaution && (
+                <p style="margin-top:12px;color:var(--muted);">
+                    ⚠️ <strong>Precaution:</strong> {tip.precaution}
+                </p>
+            )
+        }
+
+        {
+            tip.source?.url && (
+                <p style="margin-top:16px;font-size:0.9rem;">
+                    <strong>Source:</strong>{" "}
+                    <a href={tip.source.url} target="_blank">
+                        {tip.source.name || tip.source.url}
+                    </a>
+                </p>
+            )
+        }
+
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a
+                href={tip.deeplink}
+                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
+            >
+                Open in Tulaa app
+            </a>
+            <a
+                href="/tips"
+                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
+            >
+                Browse more tips
+            </a>
+        </div>
+    </main>
+</Site>

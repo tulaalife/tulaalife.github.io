@@ -1,0 +1,37 @@
+---
+import Site from "../../layouts/Site.astro";
+import { tips } from "../../data/generated";
+---
+
+<Site
+    title="Wellness Tips · Tulaa"
+    description="Short wellness insights and self-care reminders."
+>
+    <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
+        <h1 style="margin:0 0 12px;">Health & Wellness Tips</h1>
+        <ul style="list-style:none;padding:0;display:grid;gap:12px;">
+            {
+                tips.map((t) => (
+                    <li style="border:1px solid var(--ring);border-radius:14px;padding:12px;">
+                        <a
+                            href={`/tips/${t.slug}`}
+                            style="text-decoration:none;color:inherit;"
+                        >
+                            <div style="display:flex;gap:12px;align-items:center;">
+                                <div style="font-size:1.5rem;">
+                                    {t.icon ?? "💡"}
+                                </div>
+                                <div>
+                                    <h3 style="margin:0 0 6px;">{t.tip}</h3>
+                                    <p style="margin:0;color:var(--muted);">
+                                        {t.benefit}
+                                    </p>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                ))
+            }
+        </ul>
+    </main>
+</Site>
