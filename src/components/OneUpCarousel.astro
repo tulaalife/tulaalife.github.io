@@ -39,11 +39,6 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     <header class="oc-header">
       <h2 class="oc-title">{title}</h2>
       {subtitle && <p class="oc-subtitle">{subtitle}</p>}
-      {hasCTA && (
-        <a class="oc-cta" href={ctaHref!}>
-          {ctaLabel} <span aria-hidden="true">↗</span>
-        </a>
-      )}
     </header>
 
     <!-- Single premium card (auto-rotates; no controls) -->
@@ -62,7 +57,6 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                 <div class="oc-emoji" aria-hidden="true">{it.emojiFallback ?? "💡"}</div>
               )}
             </div>
-
             <div class="oc-body">
               <h3 class="oc-h3">{it.title}</h3>
               {it.subtitle && <p class="oc-p">{it.subtitle}</p>}
@@ -71,6 +65,14 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         </li>
       ))}
     </ul>
+
+    {hasCTA && (
+      <div class="oc-ctaRow">
+        <a class="oc-cta" href={ctaHref!}>
+          {ctaLabel} <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    )}
   </section>
 )}
 
@@ -78,30 +80,16 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
   .oc-wrap{ margin:30px auto 24px; padding:20px 16px; max-width:880px; }
 
   /* Centered calm header */
-  .oc-header{ text-align:center; margin:0 0 16px; }
+  .oc-header{ text-align:center; margin:0 0 12px; }
   .oc-title{ margin:0 0 6px; font-size:clamp(20px,2.8vw,24px); letter-spacing:.2px; }
-  .oc-subtitle{ margin:0 0 10px; color:var(--muted); font-size:clamp(14px,2.1vw,16px); }
-  .oc-cta{
-    display:inline-flex; gap:8px; align-items:center;
-    padding:9px 14px; border-radius:14px; font-weight:600;
-    text-decoration:none; color:var(--fg);
-    background:color-mix(in srgb, var(--btn) 12%, transparent);
-    border:1px solid color-mix(in srgb, var(--ring) 70%, transparent);
-    backdrop-filter:saturate(120%) blur(4px);
-    transition:transform .2s ease, box-shadow .25s ease, background .25s ease;
-  }
-  .oc-cta:hover{ transform:translateY(-1px); box-shadow:0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent); }
+  .oc-subtitle{ margin:0; color:var(--muted); font-size:clamp(14px,2.1vw,16px); }
 
-  /* Track now reserves exactly the card’s height via --oc-h */
-.oc-track{
-  list-style:none;
-  padding:0;
-  margin:0;
-  position:relative;
-  height:var(--oc-h, auto);
-  /* fallback for no-JS / first paint */
-  min-height:clamp(320px, 42vw, 560px);
-}
+  /* Track reserves active card’s height (prevents overlap) */
+  .oc-track{
+    list-style:none; padding:0; margin:8px 0 10px;
+    position:relative; height:var(--oc-h, auto);
+    min-height:clamp(320px, 42vw, 560px);
+  }
 
   .oc-slide{
     position:absolute; inset:0; display:flex; justify-content:center; align-items:center;
@@ -118,17 +106,17 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     text-decoration:none; color:inherit;
     display:flex; flex-direction:column; gap:14px;
     padding:14px; border-radius:var(--r); position:relative; overflow:hidden;
-
     background:
       linear-gradient(180deg, color-mix(in srgb, var(--panel) 90%, transparent), var(--panel)),
       radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--fg) 6%, transparent), transparent 60%);
     border:1px solid color-mix(in srgb, var(--ring) 72%, transparent);
-    box-shadow:
-      0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
-      0 14px 36px color-mix(in srgb, var(--fg) 12%, transparent);
+    box-shadow:0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
+               0 14px 36px color-mix(in srgb, var(--fg) 12%, transparent);
     transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
   }
-  .oc-card:hover{ transform:translateY(-2px); box-shadow:0 2px 0 color-mix(in srgb, var(--fg) 10%, transparent), 0 18px 42px color-mix(in srgb, var(--fg) 16%, transparent); }
+  .oc-card:hover{ transform:translateY(-2px);
+    box-shadow:0 2px 0 color-mix(in srgb, var(--fg) 10%, transparent),
+               0 18px 42px color-mix(in srgb, var(--fg) 16%, transparent); }
 
   /* Subtle gradient outline/glow */
   .oc-card::before{
@@ -140,19 +128,34 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     -webkit-mask-composite:xor; mask-composite:exclude; opacity:.35; pointer-events:none;
   }
 
-  /* Media: taller, cinematic, rounded */
   .oc-media{
     aspect-ratio:16/9; width:100%; border-radius:14px; overflow:hidden; position:relative;
     background:color-mix(in srgb, var(--ring) 22%, transparent);
   }
-  .oc-media img{ width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.001); transition:transform .5s ease, filter .5s ease; }
+  .oc-media img{ width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.001);
+    transition:transform .5s ease, filter .5s ease; }
   .oc-card:hover .oc-media img{ transform:scale(1.01); }
-  .oc-media::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.06)); pointer-events:none; }
+  .oc-media::after{ content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.06)); pointer-events:none; }
   .oc-emoji{ display:grid; place-items:center; width:100%; height:100%; font-size:54px; }
 
   .oc-body{ padding:2px 6px 8px; text-align:center; }
   .oc-h3{ margin:2px 0 6px; font-size:clamp(17px,2.4vw,19px); letter-spacing:.2px; }
   .oc-p{ margin:0; color:var(--muted); line-height:1.35; font-size:clamp(14px,2.1vw,16px); }
+
+  /* CTA below card */
+  .oc-ctaRow{ display:flex; justify-content:center; }
+  .oc-cta{
+    display:inline-flex; gap:8px; align-items:center;
+    padding:10px 16px; border-radius:14px; font-weight:600;
+    text-decoration:none; color:var(--fg);
+    background:color-mix(in srgb, var(--btn) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+    backdrop-filter:saturate(120%) blur(4px);
+    transition:transform .2s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .oc-cta:hover{ transform:translateY(-1px);
+    box-shadow:0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent); }
 
   @media (prefers-reduced-motion: reduce) { .oc-slide{ transition:none; } }
 </style>
@@ -195,18 +198,17 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     for (var i = 0; i < slides.length; i++) setActive(slides[i], i === 0);
     adjustHeight();
 
-    // respect reduced motion
+    // reduced motion
     var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
     if (slides.length <= 1 || reduce) {
-      // keep height responsive on layout changes
       var ro1 = new ResizeObserver(adjustHeight);
       ro1.observe(root);
       window.addEventListener('resize', adjustHeight);
       return;
     }
 
+    // auto-rotate
     var interval = Math.max(2600, Number(root.getAttribute('data-interval') || 5200));
-
     var idx = 0;
     function tick() {
       var prev = slides[idx];
@@ -214,7 +216,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
       var next = slides[idx];
       setActive(prev, false);
       setActive(next, true);
-      adjustHeight(); // update track height for new slide
+      adjustHeight();
     }
 
     /** @type {number | undefined} */
@@ -227,7 +229,6 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     root.addEventListener('focusin', pause);
     root.addEventListener('focusout', resume);
 
-    // keep height in sync with responsive changes/media loading
     var ro2 = new ResizeObserver(adjustHeight);
     ro2.observe(root);
     window.addEventListener('resize', adjustHeight);
@@ -236,7 +237,6 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
       ro2.disconnect();
     }, { once:true });
 
-    // Update height once images finish loading (prevents under-measure on first paint)
     root.querySelectorAll('.oc-media img').forEach(function(img){
       if (img.complete) return;
       img.addEventListener('load', adjustHeight, { once:true });
