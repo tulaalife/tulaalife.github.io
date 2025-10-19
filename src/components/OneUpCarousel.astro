@@ -24,6 +24,8 @@ const {
   ctaLabel,
   intervalMs = 5200,
 } = Astro.props;
+
+const hasCTA = Boolean(ctaHref && ctaLabel);
 ---
 
 {items.length > 0 && (
@@ -31,127 +33,213 @@ const {
     class="oc-wrap"
     data-interval={String(intervalMs)}
     tabindex="0"
-    aria-roledescription="carousel"
+    role="region"
     aria-label={title}
-    style="margin:28px auto;padding:16px;max-width:880px;"
   >
-    <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:0 0 10px;">
-      <div>
-        <h2 style="margin:0 0 4px;font-size:clamp(18px,2.4vw,22px);">{title}</h2>
-        {subtitle && <p style="margin:0;color:var(--muted)">{subtitle}</p>}
-      </div>
-      {ctaHref && ctaLabel && (
-        <a
-          href={ctaHref}
-          style="font-weight:600;text-decoration:none;border:1px solid var(--ring);
-                 padding:6px 10px;border-radius:10px;white-space:nowrap;"
-        >
-          {ctaLabel}
+    <header class="oc-header">
+      <h2 class="oc-title">{title}</h2>
+      {subtitle && <p class="oc-subtitle">{subtitle}</p>}
+      {hasCTA && (
+        <a class="oc-cta" href={ctaHref!}>
+          {ctaLabel} <span aria-hidden="true">↗</span>
         </a>
       )}
     </header>
 
-    <!-- Slides -->
-    <ul
-      class="oc-track"
-      style="list-style:none;padding:0;margin:0;position:relative;min-height:120px;overflow:hidden;"
-    >
+    <!-- Single premium card (auto-rotates; no controls) -->
+    <ul class="oc-track" role="list">
       {items.map((it, idx) => (
         <li
           class="oc-slide"
           aria-hidden={idx === 0 ? "false" : "true"}
-          style={`position:absolute;inset:0;display:flex;align-items:center;gap:12px;
-                  border:1px solid var(--ring);border-radius:14px;padding:14px;
-                  background:var(--panel);transition:opacity .6s ease, transform .6s ease;
-                  opacity:${idx === 0 ? "1" : "0"};z-index:${idx === 0 ? "1" : "0"};
-                  transform:translateX(${idx === 0 ? "0" : "8px"});
-                  pointer-events:${idx === 0 ? "auto" : "none"};`}
+          data-active={idx === 0 ? "true" : "false"}
         >
-          <a
-            href={it.href}
-            style="display:flex;gap:12px;align-items:center;color:inherit;text-decoration:none;flex:1;"
-          >
-            {it.image ? (
-              <img
-                src={it.image}
-                alt={it.title}
-                width="128"
-                height="72"
-                loading="lazy"
-                style="border-radius:10px;object-fit:cover;inline-size:128px;block-size:72px;"
-              />
-            ) : (
-              <div style="font-size:1.8rem;inline-size:48px;text-align:center;">
-                {it.emojiFallback ?? "💡"}
-              </div>
-            )}
-            <div>
-              <h3 style="margin:0 0 6px;font-size:1rem;">{it.title}</h3>
-              {it.subtitle && (
-                <p style="margin:0;color:var(--muted);line-height:1.3;">
-                  {it.subtitle}
-                </p>
+          <a class="oc-card" href={it.href}>
+            <div class="oc-media">
+              {it.image ? (
+                <img src={it.image} alt={it.title} loading="lazy" decoding="async" />
+              ) : (
+                <div class="oc-emoji" aria-hidden="true">{it.emojiFallback ?? "💡"}</div>
               )}
+            </div>
+
+            <div class="oc-body">
+              <h3 class="oc-h3">{it.title}</h3>
+              {it.subtitle && <p class="oc-p">{it.subtitle}</p>}
             </div>
           </a>
         </li>
       ))}
     </ul>
-
-    <!-- Controls + dots -->
-    <div
-      class="oc-controls"
-      style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;"
-    >
-      <div style="display:flex;gap:8px;align-items:center;">
-        <button
-          type="button"
-          data-prev
-          aria-label="Previous"
-          style="border:1px solid var(--ring);background:transparent;border-radius:10px;padding:6px 10px;"
-        >
-          ←
-        </button>
-        <button
-          type="button"
-          data-next
-          aria-label="Next"
-          style="border:1px solid var(--ring);background:transparent;border-radius:10px;padding:6px 10px;"
-        >
-          →
-        </button>
-      </div>
-
-      <div
-        class="oc-dots"
-        role="tablist"
-        aria-label={`${title} slides`}
-        style="display:flex;gap:6px;"
-      >
-        {items.map((_, idx) => (
-          <button
-            class="oc-dot"
-            role="tab"
-            aria-selected={idx === 0 ? "true" : "false"}
-            aria-label={`Go to slide ${idx + 1}`}
-            style={`inline-size:8px;block-size:8px;border-radius:999px;
-                    border:1px solid var(--ring);
-                    background:${idx === 0 ? "var(--fg)" : "transparent"};
-                    transition:background .3s ease;`}
-          />
-        ))}
-      </div>
-
-      <div
-        class="oc-progress"
-        aria-hidden="true"
-        style="flex:1;margin-left:10px;height:3px;background:var(--ring);border-radius:999px;overflow:hidden;"
-      >
-        <span
-          style="display:block;height:100%;width:0%;background:var(--fg);
-                 --dur:5s;transition:width var(--dur) linear;"
-        ></span>
-      </div>
-    </div>
   </section>
 )}
+
+<style>
+  .oc-wrap{ margin:30px auto 24px; padding:20px 16px; max-width:880px; }
+
+  /* Centered calm header */
+  .oc-header{ text-align:center; margin:0 0 16px; }
+  .oc-title{ margin:0 0 6px; font-size:clamp(20px,2.8vw,24px); letter-spacing:.2px; }
+  .oc-subtitle{ margin:0 0 10px; color:var(--muted); font-size:clamp(14px,2.1vw,16px); }
+  .oc-cta{
+    display:inline-flex; gap:8px; align-items:center;
+    padding:9px 14px; border-radius:14px; font-weight:600;
+    text-decoration:none; color:var(--fg);
+    background:color-mix(in srgb, var(--btn) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+    backdrop-filter:saturate(120%) blur(4px);
+    transition:transform .2s ease, box-shadow .25s ease, background .25s ease;
+  }
+  .oc-cta:hover{ transform:translateY(-1px); box-shadow:0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent); }
+
+  /* Track now reserves exactly the card’s height via --oc-h */
+.oc-track{
+  list-style:none;
+  padding:0;
+  margin:0;
+  position:relative;
+  height:var(--oc-h, auto);
+  /* fallback for no-JS / first paint */
+  min-height:clamp(320px, 42vw, 560px);
+}
+
+  .oc-slide{
+    position:absolute; inset:0; display:flex; justify-content:center; align-items:center;
+    opacity:0; transform:scale(.995);
+    transition:opacity .55s ease, transform .55s ease;
+    pointer-events:none;
+  }
+  .oc-slide[data-active="true"]{ opacity:1; transform:scale(1); pointer-events:auto; }
+
+  /* Premium glass card */
+  .oc-card{
+    --r:18px;
+    width:min(100%, 860px);
+    text-decoration:none; color:inherit;
+    display:flex; flex-direction:column; gap:14px;
+    padding:14px; border-radius:var(--r); position:relative; overflow:hidden;
+
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--panel) 90%, transparent), var(--panel)),
+      radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--fg) 6%, transparent), transparent 60%);
+    border:1px solid color-mix(in srgb, var(--ring) 72%, transparent);
+    box-shadow:
+      0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
+      0 14px 36px color-mix(in srgb, var(--fg) 12%, transparent);
+    transition:transform .25s ease, box-shadow .25s ease, border-color .25s ease;
+  }
+  .oc-card:hover{ transform:translateY(-2px); box-shadow:0 2px 0 color-mix(in srgb, var(--fg) 10%, transparent), 0 18px 42px color-mix(in srgb, var(--fg) 16%, transparent); }
+
+  /* Subtle gradient outline/glow */
+  .oc-card::before{
+    content:""; position:absolute; inset:0; padding:1px; border-radius:calc(var(--r) + 1px);
+    background:linear-gradient(135deg,
+      color-mix(in srgb, var(--fg) 12%, transparent),
+      color-mix(in srgb, var(--btn) 20%, transparent));
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite:xor; mask-composite:exclude; opacity:.35; pointer-events:none;
+  }
+
+  /* Media: taller, cinematic, rounded */
+  .oc-media{
+    aspect-ratio:16/9; width:100%; border-radius:14px; overflow:hidden; position:relative;
+    background:color-mix(in srgb, var(--ring) 22%, transparent);
+  }
+  .oc-media img{ width:100%; height:100%; object-fit:cover; display:block; transform:scale(1.001); transition:transform .5s ease, filter .5s ease; }
+  .oc-card:hover .oc-media img{ transform:scale(1.01); }
+  .oc-media::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg, rgba(0,0,0,.02), rgba(0,0,0,.06)); pointer-events:none; }
+  .oc-emoji{ display:grid; place-items:center; width:100%; height:100%; font-size:54px; }
+
+  .oc-body{ padding:2px 6px 8px; text-align:center; }
+  .oc-h3{ margin:2px 0 6px; font-size:clamp(17px,2.4vw,19px); letter-spacing:.2px; }
+  .oc-p{ margin:0; color:var(--muted); line-height:1.35; font-size:clamp(14px,2.1vw,16px); }
+
+  @media (prefers-reduced-motion: reduce) { .oc-slide{ transition:none; } }
+</style>
+
+<script>
+  // @ts-check
+  (function () {
+    /** @type {HTMLScriptElement | null} */
+    var scriptEl = document.currentScript;
+    if (!scriptEl) return;
+
+    /** @type {HTMLElement | null} */
+    var root = scriptEl.closest('.oc-wrap');
+    if (!root) return;
+
+    var track = root.querySelector('.oc-track');
+
+    /** Measure active card and set --oc-h on the track */
+    function adjustHeight() {
+      if (!track) return;
+      /** @type {HTMLElement | null} */
+      var activeCard =
+        root.querySelector('.oc-slide[data-active="true"] .oc-card') ||
+        root.querySelector('.oc-card');
+      if (!activeCard) return;
+      var h = activeCard.getBoundingClientRect().height;
+      track.style.setProperty('--oc-h', h + 'px');
+    }
+
+    /** @type {HTMLElement[]} */
+    var slides = Array.prototype.slice.call(root.querySelectorAll('.oc-slide'));
+
+    /** @type {(el: HTMLElement, active: boolean) => void} */
+    const setActive = (el, active) => {
+      el.setAttribute('data-active', active ? 'true' : 'false');
+      el.setAttribute('aria-hidden', active ? 'false' : 'true');
+    };
+
+    // init
+    for (var i = 0; i < slides.length; i++) setActive(slides[i], i === 0);
+    adjustHeight();
+
+    // respect reduced motion
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (slides.length <= 1 || reduce) {
+      // keep height responsive on layout changes
+      var ro1 = new ResizeObserver(adjustHeight);
+      ro1.observe(root);
+      window.addEventListener('resize', adjustHeight);
+      return;
+    }
+
+    var interval = Math.max(2600, Number(root.getAttribute('data-interval') || 5200));
+
+    var idx = 0;
+    function tick() {
+      var prev = slides[idx];
+      idx = (idx + 1) % slides.length;
+      var next = slides[idx];
+      setActive(prev, false);
+      setActive(next, true);
+      adjustHeight(); // update track height for new slide
+    }
+
+    /** @type {number | undefined} */
+    var timer = window.setInterval(tick, interval);
+    function pause(){ if (timer) window.clearInterval(timer); }
+    function resume(){ timer = window.setInterval(tick, interval); }
+
+    root.addEventListener('mouseenter', pause);
+    root.addEventListener('mouseleave', resume);
+    root.addEventListener('focusin', pause);
+    root.addEventListener('focusout', resume);
+
+    // keep height in sync with responsive changes/media loading
+    var ro2 = new ResizeObserver(adjustHeight);
+    ro2.observe(root);
+    window.addEventListener('resize', adjustHeight);
+    window.addEventListener('pagehide', function(){
+      if (timer) window.clearInterval(timer);
+      ro2.disconnect();
+    }, { once:true });
+
+    // Update height once images finish loading (prevents under-measure on first paint)
+    root.querySelectorAll('.oc-media img').forEach(function(img){
+      if (img.complete) return;
+      img.addEventListener('load', adjustHeight, { once:true });
+    });
+  })();
+</script>
