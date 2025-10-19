@@ -13,7 +13,7 @@ export interface Props {
   items: Item[];
   ctaHref?: string;
   ctaLabel?: string;
-  intervalMs?: number; // autoplay interval
+  intervalMs?: number;
 }
 
 const {
@@ -33,311 +33,125 @@ const {
     tabindex="0"
     aria-roledescription="carousel"
     aria-label={title}
+    style="margin:28px auto;padding:16px;max-width:880px;"
   >
-    <!-- Header (centered) -->
-    <header class="oc-header">
-      <h2 class="oc-title">{title}</h2>
-      {subtitle && <p class="oc-subtitle">{subtitle}</p>}
+    <header style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin:0 0 10px;">
+      <div>
+        <h2 style="margin:0 0 4px;font-size:clamp(18px,2.4vw,22px);">{title}</h2>
+        {subtitle && <p style="margin:0;color:var(--muted)">{subtitle}</p>}
+      </div>
+      {ctaHref && ctaLabel && (
+        <a
+          href={ctaHref}
+          style="font-weight:600;text-decoration:none;border:1px solid var(--ring);
+                 padding:6px 10px;border-radius:10px;white-space:nowrap;"
+        >
+          {ctaLabel}
+        </a>
+      )}
     </header>
 
-    <!-- Slides: one visible, centered -->
-    <ul class="oc-track" role="list">
+    <!-- Slides -->
+    <ul
+      class="oc-track"
+      style="list-style:none;padding:0;margin:0;position:relative;min-height:120px;overflow:hidden;"
+    >
       {items.map((it, idx) => (
         <li
           class="oc-slide"
           aria-hidden={idx === 0 ? "false" : "true"}
+          style={`position:absolute;inset:0;display:flex;align-items:center;gap:12px;
+                  border:1px solid var(--ring);border-radius:14px;padding:14px;
+                  background:var(--panel);transition:opacity .6s ease, transform .6s ease;
+                  opacity:${idx === 0 ? "1" : "0"};z-index:${idx === 0 ? "1" : "0"};
+                  transform:translateX(${idx === 0 ? "0" : "8px"});
+                  pointer-events:${idx === 0 ? "auto" : "none"};`}
         >
-          <a class="oc-card" href={it.href}>
+          <a
+            href={it.href}
+            style="display:flex;gap:12px;align-items:center;color:inherit;text-decoration:none;flex:1;"
+          >
             {it.image ? (
               <img
-                class="oc-thumb"
                 src={it.image}
                 alt={it.title}
                 width="128"
                 height="72"
                 loading="lazy"
+                style="border-radius:10px;object-fit:cover;inline-size:128px;block-size:72px;"
               />
             ) : (
-              <div class="oc-emoji">{it.emojiFallback ?? "💡"}</div>
+              <div style="font-size:1.8rem;inline-size:48px;text-align:center;">
+                {it.emojiFallback ?? "💡"}
+              </div>
             )}
-            <div class="oc-copy">
-              <h3 class="oc-h3">{it.title}</h3>
-              {it.subtitle && <p class="oc-p">{it.subtitle}</p>}
+            <div>
+              <h3 style="margin:0 0 6px;font-size:1rem;">{it.title}</h3>
+              {it.subtitle && (
+                <p style="margin:0;color:var(--muted);line-height:1.3;">
+                  {it.subtitle}
+                </p>
+              )}
             </div>
           </a>
         </li>
       ))}
     </ul>
 
-    <!-- CTA moved to bottom (centered) -->
-    {ctaHref && ctaLabel && (
-      <a class="oc-cta" href={ctaHref}>{ctaLabel}</a>
-    )}
+    <!-- Controls + dots -->
+    <div
+      class="oc-controls"
+      style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;"
+    >
+      <div style="display:flex;gap:8px;align-items:center;">
+        <button
+          type="button"
+          data-prev
+          aria-label="Previous"
+          style="border:1px solid var(--ring);background:transparent;border-radius:10px;padding:6px 10px;"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          data-next
+          aria-label="Next"
+          style="border:1px solid var(--ring);background:transparent;border-radius:10px;padding:6px 10px;"
+        >
+          →
+        </button>
+      </div>
 
-    <!-- Controls + dots + progress (stacked & centered) -->
-    <div class="oc-controls">
-      <div class="oc-dots" role="tablist" aria-label={`${title} slides`}>
+      <div
+        class="oc-dots"
+        role="tablist"
+        aria-label={`${title} slides`}
+        style="display:flex;gap:6px;"
+      >
         {items.map((_, idx) => (
           <button
             class="oc-dot"
             role="tab"
             aria-selected={idx === 0 ? "true" : "false"}
             aria-label={`Go to slide ${idx + 1}`}
+            style={`inline-size:8px;block-size:8px;border-radius:999px;
+                    border:1px solid var(--ring);
+                    background:${idx === 0 ? "var(--fg)" : "transparent"};
+                    transition:background .3s ease;`}
           />
         ))}
       </div>
 
-      <div class="oc-progress" aria-hidden="true">
-        <span></span>
-      </div>
-
-      <div class="oc-arrows">
-        <button type="button" data-prev aria-label="Previous">←</button>
-        <button type="button" data-next aria-label="Next">→</button>
+      <div
+        class="oc-progress"
+        aria-hidden="true"
+        style="flex:1;margin-left:10px;height:3px;background:var(--ring);border-radius:999px;overflow:hidden;"
+      >
+        <span
+          style="display:block;height:100%;width:0%;background:var(--fg);
+                 --dur:5s;transition:width var(--dur) linear;"
+        ></span>
       </div>
     </div>
   </section>
 )}
-
-<!-- Styles (keep in this file) -->
-<style>
-  /* --- Layout --- */
-  .oc-wrap {
-    margin: 32px auto;
-    padding: 16px;
-    max-width: 880px;
-    text-align: center;
-  }
-
-  .oc-header { margin: 0 0 14px; }
-  .oc-title  { margin: 0 0 6px; font-size: clamp(18px, 2.4vw, 22px); }
-  .oc-subtitle { margin: 0; color: var(--muted); }
-
-  /* Single-card track, centered */
-  .oc-track {
-    position: relative;
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    min-height: 132px;           /* keeps height stable during fades */
-    overflow: hidden;
-  }
-
-  /* Slides fill the track; only one interactable */
-  .oc-slide {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;          /* centers the card */
-    padding: 2px;                 /* tiny buffer for focus outlines */
-    transition: opacity .55s ease, transform .55s ease, filter .55s ease;
-  }
-
-  /* Card */
-  .oc-card {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-    color: inherit;
-
-    border: 1px solid var(--ring);
-    background: var(--panel);
-    border-radius: 14px;
-    padding: 14px;
-
-    box-shadow: 0 0 0 rgba(0 0 0 / 0);
-    transition: box-shadow .25s ease, transform .25s ease;
-    max-width: 100%;
-  }
-  .oc-card:where(:hover,:focus-visible) {
-    box-shadow: 0 6px 18px rgba(0 0 0 / 0.08);
-    transform: translateY(-1px);
-  }
-
-  .oc-thumb {
-    inline-size: 128px;
-    block-size: 72px;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-
-  .oc-emoji { font-size: 1.8rem; inline-size: 48px; text-align: center; }
-  .oc-copy  { text-align: left; }
-  .oc-h3    { margin: 0 0 6px; font-size: 1rem; }
-  .oc-p     { margin: 0; color: var(--muted); line-height: 1.3; }
-
-  /* Bottom stack */
-  .oc-cta {
-    display: inline-block;
-    margin-top: 14px;
-    font-weight: 600;
-    text-decoration: none;
-    border: 1px solid var(--ring);
-    padding: 8px 12px;
-    border-radius: 10px;
-    white-space: nowrap;
-  }
-
-  .oc-controls {
-    display: grid;
-    gap: 10px;
-    justify-items: center;
-    margin-top: 14px;
-  }
-
-  .oc-dots { display: flex; gap: 6px; }
-  .oc-dot {
-    inline-size: 8px;
-    block-size: 8px;
-    border-radius: 999px;
-    border: 1px solid var(--ring);
-    background: transparent;
-    transition: background .25s ease, transform .25s ease;
-  }
-  .oc-dot[aria-selected="true"] { background: var(--fg); transform: scale(1.15); }
-
-  .oc-progress {
-    width: min(520px, 90%);
-    height: 3px;
-    background: var(--ring);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-  .oc-progress > span {
-    display: block;
-    height: 100%;
-    width: 0%;
-    background: var(--fg);
-    --dur: 5s;
-    transition: width var(--dur) linear;
-  }
-
-  .oc-arrows { display: flex; gap: 8px; }
-  .oc-arrows > button {
-    border: 1px solid var(--ring);
-    background: transparent;
-    border-radius: 10px;
-    padding: 6px 10px;
-  }
-
-  /* Visibility animation states */
-  .oc-slide[aria-hidden="true"] {
-    opacity: 0;
-    transform: translateX(16px) scale(.985);
-    filter: saturate(.9);
-    z-index: 0;
-    pointer-events: none;
-  }
-
-  .oc-slide[aria-hidden="false"] {
-    opacity: 1;
-    transform: translateX(0) scale(1);
-    filter: saturate(1);
-    z-index: 1;
-    pointer-events: auto;
-  }
-
-  /* Optional: hide arrows on small screens */
-  @media (max-width: 560px) { .oc-arrows { display: none; } }
-</style>
-
-<!-- Once-only client script (no logs) -->
-<script is:inline>
-  (() => {
-    if (window.__ocInitOnce) return;
-    window.__ocInitOnce = true;
-
-    const qsa = (root, sel) => Array.from(root.querySelectorAll(sel));
-
-    function initAll() {
-      const wraps = qsa(document, ".oc-wrap");
-      if (!wraps.length) {
-        if (document.readyState === "loading") {
-          document.addEventListener("DOMContentLoaded", initAll, { once: true });
-        } else { setTimeout(initAll, 300); }
-        return;
-      }
-
-      wraps.forEach((wrap) => {
-        const slides = qsa(wrap, ".oc-slide");
-        const dots = qsa(wrap, ".oc-dot");
-        const prevBtn = wrap.querySelector("[data-prev]");
-        const nextBtn = wrap.querySelector("[data-next]");
-        const bar = wrap.querySelector(".oc-progress > span");
-        const total = slides.length;
-        if (total < 1) return;
-
-        const prefersReduced = typeof window.matchMedia === "function" &&
-          window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-        const rawInterval = wrap.dataset?.interval ?? "5000";
-        const INTERVAL = Math.max(1500, parseInt(rawInterval, 10) || 5000);
-
-        let i = 0, timer = null;
-
-        function setActive(next) {
-          slides[i]?.setAttribute("aria-hidden", "true");
-          dots[i]?.setAttribute("aria-selected", "false");
-          i = (next + total) % total;
-          slides[i]?.setAttribute("aria-hidden", "false");
-          dots[i]?.setAttribute("aria-selected", "true");
-
-          if (!prefersReduced && bar) {
-            bar.style.setProperty("--dur", `${INTERVAL / 1000}s`);
-            bar.style.width = "0%";
-            requestAnimationFrame(() =>
-              requestAnimationFrame(() => { bar.style.width = "100%"; })
-            );
-          }
-        }
-        function stop() { if (timer !== null) { clearInterval(timer); timer = null; } }
-        function start() {
-          if (prefersReduced || total < 2) return;
-          stop();
-          if (bar) bar.style.width = "100%";
-          timer = window.setInterval(() => setActive(i + 1), INTERVAL);
-        }
-
-        prevBtn?.addEventListener("click", () => { setActive(i - 1); start(); });
-        nextBtn?.addEventListener("click", () => { setActive(i + 1); start(); });
-        dots.forEach((d, di) => d.addEventListener("click", () => { setActive(di); start(); }));
-
-        wrap.addEventListener("mouseenter", stop);
-        wrap.addEventListener("mouseleave", start);
-        wrap.addEventListener("focusin", stop);
-        wrap.addEventListener("focusout", (e) => {
-          const nextTarget = e.relatedTarget;
-          if (!nextTarget || !wrap.contains(nextTarget)) start();
-        });
-
-        wrap.addEventListener("keydown", (e) => {
-          if (e.key === "ArrowRight") { e.preventDefault(); setActive(i + 1); start(); }
-          else if (e.key === "ArrowLeft") { e.preventDefault(); setActive(i - 1); start(); }
-          else if (e.code === "Space") { e.preventDefault(); timer === null ? start() : stop(); }
-        });
-
-        if ("IntersectionObserver" in window) {
-          const io = new IntersectionObserver(
-            (entries) => entries.some((en) => en.isIntersecting) ? start() : stop(),
-            { threshold: 0.1 }
-          );
-          io.observe(wrap);
-        }
-        document.addEventListener("visibilitychange", () => {
-          document.hidden ? stop() : start();
-        });
-
-        // init
-        setActive(0);
-        start();
-      });
-    }
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initAll, { once: true });
-    } else {
-      initAll();
-    }
-  })();
-</script>

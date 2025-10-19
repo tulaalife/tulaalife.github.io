@@ -14,7 +14,6 @@ function seededShuffle<T>(arr: readonly T[], seed: number): T[] {
   const copy = Array.from(arr);
   let x = seed || 1;
   const rand = () => {
-    // xorshift32
     x ^= x << 13;
     x ^= x >>> 17;
     x ^= x << 5;
@@ -32,10 +31,11 @@ const daySeed = Number(
 );
 
 // Prepare data for carousels (daily shuffled)
+// ⬇️ Use plan.subtitle (fallback to teaser if empty)
 const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
   href: `/yoga/${p.slug}`,
   title: p.title,
-  subtitle: p.teaser,
+  subtitle: p.subtitle || p.teaser || "",
   image: p.image,
 }));
 
@@ -78,23 +78,19 @@ const hasTips = tipItems.length > 0;
         target="_blank"
         rel="noopener noreferrer"
         class="btn btn--solid"
-        aria-label="Get Tulaa on iOS (opens App Store)"
+        aria-label="Get Tulaa on iOS (opens App Store)">Get Tulaa on iOS</a
       >
-        Get Tulaa on iOS
-      </a>
       <a
         href="https://play.google.com/store/apps/details?id=life.tulaa.app"
         target="_blank"
         rel="noopener noreferrer"
         class="btn btn--ghost"
         aria-label="Get Tulaa on Android (opens Google Play)"
+        >Get Tulaa on Android</a
       >
-        Get Tulaa on Android
-      </a>
     </div>
   </section>
 
-  <!-- One-at-a-time carousels -->
   {
     hasYoga && (
       <OneUpCarousel
@@ -132,7 +128,6 @@ const hasTips = tipItems.length > 0;
     )
   }
 
-  <!-- Other features -->
   <FeatureTiles
     tiles={[
       {
@@ -161,7 +156,6 @@ const hasTips = tipItems.length > 0;
 </Site>
 
 <style>
-  /* Tiny page-level styles to declutter inline CSS */
   .hero {
     text-align: center;
     margin: 8px auto 10px;
@@ -182,7 +176,6 @@ const hasTips = tipItems.length > 0;
     flex-wrap: wrap;
     margin: 14px 0 0;
   }
-
   .btn {
     display: inline-block;
     padding: 12px 16px;
