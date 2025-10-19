@@ -68,6 +68,30 @@ const url = new URL(canonicalPath, site).toString();
         </script>
 
         <style>
+            /* ---- Global safety + reset (prevents horizontal scroll) ---- */
+            *,
+            *::before,
+            *::after {
+                box-sizing: border-box;
+            }
+            html,
+            body {
+                width: 100%;
+                overflow-x: hidden;
+            }
+            img,
+            video,
+            svg,
+            canvas {
+                max-width: 100%;
+                height: auto;
+                display: block;
+            }
+            :root {
+                -webkit-text-size-adjust: 100%;
+                text-size-adjust: 100%;
+            }
+
             :root {
                 --bg1: #f6eef3;
                 --bg2: #eaf4f4;
@@ -123,6 +147,7 @@ const url = new URL(canonicalPath, site).toString();
             }
 
             header {
+                width: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -161,7 +186,7 @@ const url = new URL(canonicalPath, site).toString();
             }
 
             button.theme-toggle {
-                border: none;
+                border: 1px solid var(--ring);
                 background: var(--card);
                 border-radius: 50%;
                 width: 34px;
@@ -173,9 +198,11 @@ const url = new URL(canonicalPath, site).toString();
 
             main {
                 flex: 1;
-                padding: 28px 24px;
-                width: min(92vw, 920px);
+                /* Avoid vw math + padding overflow. Use full width with max-width. */
+                width: 100%;
+                max-width: 920px;
                 margin: 24px auto;
+                padding: 28px 16px;
                 background: var(--card);
                 backdrop-filter: blur(8px);
                 border-radius: 24px;
@@ -185,16 +212,19 @@ const url = new URL(canonicalPath, site).toString();
             }
 
             footer {
+                width: 100%;
                 padding: 32px 24px;
                 text-align: center;
                 color: var(--muted);
             }
             footer .download-card {
+                width: 100%;
+                max-width: 920px;
+                margin: 0 auto 16px;
                 background: var(--card);
                 border: 1px solid var(--ring);
                 border-radius: 16px;
                 padding: 16px;
-                margin-bottom: 16px;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
@@ -242,23 +272,7 @@ const url = new URL(canonicalPath, site).toString();
             }
         </style>
 
-        <script>
-            declare global {
-                interface Window {
-                    toggleTheme: () => void;
-                }
-            }
-            // theme toggle persistence
-            const saved = localStorage.getItem("tulaa-theme");
-            if (saved) document.documentElement.dataset.theme = saved;
-            function toggleTheme() {
-                const current = document.documentElement.dataset.theme;
-                const next = current === "dark" ? "light" : "dark";
-                document.documentElement.dataset.theme = next;
-                localStorage.setItem("tulaa-theme", next);
-            }
-            window.toggleTheme = toggleTheme;
-        </script>
+        <script src="/src/scripts/theme-toggle.js" is:inline></script>
     </head>
 
     <body>
