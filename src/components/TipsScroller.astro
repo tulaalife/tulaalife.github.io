@@ -1,196 +1,340 @@
 ---
 export interface TipItem {
-  href: string;
-  tip: string;           // main line
-  benefit?: string;      // small supporting line
-  icon?: string;         // emoji or URL
-  sourceName?: string;   // optional source label
+    href: string;
+    tip: string;
+    benefit?: string;
+    icon?: string; // emoji or URL
+    sourceName?: string; // optional source label
 }
-
 export interface Props {
-  title: string;
-  subtitle?: string;
-  items: TipItem[];      // pass exactly 5 (but works with >=1)
-  ctaHref?: string;
-  ctaLabel?: string;
-  intervalMs?: number;   // default 5.2s
+    title: string;
+    subtitle?: string;
+    items: TipItem[]; // pass ~5 (works with >=1)
+    ctaHref?: string;
+    ctaLabel?: string;
+    intervalMs?: number; // default 5200ms
 }
 
 const {
-  title,
-  subtitle,
-  items = [],
-  ctaHref,
-  ctaLabel,
-  intervalMs = 5200,
+    title,
+    subtitle,
+    items = [],
+    ctaHref,
+    ctaLabel,
+    intervalMs = 5200,
 } = Astro.props;
 
 const hasCTA = Boolean(ctaHref && ctaLabel);
 ---
 
-{items.length > 0 && (
-  <section
-    class="ts-wrap"
-    data-interval={String(intervalMs)}
-    tabindex="0"
-    role="region"
-    aria-label={title}
-  >
-    <header class="ts-header">
-      <h2 class="ts-title">{title}</h2>
-      {subtitle && <p class="ts-subtitle">{subtitle}</p>}
-      {hasCTA && (
-        <a class="ts-cta" href={ctaHref!}>
-          {ctaLabel}
-          <span aria-hidden="true">↗</span>
-        </a>
-      )}
-    </header>
-
-    <!-- one-up vertical scroller (no controls) -->
-    <ul class="ts-track" role="list">
-      {items.map((t, idx) => (
-        <li
-          class="ts-slide"
-          aria-hidden={idx === 0 ? "false" : "true"}
-          data-active={idx === 0 ? "true" : "false"}
+{
+    items.length > 0 && (
+        <section
+            class="ts-wrap"
+            data-interval={String(intervalMs)}
+            tabindex="0"
+            role="region"
+            aria-label={title}
         >
-          <a class="ts-card" href={t.href}>
-            <div class="ts-icon">
-              {t.icon?.startsWith('http') ? (
-                <img src={t.icon} alt="" loading="lazy" />
-              ) : (
-                <span aria-hidden="true">{t.icon ?? "💡"}</span>
-              )}
-            </div>
-            <div class="ts-body">
-              <h3 class="ts-h3">{t.tip}</h3>
-              {t.benefit && <p class="ts-p">{t.benefit}</p>}
-              {t.sourceName && (
-                <p class="ts-source">Source: {t.sourceName}</p>
-              )}
-            </div>
-          </a>
-        </li>
-      ))}
-    </ul>
-  </section>
-)}
+            <header class="ts-header">
+                <h2 class="ts-title">{title}</h2>
+                {subtitle && <p class="ts-subtitle">{subtitle}</p>}
+                {hasCTA && (
+                    <a class="ts-cta" href={ctaHref!}>
+                        {ctaLabel} <span aria-hidden="true">↗</span>
+                    </a>
+                )}
+            </header>
+
+            <ul class="ts-track" role="list">
+                {items.map((t, idx) => (
+                    <li
+                        class="ts-slide"
+                        aria-hidden={idx === 0 ? "false" : "true"}
+                        data-active={idx === 0 ? "true" : "false"}
+                    >
+                        <a class="ts-card" href={t.href}>
+                            <div class="ts-icon">
+                                {t.icon?.startsWith("http") ? (
+                                    <img src={t.icon} alt="" loading="lazy" />
+                                ) : (
+                                    <span aria-hidden="true">
+                                        {t.icon ?? "💡"}
+                                    </span>
+                                )}
+                            </div>
+                            <div class="ts-body">
+                                <h3 class="ts-h3">{t.tip}</h3>
+                                {t.benefit && <p class="ts-p">{t.benefit}</p>}
+                                {t.sourceName && (
+                                    <p class="ts-source">
+                                        Source: {t.sourceName}
+                                    </p>
+                                )}
+                            </div>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+        </section>
+    )
+}
 
 <style>
-  .ts-wrap{ margin:28px auto 22px; padding:20px 16px; max-width:880px; }
-  .ts-header{ text-align:center; margin:0 0 14px; }
-  .ts-title{ margin:0 0 6px; font-size:clamp(18px,2.6vw,22px); }
-  .ts-subtitle{ margin:0 0 10px; color:var(--muted); font-size:clamp(14px,2.1vw,16px); }
+    .ts-wrap {
+        margin: 28px auto 22px;
+        padding: 20px 16px;
+        max-width: 880px;
+    }
+    .ts-header {
+        text-align: center;
+        margin: 0 0 14px;
+    }
+    .ts-title {
+        margin: 0 0 6px;
+        font-size: clamp(18px, 2.6vw, 22px);
+    }
+    .ts-subtitle {
+        margin: 0 0 10px;
+        color: var(--muted);
+        font-size: clamp(14px, 2.1vw, 16px);
+    }
 
-  .ts-cta{
-    display:inline-flex; gap:8px; align-items:center;
-    padding:8px 12px; border-radius:12px; font-weight:600;
-    text-decoration:none; color:var(--fg);
-    background:color-mix(in srgb, var(--btn) 10%, transparent);
-    border:1px solid color-mix(in srgb, var(--ring) 70%, transparent);
-    backdrop-filter:saturate(120%) blur(4px);
-    transition:transform .2s ease, background .2s ease, border-color .2s ease;
-  }
-  .ts-cta:hover{ transform:translateY(-1px); }
+    .ts-cta {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 9px 14px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--fg);
+        background: color-mix(in srgb, var(--btn) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+        backdrop-filter: saturate(120%) blur(4px);
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.25s ease,
+            background 0.25s ease;
+    }
+    .ts-cta:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent);
+    }
 
-  .ts-track{ list-style:none; padding:0; margin:0; position:relative; min-height:132px; }
+    /* Reserve space for active tip */
+    .ts-track {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        position: relative;
+        height: var(--ts-h, auto);
+        min-height: 132px;
+    }
 
-  .ts-slide{
-    position:absolute; inset:0;
-    display:flex; align-items:center; justify-content:center;
-    opacity:0; transform:translateY(6px);
-    transition:opacity .5s ease, transform .5s ease;
-    pointer-events:none;
-  }
-  .ts-slide[data-active="true"]{
-    opacity:1; transform:translateY(0);
-    pointer-events:auto;
-  }
+    /* Smooth “premium” transition */
+    .ts-slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transform: translateY(8px) scale(0.99);
+        transition:
+            opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+            transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+        will-change: opacity, transform;
+        pointer-events: none;
+    }
+    .ts-slide[data-active="true"] {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
 
-  .ts-card{
-    --r:16px;
-    display:flex; gap:14px; align-items:flex-start;
-    width:min(100%, 860px); padding:14px; text-decoration:none; color:inherit;
-    border-radius:var(--r); overflow:hidden; position:relative;
-    background:
-      linear-gradient(180deg, color-mix(in srgb, var(--panel) 88%, transparent), var(--panel)),
-      radial-gradient(120% 120% at 0% 0%, color-mix(in srgb, var(--fg) 6%, transparent), transparent 60%);
-    border:1px solid color-mix(in srgb, var(--ring) 70%, transparent);
-    box-shadow:
-      0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
-      0 10px 26px color-mix(in srgb, var(--fg) 10%, transparent);
-    transition:transform .2s ease, box-shadow .2s ease;
-  }
-  .ts-card:hover{ transform:translateY(-2px);
-    box-shadow:0 2px 0 color-mix(in srgb, var(--fg) 8%, transparent),
-               0 14px 34px color-mix(in srgb, var(--fg) 14%, transparent); }
+    .ts-card {
+        --r: 16px;
+        display: flex;
+        gap: 14px;
+        align-items: flex-start;
+        width: min(100%, 860px);
+        padding: 14px;
+        text-decoration: none;
+        color: inherit;
+        border-radius: var(--r);
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--panel) 90%, transparent),
+                var(--panel)
+            ),
+            radial-gradient(
+                120% 120% at 0% 0%,
+                color-mix(in srgb, var(--fg) 6%, transparent),
+                transparent 60%
+            );
+        border: 1px solid color-mix(in srgb, var(--ring) 72%, transparent);
+        box-shadow:
+            0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
+            0 12px 28px color-mix(in srgb, var(--fg) 10%, transparent);
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+    .ts-card:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 2px 0 color-mix(in srgb, var(--fg) 8%, transparent),
+            0 16px 36px color-mix(in srgb, var(--fg) 14%, transparent);
+    }
 
-  .ts-icon{
-    flex:0 0 auto; width:48px; height:48px; border-radius:12px;
-    display:grid; place-items:center; font-size:28px;
-    background:color-mix(in srgb, var(--btn) 12%, transparent);
-    border:1px solid color-mix(in srgb, var(--ring) 70%, transparent);
-  }
-  .ts-icon img{ width:28px; height:28px; object-fit:contain; }
+    .ts-icon {
+        flex: 0 0 auto;
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        display: grid;
+        place-items: center;
+        font-size: 28px;
+        background: color-mix(in srgb, var(--btn) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+    }
+    .ts-icon img {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+    }
 
-  .ts-body{ flex:1; }
-  .ts-h3{ margin:0 0 6px; font-size:clamp(15px,2.2vw,17px); }
-  .ts-p{ margin:0; color:var(--muted); line-height:1.35; }
-  .ts-source{ margin:6px 0 0; font-size:.86em; color:var(--muted); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .ts-slide{ transition:none; }
-  }
+    .ts-body {
+        flex: 1;
+    }
+    .ts-h3 {
+        margin: 0 0 6px;
+        font-size: clamp(15px, 2.2vw, 17px);
+        letter-spacing: 0.2px;
+    }
+    .ts-p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.35;
+    }
+    .ts-source {
+        margin: 6px 0 0;
+        font-size: 0.86em;
+        color: var(--muted);
+    }
 </style>
 
 <script>
-  // @ts-check
-  (function () {
-    /** @type {HTMLScriptElement | null} */
-    var scriptEl = document.currentScript;
-    if (!scriptEl) return;
+    // @ts-nocheck
+    (() => {
+        function boot(root) {
+            const track = root.querySelector(".ts-track");
+            const slides = Array.prototype.slice.call(
+                root.querySelectorAll(".ts-slide"),
+            );
 
-    /** @type {HTMLElement | null} */
-    var root = scriptEl.closest('.ts-wrap');
-    if (!root) return;
+            const setActive = (el, active) => {
+                el.setAttribute("data-active", active ? "true" : "false");
+                el.setAttribute("aria-hidden", active ? "false" : "true");
+            };
 
-    var mql = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
-    var prefersReduce = !!(mql && mql.matches);
+            function adjustHeight() {
+                if (!track) return;
+                const active =
+                    root.querySelector(
+                        '.ts-slide[data-active="true"] .ts-card',
+                    ) || root.querySelector(".ts-card");
+                if (!active) return;
+                const h = active.getBoundingClientRect().height;
+                track.style.setProperty("--ts-h", h + "px");
+            }
 
-    /** @type {HTMLElement[]} */
-    var slides = Array.prototype.slice.call(root.querySelectorAll('.ts-slide'));
+            // init first slide + height
+            slides.forEach((el, i) => setActive(el, i === 0));
+            adjustHeight();
 
-    /** @param {HTMLElement} el @param {boolean} active */
-    function setActive(el: { setAttribute: (arg0: string, arg1: string) => void; }, active: boolean) {
-      el.setAttribute('data-active', active ? 'true' : 'false');
-      el.setAttribute('aria-hidden', active ? 'false' : 'true');
-    }
+            if (slides.length <= 1) {
+                const ro = new ResizeObserver(adjustHeight);
+                ro.observe(root);
+                window.addEventListener("resize", adjustHeight);
+                return;
+            }
 
-    for (var i = 0; i < slides.length; i++) setActive(slides[i], i === 0);
-    if (slides.length <= 1 || prefersReduce) return;
+            // rotation
+            let idx = 0;
+            let timer;
+            const interval = Math.max(
+                2400,
+                Number(root.getAttribute("data-interval") || 5200),
+            );
 
-    var intervalAttr = root.getAttribute('data-interval');
-    var interval = Math.max(2400, Number(intervalAttr || 5200));
+            function tick() {
+                const prev = slides[idx];
+                idx = (idx + 1) % slides.length;
+                const next = slides[idx];
+                setActive(prev, false);
+                setActive(next, true);
+                adjustHeight();
+            }
 
-    var idx = 0;
-    function tick() {
-      var prev = slides[idx];
-      idx = (idx + 1) % slides.length;
-      var next = slides[idx];
-      setActive(prev, false);
-      setActive(next, true);
-    }
+            function start() {
+                stop();
+                timer = window.setInterval(tick, interval);
+            }
+            function stop() {
+                if (timer) {
+                    window.clearInterval(timer);
+                    timer = undefined;
+                }
+            }
 
-    /** @type {number | undefined} */
-    var timer = window.setInterval(tick, interval);
-    function pause(){ if (timer) window.clearInterval(timer); }
-    function resume(){ timer = window.setInterval(tick, interval); }
+            setTimeout(start, 200);
 
-    root.addEventListener('mouseenter', pause);
-    root.addEventListener('mouseleave', resume);
-    root.addEventListener('focusin', pause);
-    root.addEventListener('focusout', resume);
-    window.addEventListener('pagehide', function(){ if (timer) window.clearInterval(timer); }, { once:true });
-  })();
+            // pause/resume on intent
+            root.addEventListener("mouseenter", stop);
+            root.addEventListener("mouseleave", start);
+            root.addEventListener("focusin", stop);
+            root.addEventListener("focusout", (e) => {
+                const nextTarget = e.relatedTarget;
+                if (!nextTarget || !root.contains(nextTarget)) start();
+            });
+
+            // keep height in sync
+            const ro2 = new ResizeObserver(adjustHeight);
+            ro2.observe(root);
+            window.addEventListener("resize", adjustHeight);
+
+            // icons might load (when URL icon used)
+            root.querySelectorAll(".ts-icon img").forEach((img) => {
+                if (!img.complete)
+                    img.addEventListener("load", adjustHeight, { once: true });
+            });
+
+            window.addEventListener(
+                "pagehide",
+                () => {
+                    stop();
+                    ro2.disconnect();
+                },
+                { once: true },
+            );
+        }
+
+        function startAll() {
+            Array.prototype.slice
+                .call(document.querySelectorAll(".ts-wrap"))
+                .forEach(boot);
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", startAll, {
+                once: true,
+            });
+        } else {
+            startAll();
+        }
+    })();
 </script>
