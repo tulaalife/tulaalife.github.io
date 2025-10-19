@@ -3,6 +3,7 @@ import Site from "../layouts/Site.astro";
 import OneUpCarousel from "../components/OneUpCarousel.astro";
 import FeatureTiles from "../components/FeatureTiles.astro";
 import { yogaPlans, guidedAudios, tips } from "../data/generated";
+import TipsScroller from "../components/TipsScroller.astro";
 
 const title = "Tulaa — Yoga, Meditation & Daily Wellness";
 const description =
@@ -46,16 +47,20 @@ const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
   image: a.image,
 }));
 
-const tipItems = seededShuffle(tips, daySeed + 13).map((t) => ({
-  href: `/tips/${t.slug}`,
-  title: t.tip,
-  subtitle: t.benefit ?? "Short, sourced self-care tip",
-  emojiFallback: t.icon ?? "💡",
-}));
+// select 5 tips for today
+const tipFive = seededShuffle(tips, daySeed + 13)
+  .slice(0, 5)
+  .map((t) => ({
+    href: `/tips/${t.slug}`,
+    tip: t.tip,
+    benefit: t.benefit ?? "Short, sourced self-care tip",
+    icon: t.icon ?? "💡",
+    sourceName: t.source?.name ?? "",
+  }));
 
 const hasYoga = yogaItems.length > 0;
 const hasAudio = audioItems.length > 0;
-const hasTips = tipItems.length > 0;
+const hasTips = tipFive.length > 0;
 ---
 
 <Site
@@ -103,6 +108,7 @@ const hasTips = tipItems.length > 0;
       />
     )
   }
+
   {
     hasAudio && (
       <OneUpCarousel
@@ -115,12 +121,13 @@ const hasTips = tipItems.length > 0;
       />
     )
   }
+
   {
     hasTips && (
-      <OneUpCarousel
+      <TipsScroller
         title="Wellness Tips"
         subtitle="Short, sourced insights for daily care"
-        items={tipItems}
+        items={tipFive}
         ctaHref="/tips"
         ctaLabel="Browse tips"
         intervalMs={5200}
