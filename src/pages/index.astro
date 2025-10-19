@@ -14,6 +14,7 @@ function seededShuffle<T>(arr: readonly T[], seed: number): T[] {
   const copy = Array.from(arr);
   let x = seed || 1;
   const rand = () => {
+    // xorshift32
     x ^= x << 13;
     x ^= x >>> 17;
     x ^= x << 5;
@@ -55,24 +56,6 @@ const tipItems = seededShuffle(tips, daySeed + 13).map((t) => ({
 const hasYoga = yogaItems.length > 0;
 const hasAudio = audioItems.length > 0;
 const hasTips = tipItems.length > 0;
-
-// --- server-side debug (shows in dev/SSR console) ---
-console.log(
-  "[Home] yogaItems:",
-  yogaItems.length,
-  yogaItems.slice(0, 2).map((i) => i.title),
-);
-console.log(
-  "[Home] audioItems:",
-  audioItems.length,
-  audioItems.slice(0, 2).map((i) => i.title),
-);
-console.log(
-  "[Home] tipItems:",
-  tipItems.length,
-  tipItems.slice(0, 2).map((i) => i.title),
-);
-console.log("[Home] flags:", { hasYoga, hasAudio, hasTips });
 ---
 
 <Site
@@ -82,30 +65,20 @@ console.log("[Home] flags:", { hasYoga, hasAudio, hasTips });
   ogImage={ogImage}
 >
   <!-- Hero -->
-  <section
-    role="banner"
-    aria-labelledby="hero-title"
-    style="text-align:center;"
-  >
-    <h1
-      id="hero-title"
-      style="margin:.2rem 0;font-size:clamp(24px,4.2vw,40px);"
-    >
+  <section role="banner" aria-labelledby="hero-title" class="hero">
+    <h1 id="hero-title" class="hero__title">
       Your calm corner in a noisy world
     </h1>
-    <p
-      style="margin:8px 0 0;font-size:clamp(15px,2.1vw,18px);color:var(--muted);"
-    >
+    <p class="hero__subtitle">
       Expert-guided yoga & meditation — offline, ad-free, privacy-first.
     </p>
-    <div
-      style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:14px 0 0;"
-    >
+    <div class="hero__ctaRow">
       <a
         href="https://apps.apple.com/in/app/tulaa/id6748626498"
         target="_blank"
         rel="noopener noreferrer"
-        style="display:inline-block;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:600;background:var(--btn);color:var(--btnText);"
+        class="btn btn--solid"
+        aria-label="Get Tulaa on iOS (opens App Store)"
       >
         Get Tulaa on iOS
       </a>
@@ -113,7 +86,8 @@ console.log("[Home] flags:", { hasYoga, hasAudio, hasTips });
         href="https://play.google.com/store/apps/details?id=life.tulaa.app"
         target="_blank"
         rel="noopener noreferrer"
-        style="display:inline-block;padding:12px 16px;border-radius:12px;text-decoration:none;font-weight:600;border:1px solid var(--ring);color:var(--fg);background:transparent;"
+        class="btn btn--ghost"
+        aria-label="Get Tulaa on Android (opens Google Play)"
       >
         Get Tulaa on Android
       </a>
@@ -186,196 +160,43 @@ console.log("[Home] flags:", { hasYoga, hasAudio, hasTips });
   />
 </Site>
 
-<!-- Client-side: TS-safe, multi-carousel init with logs -->
-<script>
-  (() => {
-    // Type guards
-    const qsa = <T extends Element>(root: ParentNode, sel: string) =>
-      Array.from(root.querySelectorAll(sel)) as T[];
+<style>
+  /* Tiny page-level styles to declutter inline CSS */
+  .hero {
+    text-align: center;
+    margin: 8px auto 10px;
+  }
+  .hero__title {
+    margin: 0.2rem 0;
+    font-size: clamp(24px, 4.2vw, 40px);
+  }
+  .hero__subtitle {
+    margin: 8px 0 0;
+    font-size: clamp(15px, 2.1vw, 18px);
+    color: var(--muted);
+  }
+  .hero__ctaRow {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 14px 0 0;
+  }
 
-    function initAll(): void {
-      const wraps = qsa<HTMLElement>(document, ".oc-wrap");
-      if (wraps.length === 0) {
-        // Retry once DOM finishes; also log state
-        console.warn(
-          "[OneUpCarousel] No .oc-wrap found. readyState =",
-          document.readyState,
-        );
-        if (document.readyState === "loading") {
-          document.addEventListener(
-            "DOMContentLoaded",
-            () => {
-              console.debug("[OneUpCarousel] DOMContentLoaded → retry init");
-              initAll();
-            },
-            { once: true },
-          );
-        } else {
-          // Streamed/hydrated later → short backoff retry
-          setTimeout(initAll, 600);
-        }
-        return;
-      }
-
-      console.debug(`[OneUpCarousel] Found ${wraps.length} carousel(s).`);
-
-      wraps.forEach((wrap, idx) => {
-        try {
-          const slides = qsa<HTMLLIElement>(wrap, ".oc-slide");
-          const dots = qsa<HTMLButtonElement>(wrap, ".oc-dot");
-          const prevBtn = wrap.querySelector<HTMLButtonElement>("[data-prev]");
-          const nextBtn = wrap.querySelector<HTMLButtonElement>("[data-next]");
-          const bar = wrap.querySelector<HTMLSpanElement>(
-            ".oc-progress > span",
-          );
-
-          const total = slides.length;
-          console.debug(
-            `[OneUpCarousel #${idx}] slides=${total}, dots=${dots.length}`,
-          );
-
-          if (total === 0) {
-            wrap
-              .querySelector(".oc-controls")
-              ?.setAttribute("aria-hidden", "true");
-            if (bar?.parentElement)
-              bar.parentElement.setAttribute("aria-hidden", "true");
-            console.warn(`[OneUpCarousel #${idx}] No slides — skipping`);
-            return;
-          }
-          if (total === 1) {
-            slides[0].setAttribute("aria-hidden", "false");
-            dots[0]?.setAttribute("aria-selected", "true");
-            wrap
-              .querySelector(".oc-controls")
-              ?.setAttribute("aria-hidden", "true");
-            if (bar?.parentElement)
-              bar.parentElement.setAttribute("aria-hidden", "true");
-            console.debug(
-              `[OneUpCarousel #${idx}] Single slide — autoplay disabled`,
-            );
-            return;
-          }
-
-          const prefersReduced =
-            typeof window.matchMedia === "function" &&
-            window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-          const rawInterval = wrap.dataset?.interval ?? "5000";
-          const INTERVAL = Math.max(1500, parseInt(rawInterval, 10) || 5000);
-          console.debug(
-            `[OneUpCarousel #${idx}] interval=${INTERVAL}ms, reduced=${prefersReduced}`,
-          );
-
-          let i = 0;
-          let timer: number | null = null;
-
-          function setActive(next: number): void {
-            slides[i]?.setAttribute("aria-hidden", "true");
-            dots[i]?.setAttribute("aria-selected", "false");
-
-            i = (next + total) % total;
-
-            slides[i]?.setAttribute("aria-hidden", "false");
-            dots[i]?.setAttribute("aria-selected", "true");
-
-            if (!prefersReduced && bar) {
-              bar.style.setProperty("--dur", `${INTERVAL / 1000}s`);
-              bar.style.width = "0%";
-              requestAnimationFrame(() =>
-                requestAnimationFrame(() => {
-                  bar.style.width = "100%";
-                }),
-              );
-            }
-          }
-
-          function stop(): void {
-            if (timer !== null) {
-              clearInterval(timer);
-              timer = null;
-              console.debug(`[OneUpCarousel #${idx}] paused`);
-            }
-          }
-
-          function start(): void {
-            if (prefersReduced || total < 2) return;
-            stop();
-            if (bar) bar.style.width = "100%";
-            timer = window.setInterval(() => setActive(i + 1), INTERVAL);
-            console.debug(`[OneUpCarousel #${idx}] playing`);
-          }
-
-          // Controls
-          prevBtn?.addEventListener("click", () => {
-            setActive(i - 1);
-            start();
-          });
-          nextBtn?.addEventListener("click", () => {
-            setActive(i + 1);
-            start();
-          });
-          dots.forEach((d, di) =>
-            d.addEventListener("click", () => {
-              setActive(di);
-              start();
-            }),
-          );
-
-          // Pause/resume
-          wrap.addEventListener("mouseenter", stop);
-          wrap.addEventListener("mouseleave", start);
-          wrap.addEventListener("focusin", stop);
-          wrap.addEventListener("focusout", (e: FocusEvent) => {
-            const nextTarget = e.relatedTarget as Node | null;
-            if (!nextTarget || !wrap.contains(nextTarget)) start();
-          });
-
-          // Keyboard
-          wrap.addEventListener("keydown", (e: KeyboardEvent) => {
-            if (e.key === "ArrowRight") {
-              e.preventDefault();
-              setActive(i + 1);
-              start();
-            } else if (e.key === "ArrowLeft") {
-              e.preventDefault();
-              setActive(i - 1);
-              start();
-            } else if (e.code === "Space") {
-              e.preventDefault();
-              timer === null ? start() : stop();
-            }
-          });
-
-          // Visibility / viewport pause
-          if ("IntersectionObserver" in window) {
-            const io = new IntersectionObserver(
-              (entries) => {
-                const visible = entries.some((en) => en.isIntersecting);
-                visible ? start() : stop();
-              },
-              { threshold: 0.1 },
-            );
-            io.observe(wrap);
-          }
-          document.addEventListener("visibilitychange", () => {
-            document.hidden ? stop() : start();
-          });
-
-          // init
-          setActive(0);
-          start();
-          console.debug(`[OneUpCarousel #${idx}] initialized`);
-        } catch (err) {
-          console.error(`[OneUpCarousel #${idx}] init failed`, err);
-        }
-      });
-    }
-
-    if (document.readyState === "loading") {
-      document.addEventListener("DOMContentLoaded", initAll, { once: true });
-    } else {
-      initAll();
-    }
-  })();
-</script>
+  .btn {
+    display: inline-block;
+    padding: 12px 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .btn--solid {
+    background: var(--btn);
+    color: var(--btnText);
+  }
+  .btn--ghost {
+    border: 1px solid var(--ring);
+    color: var(--fg);
+    background: transparent;
+  }
+</style>
