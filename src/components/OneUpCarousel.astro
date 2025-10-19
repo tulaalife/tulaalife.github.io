@@ -3,8 +3,8 @@ export interface Item {
   href: string;
   title: string;
   subtitle?: string;
-  image?: string;        // for yoga/audio
-  emojiFallback?: string; // for tips
+  image?: string;
+  emojiFallback?: string;
 }
 
 export interface Props {
@@ -13,7 +13,7 @@ export interface Props {
   items: Item[];
   ctaHref?: string;
   ctaLabel?: string;
-  intervalMs?: number;    // autoplay interval
+  intervalMs?: number;
 }
 
 const {
@@ -24,9 +24,6 @@ const {
   ctaLabel,
   intervalMs = 5200,
 } = Astro.props;
-
-// SSR log to confirm items are arriving
-console.log(`[OneUpCarousel/SSR] "${title}" items:`, items.length, items.slice(0, 2).map(i => i.title));
 ---
 
 {items.length > 0 && (
@@ -44,70 +41,135 @@ console.log(`[OneUpCarousel/SSR] "${title}" items:`, items.length, items.slice(0
         {subtitle && <p style="margin:0;color:var(--muted)">{subtitle}</p>}
       </div>
       {ctaHref && ctaLabel && (
-        <a href={ctaHref} style="font-weight:600;text-decoration:none;border:1px solid var(--ring);padding:6px 10px;border-radius:10px;">
+        <a
+          href={ctaHref}
+          style="font-weight:600;text-decoration:none;border:1px solid var(--ring);
+                 padding:6px 10px;border-radius:10px;white-space:nowrap;"
+        >
           {ctaLabel}
         </a>
       )}
     </header>
 
     <!-- Slides -->
-    <ul class="oc-track" style="list-style:none;padding:0;margin:0;position:relative;min-height:120px;">
-      {
-        items.map((it, idx) => (
-          <li
-            class="oc-slide"
-            aria-hidden={idx === 0 ? "false" : "true"}
-            style="position:absolute;inset:0;display:flex;align-items:center;gap:12px;
-                   border:1px solid var(--ring);border-radius:14px;padding:12px;
-                   background:var(--panel);transition:opacity .28s ease;opacity:{idx===0?'1':'0'}"
+    <ul
+      class="oc-track"
+      style="list-style:none;padding:0;margin:0;position:relative;min-height:120px;overflow:hidden;"
+    >
+      {items.map((it, idx) => (
+        <li
+          class="oc-slide"
+          aria-hidden={idx === 0 ? "false" : "true"}
+          style={`position:absolute;inset:0;display:flex;align-items:center;gap:12px;
+                  border:1px solid var(--ring);border-radius:14px;padding:14px;
+                  background:var(--panel);transition:opacity .6s ease, transform .6s ease;
+                  opacity:${idx === 0 ? "1" : "0"};z-index:${idx === 0 ? "1" : "0"};
+                  transform:translateX(${idx === 0 ? "0" : "8px"});
+                  pointer-events:${idx === 0 ? "auto" : "none"};`}
+        >
+          <a
+            href={it.href}
+            style="display:flex;gap:12px;align-items:center;color:inherit;text-decoration:none;flex:1;"
           >
-            <a href={it.href} style="display:flex;gap:12px;align-items:center;color:inherit;text-decoration:none;flex:1;">
-              {
-                it.image ? (
-                  <img src={it.image} alt={it.title} width="128" height="72"
-                       loading="lazy"
-                       style="border-radius:10px;object-fit:cover;inline-size:128px;block-size:72px;" />
-                ) : (
-                  <div style="font-size:1.8rem;inline-size:48px;text-align:center">{it.emojiFallback ?? "💡"}</div>
-                )
-              }
-              <div>
-                <h3 style="margin:0 0 6px;font-size:1rem;">{it.title}</h3>
-                {it.subtitle && <p style="margin:0;color:var(--muted);">{it.subtitle}</p>}
+            {it.image ? (
+              <img
+                src={it.image}
+                alt={it.title}
+                width="128"
+                height="72"
+                loading="lazy"
+                style="border-radius:10px;object-fit:cover;inline-size:128px;block-size:72px;"
+              />
+            ) : (
+              <div style="font-size:1.8rem;inline-size:48px;text-align:center;">
+                {it.emojiFallback ?? "💡"}
               </div>
-            </a>
-          </li>
-        ))
-      }
+            )}
+            <div>
+              <h3 style="margin:0 0 6px;font-size:1rem;">{it.title}</h3>
+              {it.subtitle && (
+                <p style="margin:0;color:var(--muted);line-height:1.3;">
+                  {it.subtitle}
+                </p>
+              )}
+            </div>
+          </a>
+        </li>
+      ))}
     </ul>
 
     <!-- Controls + dots -->
-    <div class="oc-controls" style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;">
+    <div
+      class="oc-controls"
+      style="display:flex;justify-content:space-between;align-items:center;margin-top:10px;"
+    >
       <div style="display:flex;gap:8px;align-items:center;">
-        <button type="button" data-prev aria-label="Previous"
-                style="border:1px solid var(--ring);background:transparent;border-radius:10px;padding:6px 10px;">←</button>
-        <button type="button" data-next aria-label="Next"
-                style="border:1px solid var(--ring);background:transparent;border-radius:10px;padding:6px 10px;">→</button>
+        <button
+          type="button"
+          data-prev
+          aria-label="Previous"
+          style="border:1px solid var(--ring);background:transparent;border-radius:10px;padding:6px 10px;"
+        >
+          ←
+        </button>
+        <button
+          type="button"
+          data-next
+          aria-label="Next"
+          style="border:1px solid var(--ring);background:transparent;border-radius:10px;padding:6px 10px;"
+        >
+          →
+        </button>
       </div>
 
-      <div class="oc-dots" role="tablist" aria-label={`${title} slides`} style="display:flex;gap:6px;">
-        {
-          items.map((_, idx) => (
-            <button
-              class="oc-dot"
-              role="tab"
-              aria-selected={idx === 0 ? "true" : "false"}
-              aria-label={`Go to slide ${idx+1}`}
-              style="inline-size:8px;block-size:8px;border-radius:999px;border:1px solid var(--ring);
-                     background:{idx===0?'var(--fg)':'transparent'};opacity:.8;"
-            />
-          ))
-        }
+      <div
+        class="oc-dots"
+        role="tablist"
+        aria-label={`${title} slides`}
+        style="display:flex;gap:6px;"
+      >
+        {items.map((_, idx) => (
+          <button
+            class="oc-dot"
+            role="tab"
+            aria-selected={idx === 0 ? "true" : "false"}
+            aria-label={`Go to slide ${idx + 1}`}
+            style={`inline-size:8px;block-size:8px;border-radius:999px;
+                    border:1px solid var(--ring);
+                    background:${idx === 0 ? "var(--fg)" : "transparent"};
+                    transition:background .3s ease;`}
+          />
+        ))}
       </div>
 
-      <div class="oc-progress" aria-hidden="true" style="flex:1;margin-left:10px;height:3px;background:var(--ring);border-radius:999px;overflow:hidden;">
-        <span style="display:block;height:100%;width:0%;background:var(--fg);--dur:5s;transition:width var(--dur) linear;"></span>
+      <div
+        class="oc-progress"
+        aria-hidden="true"
+        style="flex:1;margin-left:10px;height:3px;background:var(--ring);border-radius:999px;overflow:hidden;"
+      >
+        <span
+          style="display:block;height:100%;width:0%;background:var(--fg);
+                 --dur:5s;transition:width var(--dur) linear;"
+        ></span>
       </div>
     </div>
   </section>
 )}
+
+
+<!-- ✅ Add styles here -->
+<style>
+  .oc-slide[aria-hidden="true"] {
+    opacity: 0;
+    transform: translateX(8px);
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .oc-slide[aria-hidden="false"] {
+    opacity: 1;
+    transform: translateX(0);
+    z-index: 1;
+    pointer-events: auto;
+  }
+</style>
