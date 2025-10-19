@@ -26,10 +26,12 @@ const {
 } = Astro.props;
 
 const hasCTA = Boolean(ctaHref && ctaLabel);
+const uid = `oc-${Math.random().toString(36).slice(2, 8)}-${Date.now().toString(36)}`;
 ---
 
 {items.length > 0 && (
   <section
+    id={uid}
     class="oc-wrap"
     data-interval={String(intervalMs)}
     tabindex="0"
@@ -159,87 +161,123 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
 
   @media (prefers-reduced-motion: reduce) { .oc-slide{ transition:none; } }
 </style>
-
 <script>
-  // @ts-check
-  (function () {
-    /** @type {HTMLScriptElement | null} */
-    var scriptEl = document.currentScript;
-    if (!scriptEl) return;
+// @ts-nocheck
+(() => {
+  const DEBUG = true;
+  const log = (...a) => DEBUG && console.log("[OneUp]", ...a);
 
-    /** @type {HTMLElement | null} */
-    var root = scriptEl.closest('.oc-wrap');
+  function bootOne(root, index) {
     if (!root) return;
+    const id = root.id || `oc-auto-${index}`;
+    if (!root.id) root.id = id;
 
-    var track = root.querySelector('.oc-track');
+    const track = /** @type {HTMLElement|null} */ (root.querySelector('.oc-track'));
+    const slides = /** @type {HTMLElement[]} */ (
+      Array.prototype.slice.call(root.querySelectorAll('.oc-slide'))
+    );
 
-    /** Measure active card and set --oc-h on the track */
-    function adjustHeight() {
-      if (!track) return;
-      /** @type {HTMLElement | null} */
-      var activeCard =
-        root.querySelector('.oc-slide[data-active="true"] .oc-card') ||
-        root.querySelector('.oc-card');
-      if (!activeCard) return;
-      var h = activeCard.getBoundingClientRect().height;
-      track.style.setProperty('--oc-h', h + 'px');
-    }
-
-    /** @type {HTMLElement[]} */
-    var slides = Array.prototype.slice.call(root.querySelectorAll('.oc-slide'));
-
-    /** @type {(el: HTMLElement, active: boolean) => void} */
     const setActive = (el, active) => {
       el.setAttribute('data-active', active ? 'true' : 'false');
       el.setAttribute('aria-hidden', active ? 'false' : 'true');
     };
 
-    // init
-    for (var i = 0; i < slides.length; i++) setActive(slides[i], i === 0);
+    function adjustHeight() {
+      if (!track) return;
+      const activeCard =
+        /** @type {HTMLElement|null} */(root.querySelector('.oc-slide[data-active="true"] .oc-card')) ||
+        /** @type {HTMLElement|null} */(root.querySelector('.oc-card'));
+      if (!activeCard) return;
+      const h = activeCard.getBoundingClientRect().height;
+      track.style.setProperty('--oc-h', h + 'px');
+      log(id, "adjustHeight", h);
+    }
+
+    // Init
+    slides.forEach((el, i) => setActive(el, i === 0));
     adjustHeight();
 
-    // reduced motion
-    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    const reduce = false;
+    const interval = Math.max(2600, Number(root.getAttribute('data-interval') || 5200));
+    log(id, "init", { slideCount: slides.length, reduce, interval });
+
     if (slides.length <= 1 || reduce) {
-      var ro1 = new ResizeObserver(adjustHeight);
-      ro1.observe(root);
+      const ro = new ResizeObserver(adjustHeight);
+      ro.observe(root);
       window.addEventListener('resize', adjustHeight);
+      log(id, "no-rotate (single slide or reduced motion)");
       return;
     }
 
-    // auto-rotate
-    var interval = Math.max(2600, Number(root.getAttribute('data-interval') || 5200));
-    var idx = 0;
+    // Rotation
+    let idx = 0;
+    let started = false;
+    let timer /** @type {number|undefined} */;
+
     function tick() {
-      var prev = slides[idx];
+      started = true;
+      const prev = slides[idx];
       idx = (idx + 1) % slides.length;
-      var next = slides[idx];
+      const next = slides[idx];
       setActive(prev, false);
       setActive(next, true);
       adjustHeight();
+      log(id, "tick", idx);
     }
 
-    /** @type {number | undefined} */
-    var timer = window.setInterval(tick, interval);
-    function pause(){ if (timer) window.clearInterval(timer); }
-    function resume(){ timer = window.setInterval(tick, interval); }
+    function startTimer() {
+      if (timer) window.clearInterval(timer);
+      timer = window.setInterval(tick, interval);
+      log(id, "timer:start", interval);
+    }
+    function stopTimer() {
+      if (timer) window.clearInterval(timer);
+      timer = undefined;
+      log(id, "timer:stop");
+    }
 
-    root.addEventListener('mouseenter', pause);
-    root.addEventListener('mouseleave', resume);
-    root.addEventListener('focusin', pause);
-    root.addEventListener('focusout', resume);
+    // Start after paint so images can size
+    setTimeout(startTimer, 250);
 
-    var ro2 = new ResizeObserver(adjustHeight);
+    // Pause/resume
+    root.addEventListener('mouseenter', () => { if (started) stopTimer(); });
+    root.addEventListener('mouseleave', () => { if (started) startTimer(); });
+    root.addEventListener('focusin',  () => { if (started) stopTimer(); });
+    root.addEventListener('focusout', (e) => {
+      if (!started) return;
+      const nextTarget = /** @type {any} */ (e).relatedTarget;
+      if (!nextTarget || !root.contains(nextTarget)) startTimer();
+    });
+
+    // Keep height synced
+    const ro2 = new ResizeObserver(adjustHeight);
     ro2.observe(root);
     window.addEventListener('resize', adjustHeight);
-    window.addEventListener('pagehide', function(){
-      if (timer) window.clearInterval(timer);
-      ro2.disconnect();
-    }, { once:true });
 
-    root.querySelectorAll('.oc-media img').forEach(function(img){
+    // Late-loading images
+    root.querySelectorAll('.oc-media img').forEach((imgEl) => {
+      const img = /** @type {HTMLImageElement} */ (imgEl);
       if (img.complete) return;
-      img.addEventListener('load', adjustHeight, { once:true });
+      img.addEventListener('load', adjustHeight, { once: true });
     });
-  })();
+
+    window.addEventListener('pagehide', () => { stopTimer(); ro2.disconnect(); }, { once: true });
+
+    log(id, "mounted");
+  }
+
+  function startAll() {
+    const roots = /** @type {HTMLElement[]} */ (
+      Array.prototype.slice.call(document.querySelectorAll('.oc-wrap'))
+    );
+    if (!roots.length) { log("no .oc-wrap found"); return; }
+    roots.forEach(bootOne);
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", startAll, { once: true });
+  } else {
+    startAll();
+  }
+})();
 </script>
