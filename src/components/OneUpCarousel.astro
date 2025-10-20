@@ -111,7 +111,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     .oc-track {
         list-style: none;
         padding: 0;
-        margin: 8px 0 10px;
+        margin: 8px 0 0;
         position: relative;
         height: var(--oc-h, auto);
         min-height: clamp(320px, 42vw, 560px);
@@ -257,6 +257,12 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     .oc-ctaRow {
         display: flex;
         justify-content: center;
+        margin-top: 16px;
+    }
+    @media (min-width: 640px) {
+        .oc-ctaRow {
+            margin-top: 18px;
+        } /* optional: tiny bump on larger screens */
     }
     .oc-cta {
         display: inline-flex;

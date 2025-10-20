@@ -76,15 +76,14 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                         </li>
                     ))}
                 </ul>
-
-                {hasCTA && (
-                    <div class="ts-ctaBar">
-                        <a class="ts-ctaBtn" href={ctaHref!}>
-                            {ctaLabel} <span aria-hidden="true">↗</span>
-                        </a>
-                    </div>
-                )}
             </div>
+            {hasCTA && (
+                <div class="ts-ctaBar">
+                    <a class="ts-ctaBtn" href={ctaHref!}>
+                        {ctaLabel} <span aria-hidden="true">↗</span>
+                    </a>
+                </div>
+            )}
         </section>
     )
 }
@@ -114,7 +113,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     .ts-panel {
         --r: 18px;
         margin-top: 14px;
-        padding: 14px 14px 16px;
+        padding: 14px; /* was 14px 14px 16px */
         border-radius: var(--r);
         background: linear-gradient(
                 180deg,
@@ -133,14 +132,44 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         backdrop-filter: saturate(120%) blur(3px);
     }
 
-    /* Reserve height for active tip + give breathing room above CTA */
     .ts-track {
-        list-style: none;
-        padding: 0;
-        margin: 0 0 10px;
-        position: relative;
+        margin: 0;
         height: var(--ts-h, auto);
         min-height: 132px;
+    } /* no extra bottom gap */
+
+    .ts-ctaBar {
+        display: flex;
+        justify-content: center;
+        margin-top: 14px; /* <-- space between card and CTA */
+    }
+    @media (min-width: 640px) {
+        .ts-ctaBar {
+            margin-top: 18px;
+        }
+    }
+    .ts-ctaBtn {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 10px 16px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--fg);
+        background: color-mix(in srgb, var(--btn) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+        backdrop-filter: saturate(120%) blur(4px);
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.25s ease,
+            background 0.25s ease;
+    }
+    .ts-ctaBtn:hover,
+    .ts-ctaBtn:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent);
+        outline: none;
     }
 
     .ts-slide {
@@ -185,10 +214,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                 color-mix(in srgb, var(--fg) 5%, transparent),
                 transparent 60%
             );
-        border: 1px solid color-mix(in srgb, var(--ring) 72%, transparent);
-        box-shadow:
-            0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
-            0 10px 20px color-mix(in srgb, var(--fg) 8%, transparent);
+
         transition:
             transform 0.25s ease,
             box-shadow 0.25s ease;
