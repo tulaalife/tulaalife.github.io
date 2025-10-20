@@ -4,6 +4,7 @@ import OneUpCarousel from "../components/OneUpCarousel.astro";
 import FeatureTiles from "../components/FeatureTiles.astro";
 import { yogaPlans, guidedAudios, tips } from "../data/generated";
 import TipsScroller from "../components/TipsScroller.astro";
+import DownloadCTA from "../components/DownloadCTA.astro";
 
 const title = "Tulaa — Yoga, Meditation & Daily Wellness";
 const description =
@@ -55,7 +56,6 @@ const tipFive = seededShuffle(tips, daySeed + 13)
     tip: t.tip,
     benefit: t.benefit ?? "Short, sourced self-care tip",
     icon: t.icon ?? "💡",
-    sourceName: t.source?.name ?? "",
   }));
 
 const hasYoga = yogaItems.length > 0;
@@ -70,34 +70,14 @@ const hasTips = tipFive.length > 0;
   ogImage={ogImage}
 >
   <!-- Hero -->
+  <!-- Hero -->
   <section role="banner" aria-labelledby="hero-title" class="hero">
-    <img
-      src="https://images.tulaa.life/logo.webp"
-      alt="Tulaa logo"
-      width="80"
-      height="80"
+    <DownloadCTA
+      variant="hero"
+      headline="Tulaa"
+      subline="Expert-guided yoga & meditation — offline, ad-free, privacy-first."
+      showLogo={true}
     />
-    <h1 id="hero-title" class="hero__title">Tulaa</h1>
-    <p class="hero__subtitle">
-      Expert-guided yoga & meditation — offline, ad-free, privacy-first.
-    </p>
-    <div class="hero__ctaRow">
-      <a
-        href="https://apps.apple.com/in/app/tulaa/id6748626498"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn btn--solid"
-        aria-label="Get Tulaa on iOS (opens App Store)">Get Tulaa on iOS</a
-      >
-      <a
-        href="https://play.google.com/store/apps/details?id=life.tulaa"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="btn btn--ghost"
-        aria-label="Get Tulaa on Android (opens Google Play)"
-        >Get Tulaa on Android</a
-      >
-    </div>
   </section>
 
   {
@@ -132,8 +112,6 @@ const hasTips = tipFive.length > 0;
         title="Wellness Tips"
         subtitle="Short, sourced insights for daily care"
         items={tipFive}
-        ctaHref="/tips"
-        ctaLabel="Browse tips"
         intervalMs={5200}
       />
     )
@@ -150,7 +128,6 @@ const hasTips = tipFive.length > 0;
         emoji: "🩸",
         title: "Period tracking",
         subtitle: "Simple cycle logs with insights",
-        href: "/tips?tag=cycle",
       },
       {
         emoji: "📝",

@@ -1,4 +1,6 @@
 ---
+import DownloadCTA from "../components/DownloadCTA.astro";
+
 interface Props {
     title: string;
     description?: string;
@@ -302,33 +304,26 @@ const url = new URL(canonicalPath, site).toString();
         </main>
 
         <footer>
-            <div class="download-card" aria-label="Download Tulaa app">
-                <h3 style="margin:0;">Download the Tulaa App</h3>
-                <p
-                    style="margin:4px 0 10px;color:var(--muted);font-size:0.95rem;"
-                >
-                    Your calm companion — yoga, meditation & journaling.
-                    Ad-free. Offline-ready. Privacy-first.
-                </p>
-                <div class="buttons">
-                    <a
-                        href="https://apps.apple.com/in/app/tulaa/id6748626498"
-                        target="_blank"
-                        rel="noopener"> App Store</a
-                    >
-                    <a
-                        href="https://play.google.com/store/apps/details?id=life.tulaa"
-                        target="_blank"
-                        rel="noopener">▶ Play Store</a
-                    >
-                </div>
+            <div style="max-width:920px;margin:0 auto;">
+                <DownloadCTA
+                    variant="footer"
+                    headline="Download the Tulaa App"
+                    subline="Your calm companion — yoga, meditation & journaling."
+                    showLogo={false}
+                />
             </div>
 
-            <p style="margin-top:10px;font-size:12px;color:var(--muted);">
+            <p
+                style="margin-top:10px;font-size:12px;color:var(--muted);text-align:center;"
+            >
                 © {new Date().getFullYear()} Tulaalife Wellness Private Limited
                 · All rights reserved.
             </p>
-            <div class="legal" aria-label="Legal and contact">
+            <div
+                class="legal"
+                aria-label="Legal and contact"
+                style="text-align:center;"
+            >
                 <a href="/legal/privacy">Privacy Policy</a>
                 <a href="/legal/terms">Terms of Use</a>
                 <a href="mailto:support@tulaa.life">Contact Us</a>
