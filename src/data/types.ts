@@ -27,7 +27,6 @@ export interface TipPreview {
     precaution?: string;
     category?: string;
     icon?: string;       // emoji or URL
-    source?: { name?: string; url?: string };
     deeplink: string;    // tulaa://tips/{slug}
     locale?: Locale;
 }

@@ -1,132 +1,183 @@
 ---
 import Site from "../layouts/Site.astro";
-const title = "Tulaa – Gentle wellness for every body";
+import OneUpCarousel from "../components/OneUpCarousel.astro";
+import FeatureTiles from "../components/FeatureTiles.astro";
+import { yogaPlans, guidedAudios, tips } from "../data/generated";
+import TipsScroller from "../components/TipsScroller.astro";
+import DownloadCTA from "../components/DownloadCTA.astro";
+
+const title = "Tulaa — Yoga, Meditation & Daily Wellness";
 const description =
-  "Yoga, meditation, journaling, rhythms and care — privacy-first, ad-free, offline-ready.";
+  "Expert-guided yoga & meditations — offline, ad-free, and privacy-first. Plus journaling, rhythms, and lightweight trackers.";
+const ogImage = "https://images.tulaa.life/og/home_hero.webp";
+
+/** Seeded (daily) shuffle: changes order once per day */
+function seededShuffle<T>(arr: readonly T[], seed: number): T[] {
+  const copy = Array.from(arr);
+  let x = seed || 1;
+  const rand = () => {
+    x ^= x << 13;
+    x ^= x >>> 17;
+    x ^= x << 5;
+    return (x >>> 0) / 0xffffffff;
+  };
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(rand() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+const daySeed = Number(
+  new Date().toISOString().slice(0, 10).replaceAll("-", ""),
+);
+
+// Prepare data for carousels (daily shuffled)
+// ⬇️ Use plan.subtitle (fallback to teaser if empty)
+const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
+  href: `/yoga/${p.slug}`,
+  title: p.title,
+  subtitle: p.subtitle || p.teaser || "",
+  image: p.image,
+}));
+
+const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
+  href: `/audio/${a.slug}`,
+  title: a.title,
+  subtitle: a.teaser,
+  image: a.image,
+}));
+
+// select 5 tips for today
+const tipFive = seededShuffle(tips, daySeed + 13)
+  .slice(0, 5)
+  .map((t) => ({
+    href: `/tips/${t.slug}`,
+    tip: t.tip,
+    benefit: t.benefit ?? "Short, sourced self-care tip",
+    icon: t.icon ?? "💡",
+  }));
+
+const hasYoga = yogaItems.length > 0;
+const hasAudio = audioItems.length > 0;
+const hasTips = tipFive.length > 0;
 ---
 
-<Site title={title} description={description} canonicalPath="/">
-  <main
-    class="wrap"
-    role="main"
-    aria-labelledby="brandName"
-    style="display:grid;place-items:center;min-height:100vh;"
-  >
-    <div>
-      <div
-        class="brand"
-        style="display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:6px;"
-      >
-        <img
-          src="https://images.tulaa.life/logo.webp"
-          alt="Tulaa logo"
-          width="56"
-          height="56"
-          style="border-radius:12px;"
-        />
-        <h1
-          id="brandName"
-          class="title"
-          style="font-size:clamp(22px,3.6vw,34px);margin:0;letter-spacing:.2px;"
-        >
-          Tulaa
-        </h1>
-      </div>
+<Site
+  title={title}
+  description={description}
+  canonicalPath="/"
+  ogImage={ogImage}
+>
+  <!-- Hero -->
+  <!-- Hero -->
+  <section role="banner" aria-labelledby="hero-title" class="hero">
+    <DownloadCTA
+      variant="hero"
+      headline="Tulaa"
+      subline="Expert-guided yoga & meditation — offline, ad-free, privacy-first."
+      showLogo={true}
+    />
+  </section>
 
-      <p
-        class="lede"
-        style="margin:6px 0 0;font-size:clamp(16px,2.1vw,18px);color:var(--muted);line-height:1.6;"
-      >
-        Find Your Inner Balance
-      </p>
+  {
+    hasYoga && (
+      <OneUpCarousel
+        title="Yoga Plans"
+        subtitle="Expert-guided sequences for everyday needs"
+        items={yogaItems}
+        ctaHref="/yoga"
+        ctaLabel="Explore yoga"
+        intervalMs={5200}
+      />
+    )
+  }
 
-      <div
-        class="chips"
-        aria-label="Trust badges"
-        style="display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin:18px 0 8px;"
-      >
-        <span
-          class="chip"
-          style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
-          >🛡️ Privacy-first</span
-        >
-        <span
-          class="chip"
-          style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
-          >🙅 Ad-free</span
-        >
-        <span
-          class="chip"
-          style="padding:10px 14px;border-radius:999px;border:1px solid var(--ring);"
-          >📴 Offline-ready</span
-        >
-      </div>
+  {
+    hasAudio && (
+      <OneUpCarousel
+        title="Guided Audios"
+        subtitle="Gentle voice sessions for calm, focus & rest"
+        items={audioItems}
+        ctaHref="/audio"
+        ctaLabel="Explore audios"
+        intervalMs={5200}
+      />
+    )
+  }
 
-      <div
-        class="soon"
-        aria-live="polite"
-        style="margin:16px 0 10px;font-size:clamp(22px,4.6vw,36px);font-weight:700;letter-spacing:.2px;"
-      >
-        Launching soon
-      </div>
+  {
+    hasTips && (
+      <TipsScroller
+        title="Wellness Tips"
+        subtitle="Short, sourced insights for daily care"
+        items={tipFive}
+        intervalMs={5200}
+      />
+    )
+  }
 
-      <section
-        class="featureCard"
-        aria-labelledby="featureList"
-        style="margin:14px auto 8px;text-align:left;background:transparent;border:1px dashed var(--ring);border-radius:16px;padding:14px 16px;max-width:680px;"
-      >
-        <h2
-          id="featureList"
-          class="featureTitle"
-          style="margin:0 0 8px;font-size:16px;color:var(--muted);"
-        >
-          What’s inside
-        </h2>
-        <ul
-          class="features"
-          style="margin:0;padding-left:18px;line-height:1.7;"
-        >
-          <li>Guided Yoga sessions</li>
-          <li>Guided meditation and relaxation</li>
-          <li>Water tracking</li>
-          <li>Period Tracking</li>
-          <li>Moments (privacy-first journaling)</li>
-          <li>Rhythm (healthy habit builder with reminders)</li>
-          <li>Health tips</li>
-        </ul>
-      </section>
-
-      <div
-        class="ctaRow"
-        aria-label="Legal links"
-        style="margin:18px 0 6px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;"
-      >
-        <a
-          class="cta primary"
-          href="/legal/privacy"
-          style="display:inline-block;padding:14px 18px;border-radius:14px;text-decoration:none;border:1px solid var(--ring);font-weight:600;background:var(--btn);color:var(--btnText);border-color:transparent;"
-          >Read Privacy Policy</a
-        >
-        <a
-          class="cta secondary"
-          href="/legal/terms"
-          style="display:inline-block;padding:14px 18px;border-radius:14px;text-decoration:none;border:1px solid var(--ring);font-weight:600;background:transparent;color:var(--fg);"
-          >Read Terms of Use</a
-        >
-      </div>
-
-      <footer style="margin-top:10px;font-size:12px;color:var(--muted);">
-        © <span id="y"></span> Tulaa • Bengaluru, India · <a
-          href="mailto:support@tulaa.life">support@tulaa.life</a
-        >
-      </footer>
-    </div>
-  </main>
-
-  <noscript
-    >This site looks nicer with JavaScript, but everything works without it.</noscript
-  >
-  <script is:inline>
-    document.getElementById("y").textContent = new Date().getFullYear();
-  </script>
+  <FeatureTiles
+    tiles={[
+      {
+        emoji: "💧",
+        title: "Water tracking",
+        subtitle: "Lightweight, private hydration log",
+      },
+      {
+        emoji: "🩸",
+        title: "Period tracking",
+        subtitle: "Simple cycle logs with insights",
+      },
+      {
+        emoji: "📝",
+        title: "Moments (journaling)",
+        subtitle: "Mood check-ins & gratitude",
+      },
+      {
+        emoji: "⏰",
+        title: "Rhythms",
+        subtitle: "Gentle, customizable habit reminders",
+      },
+    ]}
+  />
 </Site>
+
+<style>
+  .hero {
+    text-align: center;
+    margin: 8px auto 10px;
+  }
+  .hero__title {
+    margin: 0.2rem 0;
+    font-size: clamp(24px, 4.2vw, 40px);
+  }
+  .hero__subtitle {
+    margin: 8px 0 0;
+    font-size: clamp(15px, 2.1vw, 18px);
+    color: var(--muted);
+  }
+  .hero__ctaRow {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 14px 0 0;
+  }
+  .btn {
+    display: inline-block;
+    padding: 12px 16px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .btn--solid {
+    background: var(--btn);
+    color: var(--btnText);
+  }
+  .btn--ghost {
+    border: 1px solid var(--ring);
+    color: var(--fg);
+    background: transparent;
+  }
+</style>

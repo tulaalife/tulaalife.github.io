@@ -1,0 +1,80 @@
+---
+// src/pages/yoga/[slug].astro
+import Site from "../../layouts/Site.astro";
+import { yogaPlans } from "../../data/generated";
+
+export async function getStaticPaths() {
+    // pre-generate one page per plan
+    return yogaPlans.map((p) => ({
+        params: { slug: p.slug },
+        props: { plan: p },
+    }));
+}
+
+const { plan } = Astro.props;
+const canonical = `/yoga/${plan.slug}`;
+---
+
+<Site
+    title={`${plan.title} · Yoga Plan · Tulaa`}
+    description={plan.teaser ||
+        plan.subtitle ||
+        "Gentle preview of this Tulaa yoga plan."}
+    canonicalPath={canonical}
+>
+    <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
+        <a href="/yoga" style="text-decoration:none;">← All Yoga Plans</a>
+
+        <header style="margin-top:12px;">
+            <h1 style="margin:6px 0 10px;">{plan.title}</h1>
+            {
+                plan.subtitle && (
+                    <p style="margin:0;color:var(--muted);">{plan.subtitle}</p>
+                )
+            }
+        </header>
+
+        <img
+            src={plan.image}
+            alt={plan.title}
+            width="1200"
+            height="630"
+            loading="eager"
+            style="width:100%;height:auto;border-radius:12px;margin:16px 0;"
+        />
+
+        {
+            plan.teaser && (
+                <p style="font-size:1.05rem;line-height:1.7;margin:12px 0 18px;">
+                    {plan.teaser}
+                </p>
+            )
+        }
+
+        {
+            plan.benefits && (
+                <div style="padding:12px;border:1px solid var(--ring);border-radius:12px;background:var(--bg-elev)">
+                    <strong>Benefits</strong>
+                    <p style="margin:6px 0 0;color:var(--muted)">
+                        {plan.benefits}
+                    </p>
+                </div>
+            )
+        }
+
+        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+            <a
+                href={plan.deeplink}
+                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
+            >
+                Open in Tulaa app
+            </a>
+            <a
+                href="/yoga"
+                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
+            >
+                Browse more plans
+            </a>
+        </div>
+    </main>
+</Site>

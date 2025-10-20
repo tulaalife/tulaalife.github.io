@@ -1,0 +1,397 @@
+---
+export interface Item {
+    href: string;
+    title: string;
+    subtitle?: string;
+    image?: string;
+    emojiFallback?: string;
+}
+export interface Props {
+    title: string;
+    subtitle?: string;
+    items: Item[];
+    ctaHref?: string;
+    ctaLabel?: string;
+    intervalMs?: number;
+}
+
+const {
+    title,
+    subtitle,
+    items = [],
+    ctaHref,
+    ctaLabel,
+    intervalMs = 5200,
+} = Astro.props;
+
+const hasCTA = Boolean(ctaHref && ctaLabel);
+---
+
+{
+    items.length > 0 && (
+        <section
+            class="oc-wrap"
+            data-interval={String(intervalMs)}
+            tabindex="0"
+            role="region"
+            aria-label={title}
+        >
+            <header class="oc-header">
+                <h2 class="oc-title">{title}</h2>
+                {subtitle && <p class="oc-subtitle">{subtitle}</p>}
+            </header>
+
+            <ul class="oc-track" role="list">
+                {items.map((it, idx) => (
+                    <li
+                        class="oc-slide"
+                        aria-hidden={idx === 0 ? "false" : "true"}
+                        data-active={idx === 0 ? "true" : "false"}
+                    >
+                        <a class="oc-card" href={it.href}>
+                            <div class="oc-media">
+                                {it.image ? (
+                                    <img
+                                        src={it.image}
+                                        alt={it.title}
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                ) : (
+                                    <div class="oc-emoji" aria-hidden="true">
+                                        {it.emojiFallback ?? "💡"}
+                                    </div>
+                                )}
+                            </div>
+                            <div class="oc-body">
+                                <h3 class="oc-h3">{it.title}</h3>
+                                {it.subtitle && (
+                                    <p class="oc-p">{it.subtitle}</p>
+                                )}
+                            </div>
+                        </a>
+                    </li>
+                ))}
+            </ul>
+
+            {hasCTA && (
+                <div class="oc-ctaRow">
+                    <a class="oc-cta" href={ctaHref!}>
+                        {ctaLabel} <span aria-hidden="true">↗</span>
+                    </a>
+                </div>
+            )}
+        </section>
+    )
+}
+
+<style>
+    .oc-wrap {
+        margin: 30px auto 24px;
+        padding: 20px 16px;
+        max-width: 880px;
+    }
+
+    .oc-header {
+        text-align: center;
+        margin: 0 0 12px;
+    }
+    .oc-title {
+        margin: 0 0 6px;
+        font-size: clamp(20px, 2.8vw, 24px);
+        letter-spacing: 0.2px;
+    }
+    .oc-subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(14px, 2.1vw, 16px);
+    }
+
+    /* Reserve space for the active slide */
+    .oc-track {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0;
+        position: relative;
+        height: var(--oc-h, auto);
+        min-height: clamp(320px, 42vw, 560px);
+    }
+
+    /* Smooth premium fade/shift */
+    .oc-slide {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        transform: translateY(8px) scale(0.99);
+        transition:
+            opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
+            transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
+        will-change: opacity, transform;
+        pointer-events: none;
+    }
+    .oc-slide[data-active="true"] {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        pointer-events: auto;
+    }
+
+    /* Premium card */
+    .oc-card {
+        --r: 18px;
+        width: min(100%, 860px);
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        padding: 14px;
+        border-radius: var(--r);
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--panel) 90%, transparent),
+                var(--panel)
+            ),
+            radial-gradient(
+                120% 120% at 0% 0%,
+                color-mix(in srgb, var(--fg) 6%, transparent),
+                transparent 60%
+            );
+        border: 1px solid color-mix(in srgb, var(--ring) 72%, transparent);
+        box-shadow:
+            0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
+            0 14px 36px color-mix(in srgb, var(--fg) 12%, transparent);
+        transition:
+            transform 0.25s ease,
+            box-shadow 0.25s ease,
+            border-color 0.25s ease;
+    }
+    .oc-card:hover {
+        transform: translateY(-2px);
+        box-shadow:
+            0 2px 0 color-mix(in srgb, var(--fg) 10%, transparent),
+            0 18px 42px color-mix(in srgb, var(--fg) 16%, transparent);
+    }
+    .oc-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        padding: 1px;
+        border-radius: calc(var(--r) + 1px);
+        background: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--fg) 12%, transparent),
+            color-mix(in srgb, var(--btn) 20%, transparent)
+        );
+        -webkit-mask:
+            linear-gradient(#000 0 0) content-box,
+            linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0.35;
+        pointer-events: none;
+    }
+
+    .oc-media {
+        aspect-ratio: 16/9;
+        width: 100%;
+        border-radius: 14px;
+        overflow: hidden;
+        position: relative;
+        background: color-mix(in srgb, var(--ring) 22%, transparent);
+    }
+    .oc-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        transform: scale(1.002);
+        transition:
+            transform 0.6s ease,
+            filter 0.6s ease;
+        will-change: transform, filter;
+    }
+    .oc-card:hover .oc-media img {
+        transform: scale(1.012);
+    }
+    .oc-media::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            180deg,
+            rgba(0, 0, 0, 0.02),
+            rgba(0, 0, 0, 0.06)
+        );
+        pointer-events: none;
+    }
+    .oc-emoji {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        font-size: 54px;
+    }
+
+    .oc-body {
+        padding: 2px 6px 8px;
+        text-align: center;
+    }
+    .oc-h3 {
+        margin: 2px 0 6px;
+        font-size: clamp(17px, 2.4vw, 19px);
+        letter-spacing: 0.2px;
+    }
+    .oc-p {
+        margin: 0;
+        color: var(--muted);
+        line-height: 1.35;
+        font-size: clamp(14px, 2.1vw, 16px);
+    }
+
+    /* CTA below card */
+    .oc-ctaRow {
+        display: flex;
+        justify-content: center;
+        margin-top: 16px;
+    }
+    @media (min-width: 640px) {
+        .oc-ctaRow {
+            margin-top: 18px;
+        } /* optional: tiny bump on larger screens */
+    }
+    .oc-cta {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 10px 16px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--fg);
+        background: color-mix(in srgb, var(--btn) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+        backdrop-filter: saturate(120%) blur(4px);
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.25s ease,
+            background 0.25s ease;
+    }
+    .oc-cta:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent);
+    }
+</style>
+
+<script>
+    (() => {
+        function boot(root) {
+            const track = root.querySelector(".oc-track");
+            const slides = Array.prototype.slice.call(
+                root.querySelectorAll(".oc-slide"),
+            );
+
+            const setActive = (el, active) => {
+                el.setAttribute("data-active", active ? "true" : "false");
+                el.setAttribute("aria-hidden", active ? "false" : "true");
+            };
+
+            function adjustHeight() {
+                if (!track) return;
+                const activeCard =
+                    root.querySelector(
+                        '.oc-slide[data-active="true"] .oc-card',
+                    ) || root.querySelector(".oc-card");
+                if (!activeCard) return;
+                const h = activeCard.getBoundingClientRect().height;
+                track.style.setProperty("--oc-h", h + "px");
+            }
+
+            // init
+            slides.forEach((el, i) => setActive(el, i === 0));
+            adjustHeight();
+
+            if (slides.length <= 1) {
+                const ro = new ResizeObserver(adjustHeight);
+                ro.observe(root);
+                window.addEventListener("resize", adjustHeight);
+                return;
+            }
+
+            // rotation
+            let idx = 0;
+            let timer;
+            const interval = Math.max(
+                2600,
+                Number(root.getAttribute("data-interval") || 5200),
+            );
+
+            function tick() {
+                const prev = slides[idx];
+                idx = (idx + 1) % slides.length;
+                const next = slides[idx];
+                setActive(prev, false);
+                setActive(next, true);
+                adjustHeight();
+            }
+
+            function start() {
+                stop();
+                timer = window.setInterval(tick, interval);
+            }
+            function stop() {
+                if (timer) {
+                    window.clearInterval(timer);
+                    timer = undefined;
+                }
+            }
+
+            setTimeout(start, 250);
+
+            // pause on hover/focus
+            root.addEventListener("mouseenter", stop);
+            root.addEventListener("mouseleave", start);
+            root.addEventListener("focusin", stop);
+            root.addEventListener("focusout", (e) => {
+                const nextTarget = e.relatedTarget;
+                if (!nextTarget || !root.contains(nextTarget)) start();
+            });
+
+            const ro2 = new ResizeObserver(adjustHeight);
+            ro2.observe(root);
+            window.addEventListener("resize", adjustHeight);
+
+            root.querySelectorAll(".oc-media img").forEach((img) => {
+                if (!img.complete)
+                    img.addEventListener("load", adjustHeight, { once: true });
+            });
+
+            window.addEventListener(
+                "pagehide",
+                () => {
+                    stop();
+                    ro2.disconnect();
+                },
+                { once: true },
+            );
+        }
+
+        function startAll() {
+            Array.prototype.slice
+                .call(document.querySelectorAll(".oc-wrap"))
+                .forEach(boot);
+        }
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", startAll, {
+                once: true,
+            });
+        } else {
+            startAll();
+        }
+    })();
+</script>
