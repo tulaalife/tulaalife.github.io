@@ -13,6 +13,7 @@ const TABLES = {
     audios: 'guided_audio_sessions',
     tips: 'health_tips',
 };
+const N_TIPS = 10; // expose only this many tips
 
 // Allow showing 'testing' items on non-production if you want.
 // e.g. PREVIEW_VISIBILITIES="public,testing"
@@ -39,6 +40,21 @@ const outBanner = (ts) => `// AUTO-GENERATED FILE. DO NOT EDIT.
 // This file is intentionally not committed.
 ${ts}
 `;
+
+// Deterministic daily shuffle so builds are stable within a day (UTC)
+const seededShuffle = (arr, seed) => {
+    const a = arr.slice();
+    let x = seed || 1;
+    const rand = () => {
+        x ^= x << 13; x ^= x >>> 17; x ^= x << 5;
+        return (x >>> 0) / 0xffffffff;
+    };
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(rand() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+};
 
 // ---- Supabase client (service key in CI only; never in browser)
 const { SUPABASE_URL, SUPABASE_SERVICE_KEY } = process.env;
@@ -109,27 +125,29 @@ async function loadAudios() {
 }
 
 async function loadTips() {
-    // No 'published' in health_tips; gate by slug presence
+    // No 'published' in health_tips; gate by slug presence.
+    // ❗ Do NOT select source_name/source_url to avoid leaking sources.
     const { data, error } = await sb
         .from(TABLES.tips)
-        .select('slug,tip,benefit,precaution,category,icon,source_name,source_url,updated_at')
+        .select('slug,tip,benefit,precaution,category,icon,updated_at')
         .not('slug', 'is', null)
         .order('slug', { ascending: true });
 
     if (error) throw error;
 
-    return (data ?? []).map((r) => ({
+    const all = (data ?? []).map((r) => ({
         slug: toAbs(r.slug),
         tip: toAbs(r.tip),
         benefit: toAbs(r.benefit),
         precaution: toAbs(r.precaution),
         category: toAbs(r.category),
         icon: toAbs(r.icon),
-        source: (r.source_name || r.source_url)
-            ? { name: toAbs(r.source_name), url: ensureHttps(toAbs(r.source_url)) }
-            : undefined,
         deeplink: `tulaa://tips/${toAbs(r.slug)}`,
     })).filter(t => t.slug && t.tip && t.benefit);
+
+    // Emit only N_TIPS, shuffled once per day (UTC)
+    const daySeed = Number(new Date().toISOString().slice(0, 10).replaceAll('-', ''));
+    return seededShuffle(all, daySeed).slice(0, N_TIPS);
 }
 
 // ---- Emit
@@ -154,7 +172,7 @@ ${toTsArray('tips', tips)}
     fs.writeFileSync(path.join(outDir, 'generated.ts'), outBanner(ts), 'utf8');
 
     console.log(
-        `[fetch-content] Wrote src/data/generated.ts with ${plans.length} plans, ${audios.length} audios, ${tips.length} tips.`
+        `[fetch-content] Wrote src/data/generated.ts with ${plans.length} plans, ${audios.length} audios, ${tips.length} tips (limited).`
     );
 }
 
