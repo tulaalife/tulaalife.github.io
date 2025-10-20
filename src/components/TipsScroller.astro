@@ -1,30 +1,18 @@
 ---
 export interface TipItem {
-    href: string;
     tip: string;
     benefit?: string;
     icon?: string; // emoji or URL
-    sourceName?: string; // optional source label
 }
+
 export interface Props {
     title: string;
     subtitle?: string;
     items: TipItem[]; // pass ~5 (works with >=1)
-    ctaHref?: string;
-    ctaLabel?: string;
     intervalMs?: number; // default 5200ms
 }
 
-const {
-    title,
-    subtitle,
-    items = [],
-    ctaHref,
-    ctaLabel,
-    intervalMs = 5200,
-} = Astro.props;
-
-const hasCTA = Boolean(ctaHref && ctaLabel);
+const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
 ---
 
 {
@@ -49,7 +37,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                             aria-hidden={idx === 0 ? "false" : "true"}
                             data-active={idx === 0 ? "true" : "false"}
                         >
-                            <a class="ts-card" href={t.href}>
+                            <div class="ts-card">
                                 <div class="ts-icon" aria-hidden="true">
                                     {t.icon?.startsWith("http") ? (
                                         <img
@@ -67,18 +55,11 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                                         <p class="ts-p">{t.benefit}</p>
                                     )}
                                 </div>
-                            </a>
+                            </div>
                         </li>
                     ))}
                 </ul>
             </div>
-            {hasCTA && (
-                <div class="ts-ctaBar">
-                    <a class="ts-ctaBtn" href={ctaHref!}>
-                        {ctaLabel} <span aria-hidden="true">↗</span>
-                    </a>
-                </div>
-            )}
         </section>
     )
 }
@@ -108,7 +89,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     .ts-panel {
         --r: 18px;
         margin-top: 14px;
-        padding: 14px; /* was 14px 14px 16px */
+        padding: 14px;
         border-radius: var(--r);
         background: linear-gradient(
                 180deg,
@@ -131,40 +112,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         margin: 0;
         height: var(--ts-h, auto);
         min-height: 132px;
-    } /* no extra bottom gap */
-
-    .ts-ctaBar {
-        display: flex;
-        justify-content: center;
-        margin-top: 14px; /* <-- space between card and CTA */
-    }
-    @media (min-width: 640px) {
-        .ts-ctaBar {
-            margin-top: 18px;
-        }
-    }
-    .ts-ctaBtn {
-        display: inline-flex;
-        gap: 8px;
-        align-items: center;
-        padding: 10px 16px;
-        border-radius: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        color: var(--fg);
-        background: color-mix(in srgb, var(--btn) 12%, transparent);
-        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
-        backdrop-filter: saturate(120%) blur(4px);
-        transition:
-            transform 0.2s ease,
-            box-shadow 0.25s ease,
-            background 0.25s ease;
-    }
-    .ts-ctaBtn:hover,
-    .ts-ctaBtn:focus-visible {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent);
-        outline: none;
+        position: relative;
     }
 
     .ts-slide {
@@ -194,11 +142,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         align-items: flex-start;
         width: min(100%, 860px);
         padding: 14px;
-        text-decoration: none;
-        color: inherit;
         border-radius: var(--r);
-        overflow: hidden;
-        position: relative;
         background: linear-gradient(
                 180deg,
                 color-mix(in srgb, var(--panel) 92%, transparent),
@@ -209,18 +153,9 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                 color-mix(in srgb, var(--fg) 5%, transparent),
                 transparent 60%
             );
-
         transition:
             transform 0.25s ease,
             box-shadow 0.25s ease;
-    }
-    .ts-card:hover,
-    .ts-card:focus-visible {
-        transform: translateY(-1px);
-        box-shadow:
-            0 2px 0 color-mix(in srgb, var(--fg) 8%, transparent),
-            0 16px 36px color-mix(in srgb, var(--fg) 14%, transparent);
-        outline: none;
     }
 
     .ts-icon {
@@ -253,145 +188,73 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         color: var(--muted);
         line-height: 1.35;
     }
-    .ts-source {
-        margin: 6px 0 0;
-        font-size: 0.86em;
-        color: var(--muted);
-    }
-
-    /* CTA: NOT full-width — mirrors .oc-cta */
-    .ts-ctaBar {
-        display: flex;
-        justify-content: center;
-    }
-    .ts-ctaBtn {
-        display: inline-flex;
-        gap: 8px;
-        align-items: center;
-        padding: 10px 16px;
-        border-radius: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        color: var(--fg);
-        background: color-mix(in srgb, var(--btn) 12%, transparent);
-        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
-        backdrop-filter: saturate(120%) blur(4px);
-        transition:
-            transform 0.2s ease,
-            box-shadow 0.25s ease,
-            background 0.25s ease;
-    }
-    .ts-ctaBtn:hover,
-    .ts-ctaBtn:focus-visible {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent);
-        outline: none;
-    }
 </style>
 
 <script>
-    // @ts-nocheck
     (() => {
         function boot(root) {
             const track = root.querySelector(".ts-track");
-            const slides = Array.prototype.slice.call(
-                root.querySelectorAll(".ts-slide"),
-            );
+            const slides = Array.from(root.querySelectorAll(".ts-slide"));
 
             const setActive = (el, active) => {
                 el.setAttribute("data-active", active ? "true" : "false");
                 el.setAttribute("aria-hidden", active ? "false" : "true");
             };
 
-            function adjustHeight() {
-                if (!track) return;
-                const active =
-                    root.querySelector(
-                        '.ts-slide[data-active="true"] .ts-card',
-                    ) || root.querySelector(".ts-card");
-                if (!active) return;
+            const adjustHeight = () => {
+                const active = root.querySelector(
+                    '.ts-slide[data-active="true"] .ts-card',
+                );
+                if (!active || !track) return;
                 track.style.setProperty(
                     "--ts-h",
                     active.getBoundingClientRect().height + "px",
                 );
-            }
+            };
 
             slides.forEach((el, i) => setActive(el, i === 0));
             adjustHeight();
 
-            if (slides.length <= 1) {
-                const ro = new ResizeObserver(adjustHeight);
-                ro.observe(root);
-                window.addEventListener("resize", adjustHeight);
-                return;
-            }
+            if (slides.length <= 1) return;
 
-            let idx = 0,
-                timer;
+            let idx = 0;
             const interval = Math.max(
                 2400,
                 Number(root.getAttribute("data-interval") || 5200),
             );
+            let timer;
 
-            function tick() {
+            const tick = () => {
                 const prev = slides[idx];
                 idx = (idx + 1) % slides.length;
                 const next = slides[idx];
                 setActive(prev, false);
                 setActive(next, true);
                 adjustHeight();
-            }
+            };
 
-            function start() {
+            const start = () => {
                 stop();
                 timer = setInterval(tick, interval);
-            }
-            function stop() {
-                if (timer) {
-                    clearInterval(timer);
-                    timer = undefined;
-                }
-            }
+            };
+            const stop = () => {
+                if (timer) clearInterval(timer);
+            };
 
             setTimeout(start, 200);
-
             root.addEventListener("mouseenter", stop);
             root.addEventListener("mouseleave", start);
-            root.addEventListener("focusin", stop);
-            root.addEventListener("focusout", (e) => {
-                const t = e.relatedTarget;
-                if (!t || !root.contains(t)) start();
-            });
-
-            const ro2 = new ResizeObserver(adjustHeight);
-            ro2.observe(root);
             window.addEventListener("resize", adjustHeight);
-
-            root.querySelectorAll(".ts-icon img").forEach((img) => {
-                if (!img.complete)
-                    img.addEventListener("load", adjustHeight, { once: true });
-            });
-
-            window.addEventListener(
-                "pagehide",
-                () => {
-                    stop();
-                    ro2.disconnect();
-                },
-                { once: true },
-            );
         }
 
         function startAll() {
             Array.from(document.querySelectorAll(".ts-wrap")).forEach(boot);
         }
 
-        if (document.readyState === "loading") {
+        if (document.readyState === "loading")
             document.addEventListener("DOMContentLoaded", startAll, {
                 once: true,
             });
-        } else {
-            startAll();
-        }
+        else startAll();
     })();
 </script>
