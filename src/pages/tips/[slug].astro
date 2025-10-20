@@ -28,13 +28,6 @@ const canonical = `/tips/${tip.slug}`;
                 {tip.icon && <span>{tip.icon}</span>}
                 <span>{tip.tip}</span>
             </h1>
-            {
-                tip.category && (
-                    <p style="margin:0;color:var(--muted);">
-                        Category: {tip.category}
-                    </p>
-                )
-            }
         </header>
 
         <p style="margin-top:16px;font-size:1.05rem;line-height:1.7;">
@@ -48,18 +41,6 @@ const canonical = `/tips/${tip.slug}`;
                 </p>
             )
         }
-
-        {
-            tip.source?.url && (
-                <p style="margin-top:16px;font-size:0.9rem;">
-                    <strong>Source:</strong>{" "}
-                    <a href={tip.source.url} target="_blank">
-                        {tip.source.name || tip.source.url}
-                    </a>
-                </p>
-            )
-        }
-
         <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
             <a
                 href={tip.deeplink}
