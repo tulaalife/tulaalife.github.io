@@ -39,43 +39,52 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
             <header class="ts-header">
                 <h2 class="ts-title">{title}</h2>
                 {subtitle && <p class="ts-subtitle">{subtitle}</p>}
-                {hasCTA && (
-                    <a class="ts-cta" href={ctaHref!}>
-                        {ctaLabel} <span aria-hidden="true">↗</span>
-                    </a>
-                )}
             </header>
 
-            <ul class="ts-track" role="list">
-                {items.map((t, idx) => (
-                    <li
-                        class="ts-slide"
-                        aria-hidden={idx === 0 ? "false" : "true"}
-                        data-active={idx === 0 ? "true" : "false"}
-                    >
-                        <a class="ts-card" href={t.href}>
-                            <div class="ts-icon">
-                                {t.icon?.startsWith("http") ? (
-                                    <img src={t.icon} alt="" loading="lazy" />
-                                ) : (
-                                    <span aria-hidden="true">
-                                        {t.icon ?? "💡"}
-                                    </span>
-                                )}
-                            </div>
-                            <div class="ts-body">
-                                <h3 class="ts-h3">{t.tip}</h3>
-                                {t.benefit && <p class="ts-p">{t.benefit}</p>}
-                                {t.sourceName && (
-                                    <p class="ts-source">
-                                        Source: {t.sourceName}
-                                    </p>
-                                )}
-                            </div>
+            <div class="ts-panel" aria-live="polite">
+                <ul class="ts-track" role="list">
+                    {items.map((t, idx) => (
+                        <li
+                            class="ts-slide"
+                            aria-hidden={idx === 0 ? "false" : "true"}
+                            data-active={idx === 0 ? "true" : "false"}
+                        >
+                            <a class="ts-card" href={t.href}>
+                                <div class="ts-icon" aria-hidden="true">
+                                    {t.icon?.startsWith("http") ? (
+                                        <img
+                                            src={t.icon}
+                                            alt=""
+                                            loading="lazy"
+                                        />
+                                    ) : (
+                                        <span>{t.icon ?? "💡"}</span>
+                                    )}
+                                </div>
+                                <div class="ts-body">
+                                    <h3 class="ts-h3">{t.tip}</h3>
+                                    {t.benefit && (
+                                        <p class="ts-p">{t.benefit}</p>
+                                    )}
+                                    {t.sourceName && (
+                                        <p class="ts-source">
+                                            Source: {t.sourceName}
+                                        </p>
+                                    )}
+                                </div>
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+
+                {hasCTA && (
+                    <div class="ts-ctaBar">
+                        <a class="ts-ctaBtn" href={ctaHref!}>
+                            {ctaLabel} <span aria-hidden="true">↗</span>
                         </a>
-                    </li>
-                ))}
-            </ul>
+                    </div>
+                )}
+            </div>
         </section>
     )
 }
@@ -83,9 +92,10 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
 <style>
     .ts-wrap {
         margin: 28px auto 22px;
-        padding: 20px 16px;
+        padding: 8px 16px 20px;
         max-width: 880px;
     }
+
     .ts-header {
         text-align: center;
         margin: 0 0 14px;
@@ -93,46 +103,46 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     .ts-title {
         margin: 0 0 6px;
         font-size: clamp(18px, 2.6vw, 22px);
+        letter-spacing: 0.2px;
     }
     .ts-subtitle {
-        margin: 0 0 10px;
+        margin: 0;
         color: var(--muted);
         font-size: clamp(14px, 2.1vw, 16px);
     }
 
-    .ts-cta {
-        display: inline-flex;
-        gap: 8px;
-        align-items: center;
-        padding: 9px 14px;
-        border-radius: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        color: var(--fg);
-        background: color-mix(in srgb, var(--btn) 12%, transparent);
-        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
-        backdrop-filter: saturate(120%) blur(4px);
-        transition:
-            transform 0.2s ease,
-            box-shadow 0.25s ease,
-            background 0.25s ease;
-    }
-    .ts-cta:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent);
+    .ts-panel {
+        --r: 18px;
+        margin-top: 14px;
+        padding: 14px 14px 16px;
+        border-radius: var(--r);
+        background: linear-gradient(
+                180deg,
+                color-mix(in srgb, var(--panel) 88%, transparent),
+                var(--panel)
+            ),
+            radial-gradient(
+                120% 120% at 0% 0%,
+                color-mix(in srgb, var(--fg) 6%, transparent),
+                transparent 60%
+            );
+        border: 1px solid color-mix(in srgb, var(--ring) 72%, transparent);
+        box-shadow:
+            0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
+            0 12px 28px color-mix(in srgb, var(--fg) 10%, transparent);
+        backdrop-filter: saturate(120%) blur(3px);
     }
 
-    /* Reserve space for active tip */
+    /* Reserve height for active tip + give breathing room above CTA */
     .ts-track {
         list-style: none;
         padding: 0;
-        margin: 0;
+        margin: 0 0 10px;
         position: relative;
         height: var(--ts-h, auto);
         min-height: 132px;
     }
 
-    /* Smooth “premium” transition */
     .ts-slide {
         position: absolute;
         inset: 0;
@@ -167,27 +177,29 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         position: relative;
         background: linear-gradient(
                 180deg,
-                color-mix(in srgb, var(--panel) 90%, transparent),
+                color-mix(in srgb, var(--panel) 92%, transparent),
                 var(--panel)
             ),
             radial-gradient(
-                120% 120% at 0% 0%,
-                color-mix(in srgb, var(--fg) 6%, transparent),
+                120% 120% at 100% 0%,
+                color-mix(in srgb, var(--fg) 5%, transparent),
                 transparent 60%
             );
         border: 1px solid color-mix(in srgb, var(--ring) 72%, transparent);
         box-shadow:
             0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
-            0 12px 28px color-mix(in srgb, var(--fg) 10%, transparent);
+            0 10px 20px color-mix(in srgb, var(--fg) 8%, transparent);
         transition:
             transform 0.25s ease,
             box-shadow 0.25s ease;
     }
-    .ts-card:hover {
-        transform: translateY(-2px);
+    .ts-card:hover,
+    .ts-card:focus-visible {
+        transform: translateY(-1px);
         box-shadow:
             0 2px 0 color-mix(in srgb, var(--fg) 8%, transparent),
             0 16px 36px color-mix(in srgb, var(--fg) 14%, transparent);
+        outline: none;
     }
 
     .ts-icon {
@@ -225,6 +237,35 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         font-size: 0.86em;
         color: var(--muted);
     }
+
+    /* CTA: NOT full-width — mirrors .oc-cta */
+    .ts-ctaBar {
+        display: flex;
+        justify-content: center;
+    }
+    .ts-ctaBtn {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 10px 16px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--fg);
+        background: color-mix(in srgb, var(--btn) 12%, transparent);
+        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+        backdrop-filter: saturate(120%) blur(4px);
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.25s ease,
+            background 0.25s ease;
+    }
+    .ts-ctaBtn:hover,
+    .ts-ctaBtn:focus-visible {
+        transform: translateY(-1px);
+        box-shadow: 0 8px 22px color-mix(in srgb, var(--fg) 14%, transparent);
+        outline: none;
+    }
 </style>
 
 <script>
@@ -248,11 +289,12 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                         '.ts-slide[data-active="true"] .ts-card',
                     ) || root.querySelector(".ts-card");
                 if (!active) return;
-                const h = active.getBoundingClientRect().height;
-                track.style.setProperty("--ts-h", h + "px");
+                track.style.setProperty(
+                    "--ts-h",
+                    active.getBoundingClientRect().height + "px",
+                );
             }
 
-            // init first slide + height
             slides.forEach((el, i) => setActive(el, i === 0));
             adjustHeight();
 
@@ -263,9 +305,8 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                 return;
             }
 
-            // rotation
-            let idx = 0;
-            let timer;
+            let idx = 0,
+                timer;
             const interval = Math.max(
                 2400,
                 Number(root.getAttribute("data-interval") || 5200),
@@ -282,32 +323,29 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
 
             function start() {
                 stop();
-                timer = window.setInterval(tick, interval);
+                timer = setInterval(tick, interval);
             }
             function stop() {
                 if (timer) {
-                    window.clearInterval(timer);
+                    clearInterval(timer);
                     timer = undefined;
                 }
             }
 
             setTimeout(start, 200);
 
-            // pause/resume on intent
             root.addEventListener("mouseenter", stop);
             root.addEventListener("mouseleave", start);
             root.addEventListener("focusin", stop);
             root.addEventListener("focusout", (e) => {
-                const nextTarget = e.relatedTarget;
-                if (!nextTarget || !root.contains(nextTarget)) start();
+                const t = e.relatedTarget;
+                if (!t || !root.contains(t)) start();
             });
 
-            // keep height in sync
             const ro2 = new ResizeObserver(adjustHeight);
             ro2.observe(root);
             window.addEventListener("resize", adjustHeight);
 
-            // icons might load (when URL icon used)
             root.querySelectorAll(".ts-icon img").forEach((img) => {
                 if (!img.complete)
                     img.addEventListener("load", adjustHeight, { once: true });
@@ -324,9 +362,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         }
 
         function startAll() {
-            Array.prototype.slice
-                .call(document.querySelectorAll(".ts-wrap"))
-                .forEach(boot);
+            Array.from(document.querySelectorAll(".ts-wrap")).forEach(boot);
         }
 
         if (document.readyState === "loading") {
