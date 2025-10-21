@@ -6,6 +6,7 @@ interface Props {
     description?: string;
     canonicalPath?: string; // e.g. "/" or "/legal/privacy"
     ogImage?: string;
+    hideFooter?: boolean;
 }
 
 const {
@@ -13,6 +14,7 @@ const {
     description = "Yoga, meditation, journaling, rhythms and care — privacy-first, ad-free, offline-ready.",
     canonicalPath = "/",
     ogImage = "https://images.tulaa.life/logo.webp",
+    hideFooter = false,
 } = Astro.props;
 
 const site = "https://tulaalife.com";
@@ -291,31 +293,33 @@ const url = new URL(canonicalPath, site).toString();
             <slot />
         </main>
 
-        <footer>
-            <div style="max-width:920px;margin:0 auto;">
-                <DownloadCTA
-                    variant="footer"
-                    headline="Download the Tulaa App"
-                    subline="Your calm companion — yoga, meditation & journaling."
-                    showLogo={false}
-                />
-            </div>
+        {
+            !hideFooter /* 👈 Only show when not hidden */ && (
+                <footer>
+                    <div style="max-width:920px;margin:0 auto;">
+                        <DownloadCTA
+                            variant="footer"
+                            headline="Download the Tulaa App"
+                            subline="Your calm companion — yoga, meditation & journaling."
+                            showLogo={false}
+                        />
+                    </div>
 
-            <p
-                style="margin-top:10px;font-size:12px;color:var(--muted);text-align:center;"
-            >
-                © {new Date().getFullYear()} Tulaalife Wellness Private Limited
-                · All rights reserved.
-            </p>
-            <div
-                class="legal"
-                aria-label="Legal and contact"
-                style="text-align:center;"
-            >
-                <a href="/legal/privacy">Privacy Policy</a>
-                <a href="/legal/terms">Terms of Use</a>
-                <a href="mailto:contact@tulaalife.com">Contact Us</a>
-            </div>
-        </footer>
+                    <p style="margin-top:10px;font-size:12px;color:var(--muted);text-align:center;">
+                        © {new Date().getFullYear()} Tulaalife Wellness Private
+                        Limited · All rights reserved.
+                    </p>
+                    <div
+                        class="legal"
+                        aria-label="Legal and contact"
+                        style="text-align:center;"
+                    >
+                        <a href="/legal/privacy">Privacy Policy</a>
+                        <a href="/legal/terms">Terms of Use</a>
+                        <a href="mailto:contact@tulaalife.com">Contact Us</a>
+                    </div>
+                </footer>
+            )
+        }
     </body>
 </html>
