@@ -1,0 +1,14 @@
+[
+    {
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "life.tulaa",
+            "sha256_cert_fingerprints": [
+                "5A:BD:E7:D3:C4:7B:FD:EC:BC:AE:49:99:25:CC:3C:15:3B:E0:00:7C:81:9A:A3:82:44:8E:3B:D1:28:59:FF:D9"
+            ]
+        }
+    }
+]
