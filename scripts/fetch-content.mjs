@@ -13,19 +13,15 @@ const TABLES = {
     audios: 'guided_audio_sessions',
     tips: 'health_tips',
 };
-const N_TIPS = 10; // expose only this many tips
+const N_TIPS = 10; // homepage slice size
 
-// Allow showing 'testing' items on non-production if you want.
-// e.g. PREVIEW_VISIBILITIES="public,testing"
 const { PREVIEW_VISIBILITIES = 'public' } = process.env;
 const ALLOWED_VIS = PREVIEW_VISIBILITIES.split(',').map(s => s.trim()).filter(Boolean);
 
 // ---- Helpers
 const teaser = (s, max = 160) => {
     if (!s) return '';
-    const t = String(s).replace(/<[^>]*>/g, ' ') // strip HTML if any
-        .replace(/\s+/g, ' ')
-        .trim();
+    const t = String(s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
     if (t.length <= max) return t;
     const cut = t.slice(0, max + 1);
     const idx = cut.lastIndexOf(' ');
@@ -66,7 +62,6 @@ const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, { auth: { persistSes
 
 // ---- Loads
 async function loadPlans() {
-    // visibility exists on plans table (enum tulaa_visibility)
     const { data, error } = await sb
         .from(TABLES.plans)
         .select('slug,title,subtitle,description,insights,image_url,visibility')
@@ -77,20 +72,15 @@ async function loadPlans() {
     if (error) throw error;
 
     return (data ?? []).map((r) => {
-        // insights is jsonb array; coerce to a short bullet-like line
         let benefits = '';
         try {
             if (Array.isArray(r.insights)) {
-                // items may be strings or objects; pick text/value/title sensibly
                 const parts = r.insights.map((it) =>
-                    typeof it === 'string'
-                        ? it
-                        : (it?.text ?? it?.title ?? it?.value ?? '')
+                    typeof it === 'string' ? it : (it?.text ?? it?.title ?? it?.value ?? '')
                 ).filter(Boolean);
                 benefits = parts.join(' · ').slice(0, 240);
             }
-        } catch (_) { }
-
+        } catch { }
         return {
             slug: toAbs(r.slug),
             title: toAbs(r.title),
@@ -99,13 +89,11 @@ async function loadPlans() {
             benefits,
             image: ensureHttps(toAbs(r.image_url)),
             deeplink: `tulaa://yoga/${toAbs(r.slug)}`,
-            // locale intentionally omitted (column not present in schema provided)
         };
     }).filter(p => p.slug && p.image);
 }
 
 async function loadAudios() {
-    // No 'published' or 'visibility' in provided DDL; use conservative gates
     const { data, error } = await sb
         .from(TABLES.audios)
         .select('slug,title,description,image_url,updated_at')
@@ -124,9 +112,8 @@ async function loadAudios() {
     })).filter(a => a.slug && a.image);
 }
 
-async function loadTips() {
-    // No 'published' in health_tips; gate by slug presence.
-    // ❗ Do NOT select source_name/source_url to avoid leaking sources.
+// ✅ New: return ALL tips (no slicing here)
+async function loadAllTips() {
     const { data, error } = await sb
         .from(TABLES.tips)
         .select('slug,tip,benefit,precaution,category,icon,updated_at')
@@ -135,7 +122,7 @@ async function loadTips() {
 
     if (error) throw error;
 
-    const all = (data ?? []).map((r) => ({
+    return (data ?? []).map((r) => ({
         slug: toAbs(r.slug),
         tip: toAbs(r.tip),
         benefit: toAbs(r.benefit),
@@ -144,27 +131,31 @@ async function loadTips() {
         icon: toAbs(r.icon),
         deeplink: `tulaa://tips/${toAbs(r.slug)}`,
     })).filter(t => t.slug && t.tip && t.benefit);
-
-    // Emit only N_TIPS, shuffled once per day (UTC)
-    const daySeed = Number(new Date().toISOString().slice(0, 10).replaceAll('-', ''));
-    return seededShuffle(all, daySeed).slice(0, N_TIPS);
 }
 
 // ---- Emit
 function toTsArray(varName, arr) {
-    // Keep valid JSON; TS accepts quoted keys.
     const json = JSON.stringify(arr, null, 2);
     return `export const ${varName} = ${json} as const;`;
 }
 
 async function run() {
-    const [plans, audios, tips] = await Promise.all([loadPlans(), loadAudios(), loadTips()]);
+    const [plans, audios, tipsAll] = await Promise.all([
+        loadPlans(),
+        loadAudios(),
+        loadAllTips(),
+    ]);
+
+    // homepage selection stays limited & daily-shuffled
+    const daySeed = Number(new Date().toISOString().slice(0, 10).replaceAll('-', ''));
+    const tips = seededShuffle(tipsAll, daySeed).slice(0, N_TIPS);
 
     const ts = `import type { YogaPlanPreview, GuidedAudioPreview, TipPreview } from './types';
 
 ${toTsArray('yogaPlans', plans)}
 ${toTsArray('guidedAudios', audios)}
-${toTsArray('tips', tips)}
+${toTsArray('tips', tips)}           // homepage: limited
+${toTsArray('allTips', tipsAll)}     // detail pages: FULL set
 `;
 
     const outDir = path.join(__dirname, '..', 'src', 'data');
@@ -172,7 +163,7 @@ ${toTsArray('tips', tips)}
     fs.writeFileSync(path.join(outDir, 'generated.ts'), outBanner(ts), 'utf8');
 
     console.log(
-        `[fetch-content] Wrote src/data/generated.ts with ${plans.length} plans, ${audios.length} audios, ${tips.length} tips (limited).`
+        `[fetch-content] Wrote src/data/generated.ts with ${plans.length} plans, ${audios.length} audios, ${tips.length} tips (home) & ${tipsAll.length} tips (all).`
     );
 }
 

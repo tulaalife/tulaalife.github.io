@@ -108,12 +108,19 @@ const hasTips = tipFive.length > 0;
 
   {
     hasTips && (
-      <TipsScroller
-        title="Wellness Tips"
-        subtitle="Short, sourced insights for daily care"
-        items={tipFive}
-        intervalMs={5200}
-      />
+      <>
+        <TipsScroller
+          title="Wellness Tips"
+          subtitle="Short, sourced insights for daily care"
+          items={tipFive}
+          intervalMs={5200}
+        />
+        <div style="text-align:center;margin-top:12px;">
+          <a href="/tips" class="btn btn--solid" style="display:inline-block;">
+            Explore tips
+          </a>
+        </div>
+      </>
     )
   }
 
