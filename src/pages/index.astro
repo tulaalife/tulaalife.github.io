@@ -32,23 +32,19 @@ const daySeed = Number(
   new Date().toISOString().slice(0, 10).replaceAll("-", ""),
 );
 
-// Prepare data for carousels (daily shuffled)
-// ⬇️ Use plan.subtitle (fallback to teaser if empty)
+// Data (daily shuffle)
 const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
   href: `/yoga/${p.slug}`,
   title: p.title,
   subtitle: p.subtitle || p.teaser || "",
   image: p.image,
 }));
-
 const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
   href: `/audio/${a.slug}`,
   title: a.title,
   subtitle: a.teaser,
   image: a.image,
 }));
-
-// select 5 tips for today
 const tipFive = seededShuffle(tips, daySeed + 13)
   .slice(0, 5)
   .map((t) => ({
@@ -69,9 +65,9 @@ const hasTips = tipFive.length > 0;
   canonicalPath="/"
   ogImage={ogImage}
 >
-  <!-- Hero -->
-  <!-- Hero -->
-  <section role="banner" aria-labelledby="hero-title" class="hero">
+  <!-- HERO -->
+  <section role="banner" aria-labelledby="hero-title" class="hero reveal">
+    <div class="hero__ambient" aria-hidden="true"></div>
     <DownloadCTA
       variant="hero"
       headline="Tulaa"
@@ -82,109 +78,179 @@ const hasTips = tipFive.length > 0;
 
   {
     hasYoga && (
-      <OneUpCarousel
-        title="Yoga Plans"
-        subtitle="Expert-guided sequences for everyday needs"
-        items={yogaItems}
-        ctaHref="/yoga"
-        ctaLabel="Explore yoga"
-        intervalMs={5200}
-      />
+      <section class="section reveal">
+        <OneUpCarousel
+          title="Yoga Plans"
+          subtitle="Expert-guided sequences for everyday needs"
+          items={yogaItems}
+          ctaHref="/yoga"
+          ctaLabel="Explore yoga"
+          intervalMs={5200}
+        />
+      </section>
     )
   }
 
   {
     hasAudio && (
-      <OneUpCarousel
-        title="Guided Audios"
-        subtitle="Gentle voice sessions for calm, focus & rest"
-        items={audioItems}
-        ctaHref="/audio"
-        ctaLabel="Explore audios"
-        intervalMs={5200}
-      />
+      <section class="section reveal">
+        <OneUpCarousel
+          title="Guided Audios"
+          subtitle="Gentle voice sessions for calm, focus & rest"
+          items={audioItems}
+          ctaHref="/audio"
+          ctaLabel="Explore audios"
+          intervalMs={5200}
+        />
+      </section>
     )
   }
 
   {
     hasTips && (
-      <>
+      <section class="section reveal">
         <TipsScroller
           title="Wellness Tips"
           subtitle="Short, sourced insights for daily care"
           items={tipFive}
           intervalMs={5200}
         />
-        <div style="text-align:center;margin-top:12px;">
-          <a href="/tips" class="btn btn--solid" style="display:inline-block;">
+        <div class="ctaRow">
+          <a href="/tips" class="btn btn--solid">
             Explore tips
           </a>
         </div>
-      </>
+      </section>
     )
   }
 
-  <FeatureTiles
-    tiles={[
-      {
-        emoji: "💧",
-        title: "Water tracking",
-        subtitle: "Lightweight, private hydration log",
-      },
-      {
-        emoji: "🩸",
-        title: "Period tracking",
-        subtitle: "Simple cycle logs with insights",
-      },
-      {
-        emoji: "📝",
-        title: "Moments (journaling)",
-        subtitle: "Mood check-ins & gratitude",
-      },
-      {
-        emoji: "⏰",
-        title: "Rhythms",
-        subtitle: "Gentle, customizable habit reminders",
-      },
-    ]}
-  />
+  <section class="section reveal">
+    <FeatureTiles
+      tiles={[
+        {
+          emoji: "💧",
+          title: "Water tracking",
+          subtitle: "Lightweight, private hydration log",
+        },
+        {
+          emoji: "🩸",
+          title: "Period tracking",
+          subtitle: "Simple cycle logs with insights",
+        },
+        {
+          emoji: "📝",
+          title: "Moments (journaling)",
+          subtitle: "Mood check-ins & gratitude",
+        },
+        {
+          emoji: "⏰",
+          title: "Rhythms",
+          subtitle: "Gentle, customizable habit reminders",
+        },
+      ]}
+    />
+  </section>
 </Site>
 
 <style>
-  .hero {
+  /* Layout helpers match tokens from layout */
+  :root {
+    --wrap: min(100%, calc(var(--container) + 0px));
+  }
+
+  .section {
+    margin: 32px auto;
+    width: var(--wrap);
+  }
+  .ctaRow {
     text-align: center;
-    margin: 8px auto 10px;
+    margin-top: 12px;
   }
-  .hero__title {
-    margin: 0.2rem 0;
-    font-size: clamp(24px, 4.2vw, 40px);
+
+  /* Premium hero with soft ambient glow */
+  .hero {
+    position: relative;
+    margin: 6px auto 6px;
+    width: var(--wrap);
+    isolation: isolate;
   }
-  .hero__subtitle {
-    margin: 8px 0 0;
-    font-size: clamp(15px, 2.1vw, 18px);
-    color: var(--muted);
+  .hero__ambient {
+    position: absolute;
+    inset: -24px;
+    border-radius: 28px;
+    filter: blur(28px);
+    z-index: -1;
+    background: radial-gradient(
+        600px 380px at 20% 10%,
+        color-mix(in oklch, var(--accent), white 65%),
+        transparent 60%
+      ),
+      radial-gradient(
+        600px 420px at 85% 20%,
+        color-mix(in oklch, var(--bg2), var(--accent) 20%),
+        transparent 62%
+      ),
+      linear-gradient(
+        180deg,
+        transparent,
+        color-mix(in oklch, var(--bg1), white 6%)
+      );
+    opacity: 0.7;
   }
-  .hero__ctaRow {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 14px 0 0;
-  }
+
+  /* Buttons */
   .btn {
     display: inline-block;
     padding: 12px 16px;
-    border-radius: 12px;
+    border-radius: 999px;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      opacity 0.18s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
   }
   .btn--solid {
     background: var(--btn);
     color: var(--btnText);
   }
-  .btn--ghost {
-    border: 1px solid var(--ring);
-    color: var(--fg);
-    background: transparent;
+  .btn--solid:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  }
+  .btn--solid:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Reveal animation (respects reduced-motion) */
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: float-up 0.6s ease-out both;
+  }
+  .reveal:nth-of-type(2) {
+    animation-delay: 0.04s;
+  }
+  .reveal:nth-of-type(3) {
+    animation-delay: 0.08s;
+  }
+  .reveal:nth-of-type(4) {
+    animation-delay: 0.12s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes float-up {
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 </style>

@@ -7,7 +7,6 @@ export interface Props {
     variant?: "hero" | "footer";
     showLogo?: boolean;
 }
-
 const {
     headline = "Tulaa",
     subline = "Expert-guided yoga & meditation — offline, ad-free, privacy-first.",
@@ -21,101 +20,117 @@ const isHero = variant === "hero";
 ---
 
 <section
-    class:list={["dl-wrap", isHero ? "dl-hero" : "dl-footer"]}
+    class:list={["dl", isHero ? "dl--hero" : "dl--footer"]}
     aria-label="Download Tulaa"
 >
     {
         isHero && showLogo && (
             <img
-                class="dl-logo"
+                class="dl__logo"
                 src="https://images.tulaa.life/logo.webp"
                 width="72"
                 height="72"
                 alt=""
+                decoding="async"
             />
         )
     }
 
-    <div class="dl-copy">
-        <h2 class="dl-title">{headline}</h2>
-        <p class="dl-sub">{subline}</p>
+    <div class="dl__copy">
+        <h2 class="dl__title">{headline}</h2>
+        <p class="dl__sub">{subline}</p>
 
-        <ul class="dl-chips" aria-label="App highlights">
-            <li>Ad-free</li>
-            <li>Offline</li>
-            <li>Privacy-first</li>
+        <ul class="dl__chips" aria-label="App highlights">
+            <li>Ad-free</li><li>Offline</li><li>Privacy-first</li>
         </ul>
     </div>
 
-    <div class="dl-buttons">
-        <a href={iosHref} target="_blank" rel="noopener">
+    <div class="dl__buttons" role="group" aria-label="Store links">
+        <!-- App Store -->
+        <a
+            class="btn-ios"
+            href={iosHref}
+            target="_blank"
+            rel="noopener"
+            aria-label="Download on the App Store"
+        >
             <img
+                class="storeBadge"
                 src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg"
                 alt="Download on the App Store"
-                width="160"
-                height="52"
+                loading="lazy"
+                decoding="async"
             />
         </a>
-        <a href={androidHref} target="_blank" rel="noopener">
+
+        <!-- Google Play -->
+        <a
+            class="btn-android"
+            href={androidHref}
+            target="_blank"
+            rel="noopener"
+            aria-label="Get it on Google Play"
+        >
             <img
+                class="storeBadge"
                 src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg"
                 alt="Get it on Google Play"
-                width="160"
-                height="52"
+                loading="lazy"
+                decoding="async"
             />
         </a>
     </div>
 </section>
 
 <style>
-    .dl-wrap {
-        --r: 22px;
+    .dl {
+        --r: 24px;
+        --padY: 28px;
+        --padX: 22px;
+        --badge-h: 56px;
+        position: relative;
         display: grid;
         place-items: center;
         text-align: center;
         gap: 14px;
-        padding: 22px;
+        padding: var(--padY) var(--padX);
         border-radius: var(--r);
         background: linear-gradient(
-                180deg,
-                color-mix(in srgb, var(--card) 88%, transparent),
-                var(--card)
-            ),
-            radial-gradient(
-                120% 120% at 0% 0%,
-                color-mix(in srgb, var(--fg) 6%, transparent),
-                transparent 60%
-            );
-        border: 1px solid color-mix(in srgb, var(--ring) 72%, transparent);
-        box-shadow: 0 10px 32px color-mix(in srgb, var(--fg) 12%, transparent);
+            180deg,
+            color-mix(in oklch, var(--card), white 6%),
+            var(--card)
+        );
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 30%);
+        /* drop shadow only (removed inset culprit) */
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+        isolation: isolate;
+        overflow: hidden;
     }
-    .dl-hero {
-        padding: 28px 22px;
-    }
-    .dl-footer {
-        padding: 16px;
+    .dl--footer {
         --r: 18px;
+        --padY: 18px;
+        --badge-h: 52px;
     }
 
-    .dl-logo {
+    .dl__logo {
         width: 72px;
         height: 72px;
         border-radius: 18px;
-        filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.08));
+        filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.08));
     }
 
-    .dl-title {
+    .dl__title {
         margin: 4px 0 6px;
-        font-size: clamp(24px, 3.8vw, 36px);
+        font-size: clamp(26px, 3.9vw, 42px);
         letter-spacing: 0.2px;
     }
-    .dl-sub {
+    .dl__sub {
         margin: 0;
         color: var(--muted);
-        font-size: clamp(14px, 2.1vw, 18px);
+        font-size: clamp(14px, 2.05vw, 18px);
     }
 
-    .dl-chips {
+    .dl__chips {
         display: flex;
         gap: 8px;
         justify-content: center;
@@ -124,117 +139,86 @@ const isHero = variant === "hero";
         padding: 0;
         margin: 12px 0 2px;
     }
-    .dl-chips li {
-        padding: 6px 12px;
+    .dl__chips li {
+        padding: 7px 12px;
         border-radius: 999px;
-        font-size: 0.92rem;
+        font-size: 0.94rem;
         color: var(--fg);
-        background: color-mix(in srgb, var(--btn) 10%, transparent);
-        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+        background: linear-gradient(
+            180deg,
+            color-mix(in oklch, var(--card), white 8%),
+            color-mix(in oklch, var(--card), transparent 6%)
+        );
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 20%);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.6) inset;
     }
 
-    .dl-buttons {
+    .dl__buttons {
         display: flex;
         gap: 12px;
         flex-wrap: wrap;
         justify-content: center;
         margin-top: 10px;
     }
-
-    .dl-btn {
-        --h: 52px;
-        display: inline-flex;
+    .dl__buttons a {
+        display: flex;
         align-items: center;
-        gap: 12px;
-        min-height: var(--h);
-        padding: 10px 16px;
-        border-radius: 14px;
-        font-weight: 700;
-        text-decoration: none;
-        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+    }
+    /* same visual height for both badges, width auto for aspect ratio */
+    .storeBadge {
+        height: var(--badge-h);
+        width: auto;
         transition:
-            transform 0.2s ease,
-            box-shadow 0.25s ease,
-            background 0.25s ease,
-            border-color 0.25s ease;
+            transform 0.16s ease,
+            filter 0.16s ease;
+        filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.06));
+        border-radius: 12px;
     }
-    .dl-btn .dl-ico {
-        inline-size: 28px;
-        block-size: 28px;
-        display: grid;
-        place-items: center;
-        border-radius: 999px;
-        background: color-mix(in srgb, var(--fg) 10%, transparent);
-    }
-    .dl-btn .dl-text {
-        display: grid;
-        text-align: left;
-        line-height: 1;
-    }
-    .dl-btn .dl-text small {
-        opacity: 0.7;
-        font-weight: 600;
-        font-size: 0.7rem;
-    }
-    .dl-btn .dl-text strong {
-        font-size: 0.95rem;
-        letter-spacing: 0.2px;
-    }
-
-    .dl-btn--solid {
-        background: var(--fg);
-        color: var(--bg);
-    }
-    .dl-btn--ghost {
-        background: transparent;
-        color: var(--fg);
-    }
-    .dl-btn--ghost:hover {
-        background: color-mix(in srgb, var(--btn) 8%, transparent);
-    }
-
-    .dl-btn:hover {
+    .storeBadge:hover {
         transform: translateY(-1px);
-        box-shadow: 0 10px 26px color-mix(in srgb, var(--fg) 14%, transparent);
-    }
-    .dl-btn:focus-visible {
-        outline: none;
-        box-shadow: 0 0 0 3px color-mix(in srgb, var(--btn) 40%, transparent);
+        filter: drop-shadow(0 10px 22px rgba(0, 0, 0, 0.1));
     }
 
+    /* platform-aware order */
+    .btn-ios {
+        order: 1;
+    }
+    .btn-android {
+        order: 2;
+    }
+    .dl.is-android .btn-android {
+        order: 1;
+    }
+    .dl.is-android .btn-ios {
+        order: 2;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .storeBadge {
+            transition: none;
+        }
+        .dl::before {
+            filter: none;
+        }
+    }
     @media (max-width: 420px) {
-        .dl-btn {
-            width: 100%;
-            justify-content: center;
+        .dl__buttons {
+            gap: 10px;
         }
     }
 </style>
 
-<script>
-    // @ts-nocheck
+<script is:inline>
+    // Set platform class to swap button order
     (() => {
-        function boot(root) {
-            const androidBtn = root.querySelector("a[data-android]");
-            const toast = root.querySelector(".dl-toast");
-            if (!androidBtn || !toast) return;
-
-            if (androidBtn.getAttribute("data-soon") === "true") {
-                androidBtn.addEventListener(
-                    "click",
-                    (e) => {
-                        e.preventDefault();
-                        toast.setAttribute("data-show", "true");
-                        window.clearTimeout(toast._t);
-                        toast._t = window.setTimeout(() => {
-                            toast.removeAttribute("data-show");
-                        }, 2200);
-                    },
-                    { passive: false },
-                );
-            }
-        }
-
-        const all = document.querySelectorAll(".dl-wrap");
-        all.forEach(boot);
+        const ua = navigator.userAgent || "";
+        const isiOS =
+            /iPhone|iPad|iPod/.test(ua) ||
+            (/Macintosh/.test(ua) && "ontouchend" in document);
+        const isAndroid = /Android/.test(ua);
+        document.querySelectorAll(".dl").forEach((el) => {
+            if (isAndroid) el.classList.add("is-android");
+            else if (isiOS) el.classList.add("is-ios");
+        });
     })();
 </script>
