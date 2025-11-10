@@ -14,6 +14,7 @@ export interface YogaPlanPreview {
 export interface GuidedAudioPreview {
     slug: string;
     title: string;
+    subtitle: string;
     teaser: string;
     image: string;
     deeplink: string;    // tulaa://audio/{slug}

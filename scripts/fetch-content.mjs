@@ -96,7 +96,7 @@ async function loadPlans() {
 async function loadAudios() {
     const { data, error } = await sb
         .from(TABLES.audios)
-        .select('slug,title,description,image_url,updated_at')
+        .select('slug,title,subtitle,description,image_url,updated_at')
         .not('slug', 'is', null)
         .not('image_url', 'is', null)
         .order('title', { ascending: true });
@@ -106,6 +106,7 @@ async function loadAudios() {
     return (data ?? []).map((r) => ({
         slug: toAbs(r.slug),
         title: toAbs(r.title),
+        subtitle: teaser(r.subtitle),
         teaser: teaser(r.description),
         image: ensureHttps(toAbs(r.image_url)),
         deeplink: `tulaa://audio/${toAbs(r.slug)}`,

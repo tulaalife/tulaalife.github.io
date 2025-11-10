@@ -42,7 +42,7 @@ const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
 const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
   href: `/audio/${a.slug}`,
   title: a.title,
-  subtitle: a.teaser,
+  subtitle: a.subtitle,
   image: a.image,
 }));
 const tipFive = seededShuffle(tips, daySeed + 13)
