@@ -67,7 +67,6 @@ const hasTips = tipFive.length > 0;
 >
   <!-- HERO -->
   <section role="banner" aria-labelledby="hero-title" class="hero reveal">
-    <div class="hero__ambient" aria-hidden="true"></div>
     <DownloadCTA
       variant="hero"
       headline="Tulaa"
@@ -173,29 +172,6 @@ const hasTips = tipFive.length > 0;
     margin: 6px auto 6px;
     width: var(--wrap);
     isolation: isolate;
-  }
-  .hero__ambient {
-    position: absolute;
-    inset: -24px;
-    border-radius: 28px;
-    filter: blur(28px);
-    z-index: -1;
-    background: radial-gradient(
-        600px 380px at 20% 10%,
-        color-mix(in oklch, var(--accent), white 65%),
-        transparent 60%
-      ),
-      radial-gradient(
-        600px 420px at 85% 20%,
-        color-mix(in oklch, var(--bg2), var(--accent) 20%),
-        transparent 62%
-      ),
-      linear-gradient(
-        180deg,
-        transparent,
-        color-mix(in oklch, var(--bg1), white 6%)
-      );
-    opacity: 0.7;
   }
 
   /* Buttons */
