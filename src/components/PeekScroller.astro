@@ -1,5 +1,8 @@
 ---
-// PeekScroller.astro — centered, infinite carousel (no snap, text below image)
+// PeekScroller.astro — centered infinite carousel (no snap)
+// - Autoscrolls to next card
+// - Stops on user interaction (scroll/drag/wheel/keys)
+// - Card = one container (image + centered text)
 
 export interface Item {
     href: string;
@@ -15,6 +18,7 @@ export interface Props {
     ctaHref?: string;
     ctaLabel?: string;
     intervalMs?: number; // autoplay interval
+    autoplay?: boolean; // optional toggle (default true)
 }
 
 const {
@@ -24,6 +28,7 @@ const {
     ctaHref,
     ctaLabel,
     intervalMs = 5200,
+    autoplay = true,
 } = Astro.props;
 
 const hasCTA = Boolean(ctaHref && ctaLabel);
@@ -46,6 +51,7 @@ const extended = padForLoop(items);
             class="peek"
             data-interval={String(intervalMs)}
             data-loop-pad={String(loopPad)}
+            data-autoplay={String(autoplay)}
             aria-label={title}
             role="region"
         >
@@ -153,7 +159,7 @@ const extended = padForLoop(items);
         font-size: clamp(14px, 2vw, 16px);
     }
 
-    /* Track without snap; tighter gutters & wider cards so peeks are small */
+    /* Track — no snap, tight gutters, visible peeks */
     .peek__rail {
         position: relative;
     }
@@ -171,7 +177,7 @@ const extended = padForLoop(items);
         display: none;
     }
 
-    /* Wider cards → less margin on sides; center card gets subtle lift */
+    /* Wider cards to reduce outer margins */
     .peek__item {
         flex: 0 0 88%;
         transform-origin: center center;
@@ -191,7 +197,7 @@ const extended = padForLoop(items);
         opacity: 1;
     }
 
-    /* Card */
+    /* Card = one container (media + centered text) */
     .card {
         display: block;
         text-decoration: none;
@@ -220,13 +226,14 @@ const extended = padForLoop(items);
         background: color-mix(in oklch, var(--ring), transparent 78%);
     }
     .card__body {
-        padding: 10px 6px 0;
+        padding: 12px 10px 0;
+        text-align: center;
     }
     .card__title {
         margin: 0;
         font-size: clamp(17px, 2.2vw, 20px);
         font-weight: 700;
-        line-height: 1.15;
+        line-height: 1.2;
     }
     .card__sub {
         margin: 6px 0 0;
@@ -261,7 +268,7 @@ const extended = padForLoop(items);
         box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
     }
 
-    /* Mini grid */
+    /* Mini grid (unchanged) */
     .peek__grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -319,29 +326,26 @@ const extended = padForLoop(items);
 <script is:inline>
     (() => {
         const roots = Array.from(document.querySelectorAll(".peek"));
-        const prefersReduced = window.matchMedia?.(
-            "(prefers-reduced-motion: reduce)",
-        )?.matches;
 
         roots.forEach((root) => {
             const track = root.querySelector(".peek__track");
             const items = Array.from(root.querySelectorAll(".peek__item"));
             const loopPad = Number(root.dataset.loopPad || 2);
             const originalCount = Number(track?.dataset.count || items.length);
+            const allowAutoplay = root.dataset.autoplay !== "false";
             if (!track || items.length <= 1) return;
 
-            let idx = loopPad; // current index in extended list
-            let timer; // autoplay timer
+            let idx = loopPad;
+            let timer;
+            let userInteracting = false;
             const interval = Math.max(
                 2800,
                 Number(root.dataset.interval || 5200),
             );
 
             const centerOf = (el) => el.offsetLeft + el.offsetWidth / 2;
-            const centerOnIndex = (
-                i,
-                behavior = prefersReduced ? "auto" : "smooth",
-            ) => {
+
+            const centerOnIndex = (i, behavior = "smooth") => {
                 const el = items[i];
                 if (!el) return;
                 track.scrollTo({
@@ -352,7 +356,7 @@ const extended = padForLoop(items);
                 markActiveSoon();
             };
 
-            // mark active (no snap) -------------------------------------------------
+            // Mark active + normalize (for infinite loop)
             let markTO;
             const markActiveSoon = () => {
                 clearTimeout(markTO);
@@ -372,63 +376,67 @@ const extended = padForLoop(items);
                         el.setAttribute("data-active", String(i === nearest)),
                     );
                     idx = nearest;
-                    normalizeIfNeeded();
-                }, 60);
+
+                    if (idx < loopPad) {
+                        idx += originalCount;
+                        track.scrollTo({
+                            left: centerOf(items[idx]) - track.clientWidth / 2,
+                            behavior: "auto",
+                        });
+                    } else if (idx >= loopPad + originalCount) {
+                        idx -= originalCount;
+                        track.scrollTo({
+                            left: centerOf(items[idx]) - track.clientWidth / 2,
+                            behavior: "auto",
+                        });
+                    }
+                }, 50);
             };
 
-            // infinite without visual jump ------------------------------------------
-            const normalizeIfNeeded = () => {
-                if (idx < loopPad) {
-                    idx += originalCount;
-                    track.scrollTo({
-                        left: centerOf(items[idx]) - track.clientWidth / 2,
-                        behavior: "auto",
-                    });
-                } else if (idx >= loopPad + originalCount) {
-                    idx -= originalCount;
-                    track.scrollTo({
-                        left: centerOf(items[idx]) - track.clientWidth / 2,
-                        behavior: "auto",
-                    });
-                }
+            // Autoplay
+            const tick = () => {
+                if (!userInteracting) centerOnIndex(idx + 1);
             };
-
-            // autoplay ---------------------------------------------------------------
-            const next = () => centerOnIndex(idx + 1);
             const start = () => {
                 stop();
-                if (!prefersReduced) timer = setInterval(next, interval);
+                if (allowAutoplay) timer = setInterval(tick, interval);
             };
             const stop = () => {
                 if (timer) clearInterval(timer);
                 timer = undefined;
             };
 
-            // events -----------------------------------------------------------------
-            track.addEventListener("scroll", markActiveSoon, { passive: true });
-            track.addEventListener("mouseenter", stop);
-            track.addEventListener("mouseleave", start);
-            track.addEventListener("touchstart", stop, { passive: true });
-            track.addEventListener("touchend", start, { passive: true });
+            // Pause on any interaction immediately
+            const beginInteract = () => {
+                userInteracting = true;
+                stop();
+            };
+            track.addEventListener("pointerdown", beginInteract, {
+                passive: true,
+            });
+            track.addEventListener("touchstart", beginInteract, {
+                passive: true,
+            });
+            track.addEventListener("wheel", beginInteract, { passive: true });
             track.addEventListener("keydown", (e) => {
                 if (e.key === "ArrowRight") {
-                    e.preventDefault();
-                    stop();
+                    beginInteract();
                     centerOnIndex(idx + 1);
                 } else if (e.key === "ArrowLeft") {
-                    e.preventDefault();
-                    stop();
+                    beginInteract();
                     centerOnIndex(idx - 1);
                 }
             });
+            // Still update active state while user scrolls
+            track.addEventListener("scroll", markActiveSoon, { passive: true });
 
-            // init -------------------------------------------------------------------
+            // Start centered on first real item
             requestAnimationFrame(() => {
                 centerOnIndex(idx, "auto");
-                start();
+                start(); // kick autoplay
             });
 
-            // resize recenter
+            // Recenter on resize
             let ro;
             if ("ResizeObserver" in window) {
                 ro = new ResizeObserver(() => centerOnIndex(idx, "auto"));
