@@ -1,10 +1,10 @@
 ---
 import Site from "../layouts/Site.astro";
-import OneUpCarousel from "../components/OneUpCarousel.astro";
 import FeatureTiles from "../components/FeatureTiles.astro";
 import { yogaPlans, guidedAudios, tips } from "../data/generated";
 import TipsScroller from "../components/TipsScroller.astro";
 import DownloadCTA from "../components/DownloadCTA.astro";
+import PeekScroller from "../components/PeekScroller.astro";
 
 const title = "Tulaa — Yoga, Meditation & Daily Wellness";
 const description =
@@ -79,7 +79,7 @@ const hasTips = tipFive.length > 0;
   {
     hasYoga && (
       <section class="section reveal">
-        <OneUpCarousel
+        <PeekScroller
           title="Yoga Plans"
           subtitle="Expert-guided sequences for everyday needs"
           items={yogaItems}
@@ -94,7 +94,7 @@ const hasTips = tipFive.length > 0;
   {
     hasAudio && (
       <section class="section reveal">
-        <OneUpCarousel
+        <PeekScroller
           title="Guided Audios"
           subtitle="Gentle voice sessions for calm, focus & rest"
           items={audioItems}

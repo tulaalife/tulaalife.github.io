@@ -1,0 +1,423 @@
+---
+/** PeekScroller.astro — two-up peek carousel with snap, progress bar & mini-grid */
+
+export interface Item {
+    href: string;
+    title: string;
+    subtitle?: string;
+    image?: string;
+    emojiFallback?: string;
+}
+export interface Props {
+    title: string;
+    subtitle?: string;
+    items: Item[];
+    ctaHref?: string;
+    ctaLabel?: string;
+    intervalMs?: number; // autoplay interval for ambient scroll
+}
+
+const {
+    title,
+    subtitle,
+    items = [],
+    ctaHref,
+    ctaLabel,
+    intervalMs = 5200,
+} = Astro.props;
+
+const hasCTA = Boolean(ctaHref && ctaLabel);
+const showGrid = items.length > 3;
+---
+
+{
+    items.length > 0 && (
+        <section
+            class="peek"
+            data-interval={String(intervalMs)}
+            aria-label={title}
+            role="region"
+        >
+            <header class="peek__head">
+                <h2 class="peek__title">{title}</h2>
+                {subtitle && <p class="peek__subtitle">{subtitle}</p>}
+            </header>
+
+            <div class="peek__rail">
+                <div class="peek__progress" aria-hidden="true" />
+                <ul class="peek__track" role="list">
+                    {items.map((it) => (
+                        <li class="peek__item">
+                            <a class="card" href={it.href}>
+                                <div class="card__media">
+                                    {it.image ? (
+                                        <img
+                                            src={it.image}
+                                            alt={it.title}
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                    ) : (
+                                        <div
+                                            class="card__emoji"
+                                            aria-hidden="true"
+                                        >
+                                            {it.emojiFallback ?? "💡"}
+                                        </div>
+                                    )}
+                                    <div class="card__overlay">
+                                        <h3 class="card__title">{it.title}</h3>
+                                        {it.subtitle && (
+                                            <p class="card__sub">
+                                                {it.subtitle}
+                                            </p>
+                                        )}
+                                    </div>
+                                </div>
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            {hasCTA && (
+                <div class="peek__ctaRow">
+                    <a class="peek__cta" href={ctaHref!}>
+                        {ctaLabel} <span aria-hidden="true">↗</span>
+                    </a>
+                </div>
+            )}
+
+            {showGrid && (
+                <div class="peek__grid" aria-label="More to explore">
+                    {items.slice(0, 6).map((it) => (
+                        <a class="mini" href={it.href}>
+                            {it.image ? (
+                                <img
+                                    src={it.image}
+                                    alt={it.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            ) : (
+                                <div class="mini__emoji" aria-hidden="true">
+                                    {it.emojiFallback ?? "💡"}
+                                </div>
+                            )}
+                            <div class="mini__txt">
+                                <strong class="mini__title">{it.title}</strong>
+                                {it.subtitle && (
+                                    <span class="mini__sub">{it.subtitle}</span>
+                                )}
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            )}
+        </section>
+    )
+}
+
+<style>
+    .peek {
+        margin: 28px auto 22px;
+        padding: 10px 0 0;
+        max-width: 980px;
+    }
+    .peek__head {
+        text-align: center;
+        margin: 0 0 10px;
+    }
+    .peek__title {
+        margin: 0 0 6px;
+        font-size: clamp(20px, 2.6vw, 26px);
+    }
+    .peek__subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(14px, 2vw, 16px);
+    }
+
+    /* —— Rail with progress bar —— */
+    .peek__rail {
+        position: relative;
+    }
+    .peek__progress {
+        position: absolute;
+        inset: 0 auto auto 0;
+        height: 3px;
+        width: 0%;
+        background: color-mix(in oklch, var(--accent), white 10%);
+        border-radius: 6px;
+        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
+        transform-origin: left center;
+        pointer-events: none;
+    }
+
+    /* —— Two-up peek scroller —— */
+    .peek__track {
+        display: flex;
+        gap: 18px;
+        list-style: none;
+        margin: 0;
+        padding: 0 8px 12px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+    }
+    .peek__track::-webkit-scrollbar {
+        display: none;
+    }
+    .peek__item {
+        flex: 0 0 86%;
+        scroll-snap-align: center;
+    }
+    @media (min-width: 860px) {
+        .peek__item {
+            flex-basis: 72%;
+        } /* tighter peek on desktop */
+    }
+
+    /* —— Card —— */
+    .card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+    .card__media {
+        position: relative;
+        border-radius: 18px;
+        overflow: hidden;
+        background: color-mix(in oklch, var(--ring), transparent 80%);
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.08);
+        outline: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
+    }
+    .card__media img {
+        width: 100%;
+        height: clamp(220px, 36vw, 420px);
+        object-fit: cover;
+        display: block;
+        transform: scale(1.002);
+        transition:
+            transform 0.6s ease,
+            filter 0.6s ease;
+    }
+    .card__media:hover img {
+        transform: scale(1.015);
+    }
+
+    /* title overlay */
+    .card__overlay {
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        padding: 14px 16px 16px;
+        color: #fff;
+        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
+        background: linear-gradient(
+            180deg,
+            transparent 20%,
+            rgba(0, 0, 0, 0.42) 90%
+        );
+    }
+    .card__title {
+        margin: 0;
+        font-size: clamp(18px, 2.6vw, 22px);
+        font-weight: 700;
+    }
+    .card__sub {
+        margin: 4px 0 0;
+        font-size: clamp(13px, 2vw, 15px);
+        opacity: 0.92;
+    }
+
+    .card__emoji {
+        display: grid;
+        place-items: center;
+        height: clamp(220px, 36vw, 420px);
+        font-size: 56px;
+    }
+
+    /* —— CTA —— */
+    .peek__ctaRow {
+        display: flex;
+        justify-content: center;
+        margin: 14px 0 6px;
+    }
+    .peek__cta {
+        display: inline-flex;
+        gap: 8px;
+        align-items: center;
+        padding: 10px 16px;
+        border-radius: 14px;
+        font-weight: 600;
+        text-decoration: none;
+        color: var(--fg);
+        background: color-mix(in oklch, var(--btn), transparent 88%);
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 30%);
+        backdrop-filter: saturate(120%) blur(4px);
+        transition:
+            transform 0.18s ease,
+            box-shadow 0.22s ease;
+    }
+    .peek__cta:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
+    }
+
+    /* —— Mini explore grid —— */
+    .peek__grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 12px 8px 0;
+    }
+    @media (min-width: 680px) {
+        .peek__grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin: 14px 12px 0;
+        }
+    }
+    .mini {
+        display: grid;
+        grid-template-columns: 84px 1fr;
+        gap: 10px;
+        align-items: center;
+        padding: 8px;
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        background: color-mix(in oklch, var(--card), transparent 0%);
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
+    }
+    .mini img {
+        width: 84px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 10px;
+        display: block;
+    }
+    .mini__emoji {
+        width: 84px;
+        height: 64px;
+        display: grid;
+        place-items: center;
+        font-size: 28px;
+        border-radius: 10px;
+        background: color-mix(in oklch, var(--ring), transparent 80%);
+    }
+    .mini__txt {
+        display: grid;
+        gap: 2px;
+    }
+    .mini__title {
+        font-size: 0.95rem;
+        line-height: 1.2;
+    }
+    .mini__sub {
+        color: var(--muted);
+        font-size: 0.8rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
+<script is:inline>
+    (() => {
+        const roots = Array.from(document.querySelectorAll(".peek"));
+        const prefersReduced = window.matchMedia?.(
+            "(prefers-reduced-motion: reduce)",
+        )?.matches;
+
+        roots.forEach((root) => {
+            const track = root.querySelector(".peek__track");
+            const items = Array.from(root.querySelectorAll(".peek__item"));
+            const progress = root.querySelector(".peek__progress");
+            if (!track || items.length <= 1) return;
+
+            let idx = 0;
+            let timer;
+            const interval = Math.max(
+                2800,
+                Number(root.dataset.interval || 5200),
+            );
+
+            // scroll to index
+            function go(i) {
+                const el = items[i];
+                if (!el) return;
+                el.scrollIntoView({
+                    behavior: prefersReduced ? "auto" : "smooth",
+                    inline: "center",
+                    block: "nearest",
+                });
+                idx = i;
+                // restart progress
+                if (progress) {
+                    progress.style.transition = "none";
+                    progress.style.width = "0%";
+                    // allow style to flush
+                    requestAnimationFrame(() => {
+                        progress.style.transition = `width ${interval}ms linear`;
+                        progress.style.width = "100%";
+                    });
+                }
+            }
+
+            function next() {
+                go((idx + 1) % items.length);
+            }
+            function start() {
+                stop();
+                if (!prefersReduced) {
+                    go(idx);
+                    timer = setInterval(next, interval);
+                }
+            }
+            function stop() {
+                if (timer) {
+                    clearInterval(timer);
+                    timer = undefined;
+                }
+                if (progress) progress.style.width = "0%";
+            }
+
+            // ambient start
+            start();
+            // pause on interaction
+            track.addEventListener("mouseenter", stop);
+            track.addEventListener("mouseleave", start);
+            track.addEventListener("touchstart", stop, { passive: true });
+            track.addEventListener("touchend", start, { passive: true });
+
+            // snap observer → keep idx in sync when user swipes
+            let snapTimer;
+            track.addEventListener("scroll", () => {
+                clearTimeout(snapTimer);
+                snapTimer = setTimeout(() => {
+                    let nearest = 0,
+                        min = Infinity;
+                    items.forEach((el, i) => {
+                        const r = el.getBoundingClientRect();
+                        const c = Math.abs(
+                            (r.left + r.right) / 2 -
+                                (track.getBoundingClientRect().width / 2 +
+                                    track.getBoundingClientRect().left),
+                        );
+                        if (c < min) {
+                            min = c;
+                            nearest = i;
+                        }
+                    });
+                    if (nearest !== idx) {
+                        idx = nearest;
+                        go(idx);
+                    }
+                }, 120);
+            });
+            window.addEventListener("pagehide", stop, { once: true });
+        });
+    })();
+</script>
