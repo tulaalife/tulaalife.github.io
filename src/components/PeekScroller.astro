@@ -337,7 +337,6 @@ const extended = padForLoop(items);
         const prefersReducedMotion = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
         ).matches;
-
         const roots = Array.from(document.querySelectorAll(".peek"));
 
         roots.forEach((root) => {
@@ -353,7 +352,7 @@ const extended = padForLoop(items);
             let idx = loopPad;
             let timer;
             let userInteracting = false;
-            let isHovering = false; // <-- NEW: Flag for hover state
+            let isHovering = false;
             const interval = Math.max(
                 2800,
                 Number(root.dataset.interval || 5200),
@@ -372,7 +371,6 @@ const extended = padForLoop(items);
                 markActiveSoon();
             };
 
-            // Mark active + normalize (for infinite loop)
             let markTO;
             const markActiveSoon = () => {
                 clearTimeout(markTO);
@@ -393,7 +391,7 @@ const extended = padForLoop(items);
                     );
                     idx = nearest;
 
-                    // This logic is for the infinite loop padding
+                    // Infinite loop normalization
                     if (idx < loopPad) {
                         idx += originalCount;
                         track.scrollTo({
@@ -410,19 +408,14 @@ const extended = padForLoop(items);
                 }, 50);
             };
 
-            // Autoplay
+            // --- Autoplay core ---
             const tick = () => {
-                // UPDATED: Check flags *inside* the tick
-                if (!userInteracting && !isHovering) {
-                    centerOnIndex(idx + 1);
-                }
+                if (!userInteracting && !isHovering) centerOnIndex(idx + 1);
             };
 
             const start = () => {
-                stop(); // Clear existing timer just in case
-                if (allowAutoplay) {
-                    timer = setInterval(tick, interval);
-                }
+                stop();
+                if (allowAutoplay) timer = setInterval(tick, interval);
             };
 
             const stop = () => {
@@ -430,60 +423,49 @@ const extended = padForLoop(items);
                 timer = undefined;
             };
 
-            // Pause on any interaction immediately
-            const beginInteract = () => {
+            // --- User interactions ---
+            const handleUserInteraction = () => {
+                if (userInteracting) return; // stop only once
                 userInteracting = true;
-                // No need to call stop(), tick() will check the flag
+                stop();
             };
 
-            track.addEventListener("pointerdown", beginInteract, {
-                passive: true,
-            });
-            track.addEventListener("touchstart", beginInteract, {
-                passive: true,
-            });
-            track.addEventListener("wheel", beginInteract, { passive: true });
+            // Listen for manual actions
+            ["pointerdown", "touchstart", "wheel"].forEach((ev) =>
+                track.addEventListener(ev, handleUserInteraction, {
+                    passive: true,
+                }),
+            );
+
             track.addEventListener("keydown", (e) => {
                 if (e.key === "ArrowRight") {
-                    beginInteract(); // Just set the flag
+                    handleUserInteraction();
                     centerOnIndex(idx + 1);
                 } else if (e.key === "ArrowLeft") {
-                    beginInteract(); // Just set the flag
+                    handleUserInteraction();
                     centerOnIndex(idx - 1);
                 }
             });
 
-            // UPDATED: Use flags for hover state
-            track.addEventListener(
-                "mouseenter",
-                () => {
-                    isHovering = true;
-                },
-                { passive: true },
-            );
-            track.addEventListener(
-                "mouseleave",
-                () => {
-                    isHovering = false;
-                },
-                { passive: true },
-            );
+            // Hover pause (temporary)
+            track.addEventListener("mouseenter", () => (isHovering = true));
+            track.addEventListener("mouseleave", () => (isHovering = false));
 
-            // Still update active state while user scrolls
             track.addEventListener("scroll", markActiveSoon, { passive: true });
 
-            // Start centered on first real item
+            // Initialize
             requestAnimationFrame(() => {
                 centerOnIndex(idx, "auto");
-                start(); // kick autoplay
+                start();
             });
 
-            // Recenter on resize
+            // Handle resize
             let ro;
             if ("ResizeObserver" in window) {
                 ro = new ResizeObserver(() => centerOnIndex(idx, "auto"));
                 ro.observe(track);
             }
+
             window.addEventListener(
                 "pagehide",
                 () => {
