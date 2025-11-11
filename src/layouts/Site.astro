@@ -28,18 +28,20 @@ const url = new URL(canonicalPath, site).toString();
         <meta http-equiv="x-ua-compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
+
+        <!-- Updated theme-colors to match new palette -->
         <meta
             name="theme-color"
             media="(prefers-color-scheme: light)"
-            content="#f6eef3"
+            content="#f5f2f8"
         />
         <meta
             name="theme-color"
             media="(prefers-color-scheme: dark)"
-            content="#0f1013"
+            content="#14161a"
         />
-        <meta name="robots" content="index,follow" />
 
+        <meta name="robots" content="index,follow" />
         <title>{title}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={url} />
@@ -57,7 +59,6 @@ const url = new URL(canonicalPath, site).toString();
         />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
@@ -155,7 +156,7 @@ const url = new URL(canonicalPath, site).toString();
         </script>
 
         <style>
-            /* ---------- Base & tokens ---------- */
+            /* ---------- Base & tokens (OKLCH-tuned) ---------- */
             *,
             *::before,
             *::after {
@@ -177,52 +178,77 @@ const url = new URL(canonicalPath, site).toString();
             }
 
             :root {
-                --bg1: oklch(97% 0.02 320);
-                --bg2: oklch(97% 0.02 210);
-                --fg: oklch(22% 0.02 260);
-                --muted: oklch(50% 0.02 260);
-                --accent: oklch(70% 0.09 300);
-                --card: color-mix(in oklch, white 85%, transparent);
-                --ring: oklch(0% 0 0 / 0.08);
+                /* Light — Sunrise Iris (brighter) */
+                --bg1: oklch(98% 0.045 300); /* airy violet */
+                --bg2: oklch(96% 0.06 240); /* cool cyan tint */
+                --fg: oklch(22% 0.04 255); /* richer ink */
+                --muted: oklch(48% 0.05 255);
+                --accent: oklch(70% 0.18 285); /* vivid iris */
+                --accent-2: oklch(
+                    78% 0.14 35
+                ); /* warm sunrise (peach/orange) */
+                --card: oklch(
+                    100% 0 0 / 0.86
+                ); /* a bit more opaque so content pops */
+                --ring: oklch(40% 0 0 / 0.12);
                 --btn: var(--fg);
                 --btnText: white;
+
                 --radius-xl: 24px;
-                --elev-3: 0 12px 40px rgba(0, 0, 0, 0.08);
-                --container: 920px;
+                --container: 980px;
+                --elev-1: 0 6px 18px rgba(10, 12, 16, 0.08);
+                --elev-2: 0 12px 28px rgba(10, 12, 16, 0.12);
+                --elev-3: 0 18px 46px rgba(10, 12, 16, 0.14);
                 --font-sans: "Inter Var", ui-sans-serif, system-ui,
                     -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
             }
             [data-theme="dark"] {
-                --bg1: oklch(18% 0.01 260);
-                --bg2: oklch(22% 0.01 260);
-                --fg: oklch(92% 0.01 260);
-                --muted: oklch(70% 0.02 260);
-                --accent: oklch(80% 0.1 300);
-                --card: oklch(22% 0.01 260 / 0.78);
-                --ring: oklch(100% 0 0 / 0.08);
+                /* Dark — Deep Indigo (punchier accents) */
+                --bg1: oklch(15% 0.05 260);
+                --bg2: oklch(20% 0.06 250);
+                --fg: oklch(94% 0.03 255);
+                --muted: oklch(72% 0.03 255);
+                --accent: oklch(78% 0.2 285); /* brighter iris for dark */
+                --accent-2: oklch(72% 0.16 35);
+                --card: oklch(22% 0.03 255 / 0.74);
+                --ring: oklch(96% 0 0 / 0.14);
                 --btn: var(--fg);
-                --btnText: oklch(18% 0.01 260);
+                --btnText: oklch(15% 0.05 260);
+                --elev-1: 0 8px 22px rgba(0, 0, 0, 0.34);
+                --elev-2: 0 16px 36px rgba(0, 0, 0, 0.4);
+                --elev-3: 0 22px 56px rgba(0, 0, 0, 0.46);
             }
 
             body {
                 font-family: var(--font-sans);
                 color: var(--fg);
                 background: radial-gradient(
-                        1200px 800px at 20% 0%,
+                        1200px 800px at 15% -10%,
                         var(--bg1),
+                        transparent 65%
+                    ),
+                    radial-gradient(
+                        900px 600px at 85% 0%,
+                        color-mix(in oklch, var(--bg2), white 3%),
                         transparent 60%
+                    ),
+                    radial-gradient(
+                        1200px 500px at 50% -15%,
+                        color-mix(in oklch, var(--accent-2), transparent 85%),
+                        transparent 70%
                     ),
                     linear-gradient(
                         135deg,
-                        color-mix(in oklch, var(--bg2), white 10%),
+                        color-mix(in oklch, var(--bg2), white 6%),
                         var(--bg1)
                     );
                 display: flex;
                 flex-direction: column;
                 min-height: 100vh;
+                position: relative;
             }
 
-            /* Subtle grain */
+            /* Soft grain + vignette */
             body::before {
                 content: "";
                 position: fixed;
@@ -236,6 +262,18 @@ const url = new URL(canonicalPath, site).toString();
                 opacity: 0.22;
                 mix-blend-mode: multiply;
             }
+            body::after {
+                content: "";
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background: radial-gradient(
+                    1200px 300px at 50% -8%,
+                    color-mix(in oklch, var(--accent-2), transparent 88%),
+                    transparent 70%
+                );
+                opacity: 0.9;
+            }
 
             img,
             video,
@@ -246,30 +284,32 @@ const url = new URL(canonicalPath, site).toString();
                 display: block;
             }
 
-            /* Header */
+            /* Header — premium glass */
             header {
                 width: 100%;
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 padding: 14px 24px;
-                background: color-mix(in oklch, var(--card), transparent 10%);
-                border-bottom: 1px solid var(--ring);
+                background: color-mix(in oklch, var(--card), transparent 6%);
+                border-bottom: 1px solid
+                    color-mix(in oklch, var(--ring), transparent 15%);
                 position: sticky;
                 top: 0;
                 z-index: 10;
+                box-shadow: var(--elev-1);
             }
             @media (min-width: 640px) and (prefers-reduced-transparency: no-preference) {
                 header {
-                    backdrop-filter: blur(8px);
+                    backdrop-filter: blur(10px) saturate(1.05);
                 }
             }
             header .brand {
                 display: flex;
                 align-items: center;
                 gap: 10px;
-                font-weight: 600;
-                font-size: 1.1rem;
+                font-weight: 650;
+                font-size: 1.06rem;
                 text-decoration: none;
                 color: var(--fg);
             }
@@ -277,8 +317,8 @@ const url = new URL(canonicalPath, site).toString();
                 width: 28px;
                 height: 28px;
                 border-radius: 8px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
             }
-
             nav a {
                 color: var(--fg);
                 text-decoration: none;
@@ -291,7 +331,7 @@ const url = new URL(canonicalPath, site).toString();
                 text-decoration: underline;
             }
 
-            /* Skip link & focus */
+            /* Focus & skip */
             .skip-link {
                 position: absolute;
                 left: -9999px;
@@ -311,19 +351,26 @@ const url = new URL(canonicalPath, site).toString();
             }
             a:focus-visible,
             button:focus-visible {
-                box-shadow: 0 0 0 3px var(--ring);
+                box-shadow: 0 0 0 3px
+                    color-mix(in oklch, var(--accent), transparent 40%);
                 border-radius: 12px;
             }
 
             button.theme-toggle {
-                border: 1px solid var(--ring);
-                background: var(--card);
+                border: 1px solid
+                    color-mix(in oklch, var(--ring), transparent 20%);
+                background: linear-gradient(
+                    180deg,
+                    color-mix(in oklch, var(--card), white 5%),
+                    color-mix(in oklch, var(--card), transparent 10%)
+                );
                 border-radius: 50%;
-                width: 34px;
-                height: 34px;
+                width: 36px;
+                height: 36px;
                 font-size: 18px;
                 cursor: pointer;
                 color: var(--fg);
+                box-shadow: var(--elev-1);
             }
 
             main {
@@ -332,13 +379,54 @@ const url = new URL(canonicalPath, site).toString();
                 max-width: var(--container);
                 margin: 24px auto;
                 padding: 28px 16px;
-                background: var(--card);
                 border-radius: var(--radius-xl);
-                border: 1px solid var(--ring);
+                border: 1px solid
+                    color-mix(in oklch, var(--ring), transparent 18%);
                 box-shadow: var(--elev-3);
-                animation: fade 700ms ease-out both;
+                background:
+                    linear-gradient(
+                            180deg,
+                            color-mix(in oklch, var(--card), white 8%),
+                            color-mix(in oklch, var(--card), transparent 6%)
+                        )
+                        padding-box,
+                    radial-gradient(
+                            900px 300px at 50% -120px,
+                            color-mix(in oklch, var(--accent), transparent 82%),
+                            transparent 70%
+                        )
+                        padding-box,
+                    var(--card);
             }
 
+            /* “Chip” polish */
+            .dl__chips {
+                display: flex;
+                gap: 8px;
+                justify-content: center;
+                flex-wrap: wrap;
+                list-style: none;
+                padding: 0;
+                margin: 12px 0 2px;
+            }
+            .dl__chips li {
+                padding: 7px 12px;
+                border-radius: 999px;
+                font-size: 0.94rem;
+                color: var(--fg);
+                background: linear-gradient(
+                    180deg,
+                    color-mix(in oklch, var(--card), white 12%),
+                    color-mix(in oklch, var(--card), transparent 12%)
+                );
+                border: 1px solid
+                    color-mix(in oklch, var(--accent), transparent 88%);
+                box-shadow:
+                    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+                    0 4px 10px rgba(0, 0, 0, 0.06);
+            }
+
+            /* Footer */
             footer {
                 width: 100%;
                 padding: 32px 24px;
