@@ -1,5 +1,5 @@
 ---
-/** PeekScroller.astro — two-up peek carousel with snap, progress bar & mini-grid */
+// PeekScroller.astro — centered, infinite carousel (no snap, text below image)
 
 export interface Item {
     href: string;
@@ -14,7 +14,7 @@ export interface Props {
     items: Item[];
     ctaHref?: string;
     ctaLabel?: string;
-    intervalMs?: number; // autoplay interval for ambient scroll
+    intervalMs?: number; // autoplay interval
 }
 
 const {
@@ -28,6 +28,16 @@ const {
 
 const hasCTA = Boolean(ctaHref && ctaLabel);
 const showGrid = items.length > 3;
+
+// clone 2 items at each end for infinite feel
+function padForLoop(src: Item[]): Item[] {
+    if (src.length <= 3) return [...src, ...src, ...src];
+    const head = src.slice(-2);
+    const tail = src.slice(0, 2);
+    return [...head, ...src, ...tail];
+}
+const loopPad = 2;
+const extended = padForLoop(items);
 ---
 
 {
@@ -35,6 +45,7 @@ const showGrid = items.length > 3;
         <section
             class="peek"
             data-interval={String(intervalMs)}
+            data-loop-pad={String(loopPad)}
             aria-label={title}
             role="region"
         >
@@ -44,11 +55,18 @@ const showGrid = items.length > 3;
             </header>
 
             <div class="peek__rail">
-                <div class="peek__progress" aria-hidden="true" />
-                <ul class="peek__track" role="list">
-                    {items.map((it) => (
-                        <li class="peek__item">
-                            <a class="card" href={it.href}>
+                <ul
+                    class="peek__track"
+                    role="list"
+                    data-count={String(items.length)}
+                >
+                    {extended.map((it, i) => (
+                        <li class="peek__item" data-idx={String(i)}>
+                            <a
+                                class="card"
+                                href={it.href}
+                                aria-label={it.title}
+                            >
                                 <div class="card__media">
                                     {it.image ? (
                                         <img
@@ -65,14 +83,12 @@ const showGrid = items.length > 3;
                                             {it.emojiFallback ?? "💡"}
                                         </div>
                                     )}
-                                    <div class="card__overlay">
-                                        <h3 class="card__title">{it.title}</h3>
-                                        {it.subtitle && (
-                                            <p class="card__sub">
-                                                {it.subtitle}
-                                            </p>
-                                        )}
-                                    </div>
+                                </div>
+                                <div class="card__body">
+                                    <h3 class="card__title">{it.title}</h3>
+                                    {it.subtitle && (
+                                        <p class="card__sub">{it.subtitle}</p>
+                                    )}
                                 </div>
                             </a>
                         </li>
@@ -117,12 +133,11 @@ const showGrid = items.length > 3;
         </section>
     )
 }
-
 <style>
     .peek {
         margin: 28px auto 22px;
         padding: 10px 0 0;
-        max-width: 980px;
+        max-width: 1120px;
     }
     .peek__head {
         text-align: center;
@@ -130,7 +145,7 @@ const showGrid = items.length > 3;
     }
     .peek__title {
         margin: 0 0 6px;
-        font-size: clamp(20px, 2.6vw, 26px);
+        font-size: clamp(20px, 2.6vw, 28px);
     }
     .peek__subtitle {
         margin: 0;
@@ -138,47 +153,45 @@ const showGrid = items.length > 3;
         font-size: clamp(14px, 2vw, 16px);
     }
 
-    /* —— Rail with progress bar —— */
+    /* Track without snap; tighter gutters & wider cards so peeks are small */
     .peek__rail {
         position: relative;
     }
-    .peek__progress {
-        position: absolute;
-        inset: 0 auto auto 0;
-        height: 3px;
-        width: 0%;
-        background: color-mix(in oklch, var(--accent), white 10%);
-        border-radius: 6px;
-        box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05);
-        transform-origin: left center;
-        pointer-events: none;
-    }
-
-    /* —— Two-up peek scroller —— */
     .peek__track {
         display: flex;
-        gap: 18px;
+        gap: 14px;
         list-style: none;
         margin: 0;
-        padding: 0 8px 12px;
+        padding: 0 8px 16px;
         overflow-x: auto;
-        scroll-snap-type: x mandatory;
         -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
     }
     .peek__track::-webkit-scrollbar {
         display: none;
     }
+
+    /* Wider cards → less margin on sides; center card gets subtle lift */
     .peek__item {
-        flex: 0 0 86%;
-        scroll-snap-align: center;
+        flex: 0 0 88%;
+        transform-origin: center center;
+        transition:
+            transform 0.24s ease,
+            filter 0.24s ease,
+            opacity 0.24s ease;
+        opacity: 0.96;
     }
-    @media (min-width: 860px) {
+    @media (min-width: 960px) {
         .peek__item {
             flex-basis: 72%;
-        } /* tighter peek on desktop */
+        }
+    }
+    .peek__item[data-active="true"] {
+        transform: scale(1.015);
+        opacity: 1;
     }
 
-    /* —— Card —— */
+    /* Card */
     .card {
         display: block;
         text-decoration: none;
@@ -186,60 +199,42 @@ const showGrid = items.length > 3;
     }
     .card__media {
         position: relative;
-        border-radius: 18px;
         overflow: hidden;
+        border-radius: 18px;
         background: color-mix(in oklch, var(--ring), transparent 80%);
         box-shadow: 0 14px 36px rgba(0, 0, 0, 0.08);
         outline: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
     }
-    .card__media img {
+    .card__media img,
+    .card__emoji {
         width: 100%;
-        height: clamp(220px, 36vw, 420px);
-        object-fit: cover;
+        aspect-ratio: 16/10;
         display: block;
-        transform: scale(1.002);
-        transition:
-            transform 0.6s ease,
-            filter 0.6s ease;
+        object-fit: cover;
+        transform: translateZ(0);
     }
-    .card__media:hover img {
-        transform: scale(1.015);
-    }
-
-    /* title overlay */
-    .card__overlay {
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        padding: 14px 16px 16px;
-        color: #fff;
-        text-shadow: 0 2px 12px rgba(0, 0, 0, 0.4);
-        background: linear-gradient(
-            180deg,
-            transparent 20%,
-            rgba(0, 0, 0, 0.42) 90%
-        );
-    }
-    .card__title {
-        margin: 0;
-        font-size: clamp(18px, 2.6vw, 22px);
-        font-weight: 700;
-    }
-    .card__sub {
-        margin: 4px 0 0;
-        font-size: clamp(13px, 2vw, 15px);
-        opacity: 0.92;
-    }
-
     .card__emoji {
         display: grid;
         place-items: center;
-        height: clamp(220px, 36vw, 420px);
         font-size: 56px;
+        background: color-mix(in oklch, var(--ring), transparent 78%);
+    }
+    .card__body {
+        padding: 10px 6px 0;
+    }
+    .card__title {
+        margin: 0;
+        font-size: clamp(17px, 2.2vw, 20px);
+        font-weight: 700;
+        line-height: 1.15;
+    }
+    .card__sub {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: clamp(13px, 2vw, 15px);
     }
 
-    /* —— CTA —— */
+    /* CTA */
     .peek__ctaRow {
         display: flex;
         justify-content: center;
@@ -266,22 +261,21 @@ const showGrid = items.length > 3;
         box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
     }
 
-    /* —— Mini explore grid —— */
+    /* Mini grid */
     .peek__grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
-        margin: 12px 8px 0;
+        margin: 12px 10px 0;
     }
     @media (min-width: 680px) {
         .peek__grid {
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            margin: 14px 12px 0;
         }
     }
     .mini {
         display: grid;
-        grid-template-columns: 84px 1fr;
+        grid-template-columns: 88px 1fr;
         gap: 10px;
         align-items: center;
         padding: 8px;
@@ -291,20 +285,18 @@ const showGrid = items.length > 3;
         background: color-mix(in oklch, var(--card), transparent 0%);
         border: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
     }
-    .mini img {
-        width: 84px;
+    .mini img,
+    .mini__emoji {
+        width: 88px;
         height: 64px;
         object-fit: cover;
         border-radius: 10px;
         display: block;
     }
     .mini__emoji {
-        width: 84px;
-        height: 64px;
         display: grid;
         place-items: center;
         font-size: 28px;
-        border-radius: 10px;
         background: color-mix(in oklch, var(--ring), transparent 80%);
     }
     .mini__txt {
@@ -334,90 +326,122 @@ const showGrid = items.length > 3;
         roots.forEach((root) => {
             const track = root.querySelector(".peek__track");
             const items = Array.from(root.querySelectorAll(".peek__item"));
-            const progress = root.querySelector(".peek__progress");
+            const loopPad = Number(root.dataset.loopPad || 2);
+            const originalCount = Number(track?.dataset.count || items.length);
             if (!track || items.length <= 1) return;
 
-            let idx = 0;
-            let timer;
+            let idx = loopPad; // current index in extended list
+            let timer; // autoplay timer
             const interval = Math.max(
                 2800,
                 Number(root.dataset.interval || 5200),
             );
 
-            // scroll to index
-            function go(i) {
+            const centerOf = (el) => el.offsetLeft + el.offsetWidth / 2;
+            const centerOnIndex = (
+                i,
+                behavior = prefersReduced ? "auto" : "smooth",
+            ) => {
                 const el = items[i];
                 if (!el) return;
-                el.scrollIntoView({
-                    behavior: prefersReduced ? "auto" : "smooth",
-                    inline: "center",
-                    block: "nearest",
+                track.scrollTo({
+                    left: centerOf(el) - track.clientWidth / 2,
+                    behavior,
                 });
                 idx = i;
-                // restart progress
-                if (progress) {
-                    progress.style.transition = "none";
-                    progress.style.width = "0%";
-                    // allow style to flush
-                    requestAnimationFrame(() => {
-                        progress.style.transition = `width ${interval}ms linear`;
-                        progress.style.width = "100%";
+                markActiveSoon();
+            };
+
+            // mark active (no snap) -------------------------------------------------
+            let markTO;
+            const markActiveSoon = () => {
+                clearTimeout(markTO);
+                markTO = setTimeout(() => {
+                    const viewportCenter =
+                        track.scrollLeft + track.clientWidth / 2;
+                    let nearest = 0,
+                        min = Infinity;
+                    items.forEach((el, i) => {
+                        const d = Math.abs(centerOf(el) - viewportCenter);
+                        if (d < min) {
+                            min = d;
+                            nearest = i;
+                        }
+                    });
+                    items.forEach((el, i) =>
+                        el.setAttribute("data-active", String(i === nearest)),
+                    );
+                    idx = nearest;
+                    normalizeIfNeeded();
+                }, 60);
+            };
+
+            // infinite without visual jump ------------------------------------------
+            const normalizeIfNeeded = () => {
+                if (idx < loopPad) {
+                    idx += originalCount;
+                    track.scrollTo({
+                        left: centerOf(items[idx]) - track.clientWidth / 2,
+                        behavior: "auto",
+                    });
+                } else if (idx >= loopPad + originalCount) {
+                    idx -= originalCount;
+                    track.scrollTo({
+                        left: centerOf(items[idx]) - track.clientWidth / 2,
+                        behavior: "auto",
                     });
                 }
-            }
+            };
 
-            function next() {
-                go((idx + 1) % items.length);
-            }
-            function start() {
+            // autoplay ---------------------------------------------------------------
+            const next = () => centerOnIndex(idx + 1);
+            const start = () => {
                 stop();
-                if (!prefersReduced) {
-                    go(idx);
-                    timer = setInterval(next, interval);
-                }
-            }
-            function stop() {
-                if (timer) {
-                    clearInterval(timer);
-                    timer = undefined;
-                }
-                if (progress) progress.style.width = "0%";
-            }
+                if (!prefersReduced) timer = setInterval(next, interval);
+            };
+            const stop = () => {
+                if (timer) clearInterval(timer);
+                timer = undefined;
+            };
 
-            // ambient start
-            start();
-            // pause on interaction
+            // events -----------------------------------------------------------------
+            track.addEventListener("scroll", markActiveSoon, { passive: true });
             track.addEventListener("mouseenter", stop);
             track.addEventListener("mouseleave", start);
             track.addEventListener("touchstart", stop, { passive: true });
             track.addEventListener("touchend", start, { passive: true });
-
-            // snap observer → keep idx in sync when user swipes
-            let snapTimer;
-            track.addEventListener("scroll", () => {
-                clearTimeout(snapTimer);
-                snapTimer = setTimeout(() => {
-                    let nearest = 0,
-                        min = Infinity;
-                    items.forEach((el, i) => {
-                        const r = el.getBoundingClientRect();
-                        const c = Math.abs(
-                            (r.left + r.right) / 2 -
-                                (track.getBoundingClientRect().width / 2 +
-                                    track.getBoundingClientRect().left),
-                        );
-                        if (c < min) {
-                            min = c;
-                            nearest = i;
-                        }
-                    });
-                    if (nearest !== idx) {
-                        idx = nearest;
-                        go(idx);
-                    }
-                }, 120);
+            track.addEventListener("keydown", (e) => {
+                if (e.key === "ArrowRight") {
+                    e.preventDefault();
+                    stop();
+                    centerOnIndex(idx + 1);
+                } else if (e.key === "ArrowLeft") {
+                    e.preventDefault();
+                    stop();
+                    centerOnIndex(idx - 1);
+                }
             });
-            window.addEventListener("pagehide", stop, { once: true });
+
+            // init -------------------------------------------------------------------
+            requestAnimationFrame(() => {
+                centerOnIndex(idx, "auto");
+                start();
+            });
+
+            // resize recenter
+            let ro;
+            if ("ResizeObserver" in window) {
+                ro = new ResizeObserver(() => centerOnIndex(idx, "auto"));
+                ro.observe(track);
+            }
+            window.addEventListener(
+                "pagehide",
+                () => {
+                    stop();
+                    ro?.disconnect();
+                },
+                { once: true },
+            );
         });
     })();
 </script>
