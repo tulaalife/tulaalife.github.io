@@ -83,7 +83,7 @@ const hasTips = tipFive.length > 0;
           subtitle="Expert-guided sequences for everyday needs"
           items={yogaItems}
           ctaHref="/yoga"
-          ctaLabel="Explore yoga"
+          ctaLabel="Explore yoga plans"
           intervalMs={5200}
         />
       </section>
@@ -149,25 +149,52 @@ const hasTips = tipFive.length > 0;
 </Site>
 
 <style>
-  /* Layout helpers match tokens from layout */
+  /* Page layout rhythm */
   :root {
     --wrap: min(100%, calc(var(--container) + 0px));
+    /* responsive spacing scale */
+    --vspace-sm: clamp(12px, 1.6vw, 16px);
+    --vspace-md: clamp(20px, 2.5vw, 28px);
+    --vspace-lg: clamp(32px, 4vw, 48px);
+    --vspace-xl: clamp(24px, 2vw, 40px);
+    --hairline: color-mix(in oklab, var(--ring) 70%, transparent);
   }
 
+  /* Standard section block */
   .section {
-    margin: 32px auto;
-    width: var(--wrap);
+    width: min(100%, var(--container));
+    margin-inline: auto;
+    padding-block: var(--vspace-md) var(--vspace-lg);
+    position: relative;
   }
 
-  /* Premium hero with soft ambient glow */
+  /* Structured separation between blocks */
+  .section + .section {
+    margin-top: var(--vspace-xl);
+    padding-top: var(--vspace-xl);
+    border-top: 1px dashed var(--hairline);
+  }
+
+  /* HERO has its own spacing so it breathes */
   .hero {
     position: relative;
-    margin: 6px auto 6px;
     width: var(--wrap);
+    margin: var(--vspace-sm) auto 0;
+    padding-block: var(--vspace-lg) var(--vspace-md);
     isolation: isolate;
   }
 
-  /* Buttons */
+  /* Let sections decide spacing: remove inner margins from children here */
+  .section :where(.peek, .ts-wrap, .more) {
+    margin: 0; /* kill internal margins so parent rhythm wins */
+  }
+
+  /* Optional: small buffer under each component’s own header to align content */
+  .section :where(.peek__head, .ts-header) {
+    margin-bottom: var(--vspace-sm);
+  }
+
+  /* Buttons (unchanged, kept for page parity) */
   .btn {
     display: inline-block;
     padding: 12px 16px;
@@ -190,11 +217,11 @@ const hasTips = tipFive.length > 0;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   }
   .btn--solid:active {
-    transform: translateY(0);
+    transform: none;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   }
 
-  /* Reveal animation (respects reduced-motion) */
+  /* Reveal animation (unchanged) */
   .reveal {
     opacity: 0;
     transform: translateY(10px);
