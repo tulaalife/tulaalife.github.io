@@ -1,5 +1,5 @@
 ---
-// components/PeekScroller.astro — centered + CTAButton
+// components/PeekScroller.astro — Premium centered UI
 import CTAButton from "./CTAButton.astro";
 
 export interface Item {
@@ -24,7 +24,7 @@ const {
   items = [],
   ctaHref,
   ctaLabel,
-  intervalMs = 5200, // parity only
+  intervalMs = 5200,
 } = Astro.props;
 
 const hasCTA = Boolean(ctaHref && ctaLabel);
@@ -36,18 +36,13 @@ const initial = items[0] ?? null;
     class="peek"
     role="region"
     aria-labelledby={`peek-title-${title.replaceAll(' ', '-')}`}
-    data-interval={String(intervalMs)}
   >
     <header class="peek__head">
       <h2 id={`peek-title-${title.replaceAll(' ', '-')}`} class="peek__title">{title}</h2>
       {subtitle && <p class="peek__subtitle">{subtitle}</p>}
-
-      {hasCTA && (
-        <CTAButton href={ctaHref!} label={ctaLabel!} variant="solid" size="md" />
-      )}
     </header>
 
-    {/* Preview window */}
+    {/* Preview card */}
     <a
       class="peek__preview"
       data-preview
@@ -67,12 +62,9 @@ const initial = items[0] ?? null;
       </div>
     </a>
 
-    {/* Horizontal scroll list */}
+    {/* Carousel */}
     <div class="peek__rail-wrap">
-      <ul class="peek__rail"
-          role="listbox"
-          aria-label={`${title} list`}
-          data-rail>
+      <ul class="peek__rail" data-rail>
         {items.map((it, idx) => (
           <li role="option" aria-selected={idx === 0 ? "true" : "false"}>
             <button
@@ -85,7 +77,6 @@ const initial = items[0] ?? null;
               data-subtitle={it.subtitle ?? ""}
               data-image={it.image ?? ""}
               data-emoji={it.emojiFallback ?? ""}
-              aria-label={`Select: ${it.title}`}
             >
               <div class="peek__thumb">
                 {it.image ? (
@@ -102,10 +93,16 @@ const initial = items[0] ?? null;
       </ul>
     </div>
 
-    <!-- classic script so document.currentScript works -->
+    {/* CTA below carousel */}
+    {hasCTA && (
+      <div class="peek__cta-wrap">
+        <CTAButton href={ctaHref!} label={ctaLabel!} variant="solid" size="lg" />
+      </div>
+    )}
+
     <script is:inline>
       (function () {
-        const root = document.currentScript && document.currentScript.closest('.peek');
+        const root = document.currentScript?.closest('.peek');
         if (!root) return;
         const rail = root.querySelector('[data-rail]');
         const preview = root.querySelector('[data-preview]');
@@ -115,71 +112,30 @@ const initial = items[0] ?? null;
 
         function setSelected(cardBtn) {
           if (!cardBtn || !preview) return;
+          rail?.querySelectorAll('li[role="option"]').forEach((opt) =>
+            opt.setAttribute('aria-selected', opt.contains(cardBtn) ? 'true' : 'false')
+          );
+          const href = cardBtn.dataset.href;
+          const title = cardBtn.dataset.title;
+          const sub = cardBtn.dataset.subtitle;
+          const img = cardBtn.dataset.image;
+          const emo = cardBtn.dataset.emoji;
 
-          rail?.querySelectorAll('li[role="option"]').forEach((opt) => {
-            opt.setAttribute('aria-selected', opt.contains(cardBtn) ? 'true' : 'false');
-          });
-
-          const href = cardBtn.dataset.href || '#';
-          const title = cardBtn.dataset.title || '';
-          const sub = cardBtn.dataset.subtitle || '';
-          const img = cardBtn.dataset.image || '';
-          const emo = cardBtn.dataset.emoji || '';
-
-          preview.setAttribute('href', href);
-          preview.setAttribute('aria-label', `Open: ${title}`);
-
-          media.innerHTML = '';
-          if (img) {
-            const im = new Image();
-            im.loading = 'lazy';
-            im.alt = '';
-            im.src = img;
-            media.appendChild(im);
-          } else {
-            const div = document.createElement('div');
-            div.className = 'peek__emoji';
-            div.textContent = emo || '🧘';
-            media.appendChild(div);
-          }
-
-          if (titleEl) titleEl.textContent = title;
-          if (subEl) {
-            subEl.textContent = sub;
-            subEl.style.display = sub ? '' : 'none';
-          }
+          preview.href = href;
+          media.innerHTML = img
+            ? `<img src="${img}" alt="" loading="lazy" />`
+            : `<div class='peek__emoji'>${emo || "🧘"}</div>`;
+          titleEl.textContent = title;
+          subEl.textContent = sub || "";
+          subEl.style.display = sub ? "" : "none";
         }
 
-        rail?.addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-card]');
+        rail?.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-card]");
           if (btn) setSelected(btn);
         });
 
-        rail?.addEventListener('focusin', (e) => {
-          const btn = e.target.closest && e.target.closest('[data-card]');
-          if (btn) setSelected(btn);
-        });
-
-        rail?.addEventListener('keydown', (e) => {
-          const cards = Array.from(rail.querySelectorAll('[data-card]'));
-          const selectedLi = rail.querySelector('li[role="option"][aria-selected="true"]');
-          const activeIdx = Math.max(0, cards.findIndex((c) => c.closest('li') === selectedLi));
-
-          if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
-            e.preventDefault();
-            const delta = e.key === 'ArrowRight' ? 1 : -1;
-            const next = cards[(activeIdx + delta + cards.length) % cards.length];
-            next?.focus();
-            setSelected(next);
-            next?.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
-          } else if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            const btn = cards[activeIdx] || cards[0];
-            if (btn) setSelected(btn);
-          }
-        });
-
-        const first = rail?.querySelector('[data-card]');
+        const first = rail?.querySelector("[data-card]");
         if (first) setSelected(first);
       })();
     </script>
@@ -187,109 +143,135 @@ const initial = items[0] ?? null;
 )}
 
 <style>
-  /* layout: center all content, constrain width */
   .peek {
     width: 100%;
     display: grid;
-    gap: clamp(12px, 1.8vw, 18px);
-    justify-items: center; /* center children horizontally */
+    gap: clamp(16px, 2vw, 24px);
+    justify-items: center;
   }
 
   .peek__head {
-    display: grid;
-    justify-items: center;
     text-align: center;
-    gap: 8px;
-    max-width: min(100%, 960px);
   }
-
   .peek__title {
-    font-size: clamp(18px, 2.6vw, 24px);
+    font-size: clamp(20px, 3vw, 26px);
     font-weight: 750;
     margin: 0;
   }
   .peek__subtitle {
-    margin: 0;
+    margin: 4px 0 0;
     opacity: 0.8;
-    font-size: clamp(13px, 1.8vw, 15px);
+    font-size: clamp(14px, 1.6vw, 16px);
   }
 
-  /* Preview centered & constrained */
   .peek__preview {
     width: min(100%, 960px);
     display: grid;
     gap: 10px;
     text-decoration: none;
-    background: color-mix(in oklab, var(--card) 80%, transparent);
-    border: 1px solid color-mix(in oklab, var(--ring) 60%, transparent);
-    border-radius: 16px;
-    padding: clamp(10px, 1.8vw, 14px);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.1);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background: var(--card);
+  }
+  .peek__preview:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
   }
 
   .peek__media {
-    position: relative;
-    aspect-ratio: 16 / 9;
-    border-radius: 12px;
+    aspect-ratio: 16/9;
     overflow: hidden;
-    background: color-mix(in oklab, var(--bg) 92%, transparent);
   }
-  .peek__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .peek__emoji { width: 100%; height: 100%; display: grid; place-items: center; font-size: clamp(48px, 8vw, 80px); }
+  .peek__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 🔥 center-crop */
+    display: block;
+  }
+  .peek__emoji {
+    display: grid;
+    place-items: center;
+    font-size: clamp(48px, 8vw, 80px);
+  }
 
-  .peek__meta { display: grid; gap: 4px; text-align: center; }
-  .peek__meta-title { font-weight: 700; font-size: clamp(16px, 2.2vw, 18px); color: var(--text); }
-  .peek__meta-sub { font-size: clamp(13px, 1.8vw, 14px); opacity: .8; }
+  .peek__meta {
+    text-align: center;
+    padding: 8px 16px 14px;
+  }
+  .peek__meta-title {
+    font-weight: 700;
+    font-size: clamp(16px, 2vw, 18px);
+    color: var(--accent);
+  }
+  .peek__meta-sub {
+    font-size: 14px;
+    opacity: 0.85;
+  }
 
-  /* Rail centered & constrained */
+  /* Carousel */
   .peek__rail-wrap {
     width: min(100%, 960px);
-    overflow: hidden;
+    overflow-x: auto;
   }
   .peek__rail {
     display: grid;
     grid-auto-flow: column;
     grid-auto-columns: min(56%, 320px);
-    gap: clamp(10px, 1.6vw, 14px);
-    overflow-x: auto;
-    padding: 2px;
-    margin: 0 auto;
+    gap: 14px;
+    padding: 4px 2px;
+    margin: 0;
     list-style: none;
     scroll-snap-type: x proximity;
     justify-content: start;
   }
-  .peek__rail li { scroll-snap-align: center; }
 
   .peek__card {
+    background: color-mix(in oklab, var(--card) 80%, transparent);
+    border-radius: 14px;
+    border: 1px solid color-mix(in oklab, var(--ring) 70%, transparent);
     display: grid;
     gap: 8px;
-    text-align: center; /* center text inside cards */
-    background: color-mix(in oklab, var(--card) 80%, transparent);
-    border: 1px solid color-mix(in oklab, var(--ring) 60%, transparent);
-    border-radius: 12px;
-    padding: 10px;
+    text-align: center;
+    transition: all 0.25s ease;
     cursor: pointer;
-    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
   }
-  .peek__card:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
-  [role="option"][aria-selected="true"] .peek__card {
+  .peek__card:hover {
+    transform: translateY(-2px);
     border-color: var(--accent);
-    box-shadow: 0 6px 18px rgba(0,0,0,.06);
-    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
   }
 
   .peek__thumb {
-    position: relative;
     aspect-ratio: 4 / 3;
-    border-radius: 10px;
+    border-radius: 12px;
     overflow: hidden;
-    background: color-mix(in oklab, var(--bg) 92%, transparent);
   }
-  .peek__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .peek__thumb-emoji { width: 100%; height: 100%; display: grid; place-items: center; font-size: clamp(36px, 6vw, 64px); }
+  .peek__thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 🔥 center-crop */
+    transition: transform 0.25s ease;
+  }
+  .peek__card:hover .peek__thumb img {
+    transform: scale(1.04);
+  }
 
-  .peek__card-title { font-weight: 650; font-size: 14.5px; }
-  .peek__card-sub { font-size: 13px; opacity: .8; line-height: 1.25; }
+  .peek__card-title {
+    font-weight: 650;
+    font-size: 14.5px;
+    color: var(--accent);
+  }
+  .peek__card-sub {
+    font-size: 13px;
+    opacity: 0.8;
+    line-height: 1.3;
+    margin-bottom: 10px;
+  }
 
-  @media (prefers-reduced-motion: reduce) { .peek__card { transition: none; } }
+  .peek__cta-wrap {
+    margin-top: clamp(12px, 2vw, 20px);
+  }
 </style>
