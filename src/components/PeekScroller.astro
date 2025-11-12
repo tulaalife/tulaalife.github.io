@@ -1,6 +1,6 @@
 ---
-// PeekScroller.astro — Preview + Scroll list (rewrite, fixed)
-// API kept same.
+// components/PeekScroller.astro — centered + CTAButton
+import CTAButton from "./CTAButton.astro";
 
 export interface Item {
   href: string;
@@ -39,13 +39,11 @@ const initial = items[0] ?? null;
     data-interval={String(intervalMs)}
   >
     <header class="peek__head">
-      <div class="peek__titles">
-        <h2 id={`peek-title-${title.replaceAll(' ', '-')}`} class="peek__title">{title}</h2>
-        {subtitle && <p class="peek__subtitle">{subtitle}</p>}
-      </div>
+      <h2 id={`peek-title-${title.replaceAll(' ', '-')}`} class="peek__title">{title}</h2>
+      {subtitle && <p class="peek__subtitle">{subtitle}</p>}
 
       {hasCTA && (
-        <a href={ctaHref!} class="peek__cta btn btn--solid">{ctaLabel}</a>
+        <CTAButton href={ctaHref!} label={ctaLabel!} variant="solid" size="md" />
       )}
     </header>
 
@@ -104,11 +102,11 @@ const initial = items[0] ?? null;
       </ul>
     </div>
 
-    <!-- Use classic script so document.currentScript works -->
+    <!-- classic script so document.currentScript works -->
     <script is:inline>
       (function () {
         const root = document.currentScript && document.currentScript.closest('.peek');
-        if (!root) return; // guard if script moved/bundled
+        if (!root) return;
         const rail = root.querySelector('[data-rail]');
         const preview = root.querySelector('[data-preview]');
         const media = root.querySelector('[data-media]');
@@ -118,7 +116,6 @@ const initial = items[0] ?? null;
         function setSelected(cardBtn) {
           if (!cardBtn || !preview) return;
 
-          // Update aria-selected on options
           rail?.querySelectorAll('li[role="option"]').forEach((opt) => {
             opt.setAttribute('aria-selected', opt.contains(cardBtn) ? 'true' : 'false');
           });
@@ -129,11 +126,9 @@ const initial = items[0] ?? null;
           const img = cardBtn.dataset.image || '';
           const emo = cardBtn.dataset.emoji || '';
 
-          // Update link target
           preview.setAttribute('href', href);
           preview.setAttribute('aria-label', `Open: ${title}`);
 
-          // Swap media (img or emoji)
           media.innerHTML = '';
           if (img) {
             const im = new Image();
@@ -148,7 +143,6 @@ const initial = items[0] ?? null;
             media.appendChild(div);
           }
 
-          // Update text
           if (titleEl) titleEl.textContent = title;
           if (subEl) {
             subEl.textContent = sub;
@@ -156,22 +150,18 @@ const initial = items[0] ?? null;
           }
         }
 
-        // Click selection
         rail?.addEventListener('click', (e) => {
           const btn = e.target.closest('[data-card]');
           if (btn) setSelected(btn);
         });
 
-        // Focus selection (helps keyboard & screen readers)
         rail?.addEventListener('focusin', (e) => {
           const btn = e.target.closest && e.target.closest('[data-card]');
           if (btn) setSelected(btn);
         });
 
-        // Keyboard nav (Left/Right + Enter/Space)
         rail?.addEventListener('keydown', (e) => {
           const cards = Array.from(rail.querySelectorAll('[data-card]'));
-          // Find selected <li>, then its button
           const selectedLi = rail.querySelector('li[role="option"][aria-selected="true"]');
           const activeIdx = Math.max(0, cards.findIndex((c) => c.closest('li') === selectedLi));
 
@@ -189,7 +179,6 @@ const initial = items[0] ?? null;
           }
         });
 
-        // Initial selection sync (in case SSR changed)
         const first = rail?.querySelector('[data-card]');
         if (first) setSelected(first);
       })();
@@ -198,41 +187,37 @@ const initial = items[0] ?? null;
 )}
 
 <style>
+  /* layout: center all content, constrain width */
   .peek {
     width: 100%;
-    margin: 0;
     display: grid;
     gap: clamp(12px, 1.8vw, 18px);
+    justify-items: center; /* center children horizontally */
   }
 
   .peek__head {
-    display: flex;
-    align-items: end;
-    justify-content: space-between;
-    gap: 12px;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    gap: 8px;
+    max-width: min(100%, 960px);
   }
-
-  .peek__titles { display: grid; gap: 4px; }
 
   .peek__title {
     font-size: clamp(18px, 2.6vw, 24px);
     font-weight: 750;
     margin: 0;
   }
-
   .peek__subtitle {
     margin: 0;
     opacity: 0.8;
     font-size: clamp(13px, 1.8vw, 15px);
   }
 
-  .peek__cta { white-space: nowrap; }
-
-  /* Preview card */
+  /* Preview centered & constrained */
   .peek__preview {
+    width: min(100%, 960px);
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
     gap: 10px;
     text-decoration: none;
     background: color-mix(in oklab, var(--card) 80%, transparent);
@@ -250,18 +235,17 @@ const initial = items[0] ?? null;
     background: color-mix(in oklab, var(--bg) 92%, transparent);
   }
   .peek__media img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .peek__emoji {
-    width: 100%; height: 100%;
-    display: grid; place-items: center;
-    font-size: clamp(48px, 8vw, 80px);
-  }
+  .peek__emoji { width: 100%; height: 100%; display: grid; place-items: center; font-size: clamp(48px, 8vw, 80px); }
 
-  .peek__meta { display: grid; gap: 4px; }
+  .peek__meta { display: grid; gap: 4px; text-align: center; }
   .peek__meta-title { font-weight: 700; font-size: clamp(16px, 2.2vw, 18px); color: var(--text); }
   .peek__meta-sub { font-size: clamp(13px, 1.8vw, 14px); opacity: .8; }
 
-  /* Rail (scroll list) */
-  .peek__rail-wrap { overflow: hidden; }
+  /* Rail centered & constrained */
+  .peek__rail-wrap {
+    width: min(100%, 960px);
+    overflow: hidden;
+  }
   .peek__rail {
     display: grid;
     grid-auto-flow: column;
@@ -269,17 +253,17 @@ const initial = items[0] ?? null;
     gap: clamp(10px, 1.6vw, 14px);
     overflow-x: auto;
     padding: 2px;
-    margin: 0;
+    margin: 0 auto;
     list-style: none;
     scroll-snap-type: x proximity;
+    justify-content: start;
   }
   .peek__rail li { scroll-snap-align: center; }
 
   .peek__card {
     display: grid;
     gap: 8px;
-    width: 100%;
-    text-align: left;
+    text-align: center; /* center text inside cards */
     background: color-mix(in oklab, var(--card) 80%, transparent);
     border: 1px solid color-mix(in oklab, var(--ring) 60%, transparent);
     border-radius: 12px;
@@ -302,11 +286,7 @@ const initial = items[0] ?? null;
     background: color-mix(in oklab, var(--bg) 92%, transparent);
   }
   .peek__thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .peek__thumb-emoji {
-    width: 100%; height: 100%;
-    display: grid; place-items: center;
-    font-size: clamp(36px, 6vw, 64px);
-  }
+  .peek__thumb-emoji { width: 100%; height: 100%; display: grid; place-items: center; font-size: clamp(36px, 6vw, 64px); }
 
   .peek__card-title { font-weight: 650; font-size: 14.5px; }
   .peek__card-sub { font-size: 13px; opacity: .8; line-height: 1.25; }
