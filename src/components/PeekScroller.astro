@@ -14,6 +14,8 @@ export interface Props {
     items: Item[];
     ctaHref?: string;
     ctaLabel?: string;
+
+    /** kept for API compatibility, unused in this version */
     intervalMs?: number;
     autoplay?: boolean;
 }
@@ -22,421 +24,404 @@ const {
     title,
     subtitle,
     items = [],
-    ctaHref,
-    ctaLabel,
-    intervalMs = 5200,
-    autoplay = true,
+    ctaHref = "/yoga",
+    ctaLabel = "Explore yoga plans",
 } = Astro.props;
 
-const hasCTA = Boolean(ctaHref && ctaLabel);
-const showGrid = items.length > 3;
-
-function padForLoop(src: Item[]): Item[] {
-    if (src.length <= 3) return [...src, ...src, ...src];
-    const head = src.slice(-2),
-        tail = src.slice(0, 2);
-    return [...head, ...src, ...tail];
-}
-const loopPad = 2;
-const extended = padForLoop(items);
+// Use the first item's href, or a default fallback if the list is empty
+const defaultPreviewHref = items[0]?.href ?? "/";
 ---
 
 {
     items.length > 0 && (
         <section
-            class="peek"
-            data-interval={String(intervalMs)}
-            data-loop-pad={String(loopPad)}
-            data-autoplay={String(autoplay)}
-            aria-label={title}
+            class="yoga-plans"
+            aria-labelledby="yoga-plans-title"
             role="region"
-            aria-roledescription="carousel"
         >
-            <header class="peek__head">
-                <h2 class="peek__title">{title}</h2>
-                {subtitle && <p class="peek__subtitle">{subtitle}</p>}
+            {/* Header */}
+            <header class="yoga-header">
+                <h2 id="yoga-plans-title" class="yoga-title">
+                    {title}
+                </h2>
+                {subtitle && <p class="yoga-subtitle">{subtitle}</p>}
             </header>
 
-            <div class="peek__rail">
+            {/* Preview */}
+            <div class="yoga-preview" id="yoga-preview">
+                <a class="yoga-preview-card" href={defaultPreviewHref}>
+                    {items[0]?.image ? (
+                        <img
+                            src={items[0].image}
+                            alt={items[0].title}
+                            decoding="async"
+                        />
+                    ) : (
+                        <div class="yoga-preview-emoji" aria-hidden="true">
+                            {items[0]?.emojiFallback ?? "🧘"}
+                        </div>
+                    )}
+                    <div class="yoga-preview-info">
+                        <h3 class="yoga-preview-title">{items[0]?.title}</h3>
+                        {items[0]?.subtitle && (
+                            <p class="yoga-preview-sub">{items[0]?.subtitle}</p>
+                        )}
+                    </div>
+                </a>
+            </div>
+
+            {/* Horizontal scrollbar with chevrons */}
+            <div class="scroll-wrap" aria-label="Yoga plans scroller">
+                <button
+                    class="scroll-btn left"
+                    aria-label="Scroll left"
+                    type="button"
+                >
+                    ‹
+                </button>
+
                 <ul
-                    class="peek__track"
-                    role="list"
-                    data-count={String(items.length)}
+                    class="scroll-track"
+                    id="scroll-track"
+                    role="listbox"
+                    aria-orientation="horizontal"
                     tabindex="0"
                 >
-                    {extended.map((it, i) => (
-                        <li class="peek__item" data-idx={String(i)}>
-                            <a
-                                class="card"
-                                href={it.href}
-                                aria-label={it.title}
-                            >
-                                <div class="card__media">
-                                    {it.image ? (
-                                        <img
-                                            src={it.image}
-                                            alt={it.title}
-                                            loading="lazy"
-                                            decoding="async"
-                                        />
-                                    ) : (
-                                        <div
-                                            class="card__emoji"
-                                            aria-hidden="true"
-                                        >
-                                            {it.emojiFallback ?? "💡"}
-                                        </div>
-                                    )}
-                                </div>
-                                <div class="card__body">
-                                    <h3 class="card__title">{it.title}</h3>
-                                    {it.subtitle && (
-                                        <p class="card__sub">{it.subtitle}</p>
-                                    )}
-                                </div>
-                            </a>
+                    {items.map((it, idx) => (
+                        <li
+                            class="scroll-item"
+                            role="option"
+                            aria-selected={idx === 0 ? "true" : "false"}
+                            data-href={it.href}
+                            data-title={it.title}
+                            data-sub={it.subtitle || ""}
+                            data-img={it.image || ""}
+                            data-emoji={it.emojiFallback || "🧘"}
+                        >
+                            <div class="thumb">
+                                {it.image ? (
+                                    <img
+                                        src={it.image}
+                                        alt={it.title}
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                ) : (
+                                    <div class="thumb-emoji" aria-hidden="true">
+                                        {it.emojiFallback ?? "🧘"}
+                                    </div>
+                                )}
+                            </div>
+                            <span class="thumb-title">{it.title}</span>
                         </li>
                     ))}
                 </ul>
+
+                <button
+                    class="scroll-btn right"
+                    aria-label="Scroll right"
+                    type="button"
+                >
+                    ›
+                </button>
             </div>
 
-            {hasCTA && (
-                <div class="peek__ctaRow">
-                    <CTAButton
-                        href={ctaHref!}
-                        label={ctaLabel!}
-                        icon="↗"
-                        variant="soft"
-                        size="lg"
-                    />
-                </div>
-            )}
-
-            {showGrid && (
-                <div class="peek__grid" aria-label="More to explore">
-                    {items.slice(0, 6).map((it) => (
-                        <a class="mini" href={it.href}>
-                            {it.image ? (
-                                <img
-                                    src={it.image}
-                                    alt={it.title}
-                                    loading="lazy"
-                                    decoding="async"
-                                />
-                            ) : (
-                                <div class="mini__emoji" aria-hidden="true">
-                                    {it.emojiFallback ?? "💡"}
-                                </div>
-                            )}
-                            <div class="mini__txt">
-                                <strong class="mini__title">{it.title}</strong>
-                                {it.subtitle && (
-                                    <span class="mini__sub">{it.subtitle}</span>
-                                )}
-                            </div>
-                        </a>
-                    ))}
-                </div>
-            )}
+            {/* CTA */}
+            <div class="cta-row">
+                <CTAButton
+                    href={ctaHref}
+                    label={ctaLabel}
+                    icon="↗"
+                    variant="soft"
+                    size="lg"
+                />
+            </div>
         </section>
     )
 }
-
 <style>
-    .peek {
-        margin: 28px auto 22px;
-        padding: 10px 0 0;
+    .yoga-plans {
         max-width: 1120px;
+        margin: 0 auto;
+        padding: clamp(20px, 4vw, 38px) 16px;
     }
-    .peek__head {
+
+    .yoga-header {
         text-align: center;
-        margin: 0 0 10px;
+        margin-bottom: clamp(16px, 2.6vw, 24px);
     }
-    .peek__title {
-        margin: 0 0 6px;
-        font-size: clamp(20px, 2.6vw, 28px);
+    .yoga-title {
+        margin: 0 0 clamp(6px, 1vw, 10px);
+        font-size: clamp(24px, 3.2vw, 34px);
+        letter-spacing: 0.2px;
     }
-    .peek__subtitle {
+    .yoga-subtitle {
         margin: 0;
         color: var(--muted);
-        font-size: clamp(14px, 2vw, 16px);
+        font-size: clamp(14px, 2vw, 18px);
     }
 
-    .peek__rail {
-        position: relative;
+    /* Preview */
+    .yoga-preview {
+        /* Adjusted vertical margin for a bit more space */
+        margin: clamp(10px, 2vw, 20px) auto clamp(16px, 3vw, 30px);
+        max-width: 680px;
     }
-    .peek__track {
-        display: flex;
-        gap: 14px;
-        list-style: none;
-        margin: 0;
-        padding: 0 8px 16px;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
-    }
-    .peek__track:focus-visible {
-        outline: 3px solid var(--btn);
-        outline-offset: 4px;
-        border-radius: 4px;
-    }
-    .peek__track::-webkit-scrollbar {
-        display: none;
-    }
-
-    .peek__item {
-        flex: 0 0 88%;
-        transform-origin: center;
-        transition:
-            transform 0.24s,
-            filter 0.24s,
-            opacity 0.24s;
-        opacity: 0.96;
-    }
-    @media (min-width: 960px) {
-        .peek__item {
-            flex-basis: 72%;
-        }
-    }
-    .peek__item[data-active="true"] {
-        transform: scale(1.015);
-        opacity: 1;
-    }
-
-    .card {
+    .yoga-preview-card {
         display: block;
+        border-radius: 18px;
+        overflow: hidden;
         text-decoration: none;
         color: inherit;
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        background: var(--card);
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 30%);
+        transition:
+            transform 0.18s ease,
+            box-shadow 0.18s ease;
     }
-    .card__media {
-        position: relative;
-        overflow: hidden;
-        border-radius: 18px;
-        background: color-mix(in oklch, var(--ring), transparent 80%);
-        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.08);
-        outline: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
+    .yoga-preview-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.12);
     }
-    .card__media img,
-    .card__emoji {
+    .yoga-preview-card img,
+    .yoga-preview-emoji {
         width: 100%;
         aspect-ratio: 16/10;
         display: block;
         object-fit: cover;
-        transform: translateZ(0);
+        background: color-mix(in oklch, var(--ring), transparent 85%);
     }
-    .card__emoji {
+    .yoga-preview-emoji {
         display: grid;
         place-items: center;
-        font-size: 56px;
-        background: color-mix(in oklch, var(--ring), transparent 78%);
+        font-size: 64px;
     }
-    .card__body {
-        padding: 12px 10px 0;
+    .yoga-preview-info {
+        padding: 12px 14px 14px;
         text-align: center;
     }
-    .card__title {
+    .yoga-preview-title {
         margin: 0;
-        font-size: clamp(17px, 2.2vw, 20px);
-        font-weight: 700;
+        font-size: clamp(18px, 2.2vw, 22px);
         line-height: 1.2;
     }
-    .card__sub {
+    .yoga-preview-sub {
         margin: 6px 0 0;
-        color: var(--muted);
         font-size: clamp(13px, 2vw, 15px);
+        color: var(--muted);
     }
 
-    .peek__ctaRow {
+    /* Scroller */
+    .scroll-wrap {
+        position: relative;
         display: flex;
-        justify-content: center;
-        margin: 14px 0 6px;
+        align-items: center;
+        gap: 8px;
+        margin: clamp(8px, 2.4vw, 20px) 0 clamp(14px, 3vw, 26px);
+    }
+    .scroll-track {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+        list-style: none;
+        margin: 0;
+        /* FIX: Added horizontal padding to center the first/last items */
+        padding: 8px 16px 10px;
+        flex: 1 1 auto;
+        /* FIX: Enable scroll snapping */
+        scroll-snap-type: x mandatory;
+    }
+    .scroll-track:focus-visible {
+        outline: 3px solid color-mix(in oklch, var(--accent), transparent 40%);
+        outline-offset: 3px;
+        border-radius: 8px;
+    }
+    .scroll-track::-webkit-scrollbar {
+        display: none;
     }
 
-    .peek__grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
-        margin: 12px 10px 0;
+    .scroll-item {
+        flex: 0 0 auto;
+        /* FIX: Made scroll items smaller */
+        width: 140px;
+        cursor: pointer;
+        user-select: none;
+        text-align: center;
+        transition:
+            transform 0.16s ease,
+            opacity 0.16s ease;
+        /* FIX: Center the item when snapped */
+        scroll-snap-align: center;
     }
-    @media (min-width: 680px) {
-        .peek__grid {
-            grid-template-columns: repeat(3, minmax(0, 1fr));
-        }
+    .scroll-item[aria-selected="true"] {
+        transform: scale(1.02);
     }
-    .mini {
-        display: grid;
-        grid-template-columns: 88px 1fr;
-        gap: 10px;
-        align-items: center;
-        padding: 8px;
-        border-radius: 14px;
-        text-decoration: none;
-        color: inherit;
-        background: color-mix(in oklch, var(--card), transparent 0%);
+
+    .thumb {
+        border-radius: 12px;
+        overflow: hidden;
+        background: color-mix(in oklch, var(--ring), transparent 80%);
         border: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
     }
-    .mini img,
-    .mini__emoji {
-        width: 88px;
-        height: 64px;
+    .thumb img,
+    .thumb-emoji {
+        width: 100%;
+        aspect-ratio: 1/1;
         object-fit: cover;
-        border-radius: 10px;
         display: block;
     }
-    .mini__emoji {
+    .thumb-emoji {
         display: grid;
         place-items: center;
-        font-size: 28px;
-        background: color-mix(in oklch, var(--ring), transparent 80%);
+        font-size: 42px;
     }
-    .mini__txt {
-        display: grid;
-        gap: 2px;
-    }
-    .mini__title {
-        font-size: 0.95rem;
+    .thumb-title {
+        display: block;
+        margin-top: 6px;
+        font-size: 0.9rem; /* Slightly smaller font to match item size */
         line-height: 1.2;
     }
-    .mini__sub {
-        color: var(--muted);
-        font-size: 0.8rem;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+
+    /* Chevron buttons */
+    .scroll-btn {
+        background: linear-gradient(
+            180deg,
+            color-mix(in oklch, var(--card), white 6%),
+            color-mix(in oklch, var(--card), transparent 8%)
+        );
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 30%);
+        color: var(--fg);
+        border-radius: 50%;
+        width: 36px;
+        height: 36px;
+        font-size: 22px;
+        line-height: 30px;
+        display: grid;
+        place-items: center;
+        cursor: pointer;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        transition:
+            background 0.18s ease,
+            transform 0.18s ease;
+        flex: 0 0 auto;
+    }
+    .scroll-btn:hover {
+        transform: translateY(-1px);
+    }
+    .scroll-btn:active {
+        transform: translateY(0);
+    }
+
+    .cta-row {
+        display: flex;
+        justify-content: center;
+        margin-top: 8px;
     }
 </style>
 
 <script is:inline>
+    // The script is fine, but I'll update the button scrolling slightly
+    // to match the new item width for a better feel.
     (() => {
-        const prefersReducedMotion = matchMedia(
-            "(prefers-reduced-motion: reduce)",
-        ).matches;
-        const roots = Array.from(document.querySelectorAll(".peek"));
+        const track = document.getElementById("scroll-track");
+        const preview = document.getElementById("yoga-preview");
+        if (!track || !preview) return;
 
-        roots.forEach((root) => {
-            const track = root.querySelector(".peek__track");
-            const items = Array.from(root.querySelectorAll(".peek__item"));
-            const loopPad = Number(root.dataset.loopPad || 2);
-            const original = Number(track?.dataset.count || items.length);
-            const allowAutoplay =
-                root.dataset.autoplay !== "false" && !prefersReducedMotion;
+        let previewLink = preview.querySelector(".yoga-preview-card");
+        let imgEl = preview.querySelector("img, .yoga-preview-emoji");
+        const titleEl = preview.querySelector(".yoga-preview-title");
+        const subEl = preview.querySelector(".yoga-preview-sub");
 
-            if (!track || items.length <= 1) return;
+        const updatePreview = (li) => {
+            if (!li) return;
 
-            // --- helpers ---
-            const centerLeft = (el) =>
-                el.offsetLeft - (track.clientWidth - el.clientWidth) / 2;
+            // Update selection state
+            track
+                .querySelectorAll(".scroll-item[aria-selected='true']")
+                .forEach((n) => n.setAttribute("aria-selected", "false"));
+            li.setAttribute("aria-selected", "true");
 
-            let index = loopPad; // start on first real slide
-            let timer = null;
-            let paused = false; // hover pause
-            let stopped = false; // user interaction stop
-            const interval = Math.max(
-                2800,
-                Number(root.dataset.interval || 5200),
-            );
+            // Link
+            previewLink.href = li.dataset.href || previewLink.href;
 
-            const setActive = () => {
-                const mid = track.scrollLeft + track.clientWidth / 2;
-                let nearest = 0,
-                    best = Infinity;
-                items.forEach((el, i) => {
-                    const c = el.offsetLeft + el.offsetWidth / 2;
-                    const d = Math.abs(c - mid);
-                    if (d < best) {
-                        best = d;
-                        nearest = i;
+            // Media swap
+            const nextImg = li.dataset.img;
+            const nextEmoji = li.dataset.emoji || "🧘";
+
+            // Check if element is still in the DOM before using
+            if (imgEl && imgEl.parentNode) {
+                if (nextImg) {
+                    if (!(imgEl instanceof HTMLImageElement)) {
+                        const newImg = new Image();
+                        newImg.alt = titleEl.textContent || "Yoga plan";
+                        newImg.decoding = "async";
+                        newImg.loading = "eager";
+                        // Using class for styles instead of inline
+                        newImg.className = "yoga-preview-media";
+                        imgEl.replaceWith(newImg);
+                        imgEl = newImg;
                     }
-                });
-                items.forEach((el, i) =>
-                    el.setAttribute("data-active", String(i === nearest)),
-                );
-                index = nearest;
-
-                // normalize for infinite loop
-                if (index < loopPad) {
-                    index += original;
-                    track.scrollTo({
-                        left: centerLeft(items[index]),
-                        behavior: "auto",
-                    });
-                } else if (index >= loopPad + original) {
-                    index -= original;
-                    track.scrollTo({
-                        left: centerLeft(items[index]),
-                        behavior: "auto",
-                    });
+                    imgEl.src = nextImg;
+                } else {
+                    // switch to emoji block
+                    if (imgEl.className !== "yoga-preview-emoji") {
+                        const emojiDiv = document.createElement("div");
+                        emojiDiv.className = "yoga-preview-emoji";
+                        imgEl.replaceWith(emojiDiv);
+                        imgEl = emojiDiv;
+                    }
+                    imgEl.textContent = nextEmoji;
                 }
-            };
-
-            const goTo = (i, behavior = "smooth") => {
-                const el = items[i];
-                if (!el) return;
-                track.scrollTo({ left: centerLeft(el), behavior });
-                index = i;
-                // re-mark after scroll settles
-                clearTimeout(goTo._t);
-                goTo._t = setTimeout(setActive, 80);
-            };
-
-            // --- autoplay controller ---
-            const start = () => {
-                if (!allowAutoplay || stopped) return;
-                stop();
-                timer = setInterval(() => {
-                    if (!paused) goTo(index + 1);
-                }, interval);
-            };
-            const stop = () => {
-                if (timer) clearInterval(timer);
-                timer = null;
-            };
-            const stopForUser = () => {
-                if (stopped) return;
-                stopped = true;
-                stop();
-            };
-
-            // events: any user intent stops autoplay
-            ["pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => {
-                track.addEventListener(ev, stopForUser, { passive: true });
-            });
-            track.addEventListener(
-                "scroll",
-                () => {
-                    // if the user scrolls manually, this will fire; we stop autoplay
-                    if (!stopped && !timer) return; // ignore programmatic first layout
-                    if (!stopped) stopForUser();
-                    clearTimeout(track._scrollT);
-                    track._scrollT = setTimeout(setActive, 120);
-                },
-                { passive: true },
-            );
-
-            track.addEventListener("mouseenter", () => (paused = true));
-            track.addEventListener("mouseleave", () => (paused = false));
-
-            // init
-            requestAnimationFrame(() => {
-                goTo(index, "auto");
-                setActive();
-                start();
-            });
-
-            // keep centered on resize
-            let ro;
-            if ("ResizeObserver" in window) {
-                ro = new ResizeObserver(() => goTo(index, "auto"));
-                ro.observe(track);
             }
-            window.addEventListener(
-                "pagehide",
-                () => {
-                    stop();
-                    ro?.disconnect();
-                },
-                { once: true },
+
+            // Text
+            titleEl.textContent = li.dataset.title || "";
+            subEl.textContent = li.dataset.sub || "";
+        };
+
+        // Click to select
+        track.addEventListener("click", (e) => {
+            const li = e.target.closest(".scroll-item");
+            if (li) updatePreview(li);
+        });
+
+        // Keyboard support (scroll-snap helps here, but we keep this for non-snapping browsers)
+        track.addEventListener("keydown", (e) => {
+            const current = track.querySelector(
+                ".scroll-item[aria-selected='true']",
             );
+            if (!current) return;
+            if (e.key === "ArrowRight") {
+                e.preventDefault();
+                const next = current.nextElementSibling || current;
+                next.scrollIntoView({ behavior: "smooth", inline: "center" });
+                updatePreview(next);
+            } else if (e.key === "ArrowLeft") {
+                e.preventDefault();
+                const prev = current.previousElementSibling || current;
+                prev.scrollIntoView({ behavior: "smooth", inline: "center" });
+                updatePreview(prev);
+            }
+        });
+
+        // Chevron buttons
+        const itemWidth = 140; // Matches the CSS scroll-item width
+        const gap = 12; // Matches the CSS gap
+        const scrollAmount = itemWidth + gap;
+
+        const leftBtn = document.querySelector(".scroll-btn.left");
+        const rightBtn = document.querySelector(".scroll-btn.right");
+
+        // FIX: Scroll by one item width
+        leftBtn?.addEventListener("click", () => {
+            track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+        });
+        rightBtn?.addEventListener("click", () => {
+            track.scrollBy({ left: scrollAmount, behavior: "smooth" });
         });
     })();
 </script>
