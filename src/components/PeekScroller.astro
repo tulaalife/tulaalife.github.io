@@ -1,4 +1,5 @@
 ---
+// YogaPlans.astro — fixed: safe root lookup via id, guards, chevrons, autoplay pause on interaction
 import CTAButton from "./CTAButton.astro";
 
 export interface Item {
@@ -14,9 +15,7 @@ export interface Props {
     items: Item[];
     ctaHref?: string;
     ctaLabel?: string;
-
-    /** kept for API compatibility, unused in this version */
-    intervalMs?: number;
+    intervalMs?: number; // autoplay
     autoplay?: boolean;
 }
 
@@ -26,20 +25,28 @@ const {
     items = [],
     ctaHref = "/yoga",
     ctaLabel = "Explore yoga plans",
+    intervalMs = 5200,
+    autoplay = true,
 } = Astro.props;
 
-// Use the first item's href, or a default fallback if the list is empty
 const defaultPreviewHref = items[0]?.href ?? "/";
+
+// stable unique id for this instance
+const cid = `yoga-plans-${globalThis.crypto?.randomUUID?.() ?? Math.random().toString(36).slice(2)}`;
 ---
 
 {
     items.length > 0 && (
         <section
+            id={cid}
             class="yoga-plans"
             aria-labelledby="yoga-plans-title"
             role="region"
+            data-interval={String(intervalMs)}
+            data-autoplay={String(autoplay)}
         >
-            {/* Header */}
+            <div class="ambient" aria-hidden="true" />
+
             <header class="yoga-header">
                 <h2 id="yoga-plans-title" class="yoga-title">
                     {title}
@@ -47,20 +54,24 @@ const defaultPreviewHref = items[0]?.href ?? "/";
                 {subtitle && <p class="yoga-subtitle">{subtitle}</p>}
             </header>
 
-            {/* Preview */}
             <div class="yoga-preview" id="yoga-preview">
                 <a class="yoga-preview-card" href={defaultPreviewHref}>
+                    <div class="progress" id="progress" />
+
                     {items[0]?.image ? (
                         <img
                             src={items[0].image}
                             alt={items[0].title}
                             decoding="async"
+                            loading="eager"
+                            class="yoga-preview-media"
                         />
                     ) : (
                         <div class="yoga-preview-emoji" aria-hidden="true">
                             {items[0]?.emojiFallback ?? "🧘"}
                         </div>
                     )}
+
                     <div class="yoga-preview-info">
                         <h3 class="yoga-preview-title">{items[0]?.title}</h3>
                         {items[0]?.subtitle && (
@@ -70,16 +81,8 @@ const defaultPreviewHref = items[0]?.href ?? "/";
                 </a>
             </div>
 
-            {/* Horizontal scrollbar with chevrons */}
+            {/* Carousel with overlaid chevrons */}
             <div class="scroll-wrap" aria-label="Yoga plans scroller">
-                <button
-                    class="scroll-btn left"
-                    aria-label="Scroll left"
-                    type="button"
-                >
-                    ‹
-                </button>
-
                 <ul
                     class="scroll-track"
                     id="scroll-track"
@@ -92,6 +95,7 @@ const defaultPreviewHref = items[0]?.href ?? "/";
                             class="scroll-item"
                             role="option"
                             aria-selected={idx === 0 ? "true" : "false"}
+                            data-index={String(idx)}
                             data-href={it.href}
                             data-title={it.title}
                             data-sub={it.subtitle || ""}
@@ -117,6 +121,14 @@ const defaultPreviewHref = items[0]?.href ?? "/";
                     ))}
                 </ul>
 
+                {/* overlay chevrons */}
+                <button
+                    class="scroll-btn left"
+                    aria-label="Scroll left"
+                    type="button"
+                >
+                    ‹
+                </button>
                 <button
                     class="scroll-btn right"
                     aria-label="Scroll right"
@@ -126,7 +138,6 @@ const defaultPreviewHref = items[0]?.href ?? "/";
                 </button>
             </div>
 
-            {/* CTA */}
             <div class="cta-row">
                 <CTAButton
                     href={ctaHref}
@@ -139,13 +150,39 @@ const defaultPreviewHref = items[0]?.href ?? "/";
         </section>
     )
 }
-<style>
-    .yoga-plans {
-        max-width: 1120px;
-        margin: 0 auto;
-        padding: clamp(20px, 4vw, 38px) 16px;
-    }
 
+<style>
+    :root {
+        --ambient-a: oklch(0.98 0.01 85);
+        --ambient-b: oklch(0.96 0.02 60);
+    }
+    .yoga-plans {
+        position: relative;
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: clamp(20px, 4vw, 40px) 16px;
+        isolation: isolate;
+    }
+    .ambient {
+        position: absolute;
+        inset: 0;
+        border-radius: 32px;
+        margin: 0 8px;
+        background: radial-gradient(
+                60% 80% at 20% 0%,
+                color-mix(in oklch, var(--ambient-a), transparent 30%) 0%,
+                transparent 70%
+            ),
+            radial-gradient(
+                60% 80% at 100% 40%,
+                color-mix(in oklch, var(--ambient-b), transparent 30%) 0%,
+                transparent 70%
+            );
+        opacity: 0.65;
+        pointer-events: none;
+        filter: blur(24px) saturate(1.02);
+        z-index: -1;
+    }
     .yoga-header {
         text-align: center;
         margin-bottom: clamp(16px, 2.6vw, 24px);
@@ -153,7 +190,6 @@ const defaultPreviewHref = items[0]?.href ?? "/";
     .yoga-title {
         margin: 0 0 clamp(6px, 1vw, 10px);
         font-size: clamp(24px, 3.2vw, 34px);
-        letter-spacing: 0.2px;
     }
     .yoga-subtitle {
         margin: 0;
@@ -161,30 +197,35 @@ const defaultPreviewHref = items[0]?.href ?? "/";
         font-size: clamp(14px, 2vw, 18px);
     }
 
-    /* Preview */
     .yoga-preview {
-        /* Adjusted vertical margin for a bit more space */
         margin: clamp(10px, 2vw, 20px) auto clamp(16px, 3vw, 30px);
-        max-width: 680px;
+        max-width: min(760px, 88vw);
     }
     .yoga-preview-card {
+        position: relative;
         display: block;
         border-radius: 18px;
         overflow: hidden;
         text-decoration: none;
         color: inherit;
-        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
         background: var(--card);
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 30%);
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 32%);
+        box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
         transition:
-            transform 0.18s ease,
-            box-shadow 0.18s ease;
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            outline 0.2s ease;
     }
     .yoga-preview-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.12);
+        box-shadow: 0 18px 38px rgba(0, 0, 0, 0.12);
     }
-    .yoga-preview-card img,
+    .yoga-preview-card:focus-visible {
+        outline: 3px solid color-mix(in oklch, var(--accent), transparent 35%);
+        outline-offset: 3px;
+    }
+
+    .yoga-preview-media,
     .yoga-preview-emoji {
         width: 100%;
         aspect-ratio: 16/10;
@@ -195,7 +236,7 @@ const defaultPreviewHref = items[0]?.href ?? "/";
     .yoga-preview-emoji {
         display: grid;
         place-items: center;
-        font-size: 64px;
+        font-size: clamp(48px, 7vw, 64px);
     }
     .yoga-preview-info {
         padding: 12px 14px 14px;
@@ -212,27 +253,41 @@ const defaultPreviewHref = items[0]?.href ?? "/";
         color: var(--muted);
     }
 
-    /* Scroller */
+    .progress {
+        position: absolute;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 3px;
+        background: color-mix(in oklch, var(--accent), white 12%);
+        transform-origin: left center;
+        transform: scaleX(0);
+        opacity: 0.9;
+    }
+
     .scroll-wrap {
         position: relative;
-        display: flex;
-        align-items: center;
-        gap: 8px;
         margin: clamp(8px, 2.4vw, 20px) 0 clamp(14px, 3vw, 26px);
     }
     .scroll-track {
+        position: relative;
+        z-index: 1;
         display: flex;
         gap: 12px;
         overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
+        -webkit-overflow-scrolling: touch;
         list-style: none;
         margin: 0;
-        /* FIX: Added horizontal padding to center the first/last items */
-        padding: 8px 16px 10px;
-        flex: 1 1 auto;
-        /* FIX: Enable scroll snapping */
+        padding: 10px 32px;
         scroll-snap-type: x mandatory;
+        mask-image: linear-gradient(
+            90deg,
+            transparent 0,
+            black 32px,
+            black calc(100% - 32px),
+            transparent 100%
+        );
     }
     .scroll-track:focus-visible {
         outline: 3px solid color-mix(in oklch, var(--accent), transparent 40%);
@@ -245,25 +300,34 @@ const defaultPreviewHref = items[0]?.href ?? "/";
 
     .scroll-item {
         flex: 0 0 auto;
-        /* FIX: Made scroll items smaller */
-        width: 140px;
+        width: 148px;
         cursor: pointer;
         user-select: none;
         text-align: center;
         transition:
             transform 0.16s ease,
-            opacity 0.16s ease;
-        /* FIX: Center the item when snapped */
+            box-shadow 0.16s ease,
+            filter 0.16s ease;
         scroll-snap-align: center;
     }
     .scroll-item[aria-selected="true"] {
-        transform: scale(1.02);
+        transform: translateY(-2px) scale(1.03);
+    }
+    .scroll-item[aria-selected="true"] .thumb {
+        border-color: color-mix(in oklch, var(--accent), transparent 45%);
+        box-shadow:
+            0 14px 26px rgba(0, 0, 0, 0.14),
+            0 0 0 2px color-mix(in oklch, var(--accent), transparent 70%) inset;
+    }
+    .scroll-item[aria-selected="true"] .thumb-title {
+        color: color-mix(in oklch, var(--accent), var(--fg) 65%);
+        font-weight: 600;
     }
 
     .thumb {
-        border-radius: 12px;
+        border-radius: 14px;
         overflow: hidden;
-        background: color-mix(in oklch, var(--ring), transparent 80%);
+        background: color-mix(in oklch, var(--ring), transparent 82%);
         border: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
         box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
     }
@@ -282,35 +346,39 @@ const defaultPreviewHref = items[0]?.href ?? "/";
     .thumb-title {
         display: block;
         margin-top: 6px;
-        font-size: 0.9rem; /* Slightly smaller font to match item size */
+        font-size: 0.92rem;
         line-height: 1.2;
     }
 
-    /* Chevron buttons */
     .scroll-btn {
-        background: linear-gradient(
-            180deg,
-            color-mix(in oklch, var(--card), white 6%),
-            color-mix(in oklch, var(--card), transparent 8%)
-        );
+        position: absolute;
+        z-index: 2;
+        top: 50%;
+        translate: 0 -50%;
+        width: 40px;
+        height: 40px;
+        border-radius: 999px;
+        background: color-mix(in oklch, var(--card), white 8%);
         border: 1px solid color-mix(in oklch, var(--ring), transparent 30%);
+        box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
         color: var(--fg);
-        border-radius: 50%;
-        width: 36px;
-        height: 36px;
         font-size: 22px;
-        line-height: 30px;
         display: grid;
         place-items: center;
         cursor: pointer;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
         transition:
-            background 0.18s ease,
-            transform 0.18s ease;
-        flex: 0 0 auto;
+            transform 0.18s ease,
+            background 0.18s ease;
+        pointer-events: auto;
+    }
+    .scroll-btn.left {
+        left: 4px;
+    }
+    .scroll-btn.right {
+        right: 4px;
     }
     .scroll-btn:hover {
-        transform: translateY(-1px);
+        transform: translateY(-2px);
     }
     .scroll-btn:active {
         transform: translateY(0);
@@ -321,107 +389,193 @@ const defaultPreviewHref = items[0]?.href ?? "/";
         justify-content: center;
         margin-top: 8px;
     }
+    @media (min-width: 1200px) {
+        .yoga-preview {
+            max-width: 820px;
+        }
+    }
 </style>
 
 <script is:inline>
-    // The script is fine, but I'll update the button scrolling slightly
-    // to match the new item width for a better feel.
     (() => {
-        const track = document.getElementById("scroll-track");
-        const preview = document.getElementById("yoga-preview");
+        const root = document.getElementById("{cid}");
+        if (!root) return; // component not rendered
+
+        const track = root.querySelector("#scroll-track");
+        const preview = root.querySelector("#yoga-preview");
         if (!track || !preview) return;
 
-        let previewLink = preview.querySelector(".yoga-preview-card");
-        let imgEl = preview.querySelector("img, .yoga-preview-emoji");
+        const previewLink = preview.querySelector(".yoga-preview-card");
         const titleEl = preview.querySelector(".yoga-preview-title");
         const subEl = preview.querySelector(".yoga-preview-sub");
+        const progress = preview.querySelector("#progress");
 
-        const updatePreview = (li) => {
+        const leftBtn = root.querySelector(".scroll-btn.left");
+        const rightBtn = root.querySelector(".scroll-btn.right");
+
+        const intervalMs = Number(root.dataset.interval || 5200);
+        const enableAutoplay = root.dataset.autoplay !== "false";
+
+        let imgEl = preview.querySelector("img, .yoga-preview-emoji");
+        let selected = null;
+        let resumeTimer = null;
+        let progressTimer = null;
+        let userInteracted = false;
+
+        const items = () => Array.from(track.querySelectorAll(".scroll-item"));
+
+        function resolveItemFromEvent(evt) {
+            const target = evt.target;
+            if (!(target instanceof Node)) return null;
+            let el =
+                target.nodeType === Node.ELEMENT_NODE
+                    ? target
+                    : target.parentElement;
+            while (
+                el &&
+                el !== track &&
+                !(el instanceof Element && el.matches(".scroll-item"))
+            ) {
+                el = el.parentElement;
+            }
+            return el instanceof Element && el.matches(".scroll-item")
+                ? el
+                : null;
+        }
+
+        function setSelected(li) {
             if (!li) return;
-
-            // Update selection state
-            track
-                .querySelectorAll(".scroll-item[aria-selected='true']")
-                .forEach((n) => n.setAttribute("aria-selected", "false"));
+            items().forEach((n) => n.setAttribute("aria-selected", "false"));
             li.setAttribute("aria-selected", "true");
+            selected = li;
 
-            // Link
-            previewLink.href = li.dataset.href || previewLink.href;
+            // link
+            if (previewLink)
+                previewLink.href = li.dataset.href || previewLink.href;
 
-            // Media swap
+            // media
             const nextImg = li.dataset.img;
             const nextEmoji = li.dataset.emoji || "🧘";
 
-            // Check if element is still in the DOM before using
-            if (imgEl && imgEl.parentNode) {
-                if (nextImg) {
-                    if (!(imgEl instanceof HTMLImageElement)) {
-                        const newImg = new Image();
-                        newImg.alt = titleEl.textContent || "Yoga plan";
-                        newImg.decoding = "async";
-                        newImg.loading = "eager";
-                        // Using class for styles instead of inline
-                        newImg.className = "yoga-preview-media";
-                        imgEl.replaceWith(newImg);
-                        imgEl = newImg;
-                    }
-                    imgEl.src = nextImg;
-                } else {
-                    // switch to emoji block
-                    if (imgEl.className !== "yoga-preview-emoji") {
-                        const emojiDiv = document.createElement("div");
-                        emojiDiv.className = "yoga-preview-emoji";
-                        imgEl.replaceWith(emojiDiv);
-                        imgEl = emojiDiv;
-                    }
-                    imgEl.textContent = nextEmoji;
+            if (nextImg) {
+                if (!(imgEl instanceof HTMLImageElement)) {
+                    const newImg = new Image();
+                    newImg.alt = li.dataset.title || "Yoga plan";
+                    newImg.decoding = "async";
+                    newImg.loading = "eager";
+                    newImg.className = "yoga-preview-media";
+                    imgEl?.replaceWith(newImg);
+                    imgEl = newImg;
                 }
+                imgEl.src = nextImg;
+            } else {
+                if (
+                    !(imgEl instanceof HTMLElement) ||
+                    !imgEl.classList.contains("yoga-preview-emoji")
+                ) {
+                    const emojiDiv = document.createElement("div");
+                    emojiDiv.className = "yoga-preview-emoji";
+                    imgEl?.replaceWith(emojiDiv);
+                    imgEl = emojiDiv;
+                }
+                imgEl.textContent = nextEmoji;
             }
 
-            // Text
-            titleEl.textContent = li.dataset.title || "";
-            subEl.textContent = li.dataset.sub || "";
-        };
+            // text
+            if (titleEl) titleEl.textContent = li.dataset.title || "";
+            if (subEl) subEl.textContent = li.dataset.sub || "";
 
-        // Click to select
+            // center the item
+            li.scrollIntoView({
+                behavior: "smooth",
+                inline: "center",
+                block: "nearest",
+            });
+
+            if (enableAutoplay && !userInteracted) startProgress();
+        }
+
+        function step(dir) {
+            const list = items();
+            if (!list.length) return;
+            const idx = Math.max(0, list.indexOf(selected ?? list[0]));
+            const next = list[(idx + dir + list.length) % list.length];
+            setSelected(next);
+        }
+
+        function startProgress() {
+            stopProgress();
+            if (!progress) return;
+            progress.style.transition = "none";
+            progress.style.transform = "scaleX(0)";
+            requestAnimationFrame(() => {
+                progress.style.transition = `transform ${intervalMs}ms linear`;
+                progress.style.transform = "scaleX(1)";
+            });
+            progressTimer = setTimeout(() => step(+1), intervalMs);
+        }
+        function stopProgress() {
+            if (progressTimer) clearTimeout(progressTimer);
+            progressTimer = null;
+            if (progress) {
+                progress.style.transition = "none";
+                progress.style.transform = "scaleX(0)";
+            }
+        }
+        function pauseAutoplay() {
+            userInteracted = true;
+            stopProgress();
+            if (resumeTimer) clearTimeout(resumeTimer);
+            resumeTimer = setTimeout(() => {
+                userInteracted = false;
+                if (enableAutoplay) startProgress();
+            }, 6000);
+        }
+
+        // init
+        setSelected(items()[0]);
+
+        // interactions
         track.addEventListener("click", (e) => {
-            const li = e.target.closest(".scroll-item");
-            if (li) updatePreview(li);
+            const li = resolveItemFromEvent(e);
+            if (!li) return;
+            setSelected(li);
+            pauseAutoplay();
         });
 
-        // Keyboard support (scroll-snap helps here, but we keep this for non-snapping browsers)
         track.addEventListener("keydown", (e) => {
-            const current = track.querySelector(
-                ".scroll-item[aria-selected='true']",
-            );
-            if (!current) return;
-            if (e.key === "ArrowRight") {
+            if (e.key === "ArrowRight" || e.key === "PageDown") {
                 e.preventDefault();
-                const next = current.nextElementSibling || current;
-                next.scrollIntoView({ behavior: "smooth", inline: "center" });
-                updatePreview(next);
-            } else if (e.key === "ArrowLeft") {
+                step(+1);
+                pauseAutoplay();
+            } else if (e.key === "ArrowLeft" || e.key === "PageUp") {
                 e.preventDefault();
-                const prev = current.previousElementSibling || current;
-                prev.scrollIntoView({ behavior: "smooth", inline: "center" });
-                updatePreview(prev);
+                step(-1);
+                pauseAutoplay();
             }
         });
 
-        // Chevron buttons
-        const itemWidth = 140; // Matches the CSS scroll-item width
-        const gap = 12; // Matches the CSS gap
-        const scrollAmount = itemWidth + gap;
-
-        const leftBtn = document.querySelector(".scroll-btn.left");
-        const rightBtn = document.querySelector(".scroll-btn.right");
-
-        // FIX: Scroll by one item width
+        const itemWidth = 148,
+            gap = 12,
+            scrollAmount = itemWidth + gap;
         leftBtn?.addEventListener("click", () => {
             track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+            step(-1);
+            pauseAutoplay();
         });
         rightBtn?.addEventListener("click", () => {
             track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+            step(+1);
+            pauseAutoplay();
         });
+
+        track.addEventListener("scroll", () => pauseAutoplay(), {
+            passive: true,
+        });
+
+        const prefersReduced = window.matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
+        if (enableAutoplay && !prefersReduced) startProgress();
     })();
 </script>
