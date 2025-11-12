@@ -555,23 +555,26 @@ const cid = `yoga-plans-${globalThis.crypto?.randomUUID?.() ?? Math.random().toS
             }
         });
 
-        const itemWidth = 148,
-            gap = 12,
-            scrollAmount = itemWidth + gap;
+        /*
+            // This logic was removed. `step()` already handles the scroll.
+            const itemWidth = 148,
+                gap = 12,
+                scrollAmount = itemWidth + gap;
+        */
         leftBtn?.addEventListener("click", () => {
-            track.scrollBy({ left: -scrollAmount, behavior: "smooth" });
+            // track.scrollBy({ left: -scrollAmount, behavior: "smooth" }); // <-- REMOVED
             step(-1);
             pauseAutoplay();
         });
         rightBtn?.addEventListener("click", () => {
-            track.scrollBy({ left: scrollAmount, behavior: "smooth" });
+            // track.scrollBy({ left: scrollAmount, behavior: "smooth" }); // <-- REMOVED
             step(+1);
             pauseAutoplay();
         });
 
-        track.addEventListener("scroll", () => pauseAutoplay(), {
-            passive: true,
-        });
+        // track.addEventListener("scroll", () => pauseAutoplay(), { // <-- REMOVED
+        //     passive: true,
+        // });
 
         const prefersReduced = window.matchMedia(
             "(prefers-reduced-motion: reduce)",
