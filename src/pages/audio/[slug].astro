@@ -36,6 +36,13 @@ const canonical = `/audio/${audio.slug}`;
 
         {
             audio.teaser && (
+                <p style="font-size:1.05rem;line-height:1.6;margin:12px 0 22px;">
+                    {audio.subtitle}
+                </p>
+            )
+        }
+        {
+            audio.teaser && (
                 <p style="font-size:1.05rem;line-height:1.7;margin:12px 0 18px;">
                     {audio.teaser}
                 </p>

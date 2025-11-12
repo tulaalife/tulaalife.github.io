@@ -1,59 +1,81 @@
 ---
 import Site from "../../layouts/Site.astro";
-import { tips } from "../../data/generated";
+import { allTips } from "../../data/generated";
 
 export async function getStaticPaths() {
-    return tips.map((t) => ({
-        params: { slug: t.slug },
-        props: { tip: t },
-    }));
+  return allTips.map((t) => ({
+    params: { slug: t.slug },
+    props: { tip: t },
+  }));
 }
 
 const { tip } = Astro.props;
+if (!tip) {
+  return Astro.redirect("/tips");
+}
+
 const canonical = `/tips/${tip.slug}`;
+const pageTitle = `${tip.tip.length > 60 ? tip.tip.slice(0, 57) + "…" : tip.tip} · Health Tip · Tulaa`;
+const description = tip.benefit || "Gentle wellness tip from Tulaa.";
 ---
 
-<Site
-    title={`${tip.tip.slice(0, 40)} · Health Tip · Tulaa`}
-    description={tip.benefit || "Gentle wellness tip from Tulaa."}
-    canonicalPath={canonical}
->
-    <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
-        <a href="/tips" style="text-decoration:none;">← All Health Tips</a>
+<Site title={pageTitle} description={description} canonicalPath={canonical}>
+  <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
+    <nav aria-label="Breadcrumb" style="margin-bottom:8px;">
+      <a href="/tips" style="text-decoration:none;">← All Health Tips</a>
+    </nav>
 
-        <header style="margin-top:12px;">
-            <h1
-                style="margin:6px 0 10px;display:flex;align-items:center;gap:6px;"
-            >
-                {tip.icon && <span>{tip.icon}</span>}
-                <span>{tip.tip}</span>
-            </h1>
-        </header>
+    <header style="margin-top:12px;">
+      <h1 style="margin:6px 0 10px;display:flex;align-items:center;gap:6px;">
+        {tip.icon && <span aria-hidden="true">{tip.icon}</span>}
+        <span>{tip.tip}</span>
+      </h1>
+      <p style="margin:0;color:var(--muted);font-size:0.95rem;">
+        Category: {tip.category || "General"}
+      </p>
+    </header>
 
-        <p style="margin-top:16px;font-size:1.05rem;line-height:1.7;">
-            {tip.benefit}
-        </p>
+    <p style="margin-top:16px;font-size:1.05rem;line-height:1.7;">
+      {tip.benefit}
+    </p>
 
-        {
-            tip.precaution && (
-                <p style="margin-top:12px;color:var(--muted);">
-                    ⚠️ <strong>Precaution:</strong> {tip.precaution}
-                </p>
-            )
-        }
-        <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
-            <a
-                href={tip.deeplink}
-                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
-            >
-                Open in Tulaa app
-            </a>
-            <a
-                href="/tips"
-                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
-            >
-                Browse more tips
-            </a>
-        </div>
-    </main>
+    {tip.precaution && (
+      <p style="margin-top:12px;color:var(--muted);" role="note">
+        ⚠️ <strong>Precaution:</strong> {tip.precaution}
+      </p>
+    )}
+
+    <!-- CTAs -->
+    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
+      <a
+        href={tip.deeplink}
+        style="padding:10px 14px;border:1px solid var(--ring);
+               border-radius:10px;text-decoration:none;display:inline-block;">
+        Open in Tulaa app
+      </a>
+
+      <a
+        href="/tips"
+        style="padding:10px 14px;border:1px solid var(--ring);
+               border-radius:10px;text-decoration:none;display:inline-block;">
+        Browse more tips
+      </a>
+    </div>
+
+    <script type="application/ld+json">
+      {JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "CreativeWork",
+        "name": tip.tip,
+        "about": "Health tip",
+        "inLanguage": "en",
+        "isAccessibleForFree": true,
+        "publisher": { "@type": "Organization", "name": "Tulaa" },
+        "url": `https://tulaalife.com${canonical}`,
+        "keywords": tip.category
+          ? [tip.category, "wellness", "self-care"]
+          : ["wellness", "self-care"],
+      })}
+    </script>
+  </main>
 </Site>

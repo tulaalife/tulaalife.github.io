@@ -1,18 +1,30 @@
 ---
+import CTAButton from "./CTAButton.astro";
+
 export interface TipItem {
     tip: string;
     benefit?: string;
     icon?: string; // emoji or URL
 }
-
 export interface Props {
     title: string;
     subtitle?: string;
-    items: TipItem[]; // pass ~5 (works with >=1)
+    items: TipItem[]; // ~5 recommended
     intervalMs?: number; // default 5200ms
+    ctaHref?: string; // optional CTA (Explore tips)
+    ctaLabel?: string;
 }
 
-const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
+const {
+    title,
+    subtitle,
+    items = [],
+    intervalMs = 5200,
+    ctaHref,
+    ctaLabel,
+} = Astro.props;
+
+const hasCTA = Boolean(ctaHref && ctaLabel);
 ---
 
 {
@@ -44,6 +56,7 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
                                             src={t.icon}
                                             alt=""
                                             loading="lazy"
+                                            decoding="async"
                                         />
                                     ) : (
                                         <span>{t.icon ?? "💡"}</span>
@@ -60,6 +73,18 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
                     ))}
                 </ul>
             </div>
+
+            {hasCTA && (
+                <div class="ts-ctaRow">
+                    <CTAButton
+                        href={ctaHref!}
+                        label={ctaLabel!}
+                        icon="↗"
+                        variant="soft"
+                        size="lg"
+                    />
+                </div>
+            )}
         </section>
     )
 }
@@ -67,10 +92,9 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
 <style>
     .ts-wrap {
         margin: 28px auto 22px;
-        padding: 8px 16px 20px;
+        padding: 8px 16px 16px;
         max-width: 880px;
     }
-
     .ts-header {
         text-align: center;
         margin: 0 0 14px;
@@ -86,35 +110,34 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
         font-size: clamp(14px, 2.1vw, 16px);
     }
 
+    /* Panel (glassy, subtle glow) */
     .ts-panel {
         --r: 18px;
         margin-top: 14px;
         padding: 14px;
         border-radius: var(--r);
-        background: linear-gradient(
-                180deg,
-                color-mix(in srgb, var(--panel) 88%, transparent),
-                var(--panel)
-            ),
-            radial-gradient(
+        background: radial-gradient(
                 120% 120% at 0% 0%,
-                color-mix(in srgb, var(--fg) 6%, transparent),
+                color-mix(in oklab, var(--fg) 6%, transparent),
                 transparent 60%
-            );
-        border: 1px solid color-mix(in srgb, var(--ring) 72%, transparent);
+            ),
+            color-mix(in oklab, var(--panel) 92%, transparent);
+        border: 1px solid color-mix(in oklab, var(--ring) 72%, transparent);
         box-shadow:
-            0 1px 0 color-mix(in srgb, var(--fg) 8%, transparent),
-            0 12px 28px color-mix(in srgb, var(--fg) 10%, transparent);
+            0 1px 0 color-mix(in oklab, var(--fg) 8%, transparent),
+            0 12px 28px color-mix(in oklab, var(--fg) 10%, transparent);
         backdrop-filter: saturate(120%) blur(3px);
     }
 
+    /* Slides stack (cross-fade, auto height) */
     .ts-track {
         margin: 0;
         height: var(--ts-h, auto);
         min-height: 132px;
         position: relative;
+        list-style: none;
+        padding: 0;
     }
-
     .ts-slide {
         position: absolute;
         inset: 0;
@@ -126,8 +149,8 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
         transition:
             opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
             transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
-        will-change: opacity, transform;
         pointer-events: none;
+        will-change: opacity, transform;
     }
     .ts-slide[data-active="true"] {
         opacity: 1;
@@ -141,18 +164,15 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
         gap: 14px;
         align-items: flex-start;
         width: min(100%, 860px);
-        padding: 14px;
+        padding: 16px;
         border-radius: var(--r);
-        background: linear-gradient(
-                180deg,
-                color-mix(in srgb, var(--panel) 92%, transparent),
-                var(--panel)
-            ),
-            radial-gradient(
+        background: radial-gradient(
                 120% 120% at 100% 0%,
-                color-mix(in srgb, var(--fg) 5%, transparent),
+                color-mix(in oklab, var(--fg) 5%, transparent),
                 transparent 60%
-            );
+            ),
+            color-mix(in oklab, var(--panel) 96%, transparent);
+        border: 1px solid color-mix(in oklab, var(--ring) 60%, transparent);
         transition:
             transform 0.25s ease,
             box-shadow 0.25s ease;
@@ -166,8 +186,8 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
         display: grid;
         place-items: center;
         font-size: 28px;
-        background: color-mix(in srgb, var(--btn) 12%, transparent);
-        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+        background: color-mix(in oklab, var(--btn) 12%, transparent);
+        border: 1px solid color-mix(in oklab, var(--ring) 70%, transparent);
     }
     .ts-icon img {
         width: 28px;
@@ -188,13 +208,20 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
         color: var(--muted);
         line-height: 1.35;
     }
+
+    .ts-ctaRow {
+        display: flex;
+        justify-content: center;
+        margin: 38px 0 0;
+    }
 </style>
 
-<script>
+<script is:inline>
     (() => {
         function boot(root) {
             const track = root.querySelector(".ts-track");
             const slides = Array.from(root.querySelectorAll(".ts-slide"));
+            if (!track || slides.length === 0) return;
 
             const setActive = (el, active) => {
                 el.setAttribute("data-active", active ? "true" : "false");
@@ -202,13 +229,13 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
             };
 
             const adjustHeight = () => {
-                const active = root.querySelector(
+                const activeCard = root.querySelector(
                     '.ts-slide[data-active="true"] .ts-card',
                 );
-                if (!active || !track) return;
+                if (!activeCard) return;
                 track.style.setProperty(
                     "--ts-h",
-                    active.getBoundingClientRect().height + "px",
+                    activeCard.getBoundingClientRect().height + "px",
                 );
             };
 
@@ -222,39 +249,55 @@ const { title, subtitle, items = [], intervalMs = 5200 } = Astro.props;
                 2400,
                 Number(root.getAttribute("data-interval") || 5200),
             );
-            let timer;
+            let timer = null;
+            let stopped = false; // stop autoplay after user interaction
+            let hovered = false;
 
             const tick = () => {
-                const prev = slides[idx];
-                idx = (idx + 1) % slides.length;
-                const next = slides[idx];
-                setActive(prev, false);
-                setActive(next, true);
-                adjustHeight();
+                if (!hovered && !stopped) next();
             };
-
             const start = () => {
                 stop();
                 timer = setInterval(tick, interval);
             };
             const stop = () => {
                 if (timer) clearInterval(timer);
+                timer = null;
             };
 
+            const next = () => {
+                const prev = slides[idx];
+                idx = (idx + 1) % slides.length;
+                const cur = slides[idx];
+                setActive(prev, false);
+                setActive(cur, true);
+                adjustHeight();
+            };
+
+            // Stop autoplay on user intent
+            const stopForUser = () => {
+                if (stopped) return;
+                stopped = true;
+                stop();
+            };
+            ["pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => {
+                root.addEventListener(ev, stopForUser, { passive: true });
+            });
+
+            root.addEventListener("mouseenter", () => (hovered = true));
+            root.addEventListener("mouseleave", () => (hovered = false));
+
+            // init
             setTimeout(start, 200);
-            root.addEventListener("mouseenter", stop);
-            root.addEventListener("mouseleave", start);
             window.addEventListener("resize", adjustHeight);
         }
 
-        function startAll() {
-            Array.from(document.querySelectorAll(".ts-wrap")).forEach(boot);
-        }
-
-        if (document.readyState === "loading")
-            document.addEventListener("DOMContentLoaded", startAll, {
-                once: true,
-            });
-        else startAll();
+        document.readyState === "loading"
+            ? document.addEventListener(
+                  "DOMContentLoaded",
+                  () => document.querySelectorAll(".ts-wrap").forEach(boot),
+                  { once: true },
+              )
+            : document.querySelectorAll(".ts-wrap").forEach(boot);
     })();
 </script>

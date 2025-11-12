@@ -1,10 +1,10 @@
 ---
 import Site from "../layouts/Site.astro";
-import OneUpCarousel from "../components/OneUpCarousel.astro";
 import FeatureTiles from "../components/FeatureTiles.astro";
 import { yogaPlans, guidedAudios, tips } from "../data/generated";
 import TipsScroller from "../components/TipsScroller.astro";
 import DownloadCTA from "../components/DownloadCTA.astro";
+import PeekScroller from "../components/PeekScroller.astro";
 
 const title = "Tulaa — Yoga, Meditation & Daily Wellness";
 const description =
@@ -32,23 +32,19 @@ const daySeed = Number(
   new Date().toISOString().slice(0, 10).replaceAll("-", ""),
 );
 
-// Prepare data for carousels (daily shuffled)
-// ⬇️ Use plan.subtitle (fallback to teaser if empty)
+// Data (daily shuffle)
 const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
   href: `/yoga/${p.slug}`,
   title: p.title,
   subtitle: p.subtitle || p.teaser || "",
   image: p.image,
 }));
-
 const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
   href: `/audio/${a.slug}`,
   title: a.title,
-  subtitle: a.teaser,
+  subtitle: a.subtitle,
   image: a.image,
 }));
-
-// select 5 tips for today
 const tipFive = seededShuffle(tips, daySeed + 13)
   .slice(0, 5)
   .map((t) => ({
@@ -69,9 +65,8 @@ const hasTips = tipFive.length > 0;
   canonicalPath="/"
   ogImage={ogImage}
 >
-  <!-- Hero -->
-  <!-- Hero -->
-  <section role="banner" aria-labelledby="hero-title" class="hero">
+  <!-- HERO -->
+  <section role="banner" aria-labelledby="hero-title" class="hero reveal">
     <DownloadCTA
       variant="hero"
       headline="Tulaa"
@@ -82,102 +77,176 @@ const hasTips = tipFive.length > 0;
 
   {
     hasYoga && (
-      <OneUpCarousel
-        title="Yoga Plans"
-        subtitle="Expert-guided sequences for everyday needs"
-        items={yogaItems}
-        ctaHref="/yoga"
-        ctaLabel="Explore yoga"
-        intervalMs={5200}
-      />
+      <section class="section reveal">
+        <PeekScroller
+          title="Yoga Plans"
+          subtitle="Expert-guided sequences for everyday needs"
+          items={yogaItems}
+          ctaHref="/yoga"
+          ctaLabel="Explore yoga plans"
+          intervalMs={5200}
+        />
+      </section>
     )
   }
 
   {
     hasAudio && (
-      <OneUpCarousel
-        title="Guided Audios"
-        subtitle="Gentle voice sessions for calm, focus & rest"
-        items={audioItems}
-        ctaHref="/audio"
-        ctaLabel="Explore audios"
-        intervalMs={5200}
-      />
+      <section class="section reveal">
+        <PeekScroller
+          title="Guided Audios"
+          subtitle="Gentle voice sessions for calm, focus & rest"
+          items={audioItems}
+          ctaHref="/audio"
+          ctaLabel="Explore audios"
+          intervalMs={5200}
+        />
+      </section>
     )
   }
 
   {
     hasTips && (
-      <TipsScroller
-        title="Wellness Tips"
-        subtitle="Short, sourced insights for daily care"
-        items={tipFive}
-        intervalMs={5200}
-      />
+      <section class="section reveal">
+        <TipsScroller
+          title="Wellness Tips"
+          subtitle="Short, sourced insights for daily care"
+          items={tipFive}
+          intervalMs={5200}
+          ctaHref="/tips"
+          ctaLabel="Explore tips"
+        />
+      </section>
     )
   }
 
-  <FeatureTiles
-    tiles={[
-      {
-        emoji: "💧",
-        title: "Water tracking",
-        subtitle: "Lightweight, private hydration log",
-      },
-      {
-        emoji: "🩸",
-        title: "Period tracking",
-        subtitle: "Simple cycle logs with insights",
-      },
-      {
-        emoji: "📝",
-        title: "Moments (journaling)",
-        subtitle: "Mood check-ins & gratitude",
-      },
-      {
-        emoji: "⏰",
-        title: "Rhythms",
-        subtitle: "Gentle, customizable habit reminders",
-      },
-    ]}
-  />
+  <section class="section reveal">
+    <FeatureTiles
+      tiles={[
+        {
+          emoji: "💧",
+          title: "Water tracking",
+          subtitle: "Lightweight, private hydration log",
+        },
+        {
+          emoji: "🌸",
+          title: "Period tracking",
+          subtitle: "Simple cycle logs with insights",
+        },
+        {
+          emoji: "📝",
+          title: "Moments (journaling)",
+          subtitle: "Mood check-ins & gratitude",
+        },
+        {
+          emoji: "⏰",
+          title: "Rhythms",
+          subtitle: "Gentle, customizable habit reminders",
+        },
+      ]}
+    />
+  </section>
 </Site>
 
 <style>
+  /* Page layout rhythm */
+  :root {
+    --wrap: min(100%, calc(var(--container) + 0px));
+    /* responsive spacing scale */
+    --vspace-sm: clamp(12px, 1.6vw, 16px);
+    --vspace-md: clamp(20px, 2.5vw, 28px);
+    --vspace-lg: clamp(32px, 4vw, 48px);
+    --vspace-xl: clamp(24px, 2vw, 40px);
+    --hairline: color-mix(in oklab, var(--ring) 70%, transparent);
+  }
+
+  /* Standard section block */
+  .section {
+    width: min(100%, var(--container));
+    margin-inline: auto;
+    padding-block: var(--vspace-md) var(--vspace-lg);
+    position: relative;
+  }
+
+  /* Structured separation between blocks */
+  .section + .section {
+    margin-top: var(--vspace-xl);
+    padding-top: var(--vspace-xl);
+    border-top: 1px dashed var(--hairline);
+  }
+
+  /* HERO has its own spacing so it breathes */
   .hero {
-    text-align: center;
-    margin: 8px auto 10px;
+    position: relative;
+    width: var(--wrap);
+    margin: var(--vspace-sm) auto 0;
+    padding-block: var(--vspace-lg) var(--vspace-md);
+    isolation: isolate;
   }
-  .hero__title {
-    margin: 0.2rem 0;
-    font-size: clamp(24px, 4.2vw, 40px);
+
+  /* Let sections decide spacing: remove inner margins from children here */
+  .section :where(.peek, .ts-wrap, .more) {
+    margin: 0; /* kill internal margins so parent rhythm wins */
   }
-  .hero__subtitle {
-    margin: 8px 0 0;
-    font-size: clamp(15px, 2.1vw, 18px);
-    color: var(--muted);
+
+  /* Optional: small buffer under each component’s own header to align content */
+  .section :where(.peek__head, .ts-header) {
+    margin-bottom: var(--vspace-sm);
   }
-  .hero__ctaRow {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
-    flex-wrap: wrap;
-    margin: 14px 0 0;
-  }
+
+  /* Buttons (unchanged, kept for page parity) */
   .btn {
     display: inline-block;
     padding: 12px 16px;
-    border-radius: 12px;
+    border-radius: 999px;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 650;
+    letter-spacing: 0.01em;
+    transition:
+      transform 0.18s ease,
+      box-shadow 0.18s ease,
+      opacity 0.18s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
   }
   .btn--solid {
     background: var(--btn);
     color: var(--btnText);
   }
-  .btn--ghost {
-    border: 1px solid var(--ring);
-    color: var(--fg);
-    background: transparent;
+  .btn--solid:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  }
+  .btn--solid:active {
+    transform: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Reveal animation (unchanged) */
+  .reveal {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: float-up 0.6s ease-out both;
+  }
+  .reveal:nth-of-type(2) {
+    animation-delay: 0.04s;
+  }
+  .reveal:nth-of-type(3) {
+    animation-delay: 0.08s;
+  }
+  .reveal:nth-of-type(4) {
+    animation-delay: 0.12s;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal {
+      animation: none;
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes float-up {
+    to {
+      opacity: 1;
+      transform: none;
+    }
   }
 </style>

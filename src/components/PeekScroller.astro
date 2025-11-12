@@ -1,0 +1,442 @@
+---
+import CTAButton from "./CTAButton.astro";
+
+export interface Item {
+    href: string;
+    title: string;
+    subtitle?: string;
+    image?: string;
+    emojiFallback?: string;
+}
+export interface Props {
+    title: string;
+    subtitle?: string;
+    items: Item[];
+    ctaHref?: string;
+    ctaLabel?: string;
+    intervalMs?: number;
+    autoplay?: boolean;
+}
+
+const {
+    title,
+    subtitle,
+    items = [],
+    ctaHref,
+    ctaLabel,
+    intervalMs = 5200,
+    autoplay = true,
+} = Astro.props;
+
+const hasCTA = Boolean(ctaHref && ctaLabel);
+const showGrid = items.length > 3;
+
+function padForLoop(src: Item[]): Item[] {
+    if (src.length <= 3) return [...src, ...src, ...src];
+    const head = src.slice(-2),
+        tail = src.slice(0, 2);
+    return [...head, ...src, ...tail];
+}
+const loopPad = 2;
+const extended = padForLoop(items);
+---
+
+{
+    items.length > 0 && (
+        <section
+            class="peek"
+            data-interval={String(intervalMs)}
+            data-loop-pad={String(loopPad)}
+            data-autoplay={String(autoplay)}
+            aria-label={title}
+            role="region"
+            aria-roledescription="carousel"
+        >
+            <header class="peek__head">
+                <h2 class="peek__title">{title}</h2>
+                {subtitle && <p class="peek__subtitle">{subtitle}</p>}
+            </header>
+
+            <div class="peek__rail">
+                <ul
+                    class="peek__track"
+                    role="list"
+                    data-count={String(items.length)}
+                    tabindex="0"
+                >
+                    {extended.map((it, i) => (
+                        <li class="peek__item" data-idx={String(i)}>
+                            <a
+                                class="card"
+                                href={it.href}
+                                aria-label={it.title}
+                            >
+                                <div class="card__media">
+                                    {it.image ? (
+                                        <img
+                                            src={it.image}
+                                            alt={it.title}
+                                            loading="lazy"
+                                            decoding="async"
+                                        />
+                                    ) : (
+                                        <div
+                                            class="card__emoji"
+                                            aria-hidden="true"
+                                        >
+                                            {it.emojiFallback ?? "💡"}
+                                        </div>
+                                    )}
+                                </div>
+                                <div class="card__body">
+                                    <h3 class="card__title">{it.title}</h3>
+                                    {it.subtitle && (
+                                        <p class="card__sub">{it.subtitle}</p>
+                                    )}
+                                </div>
+                            </a>
+                        </li>
+                    ))}
+                </ul>
+            </div>
+
+            {hasCTA && (
+                <div class="peek__ctaRow">
+                    <CTAButton
+                        href={ctaHref!}
+                        label={ctaLabel!}
+                        icon="↗"
+                        variant="soft"
+                        size="lg"
+                    />
+                </div>
+            )}
+
+            {showGrid && (
+                <div class="peek__grid" aria-label="More to explore">
+                    {items.slice(0, 6).map((it) => (
+                        <a class="mini" href={it.href}>
+                            {it.image ? (
+                                <img
+                                    src={it.image}
+                                    alt={it.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            ) : (
+                                <div class="mini__emoji" aria-hidden="true">
+                                    {it.emojiFallback ?? "💡"}
+                                </div>
+                            )}
+                            <div class="mini__txt">
+                                <strong class="mini__title">{it.title}</strong>
+                                {it.subtitle && (
+                                    <span class="mini__sub">{it.subtitle}</span>
+                                )}
+                            </div>
+                        </a>
+                    ))}
+                </div>
+            )}
+        </section>
+    )
+}
+
+<style>
+    .peek {
+        margin: 28px auto 22px;
+        padding: 10px 0 0;
+        max-width: 1120px;
+    }
+    .peek__head {
+        text-align: center;
+        margin: 0 0 10px;
+    }
+    .peek__title {
+        margin: 0 0 6px;
+        font-size: clamp(20px, 2.6vw, 28px);
+    }
+    .peek__subtitle {
+        margin: 0;
+        color: var(--muted);
+        font-size: clamp(14px, 2vw, 16px);
+    }
+
+    .peek__rail {
+        position: relative;
+    }
+    .peek__track {
+        display: flex;
+        gap: 14px;
+        list-style: none;
+        margin: 0;
+        padding: 0 8px 16px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
+    }
+    .peek__track:focus-visible {
+        outline: 3px solid var(--btn);
+        outline-offset: 4px;
+        border-radius: 4px;
+    }
+    .peek__track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .peek__item {
+        flex: 0 0 88%;
+        transform-origin: center;
+        transition:
+            transform 0.24s,
+            filter 0.24s,
+            opacity 0.24s;
+        opacity: 0.96;
+    }
+    @media (min-width: 960px) {
+        .peek__item {
+            flex-basis: 72%;
+        }
+    }
+    .peek__item[data-active="true"] {
+        transform: scale(1.015);
+        opacity: 1;
+    }
+
+    .card {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+    .card__media {
+        position: relative;
+        overflow: hidden;
+        border-radius: 18px;
+        background: color-mix(in oklch, var(--ring), transparent 80%);
+        box-shadow: 0 14px 36px rgba(0, 0, 0, 0.08);
+        outline: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
+    }
+    .card__media img,
+    .card__emoji {
+        width: 100%;
+        aspect-ratio: 16/10;
+        display: block;
+        object-fit: cover;
+        transform: translateZ(0);
+    }
+    .card__emoji {
+        display: grid;
+        place-items: center;
+        font-size: 56px;
+        background: color-mix(in oklch, var(--ring), transparent 78%);
+    }
+    .card__body {
+        padding: 12px 10px 0;
+        text-align: center;
+    }
+    .card__title {
+        margin: 0;
+        font-size: clamp(17px, 2.2vw, 20px);
+        font-weight: 700;
+        line-height: 1.2;
+    }
+    .card__sub {
+        margin: 6px 0 0;
+        color: var(--muted);
+        font-size: clamp(13px, 2vw, 15px);
+    }
+
+    .peek__ctaRow {
+        display: flex;
+        justify-content: center;
+        margin: 14px 0 6px;
+    }
+
+    .peek__grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        margin: 12px 10px 0;
+    }
+    @media (min-width: 680px) {
+        .peek__grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+    .mini {
+        display: grid;
+        grid-template-columns: 88px 1fr;
+        gap: 10px;
+        align-items: center;
+        padding: 8px;
+        border-radius: 14px;
+        text-decoration: none;
+        color: inherit;
+        background: color-mix(in oklch, var(--card), transparent 0%);
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 35%);
+    }
+    .mini img,
+    .mini__emoji {
+        width: 88px;
+        height: 64px;
+        object-fit: cover;
+        border-radius: 10px;
+        display: block;
+    }
+    .mini__emoji {
+        display: grid;
+        place-items: center;
+        font-size: 28px;
+        background: color-mix(in oklch, var(--ring), transparent 80%);
+    }
+    .mini__txt {
+        display: grid;
+        gap: 2px;
+    }
+    .mini__title {
+        font-size: 0.95rem;
+        line-height: 1.2;
+    }
+    .mini__sub {
+        color: var(--muted);
+        font-size: 0.8rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+</style>
+
+<script is:inline>
+    (() => {
+        const prefersReducedMotion = matchMedia(
+            "(prefers-reduced-motion: reduce)",
+        ).matches;
+        const roots = Array.from(document.querySelectorAll(".peek"));
+
+        roots.forEach((root) => {
+            const track = root.querySelector(".peek__track");
+            const items = Array.from(root.querySelectorAll(".peek__item"));
+            const loopPad = Number(root.dataset.loopPad || 2);
+            const original = Number(track?.dataset.count || items.length);
+            const allowAutoplay =
+                root.dataset.autoplay !== "false" && !prefersReducedMotion;
+
+            if (!track || items.length <= 1) return;
+
+            // --- helpers ---
+            const centerLeft = (el) =>
+                el.offsetLeft - (track.clientWidth - el.clientWidth) / 2;
+
+            let index = loopPad; // start on first real slide
+            let timer = null;
+            let paused = false; // hover pause
+            let stopped = false; // user interaction stop
+            const interval = Math.max(
+                2800,
+                Number(root.dataset.interval || 5200),
+            );
+
+            const setActive = () => {
+                const mid = track.scrollLeft + track.clientWidth / 2;
+                let nearest = 0,
+                    best = Infinity;
+                items.forEach((el, i) => {
+                    const c = el.offsetLeft + el.offsetWidth / 2;
+                    const d = Math.abs(c - mid);
+                    if (d < best) {
+                        best = d;
+                        nearest = i;
+                    }
+                });
+                items.forEach((el, i) =>
+                    el.setAttribute("data-active", String(i === nearest)),
+                );
+                index = nearest;
+
+                // normalize for infinite loop
+                if (index < loopPad) {
+                    index += original;
+                    track.scrollTo({
+                        left: centerLeft(items[index]),
+                        behavior: "auto",
+                    });
+                } else if (index >= loopPad + original) {
+                    index -= original;
+                    track.scrollTo({
+                        left: centerLeft(items[index]),
+                        behavior: "auto",
+                    });
+                }
+            };
+
+            const goTo = (i, behavior = "smooth") => {
+                const el = items[i];
+                if (!el) return;
+                track.scrollTo({ left: centerLeft(el), behavior });
+                index = i;
+                // re-mark after scroll settles
+                clearTimeout(goTo._t);
+                goTo._t = setTimeout(setActive, 80);
+            };
+
+            // --- autoplay controller ---
+            const start = () => {
+                if (!allowAutoplay || stopped) return;
+                stop();
+                timer = setInterval(() => {
+                    if (!paused) goTo(index + 1);
+                }, interval);
+            };
+            const stop = () => {
+                if (timer) clearInterval(timer);
+                timer = null;
+            };
+            const stopForUser = () => {
+                if (stopped) return;
+                stopped = true;
+                stop();
+            };
+
+            // events: any user intent stops autoplay
+            ["pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => {
+                track.addEventListener(ev, stopForUser, { passive: true });
+            });
+            track.addEventListener(
+                "scroll",
+                () => {
+                    // if the user scrolls manually, this will fire; we stop autoplay
+                    if (!stopped && !timer) return; // ignore programmatic first layout
+                    if (!stopped) stopForUser();
+                    clearTimeout(track._scrollT);
+                    track._scrollT = setTimeout(setActive, 120);
+                },
+                { passive: true },
+            );
+
+            track.addEventListener("mouseenter", () => (paused = true));
+            track.addEventListener("mouseleave", () => (paused = false));
+
+            // init
+            requestAnimationFrame(() => {
+                goTo(index, "auto");
+                setActive();
+                start();
+            });
+
+            // keep centered on resize
+            let ro;
+            if ("ResizeObserver" in window) {
+                ro = new ResizeObserver(() => goTo(index, "auto"));
+                ro.observe(track);
+            }
+            window.addEventListener(
+                "pagehide",
+                () => {
+                    stop();
+                    ro?.disconnect();
+                },
+                { once: true },
+            );
+        });
+    })();
+</script>
