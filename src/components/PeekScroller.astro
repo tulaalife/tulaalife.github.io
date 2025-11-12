@@ -1,10 +1,5 @@
 ---
-// PeekScroller.astro — centered infinite carousel (no snap)
-// - Autoscrolls to next card
-// - Stops on user interaction (scroll/drag/wheel/keys)
-// - Pauses on hover
-// - Respects prefers-reduced-motion
-// - Card = one container (image + centered text)
+import CTAButton from "./CTAButton.astro";
 
 export interface Item {
     href: string;
@@ -19,8 +14,8 @@ export interface Props {
     items: Item[];
     ctaHref?: string;
     ctaLabel?: string;
-    intervalMs?: number; // autoplay interval
-    autoplay?: boolean; // optional toggle (default true)
+    intervalMs?: number;
+    autoplay?: boolean;
 }
 
 const {
@@ -36,11 +31,10 @@ const {
 const hasCTA = Boolean(ctaHref && ctaLabel);
 const showGrid = items.length > 3;
 
-// clone 2 items at each end for infinite feel
 function padForLoop(src: Item[]): Item[] {
     if (src.length <= 3) return [...src, ...src, ...src];
-    const head = src.slice(-2);
-    const tail = src.slice(0, 2);
+    const head = src.slice(-2),
+        tail = src.slice(0, 2);
     return [...head, ...src, ...tail];
 }
 const loopPad = 2;
@@ -108,9 +102,13 @@ const extended = padForLoop(items);
 
             {hasCTA && (
                 <div class="peek__ctaRow">
-                    <a class="peek__cta" href={ctaHref!}>
-                        {ctaLabel} <span aria-hidden="true">↗</span>
-                    </a>
+                    <CTAButton
+                        href={ctaHref!}
+                        label={ctaLabel!}
+                        icon="↗"
+                        variant="soft"
+                        size="lg"
+                    />
                 </div>
             )}
 
@@ -143,6 +141,7 @@ const extended = padForLoop(items);
         </section>
     )
 }
+
 <style>
     .peek {
         margin: 28px auto 22px;
@@ -163,7 +162,6 @@ const extended = padForLoop(items);
         font-size: clamp(14px, 2vw, 16px);
     }
 
-    /* Track — no snap, tight gutters, visible peeks */
     .peek__rail {
         position: relative;
     }
@@ -177,9 +175,8 @@ const extended = padForLoop(items);
         -webkit-overflow-scrolling: touch;
         scroll-behavior: smooth;
     }
-    /* ADDED: Show focus outline only when using keyboard */
     .peek__track:focus-visible {
-        outline: 3px solid var(--btn, dodgerblue);
+        outline: 3px solid var(--btn);
         outline-offset: 4px;
         border-radius: 4px;
     }
@@ -187,14 +184,13 @@ const extended = padForLoop(items);
         display: none;
     }
 
-    /* Wider cards to reduce outer margins */
     .peek__item {
         flex: 0 0 88%;
-        transform-origin: center center;
+        transform-origin: center;
         transition:
-            transform 0.24s ease,
-            filter 0.24s ease,
-            opacity 0.24s ease;
+            transform 0.24s,
+            filter 0.24s,
+            opacity 0.24s;
         opacity: 0.96;
     }
     @media (min-width: 960px) {
@@ -207,7 +203,6 @@ const extended = padForLoop(items);
         opacity: 1;
     }
 
-    /* Card = one container (media + centered text) */
     .card {
         display: block;
         text-decoration: none;
@@ -251,34 +246,12 @@ const extended = padForLoop(items);
         font-size: clamp(13px, 2vw, 15px);
     }
 
-    /* CTA */
     .peek__ctaRow {
         display: flex;
         justify-content: center;
         margin: 14px 0 6px;
     }
-    .peek__cta {
-        display: inline-flex;
-        gap: 8px;
-        align-items: center;
-        padding: 10px 16px;
-        border-radius: 14px;
-        font-weight: 600;
-        text-decoration: none;
-        color: var(--fg);
-        background: color-mix(in oklch, var(--btn), transparent 88%);
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 30%);
-        backdrop-filter: saturate(120%) blur(4px);
-        transition:
-            transform 0.18s ease,
-            box-shadow 0.22s ease;
-    }
-    .peek__cta:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
-    }
 
-    /* Mini grid (unchanged) */
     .peek__grid {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -332,9 +305,10 @@ const extended = padForLoop(items);
         white-space: nowrap;
     }
 </style>
+
 <script is:inline>
     (() => {
-        const prefersReducedMotion = window.matchMedia(
+        const prefersReducedMotion = matchMedia(
             "(prefers-reduced-motion: reduce)",
         ).matches;
         const roots = Array.from(document.querySelectorAll(".peek"));
@@ -343,129 +317,118 @@ const extended = padForLoop(items);
             const track = root.querySelector(".peek__track");
             const items = Array.from(root.querySelectorAll(".peek__item"));
             const loopPad = Number(root.dataset.loopPad || 2);
-            const originalCount = Number(track?.dataset.count || items.length);
+            const original = Number(track?.dataset.count || items.length);
             const allowAutoplay =
                 root.dataset.autoplay !== "false" && !prefersReducedMotion;
 
             if (!track || items.length <= 1) return;
 
-            let idx = loopPad;
-            let timer;
-            let userInteracting = false;
-            let isHovering = false;
+            // --- helpers ---
+            const centerLeft = (el) =>
+                el.offsetLeft - (track.clientWidth - el.clientWidth) / 2;
+
+            let index = loopPad; // start on first real slide
+            let timer = null;
+            let paused = false; // hover pause
+            let stopped = false; // user interaction stop
             const interval = Math.max(
                 2800,
                 Number(root.dataset.interval || 5200),
             );
 
-            const centerOf = (el) => el.offsetLeft + el.offsetWidth / 2;
+            const setActive = () => {
+                const mid = track.scrollLeft + track.clientWidth / 2;
+                let nearest = 0,
+                    best = Infinity;
+                items.forEach((el, i) => {
+                    const c = el.offsetLeft + el.offsetWidth / 2;
+                    const d = Math.abs(c - mid);
+                    if (d < best) {
+                        best = d;
+                        nearest = i;
+                    }
+                });
+                items.forEach((el, i) =>
+                    el.setAttribute("data-active", String(i === nearest)),
+                );
+                index = nearest;
 
-            const centerOnIndex = (i, behavior = "smooth") => {
+                // normalize for infinite loop
+                if (index < loopPad) {
+                    index += original;
+                    track.scrollTo({
+                        left: centerLeft(items[index]),
+                        behavior: "auto",
+                    });
+                } else if (index >= loopPad + original) {
+                    index -= original;
+                    track.scrollTo({
+                        left: centerLeft(items[index]),
+                        behavior: "auto",
+                    });
+                }
+            };
+
+            const goTo = (i, behavior = "smooth") => {
                 const el = items[i];
                 if (!el) return;
-                track.scrollTo({
-                    left: centerOf(el) - track.clientWidth / 2,
-                    behavior: prefersReducedMotion ? "auto" : behavior,
-                });
-                idx = i;
-                markActiveSoon();
+                track.scrollTo({ left: centerLeft(el), behavior });
+                index = i;
+                // re-mark after scroll settles
+                clearTimeout(goTo._t);
+                goTo._t = setTimeout(setActive, 80);
             };
 
-            let markTO;
-            const markActiveSoon = () => {
-                clearTimeout(markTO);
-                markTO = setTimeout(() => {
-                    const viewportCenter =
-                        track.scrollLeft + track.clientWidth / 2;
-                    let nearest = 0,
-                        min = Infinity;
-                    items.forEach((el, i) => {
-                        const d = Math.abs(centerOf(el) - viewportCenter);
-                        if (d < min) {
-                            min = d;
-                            nearest = i;
-                        }
-                    });
-                    items.forEach((el, i) =>
-                        el.setAttribute("data-active", String(i === nearest)),
-                    );
-                    idx = nearest;
-
-                    // Infinite loop normalization
-                    if (idx < loopPad) {
-                        idx += originalCount;
-                        track.scrollTo({
-                            left: centerOf(items[idx]) - track.clientWidth / 2,
-                            behavior: "auto",
-                        });
-                    } else if (idx >= loopPad + originalCount) {
-                        idx -= originalCount;
-                        track.scrollTo({
-                            left: centerOf(items[idx]) - track.clientWidth / 2,
-                            behavior: "auto",
-                        });
-                    }
-                }, 50);
-            };
-
-            // --- Autoplay core ---
-            const tick = () => {
-                if (!userInteracting && !isHovering) centerOnIndex(idx + 1);
-            };
-
+            // --- autoplay controller ---
             const start = () => {
+                if (!allowAutoplay || stopped) return;
                 stop();
-                if (allowAutoplay) timer = setInterval(tick, interval);
+                timer = setInterval(() => {
+                    if (!paused) goTo(index + 1);
+                }, interval);
             };
-
             const stop = () => {
                 if (timer) clearInterval(timer);
-                timer = undefined;
+                timer = null;
             };
-
-            // --- User interactions ---
-            const handleUserInteraction = () => {
-                if (userInteracting) return; // stop only once
-                userInteracting = true;
+            const stopForUser = () => {
+                if (stopped) return;
+                stopped = true;
                 stop();
             };
 
-            // Listen for manual actions
-            ["pointerdown", "touchstart", "wheel"].forEach((ev) =>
-                track.addEventListener(ev, handleUserInteraction, {
-                    passive: true,
-                }),
+            // events: any user intent stops autoplay
+            ["pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => {
+                track.addEventListener(ev, stopForUser, { passive: true });
+            });
+            track.addEventListener(
+                "scroll",
+                () => {
+                    // if the user scrolls manually, this will fire; we stop autoplay
+                    if (!stopped && !timer) return; // ignore programmatic first layout
+                    if (!stopped) stopForUser();
+                    clearTimeout(track._scrollT);
+                    track._scrollT = setTimeout(setActive, 120);
+                },
+                { passive: true },
             );
 
-            track.addEventListener("keydown", (e) => {
-                if (e.key === "ArrowRight") {
-                    handleUserInteraction();
-                    centerOnIndex(idx + 1);
-                } else if (e.key === "ArrowLeft") {
-                    handleUserInteraction();
-                    centerOnIndex(idx - 1);
-                }
-            });
+            track.addEventListener("mouseenter", () => (paused = true));
+            track.addEventListener("mouseleave", () => (paused = false));
 
-            // Hover pause (temporary)
-            track.addEventListener("mouseenter", () => (isHovering = true));
-            track.addEventListener("mouseleave", () => (isHovering = false));
-
-            track.addEventListener("scroll", markActiveSoon, { passive: true });
-
-            // Initialize
+            // init
             requestAnimationFrame(() => {
-                centerOnIndex(idx, "auto");
+                goTo(index, "auto");
+                setActive();
                 start();
             });
 
-            // Handle resize
+            // keep centered on resize
             let ro;
             if ("ResizeObserver" in window) {
-                ro = new ResizeObserver(() => centerOnIndex(idx, "auto"));
+                ro = new ResizeObserver(() => goTo(index, "auto"));
                 ro.observe(track);
             }
-
             window.addEventListener(
                 "pagehide",
                 () => {

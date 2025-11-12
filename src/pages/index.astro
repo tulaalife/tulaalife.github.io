@@ -113,12 +113,9 @@ const hasTips = tipFive.length > 0;
           subtitle="Short, sourced insights for daily care"
           items={tipFive}
           intervalMs={5200}
+          ctaHref="/tips"
+          ctaLabel="Explore tips"
         />
-        <div class="ctaRow">
-          <a href="/tips" class="btn btn--solid">
-            Explore tips
-          </a>
-        </div>
       </section>
     )
   }
@@ -160,10 +157,6 @@ const hasTips = tipFive.length > 0;
   .section {
     margin: 32px auto;
     width: var(--wrap);
-  }
-  .ctaRow {
-    text-align: center;
-    margin-top: 12px;
   }
 
   /* Premium hero with soft ambient glow */
