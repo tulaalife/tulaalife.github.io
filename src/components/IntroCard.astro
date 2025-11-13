@@ -37,9 +37,9 @@ const isHero = variant === "hero";
                 <div class="dl__logo-halo" aria-hidden="true" />
                 <img
                     class="dl__logo"
-                    src="https://images.tulaa.life/logo.webp"
-                    width="72"
-                    height="72"
+                    src="/assets/icons/logo.webp"
+                    width="120"
+                    height="120"
                     alt=""
                     decoding="async"
                 />
@@ -170,23 +170,24 @@ const isHero = variant === "hero";
         background: radial-gradient(
                 circle at 30% 0%,
                 color-mix(in oklch, var(--accent-2), transparent 70%),
-                transparent 65%
+                transparent 25%
             ),
             radial-gradient(
                 circle at 70% 100%,
                 color-mix(in oklch, var(--accent), transparent 78%),
-                transparent 70%
+                transparent 30%
             );
         opacity: 0.3;
-        filter: blur(4px);
+        filter: blur(999px);
         z-index: -1;
     }
 
+    /* Bigger logo + deeper shadow */
     .dl__logo {
-        width: 72px;
-        height: 72px;
-        border-radius: 18px;
-        filter: drop-shadow(0 10px 22px rgba(10, 12, 16, 0.16));
+        width: 140px;
+        height: 140px;
+        border-radius: 2px;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
     }
 
     .dl__copy {
@@ -195,13 +196,23 @@ const isHero = variant === "hero";
     }
 
     .dl__title {
-        margin: 4px 0 6px;
+        margin: 0px 0 2px;
         text-align: center;
+    }
+
+    /* Extra depth + size for hero title */
+    .dl--hero .dl__title.typ-display {
+        font-size: clamp(2rem, 3vw, 3rem);
+        letter-spacing: 0.02em;
+        text-shadow:
+            0 2px 4px rgba(0, 0, 0, 0.2),
+            0 0 1px rgba(0, 0, 0, 0.2);
     }
 
     .dl__sub {
         margin: 0;
         font-size: var(--fs-body);
+        opacity: 0.96;
     }
 
     .dl__chips {
@@ -307,8 +318,12 @@ const isHero = variant === "hero";
             --padY: 28px;
             --padX: 18px;
         }
-        .dl__title.typ-display {
-            font-size: clamp(1.7rem, 6vw, 2.1rem);
+        .dl--hero .dl__title.typ-display {
+            font-size: clamp(2rem, 6vw, 2.4rem);
+        }
+        .dl__logo {
+            width: 96px;
+            height: 96px;
         }
     }
 
