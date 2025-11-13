@@ -94,7 +94,6 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     .ts-wrap {
         width: 100%;
         max-width: 100%; /* let <main> / parent container control rail width */
-        /* margin: 36px auto 32px; */
         padding: 0;
         display: flex;
         flex-direction: column;
@@ -120,7 +119,6 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     /* Inner panel – now “flat” so home-block provides main gloss */
     .ts-panel {
         --r: 18px;
-        padding: 8px 4px;
         border-radius: var(--r);
         background: transparent;
         border: none;
@@ -158,15 +156,25 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     /* Icon + text block */
     .ts-card {
         width: 100%;
-        max-width: 860px;
         margin: 0 auto;
         display: flex;
+        flex-direction: column; /* <-- CHANGED: Stack icon and text */
         align-items: center;
         gap: 16px;
-        padding: 4px 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
+        padding: 16px; /* <-- CHANGED: Added more padding */
+
+        /* v-- MOVED FROM .ts-icon --v */
+        background: linear-gradient(
+            180deg,
+            color-mix(in oklch, var(--card), white 12%),
+            color-mix(in oklch, var(--card), transparent 12%)
+        );
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 28%);
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.65),
+            0 6px 18px rgba(0, 0, 0, 0.08);
+        /* ^-- END MOVED STYLES --^ */
+
         border-radius: 18px;
         transition: transform 0.2s ease;
     }
@@ -183,15 +191,11 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         display: grid;
         place-items: center;
         font-size: 28px;
-        background: linear-gradient(
-            180deg,
-            color-mix(in oklch, var(--card), white 12%),
-            color-mix(in oklch, var(--card), transparent 12%)
-        );
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 28%);
-        box-shadow:
-            inset 0 2px 4px rgba(255, 255, 255, 0.65),
-            0 6px 18px rgba(0, 0, 0, 0.08);
+
+        /* v-- REMOVED GLOSS STYLES --v */
+        border: none;
+        box-shadow: none;
+        /* ^-- END REMOVED STYLES --^ */
     }
 
     .ts-icon img {
@@ -203,6 +207,8 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     /* Text */
     .ts-body {
         flex: 1;
+        width: 100%; /* <-- ADDED: For safety in flex column */
+        text-align: center; /* <-- ADDED: Center-align the text */
     }
     .ts-h3 {
         margin: 0 0 6px;
@@ -226,7 +232,6 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
 
     @media (max-width: 640px) {
         .ts-card {
-            align-items: flex-start;
         }
         .ts-icon {
             width: 46px;
