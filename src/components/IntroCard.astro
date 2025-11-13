@@ -120,10 +120,10 @@ const isHero = variant === "hero";
         gap: 16px;
         padding: var(--padY) var(--padX);
         border-radius: var(--r);
+        box-sizing: border-box;
 
-        /* CONSISTENT WIDTH: follows layout's --section-width if set */
         width: 100%;
-        max-width: min(100%, var(--section-width, 960px));
+        max-width: 100%;
         margin-inline: auto;
         margin-block: 0; /* let parent control vertical spacing */
 

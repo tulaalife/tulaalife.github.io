@@ -200,7 +200,6 @@ const url = new URL(canonicalPath, site).toString();
 
                 --radius-xl: 24px;
                 --container: 980px;
-                --section-width: 960px;
                 --elev-1: 0 6px 18px rgba(10, 12, 16, 0.08);
                 --elev-2: 0 12px 28px rgba(10, 12, 16, 0.12);
                 --elev-3: 0 18px 46px rgba(10, 12, 16, 0.14);
@@ -550,9 +549,18 @@ const url = new URL(canonicalPath, site).toString();
             main {
                 flex: 1;
                 width: 100%;
+                margin: 0;
+                padding: 32px 0 40px;
+            }
+
+            /* Every direct child of <main> shares one centered column */
+            main > * {
                 max-width: var(--container);
-                margin: 0 auto;
-                padding: 32px 16px;
+                margin-left: auto;
+                margin-right: auto;
+                padding-left: 16px;
+                padding-right: 16px;
+                box-sizing: border-box;
             }
 
             /* “Chip” polish */
@@ -593,6 +601,9 @@ const url = new URL(canonicalPath, site).toString();
             footer .wrap {
                 max-width: var(--container);
                 margin: 0 auto;
+                padding-left: 16px;
+                padding-right: 16px;
+                box-sizing: border-box;
             }
             footer p {
                 margin-top: 24px;

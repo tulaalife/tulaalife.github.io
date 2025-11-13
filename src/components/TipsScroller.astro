@@ -93,7 +93,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     /* Root sits inside .home and reuses .home-block for the glossy shell */
     .ts-wrap {
         width: 100%;
-        max-width: min(100%, var(--section-width));
+        max-width: 100%; /* let <main> / parent container control rail width */
         margin: 36px auto 32px;
         padding: 0;
         display: flex;
