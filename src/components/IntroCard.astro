@@ -1,5 +1,5 @@
 ---
-// DownloadCTA.astro — refined, subtle, content-sized store buttons
+// IntroCard.astro — refined, premium hero/footer download card
 export interface Props {
     headline?: string;
     subline?: string;
@@ -33,20 +33,25 @@ const isHero = variant === "hero";
 >
     {
         isHero && showLogo && (
-            <img
-                class="dl__logo"
-                src="https://images.tulaa.life/logo.webp"
-                width="72"
-                height="72"
-                alt=""
-                decoding="async"
-            />
+            <div class="dl__logo-wrap">
+                <div class="dl__logo-halo" aria-hidden="true" />
+                <img
+                    class="dl__logo"
+                    src="/assets/icons/logo.webp"
+                    width="120"
+                    height="120"
+                    alt=""
+                    decoding="async"
+                />
+            </div>
         )
     }
 
     <div class="dl__copy">
-        <h2 class="dl__title">{headline}</h2>
-        <p class="dl__sub">{subline}</p>
+        <h2 class={`dl__title ${isHero ? "typ-display" : "typ-h1"}`}>
+            {headline}
+        </h2>
+        <p class="dl__sub typ-body-sm">{subline}</p>
 
         <ul class="dl__chips" aria-label="App highlights">
             <li>Ad-free</li><li>Offline</li><li>Privacy-first</li>
@@ -71,7 +76,7 @@ const isHero = variant === "hero";
                 aria-hidden="true"
             />
             <span class="store-btn__text">
-                <small>Download on the</small>
+                <small>Download on</small>
                 <strong>App Store</strong>
             </span>
         </a>
@@ -104,49 +109,110 @@ const isHero = variant === "hero";
     .dl {
         --r: 24px;
         --padY: 28px;
-        --padX: 16px;
+        --padX: 20px;
         --btn-h: 52px;
         --btn-r: 12px;
+
         position: relative;
         display: grid;
         place-items: center;
         text-align: center;
-        gap: 14px;
+        gap: 16px;
         padding: var(--padY) var(--padX);
         border-radius: var(--r);
-        background: linear-gradient(
-            180deg,
-            color-mix(in oklch, var(--card), white 6%),
-            var(--card)
-        );
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 30%);
-        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.06);
+
+        /* Premium glassy background + subtle border gradient */
+        background: radial-gradient(
+                140% 180% at 50% 0%,
+                color-mix(in oklch, var(--accent-2), transparent 90%),
+                transparent 70%
+            ),
+            linear-gradient(
+                180deg,
+                color-mix(in oklch, var(--card), white 4%),
+                color-mix(in oklch, var(--card), transparent 6%)
+            );
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 26%);
+        box-shadow:
+            0 18px 40px rgba(15, 18, 23, 0.08),
+            0 0 0 1px rgba(255, 255, 255, 0.18);
         isolation: isolate;
         overflow: hidden;
+        max-width: 900px;
+        margin-inline: auto;
+    }
+
+    .dl--hero {
+        --r: 30px;
+        --padY: 40px;
+        --padX: 32px;
+        gap: 18px;
     }
 
     .dl--footer {
-        --r: 18px;
-        --padY: 18px;
+        --r: 22px;
+        --padY: 26px;
+        --padX: 20px;
+        gap: 14px;
     }
 
+    .dl__logo-wrap {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .dl__logo-halo {
+        position: absolute;
+        inset: 1px;
+        border-radius: 999px;
+        background: radial-gradient(
+                circle at 30% 0%,
+                color-mix(in oklch, var(--accent-2), transparent 70%),
+                transparent 25%
+            ),
+            radial-gradient(
+                circle at 70% 100%,
+                color-mix(in oklch, var(--accent), transparent 78%),
+                transparent 30%
+            );
+        opacity: 0.3;
+        filter: blur(999px);
+        z-index: -1;
+    }
+
+    /* Bigger logo + deeper shadow */
     .dl__logo {
-        width: 72px;
-        height: 72px;
-        border-radius: 18px;
-        filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.08));
+        width: 140px;
+        height: 140px;
+        border-radius: 2px;
+        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+    }
+
+    .dl__copy {
+        max-width: 640px;
+        margin-inline: auto;
     }
 
     .dl__title {
-        margin: 4px 0 6px;
-        font-size: clamp(26px, 3.9vw, 42px);
-        letter-spacing: 0.2px;
+        margin: 0px 0 2px;
+        text-align: center;
+    }
+
+    /* Extra depth + size for hero title */
+    .dl--hero .dl__title.typ-display {
+        font-size: clamp(2rem, 3vw, 3rem);
+        letter-spacing: 0.02em;
+        text-shadow:
+            0 2px 4px rgba(0, 0, 0, 0.2),
+            0 0 1px rgba(0, 0, 0, 0.2);
     }
 
     .dl__sub {
         margin: 0;
-        color: var(--muted);
-        font-size: clamp(14px, 2.05vw, 18px);
+        font-size: var(--fs-body);
+        opacity: 0.96;
     }
 
     .dl__chips {
@@ -156,21 +222,24 @@ const isHero = variant === "hero";
         flex-wrap: wrap;
         list-style: none;
         padding: 0;
-        margin: 12px 0 2px;
+        margin: 14px 0 4px;
     }
 
     .dl__chips li {
         padding: 7px 12px;
         border-radius: 999px;
-        font-size: 0.94rem;
+        font-size: var(--fs-caption);
+        font-weight: var(--fw-medium);
         color: var(--fg);
         background: linear-gradient(
             180deg,
-            color-mix(in oklch, var(--card), white 8%),
-            color-mix(in oklch, var(--card), transparent 6%)
+            color-mix(in oklch, var(--card), white 10%),
+            color-mix(in oklch, var(--card), transparent 4%)
         );
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 20%);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6);
+        border: 1px solid color-mix(in oklch, var(--accent), transparent 88%);
+        box-shadow:
+            inset 0 1px 0 rgba(255, 255, 255, 0.6),
+            0 4px 10px rgba(15, 18, 23, 0.06);
     }
 
     .dl__buttons {
@@ -181,7 +250,7 @@ const isHero = variant === "hero";
         margin-top: 10px;
     }
 
-    /* --- Subtle, content-sized store buttons --- */
+    /* --- Store buttons (unchanged visually) --- */
     .store-btn {
         height: var(--btn-h);
         border-radius: var(--btn-r);
@@ -192,6 +261,7 @@ const isHero = variant === "hero";
         padding: 0 14px;
         text-decoration: none;
         white-space: nowrap;
+        font-family: var(--font-sans);
         background: linear-gradient(180deg, #121314, #0f0f10 60%);
         color: #fff;
         border: 1px solid color-mix(in oklch, #ffffff, transparent 82%);
@@ -232,21 +302,29 @@ const isHero = variant === "hero";
     }
 
     .store-btn__text small {
-        font-size: 11px;
+        font-size: var(--fs-caption);
+        letter-spacing: 0.02em;
         opacity: 0.9;
-        letter-spacing: 0.2px;
     }
 
     .store-btn__text strong {
-        font-size: 17px;
-        letter-spacing: 0.2px;
+        font-size: var(--fs-body-sm);
+        font-weight: var(--fw-semibold);
+        letter-spacing: 0.01em;
     }
 
-    /* Light theme tweak */
-    :root.light .store-btn {
-        background: linear-gradient(180deg, #141516, #101112 60%);
-        border-color: color-mix(in oklch, #000, transparent 72%);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    @media (max-width: 640px) {
+        .dl--hero {
+            --padY: 28px;
+            --padX: 18px;
+        }
+        .dl--hero .dl__title.typ-display {
+            font-size: clamp(2rem, 6vw, 2.4rem);
+        }
+        .dl__logo {
+            width: 96px;
+            height: 96px;
+        }
     }
 
     @media (max-width: 420px) {

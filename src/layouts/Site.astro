@@ -1,5 +1,5 @@
 ---
-import DownloadCTA from "../components/DownloadCTA.astro";
+import IntroCard from "../components/IntroCard.astro";
 
 interface Props {
     title: string;
@@ -22,7 +22,7 @@ const url = new URL(canonicalPath, site).toString();
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="IE=edge" />
@@ -91,22 +91,28 @@ const url = new URL(canonicalPath, site).toString();
         <!-- Early theme -->
         <script is:inline>
             (() => {
+                const root = document.documentElement;
+
+                function applyTheme(theme) {
+                    root.dataset.theme = theme;
+                    // Let the browser know which scheme to use for scrollbars, form controls, etc.
+                    root.style.colorScheme = theme;
+                }
+
                 try {
                     const saved = localStorage.getItem("tulaa-theme");
-                    const prefersDark =
-                        window.matchMedia &&
-                        window.matchMedia("(prefers-color-scheme: dark)")
-                            .matches;
-                    document.documentElement.dataset.theme =
-                        saved || (prefersDark ? "dark" : "light");
-                } catch {}
+                    const initial =
+                        saved === "dark" || saved === "light" ? saved : "light"; // <- always light by default
+                    applyTheme(initial);
+                } catch {
+                    applyTheme("light");
+                }
+
                 window.toggleTheme = function toggleTheme() {
-                    const d = document.documentElement;
-                    const next =
-                        (d.dataset.theme || "light") === "dark"
-                            ? "light"
-                            : "dark";
-                    d.dataset.theme = next;
+                    const current =
+                        root.dataset.theme === "dark" ? "dark" : "light";
+                    const next = current === "dark" ? "light" : "dark";
+                    applyTheme(next);
                     try {
                         localStorage.setItem("tulaa-theme", next);
                     } catch {}
@@ -198,9 +204,30 @@ const url = new URL(canonicalPath, site).toString();
                 --elev-1: 0 6px 18px rgba(10, 12, 16, 0.08);
                 --elev-2: 0 12px 28px rgba(10, 12, 16, 0.12);
                 --elev-3: 0 18px 46px rgba(10, 12, 16, 0.14);
-                --font-sans: "Inter Var", ui-sans-serif, system-ui,
-                    -apple-system, "Segoe UI", Roboto, Helvetica, Arial;
+
+                /* Font family: Inter everywhere */
+                --font-sans: "Inter Var", system-ui, -apple-system,
+                    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
+                    sans-serif;
+
+                /* TYPOGRAPHY SCALE */
+                --fw-regular: 400;
+                --fw-medium: 500;
+                --fw-semibold: 600;
+                --fw-bold: 700;
+
+                --fs-display: clamp(2.2rem, 3.1vw, 2.8rem); /* big hero title */
+                --fs-h1: clamp(1.7rem, 2.3vw, 2.1rem); /* section headings */
+                --fs-h2: clamp(1.35rem, 1.8vw, 1.6rem); /* card/block titles */
+                --fs-body: 0.98rem; /* primary copy */
+                --fs-body-sm: 0.9rem; /* subtitles/meta */
+                --fs-caption: 0.78rem; /* legal/chips */
+
+                --lh-tight: 1.2;
+                --lh-title: 1.24;
+                --lh-body: 1.55;
             }
+
             [data-theme="dark"] {
                 /* Dark — Deep Indigo (punchier accents) */
                 --bg1: oklch(15% 0.05 260);
@@ -218,8 +245,11 @@ const url = new URL(canonicalPath, site).toString();
                 --elev-3: 0 22px 56px rgba(0, 0, 0, 0.46);
             }
 
+            /* ---------- Base typography ---------- */
             body {
                 font-family: var(--font-sans);
+                font-size: var(--fs-body);
+                line-height: var(--lh-body);
                 color: var(--fg);
                 background: radial-gradient(
                         1200px 800px at 15% -10%,
@@ -245,6 +275,119 @@ const url = new URL(canonicalPath, site).toString();
                 flex-direction: column;
                 min-height: 100vh;
                 position: relative;
+            }
+
+            button,
+            input,
+            select,
+            textarea {
+                font-family: var(--font-sans);
+                font-size: inherit;
+            }
+
+            h1,
+            h2,
+            h3,
+            h4 {
+                margin: 0;
+                font-weight: var(--fw-semibold);
+                line-height: var(--lh-title);
+                color: var(--fg);
+            }
+            h1 {
+                font-size: var(--fs-h1);
+            }
+            h2 {
+                font-size: var(--fs-h2);
+            }
+            h3 {
+                font-size: var(--fs-body);
+                font-weight: var(--fw-medium);
+            }
+            h4 {
+                font-size: var(--fs-body-sm);
+                font-weight: var(--fw-medium);
+            }
+
+            p {
+                margin: 0 0 0.6em;
+                font-size: var(--fs-body);
+                line-height: var(--lh-body);
+            }
+
+            small {
+                font-size: var(--fs-caption);
+                line-height: 1.4;
+            }
+
+            /* Semantic text utilities */
+            .typ-display {
+                font-size: var(--fs-display);
+                line-height: var(--lh-tight);
+                font-weight: var(--fw-bold);
+                letter-spacing: 0.01em;
+            }
+            .typ-h1 {
+                font-size: var(--fs-h1);
+                line-height: var(--lh-title);
+                font-weight: var(--fw-semibold);
+            }
+            .typ-h2 {
+                font-size: var(--fs-h2);
+                line-height: var(--lh-title);
+                font-weight: var(--fw-semibold);
+            }
+            .typ-body {
+                font-size: var(--fs-body);
+                line-height: var(--lh-body);
+                font-weight: var(--fw-regular);
+            }
+            .typ-body-sm {
+                font-size: var(--fs-body-sm);
+                line-height: var(--lh-body);
+                font-weight: var(--fw-regular);
+                color: var(--muted);
+            }
+            .typ-caption {
+                font-size: var(--fs-caption);
+                line-height: 1.4;
+                font-weight: var(--fw-medium);
+                color: var(--muted);
+                letter-spacing: 0.02em;
+                text-transform: uppercase;
+            }
+
+            /* Map existing component classes to scale */
+            .section-heading,
+            .peek__title,
+            .ts-title,
+            .more__title {
+                font-size: var(--fs-h1);
+                line-height: var(--lh-title);
+                font-weight: var(--fw-semibold);
+                text-align: center;
+            }
+            .section-subtitle,
+            .peek__subtitle,
+            .ts-subtitle {
+                font-size: var(--fs-body-sm);
+                line-height: var(--lh-body);
+                color: var(--muted);
+                text-align: center;
+            }
+            .tile__title,
+            .peek-card__title,
+            .ts-item__title {
+                font-size: var(--fs-h2);
+                line-height: var(--lh-title);
+                font-weight: var(--fw-semibold);
+            }
+            .tile__sub,
+            .peek-card__subtitle,
+            .ts-item__sub {
+                font-size: var(--fs-body-sm);
+                line-height: var(--lh-body);
+                color: var(--muted);
             }
 
             /* Soft grain + vignette */
@@ -308,7 +451,7 @@ const url = new URL(canonicalPath, site).toString();
                 align-items: center;
                 gap: 10px;
                 font-weight: 650;
-                font-size: 1.06rem;
+                font-size: var(--fs-body);
                 text-decoration: none;
                 color: var(--fg);
             }
@@ -322,7 +465,7 @@ const url = new URL(canonicalPath, site).toString();
                 color: var(--fg);
                 text-decoration: none;
                 margin-left: 16px;
-                font-size: 0.95rem;
+                font-size: var(--fs-body-sm);
                 opacity: 0.9;
             }
             nav a:hover {
@@ -411,7 +554,8 @@ const url = new URL(canonicalPath, site).toString();
             .dl__chips li {
                 padding: 7px 12px;
                 border-radius: 999px;
-                font-size: 0.94rem;
+                font-size: var(--fs-caption);
+                font-weight: var(--fw-medium);
                 color: var(--fg);
                 background: linear-gradient(
                     180deg,
@@ -432,13 +576,24 @@ const url = new URL(canonicalPath, site).toString();
                 text-align: center;
                 color: var(--muted);
             }
+            footer .wrap {
+                max-width: var(--container);
+                margin: 0 auto;
+            }
+            footer p {
+                margin-top: 10px;
+                font-size: var(--fs-caption);
+                color: var(--muted);
+                text-align: center;
+            }
             footer .legal {
                 margin-top: 12px;
+                margin-bottom: 48px;
                 display: flex;
                 gap: 14px;
                 justify-content: center;
                 flex-wrap: wrap;
-                font-size: 12px;
+                font-size: var(--fs-caption);
             }
             footer .legal a {
                 color: var(--muted);
@@ -446,10 +601,6 @@ const url = new URL(canonicalPath, site).toString();
             }
             footer .legal a:hover {
                 text-decoration: underline;
-            }
-            footer .wrap {
-                max-width: var(--container);
-                margin: 0 auto;
             }
 
             @media (prefers-reduced-motion: reduce) {
@@ -501,7 +652,7 @@ const url = new URL(canonicalPath, site).toString();
             !hideFooter && (
                 <footer>
                     <div class="wrap">
-                        <DownloadCTA
+                        <IntroCard
                             variant="footer"
                             headline="Download the Tulaa App"
                             subline="Your calm companion — yoga, meditation & journaling."
@@ -509,15 +660,11 @@ const url = new URL(canonicalPath, site).toString();
                         />
                     </div>
 
-                    <p style="margin-top:10px;font-size:12px;color:var(--muted);text-align:center;">
+                    <p>
                         © {new Date().getFullYear()} Tulaalife Wellness Private
                         Limited · All rights reserved.
                     </p>
-                    <div
-                        class="legal"
-                        aria-label="Legal and contact"
-                        style="text-align:center;"
-                    >
+                    <div class="legal" aria-label="Legal and contact">
                         <a href="/legal/privacy">Privacy Policy</a>
                         <a href="/legal/terms">Terms of Use</a>
                         <a href="mailto:contact@tulaalife.com" rel="noopener">

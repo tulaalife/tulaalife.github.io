@@ -1,10 +1,9 @@
 ---
-// src/pages/yoga/[slug].astro
 import Site from "../../layouts/Site.astro";
+import CTAButton from "../../components/CTAButton.astro";
 import { yogaPlans } from "../../data/generated";
 
 export async function getStaticPaths() {
-    // pre-generate one page per plan
     return yogaPlans.map((p) => ({
         params: { slug: p.slug },
         props: { plan: p },
@@ -23,15 +22,12 @@ const canonical = `/yoga/${plan.slug}`;
     canonicalPath={canonical}
 >
     <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
-        <a href="/yoga" style="text-decoration:none;">← All Yoga Plans</a>
+        <a href="/yoga" class="ypd-back">← All Yoga Plans</a>
 
         <header style="margin-top:12px;">
-            <h1 style="margin:6px 0 10px;">{plan.title}</h1>
-            {
-                plan.subtitle && (
-                    <p style="margin:0;color:var(--muted);">{plan.subtitle}</p>
-                )
-            }
+            <h1 class="ypd-title">{plan.title}</h1>
+
+            {plan.subtitle && <p class="ypd-sub">{plan.subtitle}</p>}
         </header>
 
         <img
@@ -43,38 +39,87 @@ const canonical = `/yoga/${plan.slug}`;
             style="width:100%;height:auto;border-radius:12px;margin:16px 0;"
         />
 
-        {
-            plan.teaser && (
-                <p style="font-size:1.05rem;line-height:1.7;margin:12px 0 18px;">
-                    {plan.teaser}
-                </p>
-            )
-        }
+        {plan.teaser && <p class="ypd-teaser">{plan.teaser}</p>}
 
         {
             plan.benefits && (
-                <div style="padding:12px;border:1px solid var(--ring);border-radius:12px;background:var(--bg-elev)">
-                    <strong>Benefits</strong>
-                    <p style="margin:6px 0 0;color:var(--muted)">
-                        {plan.benefits}
-                    </p>
+                <div class="ypd-benefits-box">
+                    <strong class="ypd-benefits-title">Benefits</strong>
+                    <p class="ypd-benefits-text">{plan.benefits}</p>
                 </div>
             )
         }
 
         <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
-            <a
+            <CTAButton
                 href={plan.deeplink}
-                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
-            >
-                Open in Tulaa app
-            </a>
-            <a
+                label="Open in Tulaa app"
+                variant="soft"
+                size="md"
+            />
+            <CTAButton
                 href="/yoga"
-                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
-            >
-                Browse more plans
-            </a>
+                label="Browse more plans"
+                variant="soft"
+                size="md"
+            />
         </div>
     </main>
 </Site>
+
+<style>
+    .ypd-back {
+        font-family: var(--font-sans);
+        font-size: var(--fs-body);
+        color: var(--accent);
+        text-decoration: none;
+    }
+    .ypd-back:hover {
+        text-decoration: underline;
+    }
+
+    .ypd-title {
+        margin: 6px 0 10px;
+        font-family: var(--font-sans);
+        font-size: var(--fs-h1);
+        font-weight: var(--fw-bold);
+        color: var(--fg);
+    }
+
+    .ypd-sub {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-lg);
+        color: var(--muted);
+    }
+
+    .ypd-teaser {
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-lg);
+        line-height: var(--lh-body);
+        color: var(--fg);
+        margin: 12px 0 18px;
+    }
+
+    .ypd-benefits-box {
+        padding: 12px;
+        border: 1px solid var(--ring);
+        border-radius: 12px;
+        background: var(--bg-elev);
+        margin-top: 10px;
+    }
+
+    .ypd-benefits-title {
+        font-family: var(--font-sans);
+        font-size: var(--fs-body);
+        font-weight: var(--fw-semibold);
+    }
+
+    .ypd-benefits-text {
+        margin: 6px 0 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body);
+        color: var(--muted);
+        line-height: var(--lh-body);
+    }
+</style>

@@ -1,5 +1,6 @@
 ---
 import Site from "../../layouts/Site.astro";
+import CTAButton from "../../components/CTAButton.astro";
 import { guidedAudios } from "../../data/generated";
 
 export async function getStaticPaths() {
@@ -19,10 +20,10 @@ const canonical = `/audio/${audio.slug}`;
     canonicalPath={canonical}
 >
     <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
-        <a href="/audio" style="text-decoration:none;">← All Guided Audios</a>
+        <a href="/audio" class="audio-back">← All Guided Audios</a>
 
         <header style="margin-top:12px;">
-            <h1 style="margin:6px 0 10px;">{audio.title}</h1>
+            <h1 class="audio-title">{audio.title}</h1>
         </header>
 
         <img
@@ -34,34 +35,50 @@ const canonical = `/audio/${audio.slug}`;
             style="width:100%;height:auto;border-radius:12px;margin:16px 0;"
         />
 
-        {
-            audio.teaser && (
-                <p style="font-size:1.05rem;line-height:1.6;margin:12px 0 22px;">
-                    {audio.subtitle}
-                </p>
-            )
-        }
-        {
-            audio.teaser && (
-                <p style="font-size:1.05rem;line-height:1.7;margin:12px 0 18px;">
-                    {audio.teaser}
-                </p>
-            )
-        }
+        {audio.subtitle && <p class="audio-sub">{audio.subtitle}</p>}
+        {audio.teaser && <p class="audio-teaser">{audio.teaser}</p>}
 
         <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
-            <a
+            <CTAButton
                 href={audio.deeplink}
-                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
-            >
-                Open in Tulaa app
-            </a>
-            <a
+                label="Open in Tulaa app"
+                variant="soft"
+                size="md"
+            />
+            <CTAButton
                 href="/audio"
-                style="padding:10px 14px;border:1px solid var(--ring);border-radius:10px;text-decoration:none;"
-            >
-                Browse more audios
-            </a>
+                label="Browse more audios"
+                variant="soft"
+                size="md"
+            />
         </div>
     </main>
 </Site>
+
+<style>
+    .audio-title {
+        margin: 6px 0 10px;
+        font-family: var(--font-sans);
+        font-size: var(--fs-h1);
+        font-weight: var(--fw-bold);
+    }
+
+    .audio-sub,
+    .audio-teaser {
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-lg);
+        line-height: var(--lh-body);
+        color: var(--muted);
+        margin: 12px 0 20px;
+    }
+
+    .audio-back {
+        font-family: var(--font-sans);
+        font-size: var(--fs-body);
+        color: var(--accent);
+        text-decoration: none;
+    }
+    .audio-back:hover {
+        text-decoration: underline;
+    }
+</style>

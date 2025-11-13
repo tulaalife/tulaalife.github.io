@@ -1,5 +1,6 @@
 ---
 import Site from "../../layouts/Site.astro";
+import CTAButton from "../../components/CTAButton.astro";
 import { allTips } from "../../data/generated";
 
 export async function getStaticPaths() {
@@ -10,56 +11,40 @@ export async function getStaticPaths() {
 }
 
 const { tip } = Astro.props;
-if (!tip) {
-  return Astro.redirect("/tips");
-}
+if (!tip) return Astro.redirect("/tips");
 
 const canonical = `/tips/${tip.slug}`;
-const pageTitle = `${tip.tip.length > 60 ? tip.tip.slice(0, 57) + "…" : tip.tip} · Health Tip · Tulaa`;
+const pageTitle = `${tip.tip.length > 60 ? tip.tip.slice(0,57)+"…" : tip.tip} · Health Tip · Tulaa`;
 const description = tip.benefit || "Gentle wellness tip from Tulaa.";
 ---
 
 <Site title={pageTitle} description={description} canonicalPath={canonical}>
   <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
+
     <nav aria-label="Breadcrumb" style="margin-bottom:8px;">
-      <a href="/tips" style="text-decoration:none;">← All Health Tips</a>
+      <a href="/tips" class="td-back">← All Health Tips</a>
     </nav>
 
     <header style="margin-top:12px;">
-      <h1 style="margin:6px 0 10px;display:flex;align-items:center;gap:6px;">
+      <h1 class="td-title">
         {tip.icon && <span aria-hidden="true">{tip.icon}</span>}
         <span>{tip.tip}</span>
       </h1>
-      <p style="margin:0;color:var(--muted);font-size:0.95rem;">
-        Category: {tip.category || "General"}
-      </p>
+
+      <p class="td-sub">Category: {tip.category || "General"}</p>
     </header>
 
-    <p style="margin-top:16px;font-size:1.05rem;line-height:1.7;">
-      {tip.benefit}
-    </p>
+    <p class="td-benefit">{tip.benefit}</p>
 
     {tip.precaution && (
-      <p style="margin-top:12px;color:var(--muted);" role="note">
+      <p class="td-prec" role="note">
         ⚠️ <strong>Precaution:</strong> {tip.precaution}
       </p>
     )}
 
-    <!-- CTAs -->
     <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
-      <a
-        href={tip.deeplink}
-        style="padding:10px 14px;border:1px solid var(--ring);
-               border-radius:10px;text-decoration:none;display:inline-block;">
-        Open in Tulaa app
-      </a>
-
-      <a
-        href="/tips"
-        style="padding:10px 14px;border:1px solid var(--ring);
-               border-radius:10px;text-decoration:none;display:inline-block;">
-        Browse more tips
-      </a>
+      <CTAButton href={tip.deeplink} label="Open in Tulaa app" variant="soft" size="md" />
+      <CTAButton href="/tips" label="Browse more tips" variant="soft" size="md" />
     </div>
 
     <script type="application/ld+json">
@@ -68,9 +53,8 @@ const description = tip.benefit || "Gentle wellness tip from Tulaa.";
         "@type": "CreativeWork",
         "name": tip.tip,
         "about": "Health tip",
-        "inLanguage": "en",
-        "isAccessibleForFree": true,
         "publisher": { "@type": "Organization", "name": "Tulaa" },
+        "isAccessibleForFree": true,
         "url": `https://tulaalife.com${canonical}`,
         "keywords": tip.category
           ? [tip.category, "wellness", "self-care"]
@@ -79,3 +63,45 @@ const description = tip.benefit || "Gentle wellness tip from Tulaa.";
     </script>
   </main>
 </Site>
+
+<style>
+  .td-back {
+    text-decoration: none;
+    font-family: var(--font-sans);
+    color: var(--accent);
+  }
+  .td-back:hover {
+    text-decoration: underline;
+  }
+
+  .td-title {
+    margin: 6px 0 10px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-h1);
+    font-weight: var(--fw-bold);
+  }
+
+  .td-sub {
+    margin: 0;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+  }
+
+  .td-benefit {
+    margin-top: 16px;
+    font-family: var(--font-sans);
+    font-size: var(--fs-body-lg);
+    line-height: var(--lh-body);
+  }
+
+  .td-prec {
+    margin-top: 12px;
+    color: var(--muted);
+    font-family: var(--font-sans);
+    font-size: var(--fs-body);
+  }
+</style>

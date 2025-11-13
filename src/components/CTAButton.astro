@@ -10,7 +10,8 @@ const { href, label, icon = "↗", variant = "soft", size = "md" } = Astro.props
 ---
 
 <a href={href} class={`cta cta--${variant} cta--${size}`}>
-    <span>{label}</span><span aria-hidden="true" class="cta__icon">{icon}</span>
+    <span class="cta__label">{label}</span>
+    <span aria-hidden="true" class="cta__icon">{icon}</span>
 </a>
 
 <style>
@@ -19,7 +20,8 @@ const { href, label, icon = "↗", variant = "soft", size = "md" } = Astro.props
         align-items: center;
         gap: 8px;
         text-decoration: none;
-        font-weight: 700;
+        font-family: var(--font-sans);
+        font-weight: var(--fw-semibold);
         letter-spacing: 0.01em;
         border-radius: 14px;
         border: 1px solid;
@@ -29,35 +31,48 @@ const { href, label, icon = "↗", variant = "soft", size = "md" } = Astro.props
             background 0.22s ease;
         -webkit-tap-highlight-color: transparent;
     }
+
+    /* ---- Sizes mapped to type scale ---- */
     .cta--md {
-        padding: 10px 16px;
-        font-size: 14px;
+        padding: 10px 18px;
+        font-size: var(--fs-body-sm);
+        line-height: var(--lh-body);
     }
     .cta--lg {
-        padding: 12px 18px;
-        font-size: 15px;
+        padding: 12px 20px;
+        font-size: var(--fs-body);
+        line-height: var(--lh-body);
     }
+
+    /* ---- Variants ---- */
     .cta--soft {
         background: color-mix(in oklch, var(--btn), transparent 88%);
         border-color: color-mix(in oklch, var(--ring), transparent 30%);
         color: var(--fg);
         backdrop-filter: saturate(120%) blur(4px);
     }
+
     .cta--solid {
         background: var(--btn);
         border-color: color-mix(in oklch, var(--btn), black 10%);
         color: var(--btnText);
     }
+
+    /* ---- Interactions ---- */
     .cta:hover {
         transform: translateY(-1px);
         box-shadow: 0 10px 26px rgba(0, 0, 0, 0.1);
     }
+
     .cta:active {
         transform: none;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
+
+    /* ---- Icon polish ---- */
     .cta__icon {
-        opacity: 0.8;
+        opacity: 0.75;
+        font-size: 1.1em;
         transform: translateY(-1px);
     }
 </style>
