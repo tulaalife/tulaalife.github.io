@@ -1,6 +1,7 @@
 ---
 import Site from "../../layouts/Site.astro";
-import { tips } from "../../data/generated"; // limited, shuffled 10 tips
+import CTAButton from "../../components/CTAButton.astro";
+import { tips } from "../../data/generated";
 ---
 
 <Site
@@ -9,43 +10,18 @@ import { tips } from "../../data/generated"; // limited, shuffled 10 tips
     canonicalPath="/tips"
 >
     <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
-        <h1 style="margin:0 0 12px;">Health & Wellness Tips</h1>
+        <h1 class="tips-title">Health & Wellness Tips</h1>
 
-        <ul
-            style="
-        list-style:none;
-        padding:0;
-        display:grid;
-        gap:14px;
-        margin:0;
-      "
-            aria-label="List of wellness tips"
-        >
+        <ul class="tips-grid" aria-label="List of wellness tips">
             {
                 tips.map((t) => (
-                    <li
-                        style="
-              border:1px solid var(--ring);
-              border-radius:14px;
-              padding:14px;
-              background:var(--card);
-              transition:transform 0.2s ease, box-shadow 0.2s ease;
-            "
-                    >
-                        <a
-                            href={`/tips/${t.slug}`}
-                            style="text-decoration:none;color:inherit;display:flex;gap:12px;align-items:center;"
-                        >
-                            <div style="font-size:1.6rem;flex-shrink:0;">
-                                {t.icon ?? "💡"}
-                            </div>
-                            <div>
-                                <h3 style="margin:0 0 4px;font-size:1.05rem;">
-                                    {t.tip}
-                                </h3>
-                                <p style="margin:0;color:var(--muted);font-size:0.9rem;line-height:1.4;">
-                                    {t.benefit}
-                                </p>
+                    <li class="tips-card">
+                        <a href={`/tips/${t.slug}`} class="tips-link">
+                            <div class="tips-icon">{t.icon ?? "💡"}</div>
+
+                            <div class="tips-body">
+                                <h3 class="tips-h3">{t.tip}</h3>
+                                <p class="tips-sub">{t.benefit}</p>
                             </div>
                         </a>
                     </li>
@@ -53,28 +29,81 @@ import { tips } from "../../data/generated"; // limited, shuffled 10 tips
             }
         </ul>
 
-        <!-- Single CTA below the list -->
-        <div
-            style="
-        margin-top:28px;
-        display:flex;
-        justify-content:center;
-      "
-        >
-            <a
+        <div class="tips-cta">
+            <CTAButton
                 href="tulaa://tips"
-                style="
-          padding:12px 20px;
-          border:1px solid var(--ring);
-          border-radius:12px;
-          text-decoration:none;
-          font-weight:600;
-          background:var(--btn);
-          color:var(--btnText);
-        "
-            >
-                Open full tips library in Tulaa app
-            </a>
+                label="Open full tips library in Tulaa app"
+                variant="solid"
+                size="lg"
+            />
         </div>
     </main>
 </Site>
+
+<style>
+    .tips-title {
+        margin: 0 0 12px;
+        font-family: var(--font-sans);
+        font-size: var(--fs-h1);
+        font-weight: var(--fw-bold);
+    }
+
+    .tips-grid {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 14px;
+    }
+
+    .tips-card {
+        background: var(--card);
+        border-radius: 14px;
+        border: 1px solid var(--ring);
+        padding: 14px;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+    .tips-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+    }
+
+    .tips-link {
+        display: flex;
+        gap: 12px;
+        text-decoration: none;
+        color: inherit;
+        align-items: center;
+    }
+
+    .tips-icon {
+        font-size: 1.6rem;
+        flex-shrink: 0;
+    }
+
+    .tips-body {
+        flex: 1;
+    }
+
+    .tips-h3 {
+        margin: 0 0 4px;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-lg);
+        font-weight: var(--fw-semibold);
+    }
+
+    .tips-sub {
+        margin: 0;
+        color: var(--muted);
+        font-size: var(--fs-body-sm);
+        line-height: var(--lh-body);
+    }
+
+    .tips-cta {
+        margin-top: 28px;
+        display: flex;
+        justify-content: center;
+    }
+</style>

@@ -8,7 +8,8 @@ import { guidedAudios } from "../../data/generated";
     description="Gentle voice-guided sessions for calm, focus, and rest."
 >
     <main class="wrap" style="max-width:840px;margin:0 auto;padding:24px;">
-        <h1 style="margin:0 0 12px;">Guided Audios</h1>
+        <h1 class="ga-title">Guided Audios</h1>
+
         <ul style="list-style:none;padding:0;display:grid;gap:12px;">
             {
                 guidedAudios.map((a) => (
@@ -27,10 +28,8 @@ import { guidedAudios } from "../../data/generated";
                                     style="border-radius:8px;object-fit:cover;"
                                 />
                                 <div>
-                                    <h3 style="margin:0 0 6px;">{a.title}</h3>
-                                    <p style="margin:0;color:var(--muted);">
-                                        {a.teaser}
-                                    </p>
+                                    <h3 class="ga-item-title">{a.title}</h3>
+                                    <p class="ga-item-sub">{a.teaser}</p>
                                 </div>
                             </div>
                         </a>
@@ -40,3 +39,29 @@ import { guidedAudios } from "../../data/generated";
         </ul>
     </main>
 </Site>
+
+<style>
+    .ga-title {
+        margin: 0 0 12px;
+        font-family: var(--font-sans);
+        font-size: var(--fs-h2);
+        font-weight: var(--fw-bold);
+        color: var(--fg);
+    }
+
+    .ga-item-title {
+        margin: 0 0 6px;
+        font-family: var(--font-sans);
+        font-size: var(--fs-h4);
+        font-weight: var(--fw-semibold);
+        color: var(--fg);
+    }
+
+    .ga-item-sub {
+        margin: 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body);
+        color: var(--muted);
+        line-height: var(--lh-body);
+    }
+</style>

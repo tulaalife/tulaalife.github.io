@@ -101,13 +101,16 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     }
     .ts-title {
         margin: 0 0 6px;
-        font-size: clamp(18px, 2.6vw, 22px);
-        letter-spacing: 0.2px;
+        font-family: var(--font-sans);
+        font-size: var(--fs-h3);
+        font-weight: var(--fw-semibold);
+        color: var(--fg);
     }
     .ts-subtitle {
         margin: 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body);
         color: var(--muted);
-        font-size: clamp(14px, 2.1vw, 16px);
     }
 
     /* Panel (glassy, subtle glow) */
@@ -166,6 +169,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         width: min(100%, 860px);
         padding: 16px;
         border-radius: var(--r);
+        font-family: var(--font-sans);
         background: radial-gradient(
                 120% 120% at 100% 0%,
                 color-mix(in oklab, var(--fg) 5%, transparent),
@@ -185,7 +189,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         border-radius: 12px;
         display: grid;
         place-items: center;
-        font-size: 28px;
+        font-size: 24px;
         background: color-mix(in oklab, var(--btn) 12%, transparent);
         border: 1px solid color-mix(in oklab, var(--ring) 70%, transparent);
     }
@@ -200,13 +204,17 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     }
     .ts-h3 {
         margin: 0 0 6px;
-        font-size: clamp(15px, 2.2vw, 17px);
-        letter-spacing: 0.2px;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-lg);
+        font-weight: var(--fw-medium);
+        color: var(--fg);
     }
     .ts-p {
         margin: 0;
+        font-family: var(--font-sans);
+        font-size: var(--fs-body-sm);
+        line-height: var(--lh-body);
         color: var(--muted);
-        line-height: 1.35;
     }
 
     .ts-ctaRow {
