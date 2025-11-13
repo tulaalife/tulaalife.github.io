@@ -27,10 +27,7 @@ const {
 const isHero = variant === "hero";
 ---
 
-<section
-    class:list={["dl", isHero ? "dl--hero" : "dl--footer"]}
-    aria-label="Download Tulaa"
->
+<section class:list={["dl", "dl--hero"]} aria-label="Download Tulaa">
     {
         isHero && showLogo && (
             <div class="dl__logo-wrap">
@@ -158,13 +155,6 @@ const isHero = variant === "hero";
         --padY: 40px;
         --padX: 32px;
         gap: 18px;
-    }
-
-    .dl--footer {
-        --r: 22px;
-        --padY: 26px;
-        --padX: 20px;
-        gap: 14px;
     }
 
     .dl__logo-wrap {
