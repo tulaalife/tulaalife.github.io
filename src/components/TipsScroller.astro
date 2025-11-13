@@ -80,7 +80,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                         href={ctaHref!}
                         label={ctaLabel!}
                         icon="↗"
-                        variant="soft"
+                        variant="solid"
                         size="lg"
                     />
                 </div>
@@ -91,136 +91,149 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
 
 <style>
     .ts-wrap {
-        margin: 28px auto 22px;
+        margin: 36px auto 32px;
         padding: 8px 16px 16px;
         max-width: 880px;
     }
+
+    /* Heading */
     .ts-header {
         text-align: center;
-        margin: 0 0 14px;
+        margin-bottom: 18px;
     }
     .ts-title {
-        margin: 0 0 6px;
-        font-family: var(--font-sans);
-        font-size: var(--fs-h3);
+        font-size: var(--fs-h2);
         font-weight: var(--fw-semibold);
-        color: var(--fg);
+        margin: 0;
+        letter-spacing: 0.01em;
     }
     .ts-subtitle {
-        margin: 0;
-        font-family: var(--font-sans);
-        font-size: var(--fs-body);
+        margin: 4px 0 0;
         color: var(--muted);
+        font-size: var(--fs-body-sm);
     }
 
-    /* Panel (glassy, subtle glow) */
+    /* Single premium card (outer only) */
     .ts-panel {
-        --r: 18px;
-        margin-top: 14px;
-        padding: 14px;
+        --r: 24px;
+        padding: 22px 24px;
         border-radius: var(--r);
         background: radial-gradient(
-                120% 120% at 0% 0%,
-                color-mix(in oklab, var(--fg) 6%, transparent),
-                transparent 60%
+                160% 180% at 100% 0%,
+                color-mix(in oklch, var(--accent-2), transparent 92%),
+                transparent 70%
             ),
-            color-mix(in oklab, var(--panel) 92%, transparent);
-        border: 1px solid color-mix(in oklab, var(--ring) 72%, transparent);
+            linear-gradient(
+                180deg,
+                color-mix(in oklch, var(--card), white 6%),
+                color-mix(in oklch, var(--card), transparent 10%)
+            );
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 20%);
         box-shadow:
-            0 1px 0 color-mix(in oklab, var(--fg) 8%, transparent),
-            0 12px 28px color-mix(in oklab, var(--fg) 10%, transparent);
-        backdrop-filter: saturate(120%) blur(3px);
+            0 22px 48px rgba(0, 0, 0, 0.08),
+            0 2px 4px rgba(255, 255, 255, 0.28) inset;
+        backdrop-filter: blur(6px) saturate(130%);
     }
 
-    /* Slides stack (cross-fade, auto height) */
+    /* Track */
     .ts-track {
-        margin: 0;
-        height: var(--ts-h, auto);
-        min-height: 132px;
         position: relative;
-        list-style: none;
         padding: 0;
+        margin: 0;
+        list-style: none;
+        height: var(--ts-h, auto);
+        min-height: 112px;
     }
+
+    /* Center content vertically inside the slide */
     .ts-slide {
         position: absolute;
         inset: 0;
         display: flex;
-        align-items: center;
+        align-items: center; /* <-- ADD THIS */
         justify-content: center;
         opacity: 0;
-        transform: translateY(8px) scale(0.99);
+        transform: translateY(8px) scale(0.985);
         transition:
-            opacity 0.6s cubic-bezier(0.22, 0.61, 0.36, 1),
-            transform 0.6s cubic-bezier(0.22, 0.61, 0.36, 1);
-        pointer-events: none;
-        will-change: opacity, transform;
+            opacity 0.45s ease,
+            transform 0.45s ease;
     }
     .ts-slide[data-active="true"] {
         opacity: 1;
         transform: translateY(0) scale(1);
-        pointer-events: auto;
     }
 
+    /* Center the icon + text block together */
     .ts-card {
-        --r: 16px;
+        width: 100%;
+        max-width: 860px;
+        margin: 0 auto;
         display: flex;
-        gap: 14px;
-        align-items: flex-start;
-        width: min(100%, 860px);
-        padding: 16px;
-        border-radius: var(--r);
-        font-family: var(--font-sans);
-        background: radial-gradient(
-                120% 120% at 100% 0%,
-                color-mix(in oklab, var(--fg) 5%, transparent),
-                transparent 60%
-            ),
-            color-mix(in oklab, var(--panel) 96%, transparent);
-        border: 1px solid color-mix(in oklab, var(--ring) 60%, transparent);
-        transition:
-            transform 0.25s ease,
-            box-shadow 0.25s ease;
+        align-items: center; /* <-- ADD THIS */
+        gap: 16px;
+        padding: 4px 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        border-radius: 18px;
+        transition: transform 0.2s ease;
+    }
+    .ts-slide[data-active="true"] {
+        opacity: 1;
+        transform: translateY(0) scale(1);
     }
 
+    .ts-card:hover {
+        transform: translateY(-1px);
+    }
+
+    /* Icon badge — keep the premium look */
     .ts-icon {
-        flex: 0 0 auto;
-        width: 48px;
-        height: 48px;
-        border-radius: 12px;
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
         display: grid;
         place-items: center;
-        font-size: 24px;
-        background: color-mix(in oklab, var(--btn) 12%, transparent);
-        border: 1px solid color-mix(in oklab, var(--ring) 70%, transparent);
+        font-size: 28px;
+        background: linear-gradient(
+            180deg,
+            color-mix(in oklch, var(--card), white 12%),
+            color-mix(in oklch, var(--card), transparent 12%)
+        );
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 28%);
+        box-shadow:
+            inset 0 2px 4px rgba(255, 255, 255, 0.65),
+            0 6px 18px rgba(0, 0, 0, 0.08);
     }
+
     .ts-icon img {
-        width: 28px;
-        height: 28px;
+        width: 30px;
+        height: 30px;
         object-fit: contain;
     }
 
+    /* Text */
     .ts-body {
         flex: 1;
     }
     .ts-h3 {
         margin: 0 0 6px;
-        font-family: var(--font-sans);
         font-size: var(--fs-body-lg);
-        font-weight: var(--fw-medium);
-        color: var(--fg);
+        font-weight: var(--fw-semibold);
+        line-height: 1.35;
     }
     .ts-p {
         margin: 0;
-        font-family: var(--font-sans);
         font-size: var(--fs-body-sm);
-        line-height: var(--lh-body);
         color: var(--muted);
+        line-height: 1.55;
     }
 
+    /* CTA */
     .ts-ctaRow {
         display: flex;
         justify-content: center;
-        margin: 38px 0 0;
+        margin-top: 24px;
     }
 </style>
 

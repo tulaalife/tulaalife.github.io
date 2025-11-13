@@ -31,24 +31,46 @@ const initial = items[0] ?? null;
 ---
 
 {items.length > 0 && (
-  <section class="peek" role="region" aria-labelledby={`peek-title-${title.replaceAll(' ', '-')}`}>
+  <section
+    class="peek"
+    role="region"
+    aria-labelledby={`peek-title-${title.replaceAll(" ", "-")}`}
+  >
     <header class="peek__head">
-      <h2 id={`peek-title-${title.replaceAll(' ', '-')}`} class="peek__title">{title}</h2>
+      <h2
+        id={`peek-title-${title.replaceAll(" ", "-")}`}
+        class="peek__title"
+      >
+        {title}
+      </h2>
       {subtitle && <p class="peek__subtitle">{subtitle}</p>}
     </header>
 
     {/* Preview card */}
-    <a class="peek__preview" data-preview href={initial?.href} aria-label={`Open: ${initial?.title ?? ''}`}>
+    <a
+      class="peek__preview"
+      data-preview
+      href={initial?.href}
+      aria-label={`Open: ${initial?.title ?? ""}`}
+    >
       <div class="peek__media" data-media>
         {initial?.image ? (
           <img src={initial.image} alt="" loading="lazy" />
         ) : (
-          <div class="peek__emoji" data-emoji>{initial?.emojiFallback ?? "🧘"}</div>
+          <div class="peek__emoji" data-emoji>
+            {initial?.emojiFallback ?? "🧘"}
+          </div>
         )}
       </div>
       <div class="peek__meta">
-        <div class="peek__meta-title" data-title>{initial?.title}</div>
-        {initial?.subtitle && <div class="peek__meta-sub" data-subtitle>{initial?.subtitle}</div>}
+        <div class="peek__meta-title" data-title>
+          {initial?.title}
+        </div>
+        {initial?.subtitle && (
+          <div class="peek__meta-sub" data-subtitle>
+            {initial?.subtitle}
+          </div>
+        )}
       </div>
     </a>
 
@@ -56,7 +78,10 @@ const initial = items[0] ?? null;
     <div class="peek__rail-wrap">
       <ul class="peek__rail" data-rail>
         {items.map((it, idx) => (
-          <li role="option" aria-selected={idx === 0 ? "true" : "false"}>
+          <li
+            role="option"
+            aria-selected={idx === 0 ? "true" : "false"}
+          >
             <button
               type="button"
               class="peek__card"
@@ -69,10 +94,18 @@ const initial = items[0] ?? null;
               data-emoji={it.emojiFallback ?? ""}
             >
               <div class="peek__thumb">
-                {it.image ? <img src={it.image} alt="" loading="lazy" /> : <div class="peek__thumb-emoji">{it.emojiFallback ?? "🧩"}</div>}
+                {it.image ? (
+                  <img src={it.image} alt="" loading="lazy" />
+                ) : (
+                  <div class="peek__thumb-emoji">
+                    {it.emojiFallback ?? "🧩"}
+                  </div>
+                )}
               </div>
               <div class="peek__card-title">{it.title}</div>
-              {it.subtitle && <div class="peek__card-sub">{it.subtitle}</div>}
+              {it.subtitle && (
+                <div class="peek__card-sub">{it.subtitle}</div>
+              )}
             </button>
           </li>
         ))}
@@ -82,33 +115,36 @@ const initial = items[0] ?? null;
     {/* CTA below carousel */}
     {hasCTA && (
       <div class="peek__cta-wrap">
-        <CTAButton href={ctaHref!} label={ctaLabel!} variant="solid" size="lg" />
+        <CTAButton
+          href={ctaHref!}
+          label={ctaLabel!}
+          variant="solid"
+          size="lg"
+        />
       </div>
     )}
 
     <script is:inline>
       (function () {
-        const root = document.currentScript?.closest('.peek');
+        const root = document.currentScript?.closest(".peek");
         if (!root) return;
-        const rail = root.querySelector('[data-rail]');
-        const preview = root.querySelector('[data-preview]');
-        const media = root.querySelector('[data-media]');
-        const titleEl = root.querySelector('[data-title]');
-        const subEl = root.querySelector('[data-subtitle]');
+        const rail = root.querySelector("[data-rail]");
+        const preview = root.querySelector("[data-preview]");
+        const media = root.querySelector("[data-media]");
+        const titleEl = root.querySelector("[data-title]");
+        const subEl = root.querySelector("[data-subtitle]");
 
         function applyOrientation(imgUrl) {
-          // Clear, then insert <img> so we can read natural sizes
-          media.innerHTML = '';
+          media.innerHTML = "";
           const im = new Image();
-          im.loading = 'lazy';
-          im.alt = '';
+          im.loading = "lazy";
+          im.alt = "";
           im.src = imgUrl;
           im.onload = () => {
             const isPortrait = im.naturalHeight > im.naturalWidth;
-            media.classList.toggle('is-portrait', isPortrait);
-            media.classList.toggle('is-landscape', !isPortrait);
-            // blurred backdrop for polish
-            media.style.setProperty('--bg-url', `url("${imgUrl}")`);
+            media.classList.toggle("is-portrait", isPortrait);
+            media.classList.toggle("is-landscape", !isPortrait);
+            media.style.setProperty("--bg-url", `url("${imgUrl}")`);
           };
           media.appendChild(im);
         }
@@ -117,23 +153,27 @@ const initial = items[0] ?? null;
           if (!cardBtn || !preview) return;
 
           rail?.querySelectorAll('li[role="option"]').forEach((opt) =>
-            opt.setAttribute('aria-selected', opt.contains(cardBtn) ? 'true' : 'false')
+            opt.setAttribute(
+              "aria-selected",
+              opt.contains(cardBtn) ? "true" : "false"
+            )
           );
 
-          const href = cardBtn.dataset.href || '#';
-          const title = cardBtn.dataset.title || '';
-          const sub = cardBtn.dataset.subtitle || '';
-          const img = cardBtn.dataset.image || '';
-          const emo = cardBtn.dataset.emoji || '';
+          const href = cardBtn.dataset.href || "#";
+          const title = cardBtn.dataset.title || "";
+          const sub = cardBtn.dataset.subtitle || "";
+          const img = cardBtn.dataset.image || "";
+          const emo = cardBtn.dataset.emoji || "";
 
           preview.href = href;
 
           if (img) {
             applyOrientation(img);
           } else {
-            media.innerHTML = `<div class="peek__emoji">${emo || "🧘"}</div>`;
-            media.classList.remove('is-portrait', 'is-landscape');
-            media.style.removeProperty('--bg-url');
+            media.innerHTML =
+              `<div class="peek__emoji">${emo || "🧘"}</div>`;
+            media.classList.remove("is-portrait", "is-landscape");
+            media.style.removeProperty("--bg-url");
           }
 
           if (titleEl) titleEl.textContent = title;
@@ -143,99 +183,235 @@ const initial = items[0] ?? null;
           }
         }
 
-        rail?.addEventListener('click', (e) => {
-          const btn = e.target.closest('[data-card]');
+        rail?.addEventListener("click", (e) => {
+          const btn = e.target.closest("[data-card]");
           if (btn) setSelected(btn);
         });
 
         // Initial
-        const first = rail?.querySelector('[data-card]');
+        const first = rail?.querySelector("[data-card]");
         if (first) setSelected(first);
       })();
     </script>
   </section>
 )}
-<style>
-  /* Premium, adaptive preview */
-.peek { width: 100%; display: grid; gap: clamp(16px, 2vw, 24px); justify-items: center; font-family: var(--font-sans);}
-.peek__head { text-align: center; }
-.peek__title { font-size: var(--fs-h2); font-weight: var(--fw-semibold); margin: 0; }
-.peek__subtitle { margin: 4px 0 0; color: var(--muted); font-size: var(--fs-body); }
 
+<style>
+/* Shell */
+.peek {
+  width: 100%;
+  display: grid;
+  gap: clamp(18px, 2.4vw, 26px);
+  justify-items: center;
+  font-family: var(--font-sans);
+  padding-inline: 4px;
+}
+
+/* Section heading */
+.peek__head {
+  text-align: center;
+}
+.peek__title {
+  font-size: var(--fs-h1);
+  font-weight: var(--fw-semibold);
+  letter-spacing: 0.01em;
+  margin: 0;
+}
+.peek__subtitle {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: var(--fs-body-sm);
+}
+
+/* Preview (hero) card */
 .peek__preview {
   width: min(100%, 960px);
   display: grid;
-  gap: 10px;
+  gap: 0;
   text-decoration: none;
-  border-radius: 20px;
+  border-radius: 26px;
   overflow: hidden;
-  box-shadow: 0 8px 28px rgba(0,0,0,.1);
-  background: var(--card);
+  background:
+    radial-gradient(
+      130% 180% at 50% 0%,
+      color-mix(in oklch, var(--accent-2), transparent 88%),
+      transparent 70%
+    ),
+    linear-gradient(
+      180deg,
+      color-mix(in oklch, var(--card), white 4%),
+      color-mix(in oklch, var(--card), transparent 8%)
+    );
+  border: 1px solid color-mix(in oklch, var(--ring), transparent 16%);
+  box-shadow:
+    0 18px 40px rgba(10, 12, 16, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.14);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease;
+}
+.peek__preview:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklch, var(--accent), transparent 70%);
+  box-shadow:
+    0 22px 46px rgba(10, 12, 16, 0.16),
+    0 0 0 1px rgba(255, 255, 255, 0.18);
 }
 
 .peek__media {
   position: relative;
-  /* default to landscape */
   aspect-ratio: 16 / 9;
   overflow: hidden;
   isolation: isolate;
 }
-.peek__media.is-portrait { aspect-ratio: 3 / 4; }  /* portrait preview height */
-.peek__media.is-landscape { aspect-ratio: 16 / 9; }
+.peek__media.is-portrait {
+  aspect-ratio: 3 / 4;
+}
+.peek__media.is-landscape {
+  aspect-ratio: 16 / 9;
+}
 
 .peek__media::before {
   content: "";
-  position: absolute; inset: 0;
+  position: absolute;
+  inset: 0;
   background-image: var(--bg-url, none);
   background-size: cover;
   background-position: center;
-  transform: scale(1.12);
-  z-index: 0;
 }
-.peek__media > img, .peek__emoji { 
-  position: relative; z-index: 1;
-  width: 100%; height: 100%; object-fit: cover; /* center-crop inside the chosen aspect */
+.peek__media > img,
+.peek__emoji {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
-.peek__emoji { display: grid; place-items: center; font-size: clamp(48px, 8vw, 80px); }
+.peek__emoji {
+  display: grid;
+  place-items: center;
+  font-size: clamp(48px, 8vw, 80px);
+}
 
-.peek__meta { text-align: center; padding: 8px 16px 14px; }
-.peek__meta-title { font-family: var(--font-sans); font-weight: var(--fw-semibold); font-size: var(--fs-h4); color: var(--accent); }
-.peek__meta-sub { font-size: var(--fs-body-sm); color: var(--muted); }
+.peek__meta {
+  text-align: center;
+  padding: 10px 18px 18px;
+}
+.peek__meta-title {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-semibold);
+  font-size: var(--fs-h2);
+  color: var(--fg);
+}
+.peek__meta-sub {
+  margin-top: 4px;
+  font-size: var(--fs-body-sm);
+  color: var(--muted);
+}
 
-/* Carousel */
-.peek__rail-wrap { width: min(100%, 960px); overflow-x: auto; }
+/* Carousel rail */
+.peek__rail-wrap {
+  width: min(100%, 960px);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 2px;
+}
 .peek__rail {
-  display: grid; grid-auto-flow: column; grid-auto-columns: min(56%, 320px);
-  gap: 14px; padding: 4px 2px; margin: 0; list-style: none; scroll-snap-type: x proximity;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(56%, 320px);
+  gap: 14px;
+  padding: 6px 2px 4px;
+  margin: 0;
+  list-style: none;
+  scroll-snap-type: x proximity;
 }
-.peek__rail li { scroll-snap-align: center; }
+.peek__rail li {
+  scroll-snap-align: center;
+}
 
+/* Cards */
 .peek__card {
-  background: color-mix(in oklab, var(--card) 80%, transparent);
-  border-radius: 14px; border: 1px solid color-mix(in oklab, var(--ring) 70%, transparent);
-  display: grid; gap: 8px; text-align: center; cursor: pointer;
-  transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease;
-  box-shadow: 0 2px 6px rgba(0,0,0,.05);
+  background: color-mix(in oklch, var(--card), transparent 4%);
+  border-radius: 16px;
+  border: 1px solid color-mix(in oklch, var(--ring), transparent 24%);
+  display: grid;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+  padding: 6px 8px 10px;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    border-color 0.22s ease,
+    background 0.22s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
-.peek__card:hover { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 6px 18px rgba(0,0,0,.08); }
-
-.peek__thumb { aspect-ratio: 4 / 3; border-radius: 12px; overflow: hidden; }
-.peek__thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s ease; }
-.peek__card:hover .peek__thumb img { transform: scale(1.04); }
+.peek__thumb {
+  aspect-ratio: 4 / 3;
+  border-radius: 12px;
+  overflow: hidden;
+}
+.peek__thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.25s ease;
+}
+.peek__thumb-emoji {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  font-size: 32px;
+}
 
 .peek__card-title {
   font-family: var(--font-sans);
   font-weight: var(--fw-medium);
   font-size: var(--fs-body);
-  color: var(--accent);
+  color: var(--fg);
 }
 .peek__card-sub {
   font-size: var(--fs-body-sm);
   line-height: var(--lh-body);
   color: var(--muted);
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 }
 
-.peek__cta-wrap { margin-top: clamp(12px, 2vw, 20px); }
+/* Hover + selected state */
+.peek__card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in oklch, var(--accent), transparent 28%);
+  background: color-mix(in oklch, var(--card), transparent 0%);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+.peek__card:hover .peek__thumb img {
+  transform: scale(1.04);
+}
+
+/* use existing aria-selected from JS */
+.peek__rail li[aria-selected="true"] .peek__card {
+  border-color: color-mix(in oklch, var(--accent), transparent 16%);
+  box-shadow:
+    0 10px 26px rgba(0, 0, 0, 0.18),
+    0 0 0 1px color-mix(in oklch, var(--accent), transparent 62%);
+}
+
+/* CTA */
+.peek__cta-wrap {
+  margin-top: clamp(12px, 2.4vw, 22px);
+}
+
+/* Small screens */
+@media (max-width: 640px) {
+  .peek__rail {
+    grid-auto-columns: 70%;
+  }
+  .peek__meta-title {
+    font-size: var(--fs-h2);
+  }
+}
 </style>
