@@ -1,5 +1,5 @@
 ---
-import DownloadCTA from "../components/DownloadCTA.astro";
+import IntroCard from "../components/IntroCard.astro";
 
 interface Props {
     title: string;
@@ -22,7 +22,7 @@ const url = new URL(canonicalPath, site).toString();
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang="en">
     <head>
         <meta charset="utf-8" />
         <meta http-equiv="x-ua-compatible" content="IE=edge" />
@@ -91,22 +91,28 @@ const url = new URL(canonicalPath, site).toString();
         <!-- Early theme -->
         <script is:inline>
             (() => {
+                const root = document.documentElement;
+
+                function applyTheme(theme) {
+                    root.dataset.theme = theme;
+                    // Let the browser know which scheme to use for scrollbars, form controls, etc.
+                    root.style.colorScheme = theme;
+                }
+
                 try {
                     const saved = localStorage.getItem("tulaa-theme");
-                    const prefersDark =
-                        window.matchMedia &&
-                        window.matchMedia("(prefers-color-scheme: dark)")
-                            .matches;
-                    document.documentElement.dataset.theme =
-                        saved || (prefersDark ? "dark" : "light");
-                } catch {}
+                    const initial =
+                        saved === "dark" || saved === "light" ? saved : "light"; // <- always light by default
+                    applyTheme(initial);
+                } catch {
+                    applyTheme("light");
+                }
+
                 window.toggleTheme = function toggleTheme() {
-                    const d = document.documentElement;
-                    const next =
-                        (d.dataset.theme || "light") === "dark"
-                            ? "light"
-                            : "dark";
-                    d.dataset.theme = next;
+                    const current =
+                        root.dataset.theme === "dark" ? "dark" : "light";
+                    const next = current === "dark" ? "light" : "dark";
+                    applyTheme(next);
                     try {
                         localStorage.setItem("tulaa-theme", next);
                     } catch {}
@@ -645,7 +651,7 @@ const url = new URL(canonicalPath, site).toString();
             !hideFooter && (
                 <footer>
                     <div class="wrap">
-                        <DownloadCTA
+                        <IntroCard
                             variant="footer"
                             headline="Download the Tulaa App"
                             subline="Your calm companion — yoga, meditation & journaling."

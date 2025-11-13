@@ -3,7 +3,7 @@ import Site from "../layouts/Site.astro";
 import FeatureTiles from "../components/FeatureTiles.astro";
 import { yogaPlans, guidedAudios, tips } from "../data/generated";
 import TipsScroller from "../components/TipsScroller.astro";
-import DownloadCTA from "../components/DownloadCTA.astro";
+import IntroCard from "../components/IntroCard.astro";
 import PeekScroller from "../components/PeekScroller.astro";
 
 const title = "Tulaa — Yoga, Meditation & Daily Wellness";
@@ -71,7 +71,7 @@ const hasTips = tipFive.length > 0;
     aria-label="Tulaa — yoga, meditation & daily wellness"
     class="hero reveal"
   >
-    <DownloadCTA
+    <IntroCard
       variant="hero"
       headline="Tulaa"
       subline="Expert-guided yoga & meditation — offline, ad-free, privacy-first."
