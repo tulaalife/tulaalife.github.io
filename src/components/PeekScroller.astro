@@ -157,10 +157,10 @@ const initial = items[0] ?? null;
 )}
 <style>
   /* Premium, adaptive preview */
-.peek { width: 100%; display: grid; gap: clamp(16px, 2vw, 24px); justify-items: center; }
+.peek { width: 100%; display: grid; gap: clamp(16px, 2vw, 24px); justify-items: center; font-family: var(--font-sans);}
 .peek__head { text-align: center; }
-.peek__title { font-size: clamp(20px, 3vw, 26px); font-weight: 750; margin: 0; }
-.peek__subtitle { margin: 4px 0 0; opacity: .8; font-size: clamp(14px, 1.6vw, 16px); }
+.peek__title { font-size: var(--fs-h2); font-weight: var(--fw-semibold); margin: 0; }
+.peek__subtitle { margin: 4px 0 0; color: var(--muted); font-size: var(--fs-body); }
 
 .peek__preview {
   width: min(100%, 960px);
@@ -200,8 +200,8 @@ const initial = items[0] ?? null;
 .peek__emoji { display: grid; place-items: center; font-size: clamp(48px, 8vw, 80px); }
 
 .peek__meta { text-align: center; padding: 8px 16px 14px; }
-.peek__meta-title { font-weight: 700; font-size: clamp(16px, 2vw, 18px); color: var(--accent); }
-.peek__meta-sub { font-size: 14px; opacity: .85; }
+.peek__meta-title { font-family: var(--font-sans); font-weight: var(--fw-semibold); font-size: var(--fs-h4); color: var(--accent); }
+.peek__meta-sub { font-size: var(--fs-body-sm); color: var(--muted); }
 
 /* Carousel */
 .peek__rail-wrap { width: min(100%, 960px); overflow-x: auto; }
@@ -224,8 +224,18 @@ const initial = items[0] ?? null;
 .peek__thumb img { width: 100%; height: 100%; object-fit: cover; transition: transform .25s ease; }
 .peek__card:hover .peek__thumb img { transform: scale(1.04); }
 
-.peek__card-title { font-weight: 650; font-size: 14.5px; color: var(--accent); }
-.peek__card-sub { font-size: 13px; opacity: .8; line-height: 1.3; margin-bottom: 10px; }
+.peek__card-title {
+  font-family: var(--font-sans);
+  font-weight: var(--fw-medium);
+  font-size: var(--fs-body);
+  color: var(--accent);
+}
+.peek__card-sub {
+  font-size: var(--fs-body-sm);
+  line-height: var(--lh-body);
+  color: var(--muted);
+  margin-bottom: 10px;
+}
 
 .peek__cta-wrap { margin-top: clamp(12px, 2vw, 20px); }
 </style>

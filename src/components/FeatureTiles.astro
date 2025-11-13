@@ -15,7 +15,7 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
 ---
 
 <section class="more" aria-labelledby="more">
-    <h2 id="more" class="more__title">{title}</h2>
+    <h2 id="more" class="more__title section-heading">{title}</h2>
 
     <div class="more__wrap">
         <ul class="more__grid" role="list">
@@ -58,11 +58,7 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
     :root {
         --tile-bg: color-mix(in oklab, var(--card) 86%, transparent);
         --tile-border: color-mix(in oklab, var(--ring) 72%, transparent);
-        --tile-hover-border: color-mix(
-            in oklab,
-            var(--ring) 55%,
-            var(--text) 8%
-        );
+        --tile-hover-border: color-mix(in oklab, var(--ring) 55%, var(--fg) 8%);
         --tile-glow: color-mix(in oklab, var(--btn) 20%, transparent);
         --badge-bg: color-mix(in oklab, var(--btn) 22%, var(--card) 78%);
     }
@@ -76,9 +72,6 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
 
     .more__title {
         margin: 0 0 16px;
-        font-size: clamp(20px, 2.4vw, 28px);
-        font-weight: 800;
-        letter-spacing: 0.01em;
     }
 
     /* The rounded background container */
@@ -94,7 +87,7 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
                 color-mix(in oklab, var(--tile-glow) 18%, transparent),
                 transparent 70%
             ),
-            color-mix(in oklab, var(--surface) 97%, transparent);
+            color-mix(in oklab, var(--card) 97%, transparent);
         isolation: isolate;
     }
 
@@ -205,13 +198,9 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
     }
 
     .tile__title {
-        font-weight: 800;
-        font-size: clamp(16px, 1.7vw, 18px);
     }
     .tile__sub {
         margin-top: 6px;
-        font-size: 14px;
-        opacity: 0.9;
     }
 
     .tile__emoji {

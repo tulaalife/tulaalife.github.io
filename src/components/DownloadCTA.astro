@@ -45,8 +45,10 @@ const isHero = variant === "hero";
     }
 
     <div class="dl__copy">
-        <h2 class="dl__title">{headline}</h2>
-        <p class="dl__sub">{subline}</p>
+        <h2 class={`dl__title ${isHero ? "typ-display" : "typ-h1"}`}>
+            {headline}
+        </h2>
+        <p class="dl__sub typ-body-sm">{subline}</p>
 
         <ul class="dl__chips" aria-label="App highlights">
             <li>Ad-free</li><li>Offline</li><li>Privacy-first</li>
@@ -71,7 +73,7 @@ const isHero = variant === "hero";
                 aria-hidden="true"
             />
             <span class="store-btn__text">
-                <small>Download on the</small>
+                <small>Download on</small>
                 <strong>App Store</strong>
             </span>
         </a>
@@ -139,14 +141,11 @@ const isHero = variant === "hero";
 
     .dl__title {
         margin: 4px 0 6px;
-        font-size: clamp(26px, 3.9vw, 42px);
-        letter-spacing: 0.2px;
+        text-align: center;
     }
 
     .dl__sub {
         margin: 0;
-        color: var(--muted);
-        font-size: clamp(14px, 2.05vw, 18px);
     }
 
     .dl__chips {
@@ -162,7 +161,8 @@ const isHero = variant === "hero";
     .dl__chips li {
         padding: 7px 12px;
         border-radius: 999px;
-        font-size: 0.94rem;
+        font-size: var(--fs-caption);
+        font-weight: var(--fw-medium);
         color: var(--fg);
         background: linear-gradient(
             180deg,
@@ -192,6 +192,7 @@ const isHero = variant === "hero";
         padding: 0 14px;
         text-decoration: none;
         white-space: nowrap;
+        font-family: var(--font-sans);
         background: linear-gradient(180deg, #121314, #0f0f10 60%);
         color: #fff;
         border: 1px solid color-mix(in oklch, #ffffff, transparent 82%);
@@ -232,14 +233,15 @@ const isHero = variant === "hero";
     }
 
     .store-btn__text small {
-        font-size: 11px;
+        font-size: var(--fs-caption);
+        letter-spacing: 0.02em;
         opacity: 0.9;
-        letter-spacing: 0.2px;
     }
 
     .store-btn__text strong {
-        font-size: 17px;
-        letter-spacing: 0.2px;
+        font-size: var(--fs-body-sm);
+        font-weight: var(--fw-semibold);
+        letter-spacing: 0.01em;
     }
 
     /* Light theme tweak */
