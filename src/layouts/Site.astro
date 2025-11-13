@@ -95,19 +95,20 @@ const url = new URL(canonicalPath, site).toString();
 
                 function applyTheme(theme) {
                     root.dataset.theme = theme;
-                    // Let the browser know which scheme to use for scrollbars, form controls, etc.
                     root.style.colorScheme = theme;
                 }
 
                 try {
                     const saved = localStorage.getItem("tulaa-theme");
                     const initial =
-                        saved === "dark" || saved === "light" ? saved : "light"; // <- always light by default
+                        saved === "dark" || saved === "light" ? saved : "light";
                     applyTheme(initial);
                 } catch {
                     applyTheme("light");
                 }
 
+                // Expose toggle on window
+                // @ts-ignore
                 window.toggleTheme = function toggleTheme() {
                     const current =
                         root.dataset.theme === "dark" ? "dark" : "light";
@@ -192,15 +193,14 @@ const url = new URL(canonicalPath, site).toString();
                 --accent-2: oklch(
                     78% 0.14 35
                 ); /* warm sunrise (peach/orange) */
-                --card: oklch(
-                    100% 0 0 / 0.86
-                ); /* a bit more opaque so content pops */
+                --card: oklch(100% 0 0 / 0.86);
                 --ring: oklch(40% 0 0 / 0.12);
                 --btn: var(--fg);
                 --btnText: white;
 
                 --radius-xl: 24px;
                 --container: 980px;
+                --section-width: 960px;
                 --elev-1: 0 6px 18px rgba(10, 12, 16, 0.08);
                 --elev-2: 0 12px 28px rgba(10, 12, 16, 0.12);
                 --elev-3: 0 18px 46px rgba(10, 12, 16, 0.14);
@@ -216,12 +216,12 @@ const url = new URL(canonicalPath, site).toString();
                 --fw-semibold: 600;
                 --fw-bold: 700;
 
-                --fs-display: clamp(2.2rem, 3.1vw, 2.8rem); /* big hero title */
-                --fs-h1: clamp(1.7rem, 2.3vw, 2.1rem); /* section headings */
-                --fs-h2: clamp(1.35rem, 1.8vw, 1.6rem); /* card/block titles */
-                --fs-body: 0.98rem; /* primary copy */
-                --fs-body-sm: 0.9rem; /* subtitles/meta */
-                --fs-caption: 0.78rem; /* legal/chips */
+                --fs-display: clamp(2.2rem, 3.1vw, 2.8rem);
+                --fs-h1: clamp(1.7rem, 2.3vw, 2.1rem);
+                --fs-h2: clamp(1.35rem, 1.8vw, 1.6rem);
+                --fs-body: 0.98rem;
+                --fs-body-sm: 0.9rem;
+                --fs-caption: 0.78rem;
 
                 --lh-tight: 1.2;
                 --lh-title: 1.24;
@@ -234,7 +234,7 @@ const url = new URL(canonicalPath, site).toString();
                 --bg2: oklch(20% 0.06 250);
                 --fg: oklch(94% 0.03 255);
                 --muted: oklch(72% 0.03 255);
-                --accent: oklch(78% 0.2 285); /* brighter iris for dark */
+                --accent: oklch(78% 0.2 285);
                 --accent-2: oklch(72% 0.16 35);
                 --card: oklch(22% 0.03 255 / 0.74);
                 --ring: oklch(96% 0 0 / 0.14);
@@ -243,6 +243,38 @@ const url = new URL(canonicalPath, site).toString();
                 --elev-1: 0 8px 22px rgba(0, 0, 0, 0.34);
                 --elev-2: 0 16px 36px rgba(0, 0, 0, 0.4);
                 --elev-3: 0 22px 56px rgba(0, 0, 0, 0.46);
+            }
+
+            /* Shared glossy wrapper for home sections */
+            .home-block {
+                border-radius: 24px;
+                padding: clamp(18px, 3vw, 24px);
+                background: radial-gradient(
+                        120% 150% at 0% 0%,
+                        color-mix(in oklch, var(--accent-2), transparent 88%),
+                        transparent 60%
+                    ),
+                    linear-gradient(
+                        180deg,
+                        color-mix(in oklch, var(--card), white 6%),
+                        color-mix(in oklch, var(--card), transparent 4%)
+                    );
+                border: 1px solid
+                    color-mix(in oklch, var(--ring), transparent 20%);
+                box-shadow:
+                    0 14px 32px rgba(10, 12, 16, 0.12),
+                    0 0 0 1px rgba(255, 255, 255, 0.18);
+                backdrop-filter: blur(18px) saturate(1.05);
+            }
+
+            /* optional: softer variant if needed */
+            .home-block--soft {
+                background: linear-gradient(
+                    145deg,
+                    color-mix(in oklch, var(--card), white 10%),
+                    color-mix(in oklch, var(--card), transparent 4%)
+                );
+                box-shadow: var(--elev-1);
             }
 
             /* ---------- Base typography ---------- */
@@ -519,26 +551,8 @@ const url = new URL(canonicalPath, site).toString();
                 flex: 1;
                 width: 100%;
                 max-width: var(--container);
-                margin: 24px auto;
-                padding: 28px 16px;
-                border-radius: var(--radius-xl);
-                border: 1px solid
-                    color-mix(in oklch, var(--ring), transparent 18%);
-                box-shadow: var(--elev-3);
-                background:
-                    linear-gradient(
-                            180deg,
-                            color-mix(in oklch, var(--card), white 8%),
-                            color-mix(in oklch, var(--card), transparent 6%)
-                        )
-                        padding-box,
-                    radial-gradient(
-                            900px 300px at 50% -120px,
-                            color-mix(in oklch, var(--accent), transparent 82%),
-                            transparent 70%
-                        )
-                        padding-box,
-                    var(--card);
+                margin: 0 auto;
+                padding: 32px 16px;
             }
 
             /* “Chip” polish */
@@ -581,14 +595,14 @@ const url = new URL(canonicalPath, site).toString();
                 margin: 0 auto;
             }
             footer p {
-                margin-top: 10px;
+                margin-top: 24px;
                 font-size: var(--fs-caption);
                 color: var(--muted);
                 text-align: center;
             }
             footer .legal {
-                margin-top: 12px;
-                margin-bottom: 48px;
+                margin-top: 24px;
+                margin-bottom: 24px;
                 display: flex;
                 gap: 14px;
                 justify-content: center;
@@ -639,8 +653,10 @@ const url = new URL(canonicalPath, site).toString();
                     class="theme-toggle"
                     type="button"
                     onclick="toggleTheme()"
-                    aria-label="Toggle theme">🌓</button
+                    aria-label="Toggle theme"
                 >
+                    🌓
+                </button>
             </div>
         </header>
 
@@ -660,10 +676,6 @@ const url = new URL(canonicalPath, site).toString();
                         />
                     </div>
 
-                    <p>
-                        © {new Date().getFullYear()} Tulaalife Wellness Private
-                        Limited · All rights reserved.
-                    </p>
                     <div class="legal" aria-label="Legal and contact">
                         <a href="/legal/privacy">Privacy Policy</a>
                         <a href="/legal/terms">Terms of Use</a>
@@ -671,6 +683,10 @@ const url = new URL(canonicalPath, site).toString();
                             Contact Us
                         </a>
                     </div>
+                    <p>
+                        © {new Date().getFullYear()} Tulaalife Wellness Private
+                        Limited · All rights reserved.
+                    </p>
                 </footer>
             )
         }

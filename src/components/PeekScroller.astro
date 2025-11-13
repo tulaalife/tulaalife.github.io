@@ -32,9 +32,10 @@ const initial = items[0] ?? null;
 
 {items.length > 0 && (
   <section
-    class="peek"
+    class:list={["peek", "home-block"]}
     role="region"
     aria-labelledby={`peek-title-${title.replaceAll(" ", "-")}`}
+    data-interval={String(intervalMs)}
   >
     <header class="peek__head">
       <h2
@@ -135,6 +136,7 @@ const initial = items[0] ?? null;
         const subEl = root.querySelector("[data-subtitle]");
 
         function applyOrientation(imgUrl) {
+          if (!media) return;
           media.innerHTML = "";
           const im = new Image();
           im.loading = "lazy";
@@ -150,7 +152,7 @@ const initial = items[0] ?? null;
         }
 
         function setSelected(cardBtn) {
-          if (!cardBtn || !preview) return;
+          if (!cardBtn || !preview || !media) return;
 
           rail?.querySelectorAll('li[role="option"]').forEach((opt) =>
             opt.setAttribute(
@@ -392,7 +394,7 @@ const initial = items[0] ?? null;
   transform: scale(1.04);
 }
 
-/* use existing aria-selected from JS */
+/* Selected */
 .peek__rail li[aria-selected="true"] .peek__card {
   border-color: color-mix(in oklch, var(--accent), transparent 16%);
   box-shadow:

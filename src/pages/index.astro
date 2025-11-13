@@ -65,137 +65,97 @@ const hasTips = tipFive.length > 0;
   canonicalPath="/"
   ogImage={ogImage}
 >
-  <!-- HERO -->
-  <section
-    role="banner"
-    aria-label="Tulaa — yoga, meditation & daily wellness"
-    class="hero reveal"
-  >
-    <IntroCard
-      variant="hero"
-      headline="Tulaa"
-      subline="Expert-guided yoga & meditation — offline, ad-free, privacy-first."
-      showLogo={true}
-    />
-  </section>
+  <div class="home">
+    <div class="reveal">
+      <IntroCard
+        variant="hero"
+        headline="Tulaa"
+        subline="Expert-guided yoga & meditation — offline, ad-free, privacy-first."
+        showLogo={true}
+      />
+    </div>
+    {
+      hasYoga && (
+        <div class="reveal">
+          <PeekScroller
+            title="Yoga Plans"
+            subtitle="Expert-guided sequences for everyday needs"
+            items={yogaItems}
+            ctaHref="/yoga"
+            ctaLabel="Explore yoga plans"
+            intervalMs={5200}
+          />
+        </div>
+      )
+    }
 
-  {
-    hasYoga && (
-      <section class="section reveal">
-        <PeekScroller
-          title="Yoga Plans"
-          subtitle="Expert-guided sequences for everyday needs"
-          items={yogaItems}
-          ctaHref="/yoga"
-          ctaLabel="Explore yoga plans"
-          intervalMs={5200}
-        />
-      </section>
-    )
-  }
+    {
+      hasAudio && (
+        <div class="reveal">
+          <PeekScroller
+            title="Guided Audios"
+            subtitle="Gentle voice sessions for calm, focus & rest"
+            items={audioItems}
+            ctaHref="/audio"
+            ctaLabel="Explore audios"
+            intervalMs={5200}
+          />
+        </div>
+      )
+    }
 
-  {
-    hasAudio && (
-      <section class="section reveal">
-        <PeekScroller
-          title="Guided Audios"
-          subtitle="Gentle voice sessions for calm, focus & rest"
-          items={audioItems}
-          ctaHref="/audio"
-          ctaLabel="Explore audios"
-          intervalMs={5200}
-        />
-      </section>
-    )
-  }
+    {
+      hasTips && (
+        <div class="reveal">
+          <TipsScroller
+            title="Wellness Tips"
+            subtitle="Short, sourced insights for daily care"
+            items={tipFive}
+            intervalMs={5200}
+            ctaHref="/tips"
+            ctaLabel="Explore tips"
+          />
+        </div>
+      )
+    }
 
-  {
-    hasTips && (
-      <section class="section reveal">
-        <TipsScroller
-          title="Wellness Tips"
-          subtitle="Short, sourced insights for daily care"
-          items={tipFive}
-          intervalMs={5200}
-          ctaHref="/tips"
-          ctaLabel="Explore tips"
-        />
-      </section>
-    )
-  }
-
-  <section class="section reveal">
-    <FeatureTiles
-      tiles={[
-        {
-          emoji: "💧",
-          title: "Water tracking",
-          subtitle: "Lightweight, private hydration log",
-        },
-        {
-          emoji: "🌸",
-          title: "Period tracking",
-          subtitle: "Simple cycle logs with insights",
-        },
-        {
-          emoji: "📝",
-          title: "Moments (journaling)",
-          subtitle: "Mood check-ins & gratitude",
-        },
-        {
-          emoji: "⏰",
-          title: "Rhythms",
-          subtitle: "Gentle, customizable habit reminders",
-        },
-      ]}
-    />
-  </section>
+    <div class="reveal">
+      <FeatureTiles
+        tiles={[
+          {
+            emoji: "💧",
+            title: "Water tracking",
+            subtitle: "Lightweight, private hydration log",
+          },
+          {
+            emoji: "🌸",
+            title: "Period tracking",
+            subtitle: "Simple cycle logs with insights",
+          },
+          {
+            emoji: "📝",
+            title: "Moments (journaling)",
+            subtitle: "Mood check-ins & gratitude",
+          },
+          {
+            emoji: "⏰",
+            title: "Rhythms",
+            subtitle: "Gentle, customizable habit reminders",
+          },
+        ]}
+      />
+    </div>
+  </div>
 </Site>
-
 <style>
-  /* Page layout rhythm */
-  :root {
-    --wrap: min(100%, calc(var(--container) + 0px));
-    /* responsive spacing scale */
-    --vspace-sm: clamp(12px, 1.6vw, 16px);
-    --vspace-md: clamp(20px, 2.5vw, 28px);
-    --vspace-lg: clamp(32px, 4vw, 48px);
-    --vspace-xl: clamp(24px, 2vw, 40px);
-    --hairline: color-mix(in oklab, var(--ring) 70%, transparent);
-  }
-
-  /* Standard section block */
-  .section {
-    width: min(100%, var(--container));
-    margin-inline: auto;
-    padding-block: var(--vspace-md) var(--vspace-lg);
-    position: relative;
-  }
-
-  /* Structured separation between blocks */
-  .section + .section {
-    margin-top: var(--vspace-xl);
-    padding-top: var(--vspace-xl);
-    border-top: 1px dashed var(--hairline);
-  }
-
-  /* HERO has its own spacing so it breathes */
-  .hero {
-    position: relative;
-    width: var(--wrap);
-    margin: var(--vspace-sm) auto 0;
-    padding-block: var(--vspace-lg) var(--vspace-md);
-    isolation: isolate;
-  }
-
-  /* Let sections decide spacing: remove inner margins from children here */
-  .section :where(.peek, .ts-wrap, .more) {
-    margin: 0; /* kill internal margins so parent rhythm wins */
-  }
-
-  /* Optional: small buffer under each component’s own header to align content */
-  .section :where(.peek__head, .ts-header) {
-    margin-bottom: var(--vspace-sm);
+  .home {
+    width: 100%;
+    max-width: var(--container);
+    margin: 0 auto 24px;
+    padding: 20px 16px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: clamp(28px, 4vw, 40px); /* global vertical rhythm */
   }
 
   /* Buttons (unchanged, kept for page parity) */
