@@ -4,13 +4,15 @@ import CTAButton from "./CTAButton.astro";
 export interface Item {
   href: string;
   title: string;
-  subtitle?: string;
+  subtitle?: string;   // small card text
+  teaser?: string;     // preview teaser
   image?: string;
   emojiFallback?: string;
 }
+
 export interface Props {
   title: string;
-  subtitle?: string;
+  subtitle?: string;   // section subtitle under heading
   items: Item[];
   ctaHref?: string;
   ctaLabel?: string;
@@ -28,6 +30,7 @@ const {
 
 const hasCTA = Boolean(ctaHref && ctaLabel);
 const initial = items[0] ?? null;
+const initialTeaser = initial?.teaser || initial?.subtitle || "";
 ---
 
 {items.length > 0 && (
@@ -67,9 +70,9 @@ const initial = items[0] ?? null;
         <div class="peek__meta-title" data-title>
           {initial?.title}
         </div>
-        {initial?.subtitle && (
+        {initialTeaser && (
           <div class="peek__meta-sub" data-subtitle>
-            {initial?.subtitle}
+            {initialTeaser}
           </div>
         )}
       </div>
@@ -90,7 +93,7 @@ const initial = items[0] ?? null;
               data-index={String(idx)}
               data-href={it.href}
               data-title={it.title}
-              data-subtitle={it.subtitle ?? ""}
+              data-subtitle={it.teaser || it.subtitle || ""} 
               data-image={it.image ?? ""}
               data-emoji={it.emojiFallback ?? ""}
             >

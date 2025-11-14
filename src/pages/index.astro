@@ -9,7 +9,7 @@ import PeekScroller from "../components/PeekScroller.astro";
 const title = "Tulaa — Yoga, Meditation & Daily Wellness";
 const description =
   "Expert-guided yoga & meditations — offline, ad-free, and privacy-first. Plus journaling, rhythms, and lightweight trackers.";
-const ogImage = "https://images.tulaa.life/og/home_hero.webp";
+const ogImage = "https://images.tulaa.life/logo.webp";
 
 /** Seeded (daily) shuffle: changes order once per day */
 function seededShuffle<T>(arr: readonly T[], seed: number): T[] {
@@ -36,15 +36,19 @@ const daySeed = Number(
 const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
   href: `/yoga/${p.slug}`,
   title: p.title,
-  subtitle: p.subtitle || p.teaser || "",
+  subtitle: p.subtitle, // shown on small card
+  teaser: p.teaser, // used in preview card
   image: p.image,
 }));
+
 const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
   href: `/audio/${a.slug}`,
   title: a.title,
-  subtitle: a.subtitle,
+  subtitle: a.subtitle, // small card line
+  teaser: a.teaser, // preview teaser
   image: a.image,
 }));
+
 const tipFive = seededShuffle(tips, daySeed + 13)
   .slice(0, 5)
   .map((t) => ({
@@ -74,6 +78,7 @@ const hasTips = tipFive.length > 0;
         showLogo={true}
       />
     </div>
+
     {
       hasYoga && (
         <div class="reveal">
@@ -147,6 +152,7 @@ const hasTips = tipFive.length > 0;
     </div>
   </div>
 </Site>
+
 <style>
   .home {
     width: 100%;
@@ -187,25 +193,18 @@ const hasTips = tipFive.length > 0;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   }
 
-  /* Reveal animation (unchanged) */
+  /* Reveal animation */
   .reveal {
     opacity: 0;
     transform: translateY(10px);
     animation: float-up 0.6s ease-out both;
   }
 
-  /* v-- UPDATED RULE FOR SEPARATORS --v */
   .reveal:not(:first-child) {
-    /* This is your separator line: */
-    border-top: 1px solid rgba(120, 120, 120, 0.15); /* Subtle border */
-
-    /* This adds space BEFORE the line: */
+    border-top: 1px solid rgba(120, 120, 120, 0.15); /* subtle separator */
     margin-top: clamp(32px, 2vw, 40px);
-
-    /* This adds space AFTER the line: */
     padding-top: clamp(32px, 2vw, 40px);
   }
-  /* ^-- END UPDATED RULE --^ */
 
   .reveal:nth-of-type(2) {
     animation-delay: 0.04s;
@@ -216,6 +215,7 @@ const hasTips = tipFive.length > 0;
   .reveal:nth-of-type(4) {
     animation-delay: 0.12s;
   }
+
   @media (prefers-reduced-motion: reduce) {
     .reveal {
       animation: none;
@@ -223,6 +223,7 @@ const hasTips = tipFive.length > 0;
       transform: none;
     }
   }
+
   @keyframes float-up {
     to {
       opacity: 1;
