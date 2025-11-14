@@ -7,27 +7,25 @@ import { guidedAudios } from "../../data/generated";
     title="Guided Audios · Tulaa"
     description="Gentle voice-guided sessions for calm, focus, and rest."
 >
-    <main class="wrap" style="max-width:940px;margin:0 auto;padding:24px;">
+    <main class="wrap ga-page">
         <h1 class="ga-title">Guided Audios</h1>
 
-        <ul style="list-style:none;padding:0;display:grid;gap:12px;">
+        <ul class="ga-list" role="list">
             {
                 guidedAudios.map((a) => (
-                    <li style="border:1px solid var(--ring);border-radius:14px;padding:12px;">
-                        <a
-                            href={`/audio/${a.slug}`}
-                            style="text-decoration:none;color:inherit;"
-                        >
-                            <div style="display:flex;gap:12px;align-items:center;">
-                                <img
-                                    src={a.image}
-                                    alt={a.title}
-                                    width="96"
-                                    height="54"
-                                    loading="lazy"
-                                    style="border-radius:8px;object-fit:cover;"
-                                />
-                                <div>
+                    <li class="ga-item">
+                        <a href={`/audio/${a.slug}`} class="ga-link">
+                            <div class="ga-card">
+                                <div class="ga-thumb">
+                                    <img
+                                        src={a.image}
+                                        alt={a.title}
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+
+                                <div class="ga-text">
                                     <h3 class="ga-item-title">{a.title}</h3>
                                     <p class="ga-item-sub">{a.teaser}</p>
                                 </div>
@@ -41,16 +39,100 @@ import { guidedAudios } from "../../data/generated";
 </Site>
 
 <style>
+    .ga-page {
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 24px 16px 32px;
+    }
+
+    @media (min-width: 768px) {
+        .ga-page {
+            padding: 32px 20px 40px;
+        }
+    }
+
     .ga-title {
-        margin: 0 0 12px;
+        margin: 0 0 16px;
         font-family: var(--font-sans);
         font-size: var(--fs-h2);
         font-weight: var(--fw-bold);
         color: var(--fg);
     }
 
+    .ga-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    @media (min-width: 900px) {
+        .ga-list {
+            gap: 14px;
+        }
+    }
+
+    .ga-item {
+        border-radius: 18px;
+        background: color-mix(in srgb, var(--card) 80%, transparent);
+        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 12px 25px rgba(15, 23, 42, 0.12);
+        overflow: hidden;
+    }
+
+    .ga-link {
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .ga-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+        padding: 12px 14px;
+    }
+
+    @media (min-width: 768px) {
+        .ga-card {
+            padding: 14px 18px;
+            gap: 16px;
+        }
+    }
+
+    .ga-thumb {
+        width: 90px; /* or whatever you prefer */
+        aspect-ratio: 2 / 3; /* matches 1024×1536 */
+        border-radius: 14px;
+        overflow: hidden;
+        flex-shrink: 0;
+        background: var(--card-soft);
+    }
+
+    @media (min-width: 768px) {
+        .ga-thumb {
+            width: 112px;
+        }
+    }
+
+    .ga-thumb img {
+        width: 100%;
+        height: 100%;
+        display: block;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .ga-text {
+        min-width: 0;
+    }
+
     .ga-item-title {
-        margin: 0 0 6px;
+        margin: 0 0 4px;
         font-family: var(--font-sans);
         font-size: var(--fs-h4);
         font-weight: var(--fw-semibold);
@@ -63,5 +145,25 @@ import { guidedAudios } from "../../data/generated";
         font-size: var(--fs-body);
         color: var(--muted);
         line-height: var(--lh-body);
+    }
+
+    /* Premium-ish hover/focus for desktop */
+    @media (hover: hover) and (pointer: fine) {
+        .ga-link:hover .ga-item,
+        .ga-link:focus-visible .ga-item {
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
+        }
+
+        .ga-link:hover .ga-card,
+        .ga-link:focus-visible .ga-card {
+            transform: translateY(-1px);
+            transition: transform 160ms ease-out;
+        }
+    }
+
+    .ga-link:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 3px;
+        border-radius: inherit;
     }
 </style>
