@@ -8,14 +8,13 @@ export interface Props {
     variant?: "hero" | "footer";
     showLogo?: boolean;
 
-    // local icon paths (SVG/PNG)
     iosIconSrc?: string;
     androidIconSrc?: string;
 }
 
 const {
     headline = "Tulaa",
-    subline = "Expert-guided yoga & meditation — offline, ad-free, privacy-first.",
+    subline = "Holistic yoga for pain relief, prenatal health & daily calm — with meditation and private trackers.",
     iosHref = "https://apps.apple.com/in/app/tulaa/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
     variant = "hero",
@@ -25,6 +24,20 @@ const {
 } = Astro.props;
 
 const isHero = variant === "hero";
+
+const heroChips = [
+    "Free expert-led yoga",
+    "No login required",
+    "Offline & privacy-first",
+];
+
+const footerChips = [
+    "Yoga · Meditation · Journaling",
+    "Water & period tracking",
+    "Gentle habit reminders",
+];
+
+const chips = isHero ? heroChips : footerChips;
 ---
 
 <section class:list={["dl", "dl--hero"]} aria-label="Download Tulaa">
@@ -51,7 +64,7 @@ const isHero = variant === "hero";
         <p class="dl__sub typ-body-sm">{subline}</p>
 
         <ul class="dl__chips" aria-label="App highlights">
-            <li>Ad-free</li><li>Offline</li><li>Privacy-first</li>
+            {chips.map((chip) => <li>{chip}</li>)}
         </ul>
     </div>
 
