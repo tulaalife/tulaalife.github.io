@@ -14,27 +14,25 @@ const totalPages = Math.max(1, Math.ceil(yogaPlans.length / PER_PAGE));
     description="Gentle previews of Tulaa yoga plans."
     canonicalPath="/yoga"
 >
-    <main class="wrap" style="max-width:940px;margin:0 auto;padding:24px;">
+    <main class="wrap yp-page">
         <h1 class="yp-title">Yoga Plans</h1>
 
-        <ul style="list-style:none;padding:0;display:grid;gap:12px;">
+        <ul class="yp-list" role="list">
             {
                 items.map((p) => (
-                    <li style="border:1px solid var(--ring);border-radius:14px;padding:12px;">
-                        <a
-                            href={`/yoga/${p.slug}`}
-                            style="text-decoration:none;color:inherit;"
-                        >
-                            <div style="display:flex;gap:12px;align-items:center;">
-                                <img
-                                    src={p.image}
-                                    alt={p.title}
-                                    width="96"
-                                    height="54"
-                                    loading="lazy"
-                                    style="border-radius:8px;object-fit:cover;"
-                                />
-                                <div>
+                    <li class="yp-item">
+                        <a href={`/yoga/${p.slug}`} class="yp-link">
+                            <div class="yp-card">
+                                <div class="yp-thumb">
+                                    <img
+                                        src={p.image}
+                                        alt={p.title}
+                                        loading="lazy"
+                                        decoding="async"
+                                    />
+                                </div>
+
+                                <div class="yp-text">
                                     <h3 class="yp-item-title">{p.title}</h3>
                                     <p class="yp-item-sub">{p.teaser}</p>
                                 </div>
@@ -45,10 +43,7 @@ const totalPages = Math.max(1, Math.ceil(yogaPlans.length / PER_PAGE));
             }
         </ul>
 
-        <nav
-            aria-label="Pagination"
-            style="margin-top:16px;display:flex;gap:12px;justify-content:center;"
-        >
+        <nav class="yp-pagination" aria-label="Pagination">
             {page > 1 && <a href={`/yoga?page=${page - 1}`}>← Prev</a>}
             <span class="yp-page-meta">Page {page} / {totalPages}</span>
             {page < totalPages && <a href={`/yoga?page=${page + 1}`}>Next →</a>}
@@ -57,16 +52,88 @@ const totalPages = Math.max(1, Math.ceil(yogaPlans.length / PER_PAGE));
 </Site>
 
 <style>
+    .yp-page {
+        max-width: 940px;
+        margin: 0 auto;
+        padding: 24px 16px 40px;
+    }
+
     .yp-title {
-        margin: 0 0 12px;
+        margin: 0 0 16px;
         font-family: var(--font-sans);
         font-size: var(--fs-h2);
         font-weight: var(--fw-bold);
         color: var(--fg);
     }
 
+    .yp-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .yp-item {
+        border-radius: 18px;
+        background: color-mix(in srgb, var(--card) 80%, transparent);
+        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
+        backdrop-filter: blur(16px);
+        box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+        overflow: hidden;
+    }
+
+    .yp-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    .yp-card {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 14px;
+        align-items: center;
+        padding: 12px 14px;
+    }
+
+    @media (min-width: 768px) {
+        .yp-card {
+            padding: 14px 18px;
+            gap: 16px;
+        }
+    }
+
+    /* 🔥 Correct 1536×1024 (landscape) crop */
+    .yp-thumb {
+        width: 96px;
+        aspect-ratio: 3 / 2; /* LANDSCAPE */
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--card-soft);
+        flex-shrink: 0;
+    }
+
+    @media (min-width: 768px) {
+        .yp-thumb {
+            width: 120px;
+        }
+    }
+
+    .yp-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .yp-text {
+        min-width: 0;
+    }
+
     .yp-item-title {
-        margin: 0 0 6px;
+        margin: 0 0 4px;
         font-family: var(--font-sans);
         font-size: var(--fs-h4);
         font-weight: var(--fw-semibold);
@@ -79,6 +146,13 @@ const totalPages = Math.max(1, Math.ceil(yogaPlans.length / PER_PAGE));
         font-size: var(--fs-body);
         color: var(--muted);
         line-height: var(--lh-body);
+    }
+
+    .yp-pagination {
+        margin-top: 20px;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
     }
 
     .yp-page-meta {
