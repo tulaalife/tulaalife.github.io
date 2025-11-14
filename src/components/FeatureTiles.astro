@@ -14,7 +14,10 @@ interface Props {
 const { title = "More ways Tulaa helps", tiles } = Astro.props;
 ---
 
-<section class="more" aria-labelledby="more">
+<section
+    class:list={["more", "home-block", "home-block--soft"]}
+    aria-labelledby="more"
+>
     <h2 id="more" class="more__title section-heading">{title}</h2>
 
     <div class="more__wrap">
@@ -58,16 +61,15 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
 </section>
 
 <style>
-    :root {
+    .more {
+        /* Scope tile vars to this block */
         --tile-bg: color-mix(in oklab, var(--card) 90%, transparent);
         --tile-border: color-mix(in oklab, var(--ring) 70%, transparent);
         --tile-hover-border: color-mix(in oklab, var(--ring) 55%, var(--fg) 8%);
         --badge-bg: color-mix(in oklab, var(--fg) 4%, var(--card) 96%);
-    }
 
-    .more {
         width: 100%;
-        margin: 32px 0 40px;
+        margin: 0; /* spacing handled by .home gap */
         padding: 0;
         text-align: center;
     }
@@ -76,7 +78,7 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
         margin: 0 0 12px;
     }
 
-    /* Outer wrap now just constrains width, no big card bg */
+    /* Outer wrap just constrains width */
     .more__wrap {
         width: 100%;
     }
@@ -85,7 +87,7 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
         list-style: none;
         margin: 0 auto;
         padding: 0;
-        max-width: 640px; /* narrower so it feels different from hero cards */
+        max-width: 100%; /* let main/container control actual width */
         display: grid;
         grid-template-columns: 1fr;
         gap: 12px;
@@ -95,7 +97,7 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
 
     @media (min-width: 960px) {
         .more__grid {
-            max-width: 880px;
+            /* no extra max-width needed */
             grid-template-columns: repeat(2, minmax(320px, 1fr));
             gap: 14px;
         }
@@ -177,7 +179,7 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
             0 1px 0 rgba(255, 255, 255, 0.5) inset;
     }
 
-    /* Emoji badge: softer grey tile, tiny halo */
+    /* Emoji badge */
     .tile__emoji {
         flex: 0 0 auto;
     }
@@ -222,7 +224,7 @@ const { title = "More ways Tulaa helps", tiles } = Astro.props;
         color: var(--muted);
     }
 
-    /* Chevron: lighter, only for links */
+    /* Chevron */
     .tile__chev {
         flex: 0 0 auto;
         width: 26px;

@@ -30,7 +30,7 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
 {
     items.length > 0 && (
         <section
-            class="ts-wrap"
+            class:list={["ts-wrap", "home-block"]}
             data-interval={String(intervalMs)}
             tabindex="0"
             role="region"
@@ -90,19 +90,22 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
 }
 
 <style>
+    /* Root sits inside .home and reuses .home-block for the glossy shell */
     .ts-wrap {
-        margin: 36px auto 32px;
-        padding: 8px 16px 16px;
-        max-width: 880px;
+        width: 100%;
+        max-width: 100%; /* let <main> / parent container control rail width */
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: clamp(12px, 2vw, 18px);
     }
 
     /* Heading */
     .ts-header {
         text-align: center;
-        margin-bottom: 18px;
     }
     .ts-title {
-        font-size: var(--fs-h2);
+        font-size: var(--fs-h1);
         font-weight: var(--fw-semibold);
         margin: 0;
         letter-spacing: 0.01em;
@@ -113,26 +116,13 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         font-size: var(--fs-body-sm);
     }
 
-    /* Single premium card (outer only) */
+    /* Inner panel – now “flat” so home-block provides main gloss */
     .ts-panel {
-        --r: 24px;
-        padding: 22px 24px;
+        --r: 18px;
         border-radius: var(--r);
-        background: radial-gradient(
-                160% 180% at 100% 0%,
-                color-mix(in oklch, var(--accent-2), transparent 92%),
-                transparent 70%
-            ),
-            linear-gradient(
-                180deg,
-                color-mix(in oklch, var(--card), white 6%),
-                color-mix(in oklch, var(--card), transparent 10%)
-            );
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 20%);
-        box-shadow:
-            0 22px 48px rgba(0, 0, 0, 0.08),
-            0 2px 4px rgba(255, 255, 255, 0.28) inset;
-        backdrop-filter: blur(6px) saturate(130%);
+        background: transparent;
+        border: none;
+        box-shadow: none;
     }
 
     /* Track */
@@ -145,12 +135,12 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         min-height: 112px;
     }
 
-    /* Center content vertically inside the slide */
+    /* Slide stack */
     .ts-slide {
         position: absolute;
         inset: 0;
         display: flex;
-        align-items: center; /* <-- ADD THIS */
+        align-items: center;
         justify-content: center;
         opacity: 0;
         transform: translateY(8px) scale(0.985);
@@ -163,38 +153,17 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         transform: translateY(0) scale(1);
     }
 
-    /* Center the icon + text block together */
+    /* Icon + text block */
     .ts-card {
         width: 100%;
-        max-width: 860px;
         margin: 0 auto;
         display: flex;
-        align-items: center; /* <-- ADD THIS */
+        flex-direction: column; /* <-- CHANGED: Stack icon and text */
+        align-items: center;
         gap: 16px;
-        padding: 4px 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-        border-radius: 18px;
-        transition: transform 0.2s ease;
-    }
-    .ts-slide[data-active="true"] {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
+        padding: 16px; /* <-- CHANGED: Added more padding */
 
-    .ts-card:hover {
-        transform: translateY(-1px);
-    }
-
-    /* Icon badge — keep the premium look */
-    .ts-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
-        display: grid;
-        place-items: center;
-        font-size: 28px;
+        /* v-- MOVED FROM .ts-icon --v */
         background: linear-gradient(
             180deg,
             color-mix(in oklch, var(--card), white 12%),
@@ -204,6 +173,29 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
         box-shadow:
             inset 0 2px 4px rgba(255, 255, 255, 0.65),
             0 6px 18px rgba(0, 0, 0, 0.08);
+        /* ^-- END MOVED STYLES --^ */
+
+        border-radius: 18px;
+        transition: transform 0.2s ease;
+    }
+
+    .ts-card:hover {
+        transform: translateY(-1px);
+    }
+
+    /* Icon badge */
+    .ts-icon {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        display: grid;
+        place-items: center;
+        font-size: 28px;
+
+        /* v-- REMOVED GLOSS STYLES --v */
+        border: none;
+        box-shadow: none;
+        /* ^-- END REMOVED STYLES --^ */
     }
 
     .ts-icon img {
@@ -215,10 +207,12 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     /* Text */
     .ts-body {
         flex: 1;
+        width: 100%; /* <-- ADDED: For safety in flex column */
+        text-align: center; /* <-- ADDED: Center-align the text */
     }
     .ts-h3 {
         margin: 0 0 6px;
-        font-size: var(--fs-body-lg);
+        font-size: var(--fs-body);
         font-weight: var(--fw-semibold);
         line-height: 1.35;
     }
@@ -233,7 +227,18 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     .ts-ctaRow {
         display: flex;
         justify-content: center;
-        margin-top: 24px;
+        margin-top: clamp(12px, 2vw, 20px);
+    }
+
+    @media (max-width: 640px) {
+        .ts-card {
+        }
+        .ts-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            font-size: 24px;
+        }
     }
 </style>
 
@@ -274,18 +279,6 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
             let stopped = false; // stop autoplay after user interaction
             let hovered = false;
 
-            const tick = () => {
-                if (!hovered && !stopped) next();
-            };
-            const start = () => {
-                stop();
-                timer = setInterval(tick, interval);
-            };
-            const stop = () => {
-                if (timer) clearInterval(timer);
-                timer = null;
-            };
-
             const next = () => {
                 const prev = slides[idx];
                 idx = (idx + 1) % slides.length;
@@ -295,12 +288,26 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
                 adjustHeight();
             };
 
-            // Stop autoplay on user intent
+            const tick = () => {
+                if (!hovered && !stopped) next();
+            };
+
+            const start = () => {
+                stop();
+                timer = setInterval(tick, interval);
+            };
+
+            const stop = () => {
+                if (timer) clearInterval(timer);
+                timer = null;
+            };
+
             const stopForUser = () => {
                 if (stopped) return;
                 stopped = true;
                 stop();
             };
+
             ["pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => {
                 root.addEventListener(ev, stopForUser, { passive: true });
             });
@@ -308,17 +315,16 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
             root.addEventListener("mouseenter", () => (hovered = true));
             root.addEventListener("mouseleave", () => (hovered = false));
 
-            // init
             setTimeout(start, 200);
             window.addEventListener("resize", adjustHeight);
         }
 
-        document.readyState === "loading"
-            ? document.addEventListener(
-                  "DOMContentLoaded",
-                  () => document.querySelectorAll(".ts-wrap").forEach(boot),
-                  { once: true },
-              )
-            : document.querySelectorAll(".ts-wrap").forEach(boot);
+        const init = () => document.querySelectorAll(".ts-wrap").forEach(boot);
+
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", init, { once: true });
+        } else {
+            init();
+        }
     })();
 </script>

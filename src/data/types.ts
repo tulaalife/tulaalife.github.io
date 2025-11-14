@@ -3,7 +3,7 @@ export type Locale = 'en' | 'hi'; // keep for future, we’re not setting it yet
 export interface YogaPlanPreview {
     slug: string;
     title: string;
-    subtitle?: string;
+    subtitle: string;
     teaser: string;      // short description (~160 chars)
     benefits?: string;   // flattened from insights[]
     image: string;       // absolute URL
