@@ -88,7 +88,7 @@ async function loadPlans() {
             teaser: teaser(r.description),
             benefits,
             image: ensureHttps(toAbs(r.image_url)),
-            deeplink: `tulaa://yoga/${toAbs(r.slug)}`,
+            deeplink: `tulaa://app/yoga/${toAbs(r.slug)}`,
         };
     }).filter(p => p.slug && p.image);
 }
@@ -109,7 +109,7 @@ async function loadAudios() {
         subtitle: teaser(r.subtitle),
         teaser: teaser(r.description),
         image: ensureHttps(toAbs(r.image_url)),
-        deeplink: `tulaa://audio/${toAbs(r.slug)}`,
+        deeplink: `tulaa://app/audio/${toAbs(r.slug)}`,
     })).filter(a => a.slug && a.image);
 }
 
@@ -130,7 +130,7 @@ async function loadAllTips() {
         precaution: toAbs(r.precaution),
         category: toAbs(r.category),
         icon: toAbs(r.icon),
-        deeplink: `tulaa://tips/${toAbs(r.slug)}`,
+        deeplink: `tulaa://app/tips/${toAbs(r.slug)}`,
     })).filter(t => t.slug && t.tip && t.benefit);
 }
 
