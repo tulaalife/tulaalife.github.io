@@ -57,9 +57,9 @@ const initialTeaser = initial?.teaser || initial?.subtitle || "";
       href={initial?.href}
       aria-label={`Open: ${initial?.title ?? ""}`}
     >
-      <div class="peek__media" data-media>
+      <div class="peek__media" data-media style={initial?.image ? `--bg-url: url('${initial.image}')` : ''}>
         {initial?.image ? (
-          <img src={initial.image} alt="" loading="lazy" />
+          <img src={initial.image} alt="" loading="eager" />
         ) : (
           <div class="peek__emoji" data-emoji>
             {initial?.emojiFallback ?? "🧘"}
@@ -99,7 +99,7 @@ const initialTeaser = initial?.teaser || initial?.subtitle || "";
             >
               <div class="peek__thumb">
                 {it.image ? (
-                  <img src={it.image} alt="" loading="lazy" />
+                  <img src={it.image} alt="" loading="lazy" decoding="async" />
                 ) : (
                   <div class="peek__thumb-emoji">
                     {it.emojiFallback ?? "🧩"}
@@ -137,21 +137,32 @@ const initialTeaser = initial?.teaser || initial?.subtitle || "";
         const media = root.querySelector("[data-media]");
         const titleEl = root.querySelector("[data-title]");
         const subEl = root.querySelector("[data-subtitle]");
+        
+        const preloadedImages = new Set();
 
         function applyOrientation(imgUrl) {
           if (!media) return;
-          media.innerHTML = "";
+          
+          // 1. Create image in memory first (don't clear container yet)
           const im = new Image();
-          im.loading = "lazy";
+          im.loading = "eager";
           im.alt = "";
           im.src = imgUrl;
+          
+          // 2. Swap only when ready
           im.onload = () => {
-            const isPortrait = im.naturalHeight > im.naturalWidth;
-            media.classList.toggle("is-portrait", isPortrait);
-            media.classList.toggle("is-landscape", !isPortrait);
+            media.innerHTML = ""; 
+            media.appendChild(im);
+            // Update the blur backdrop variable
             media.style.setProperty("--bg-url", `url("${imgUrl}")`);
           };
-          media.appendChild(im);
+          
+          // Fallback just in case image fails or takes too long
+          im.onerror = () => {
+             media.innerHTML = ""; // Clear if error to show empty state or keep old? 
+             // Usually better to do nothing or show error state.
+             // Here we at least clear the old one if the new one is definitely broken
+          };
         }
 
         function setSelected(cardBtn) {
@@ -177,7 +188,6 @@ const initialTeaser = initial?.teaser || initial?.subtitle || "";
           } else {
             media.innerHTML =
               `<div class="peek__emoji">${emo || "🧘"}</div>`;
-            media.classList.remove("is-portrait", "is-landscape");
             media.style.removeProperty("--bg-url");
           }
 
@@ -191,6 +201,22 @@ const initialTeaser = initial?.teaser || initial?.subtitle || "";
         rail?.addEventListener("click", (e) => {
           const btn = e.target.closest("[data-card]");
           if (btn) setSelected(btn);
+        });
+        
+        // Optional: Preload on hover for even faster switching
+        rail?.addEventListener("mouseover", (e) => {
+          const btn = e.target.closest("[data-card]");
+          if (!btn) return;
+          
+          const imgUrl = btn.dataset.image;
+          if (imgUrl && !preloadedImages.has(imgUrl)) {
+            const link = document.createElement("link");
+            link.rel = "preload";
+            link.as = "image";
+            link.href = imgUrl;
+            document.head.appendChild(link);
+            preloadedImages.add(imgUrl);
+          }
         });
 
         // Initial
@@ -266,35 +292,42 @@ const initialTeaser = initial?.teaser || initial?.subtitle || "";
 
 .peek__media {
   position: relative;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: 16 / 9; /* Fixed aspect ratio prevents jumps */
   overflow: hidden;
   isolation: isolate;
-}
-.peek__media.is-portrait {
-  aspect-ratio: 3 / 4;
-}
-.peek__media.is-landscape {
-  aspect-ratio: 16 / 9;
+  background: #000; /* Fallback background */
+  border-radius: 24px; /* Match parent */
 }
 
+/* The blur backdrop */
 .peek__media::before {
   content: "";
   position: absolute;
-  inset: 0;
+  inset: -20px; /* Bleed to avoid hard edges on blur */
+  z-index: 1;
   background-image: var(--bg-url, none);
   background-size: cover;
   background-position: center;
+  filter: blur(20px) brightness(0.7); /* Blur effect */
+  opacity: 0.6;
+  transition: background-image 0.3s ease; /* Smooth transition for background */
 }
-.peek__media > img,
-.peek__emoji {
+
+.peek__media > img {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain; /* Ensures whole image is visible */
   display: block;
+  transition: opacity 0.2s ease;
 }
+
 .peek__emoji {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  height: 100%;
   display: grid;
   place-items: center;
   font-size: clamp(48px, 8vw, 80px);
