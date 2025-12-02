@@ -1,10 +1,41 @@
 ---
 import Site from "../../layouts/Site.astro";
+import { marked } from "marked"; // Run 'npm install marked' if missing
 
-const title = "Tulaa — Privacy Policy (v1.0)";
+const title = "Tulaa — Privacy Policy";
 const description =
     "Tulaa Privacy Policy — local-only logs, optional anonymous analytics with PostHog, no PII.";
-const effective = "2025-09-16";
+
+// 1. Fetch content from the Single Source of Truth (R2)
+let contentHtml = "";
+let effectiveDate = "2025-09-16"; // Fallback date
+
+try {
+    // We use a query param ?v= to bypass cache if needed, or rely on R2 headers
+    const res = await fetch("https://legal.tulaalife.com/privacy_en.md");
+    if (res.ok) {
+        let rawMarkdown = await res.text();
+
+        // Optional: Remove the first line (Title) from markdown
+        // because we render a custom H1 with the Logo below.
+        // Regex removes "# Title" at the start of the string.
+        rawMarkdown = rawMarkdown.replace(/^# .+\n/, "");
+
+        // Parse Markdown to HTML
+        contentHtml = await marked.parse(rawMarkdown);
+    } else {
+        throw new Error(`Remote fetch failed: ${res.status}`);
+    }
+} catch (e) {
+    console.error("Legal doc fetch error:", e);
+    // Fallback content in case R2 is down during build/render
+    contentHtml = `
+    <div class="legal-box" style="border-color: red">
+      <p><strong>Offline Mode:</strong> Unable to load the latest policy from server.</p>
+    </div>
+    <p>Please contact <a href="mailto:contact@tulaalife.com">contact@tulaalife.com</a> for the latest version.</p>
+  `;
+}
 ---
 
 <Site
@@ -14,6 +45,7 @@ const effective = "2025-09-16";
     hideFooter={true}
 >
     <main class="legal-wrap">
+        <!-- Custom Header with Logo (Kept from original) -->
         <h1 class="legal-title">
             <img
                 src="https://images.tulaa.life/logo.webp"
@@ -25,109 +57,9 @@ const effective = "2025-09-16";
             Tulaa — Privacy Policy
         </h1>
 
-        <p class="legal-meta">
-            Version 1.0 · Effective <time datetime={effective}>{effective}</time
-            >
-        </p>
-
-        <div class="legal-box">
-            <p>
-                <strong>Short version:</strong> Your logs stay on your device. Analytics
-                and crash reports are off by default. With your consent, anonymous
-                crash logs (Sentry) and event analytics (PostHog) help us improve
-                stability and features — never your journals or period data. No ads.
-                No personal data.
-            </p>
-        </div>
-
-        <h2>1) What We Collect</h2>
-        <ul>
-            <li><strong>By default:</strong> nothing leaves your device.</li>
-            <li>
-                <strong>If you opt in:</strong>
-                <ul>
-                    <li>
-                        Anonymous analytics with PostHog (feature usage events,
-                        basic device info — never personal notes).
-                    </li>
-                    <li>
-                        Anonymous crash reports with Sentry (technical details
-                        like device model, OS, and stack traces — never your
-                        personal health logs).
-                    </li>
-                </ul>
-            </li>
-        </ul>
-
-        <h2>2) What Stays on Your Device</h2>
-        <p>
-            Yoga logs, water logs, moments/journals, rhythms, and period data.
-            Private to your device unless you export/share them.
-        </p>
-
-        <h2>3) How We Use Data</h2>
-        <p>
-            To improve stability (via crash reports) and features (via
-            analytics). Both are optional, anonymous, and only used to
-            understand general usage patterns. Never for advertising, profiling,
-            or resale.
-        </p>
-
-        <h2>4) Permissions</h2>
-        <p>
-            Notifications are used only if you set up Rhythms. No access to
-            contacts, camera, or location.
-        </p>
-
-        <h2>5) Third Parties</h2>
-        <ul>
-            <li>
-                <a
-                    href="https://sentry.io/privacy"
-                    rel="nofollow noopener"
-                    target="_blank">Sentry</a
-                >
-                — error/crash reporting
-            </li>
-            <li>
-                <a
-                    href="https://posthog.com/privacy"
-                    rel="nofollow noopener"
-                    target="_blank">PostHog</a
-                >
-                — anonymous, opt-in product analytics
-            </li>
-        </ul>
-
-        <h2>6) Retention</h2>
-        <p>
-            Local data stays until you delete it or uninstall the app. Crash
-            logs are typically retained ~90 days. PostHog analytics events are
-            retained only as long as needed for product improvement (typically
-            up to 90 days).
-        </p>
-
-        <h2>7) Security</h2>
-        <p>
-            Local data is sandboxed. Cached media may be encrypted at rest. We
-            don’t store or transmit personal identifiers.
-        </p>
-
-        <h2>8) Children</h2>
-        <p>
-            Not intended for children under 16. Teens 16–18 may use with
-            parental guidance.
-        </p>
-
-        <h2>9) Your Controls</h2>
-        <ul>
-            <li>Export your data any time.</li>
-            <li>Delete local data any time.</li>
-            <li>Toggle analytics and crash reports on/off any time.</li>
-        </ul>
-
-        <h2>10) Changes</h2>
-        <p>You’ll see a notice in the app whenever we update this policy.</p>
+        <!-- Content from R2 -->
+        <!-- We use 'set:html' to inject the parsed Markdown -->
+        <div class="markdown-body" set:html={contentHtml} />
 
         <p class="legal-meta">
             <a href="/legal/terms">Terms of Use</a> · Need help?
@@ -146,7 +78,9 @@ const effective = "2025-09-16";
     </main>
 </Site>
 
-<style>
+<style is:global>
+    /* Use is:global or :global() to style the injected HTML content */
+
     .legal-wrap {
         max-width: 940px;
         margin: 0 auto;
@@ -158,7 +92,7 @@ const effective = "2025-09-16";
         display: flex;
         align-items: center;
         gap: 8px;
-        margin: 12px 0 8px;
+        margin: 12px 0 24px;
         font-size: 1.9rem;
         font-weight: 750;
     }
@@ -171,31 +105,61 @@ const effective = "2025-09-16";
     .legal-meta {
         color: var(--muted);
         font-size: 0.9rem;
-        margin: 4px 0 18px;
+        margin: 28px 0 18px;
+        border-top: 1px solid var(--ring);
+        padding-top: 20px;
     }
 
-    .legal-box {
+    /* --- Markdown Styles --- */
+
+    .markdown-body h2 {
+        margin-top: 28px;
+        margin-bottom: 12px;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--foreground);
+    }
+
+    .markdown-body p,
+    .markdown-body ul,
+    .markdown-body li {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 12px;
+        color: var(--foreground);
+    }
+
+    .markdown-body ul {
+        padding-left: 24px;
+    }
+
+    .markdown-body li {
+        margin-bottom: 6px;
+    }
+
+    .markdown-body strong {
+        font-weight: 600;
+    }
+
+    /* Convert Markdown Blockquotes (>) into your "Legal Box" style */
+    .markdown-body blockquote {
         background: var(--card);
         border: 1px solid var(--ring);
         padding: 16px 18px;
         border-radius: 14px;
         margin: 18px 0;
+        /* Reset default blockquote margins */
+        margin-inline-start: 0;
+        margin-inline-end: 0;
     }
 
-    h2 {
-        margin-top: 28px;
-        font-size: 1.35rem;
-        font-weight: 700;
+    .markdown-body blockquote p {
+        margin-bottom: 0; /* Remove bottom margin inside box */
     }
 
-    p,
-    ul,
-    li {
-        font-size: 1rem;
-        line-height: 1.55;
-    }
-
-    ul {
-        padding-left: 20px;
+    .markdown-body a {
+        color: var(--primary);
+        text-decoration: underline;
+        text-underline-offset: 4px;
     }
 </style>
