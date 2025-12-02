@@ -15,13 +15,6 @@ const TABLES = {
 };
 const N_TIPS = 10; // homepage slice size
 
-// NEW: Legal Docs Configuration
-const LEGAL_BASE = 'https://legal.tulaalife.com';
-const LEGAL_DOCS = [
-    { remote: 'terms_en.md', local: 'terms.md' },
-    { remote: 'privacy_en.md', local: 'privacy.md' }
-];
-
 const { PREVIEW_VISIBILITIES = 'public' } = process.env;
 const ALLOWED_VIS = PREVIEW_VISIBILITIES.split(',').map(s => s.trim()).filter(Boolean);
 
@@ -141,38 +134,6 @@ async function loadAllTips() {
     })).filter(t => t.slug && t.tip && t.benefit);
 }
 
-// ---- NEW: Download Legal MD Files
-async function downloadLegalDocs(outDir) {
-    console.log('[fetch-content] Downloading legal docs from R2...');
-
-    for (const doc of LEGAL_DOCS) {
-        const url = `${LEGAL_BASE}/${doc.remote}`;
-        const dest = path.join(outDir, doc.local);
-
-        try {
-            // FIX for 403 Forbidden: Use standard browser headers.
-            // Cloudflare WAF trusts this more than custom strings.
-            const res = await fetch(url, {
-                headers: {
-                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                    'Accept': 'text/markdown, text/plain, */*',
-                    'Accept-Language': 'en-US,en;q=0.9',
-                }
-            });
-
-            if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
-            const text = await res.text();
-
-            fs.writeFileSync(dest, text, 'utf8');
-            console.log(`   ✓ Saved ${doc.local}`);
-        } catch (e) {
-            console.error(`   ❌ Failed to fetch ${doc.remote}:`, e.message);
-            // Write a fallback so build doesn't crash, but log loudly
-            fs.writeFileSync(dest, `Error loading ${doc.remote}. Please retry build.`, 'utf8');
-        }
-    }
-}
-
 // ---- Emit
 function toTsArray(varName, arr) {
     const json = JSON.stringify(arr, null, 2);
@@ -200,15 +161,10 @@ ${toTsArray('allTips', tipsAll)}     // detail pages: FULL set
 
     const outDir = path.join(__dirname, '..', 'src', 'data');
     fs.mkdirSync(outDir, { recursive: true });
-
-    // 1. Write Supabase Data
     fs.writeFileSync(path.join(outDir, 'generated.ts'), outBanner(ts), 'utf8');
 
-    // 2. Write Legal Docs (New)
-    await downloadLegalDocs(outDir);
-
     console.log(
-        `[fetch-content] Wrote src/data/generated.ts with ${plans.length} plans, ${audios.length} audios, ${tips.length} tips.`
+        `[fetch-content] Wrote src/data/generated.ts with ${plans.length} plans, ${audios.length} audios, ${tips.length} tips (home) & ${tipsAll.length} tips (all).`
     );
 }
 
