@@ -145,14 +145,19 @@ async function loadAllTips() {
 async function downloadLegalDocs(outDir) {
     console.log('[fetch-content] Downloading legal docs from R2...');
 
-    // Node 18+ has native fetch. If on older node, might need 'node-fetch'
-    // but assuming modern environment since you use import.meta.url
     for (const doc of LEGAL_DOCS) {
         const url = `${LEGAL_BASE}/${doc.remote}`;
         const dest = path.join(outDir, doc.local);
 
         try {
-            const res = await fetch(url);
+            // FIX for 403 Forbidden: Add a User-Agent header.
+            // Cloudflare often blocks requests from scripts/bots without this header.
+            const res = await fetch(url, {
+                headers: {
+                    'User-Agent': 'TulaaBuildScript/1.0 (Node.js)'
+                }
+            });
+
             if (!res.ok) throw new Error(`HTTP ${res.status} ${res.statusText}`);
             const text = await res.text();
 
