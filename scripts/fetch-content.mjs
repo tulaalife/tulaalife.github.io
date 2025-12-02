@@ -150,11 +150,13 @@ async function downloadLegalDocs(outDir) {
         const dest = path.join(outDir, doc.local);
 
         try {
-            // FIX for 403 Forbidden: Add a User-Agent header.
-            // Cloudflare often blocks requests from scripts/bots without this header.
+            // FIX for 403 Forbidden: Use standard browser headers.
+            // Cloudflare WAF trusts this more than custom strings.
             const res = await fetch(url, {
                 headers: {
-                    'User-Agent': 'TulaaBuildScript/1.0 (Node.js)'
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                    'Accept': 'text/markdown, text/plain, */*',
+                    'Accept-Language': 'en-US,en;q=0.9',
                 }
             });
 
