@@ -1,10 +1,38 @@
 ---
 import Site from "../../layouts/Site.astro";
+import { marked } from "marked"; // Run 'npm install marked' if missing
 
-const title = "Tulaa — Terms of Use (v1.0)";
+const title = "Tulaa — Terms of Use";
 const description =
     "Tulaa Terms of Use — privacy-first, optional anonymous analytics and crash reporting, no ads.";
-const effective = "2025-09-16";
+
+// 1. Fetch content from the Single Source of Truth (R2)
+let contentHtml = "";
+
+try {
+    const res = await fetch("https://legal.tulaalife.com/terms_en.md");
+    if (res.ok) {
+        let rawMarkdown = await res.text();
+
+        // Optional: Remove the first line (Title) from markdown
+        // because we render a custom H1 with the Logo below.
+        rawMarkdown = rawMarkdown.replace(/^# .+\n/, "");
+
+        // Parse Markdown to HTML
+        contentHtml = await marked.parse(rawMarkdown);
+    } else {
+        throw new Error(`Remote fetch failed: ${res.status}`);
+    }
+} catch (e) {
+    console.error("Legal doc fetch error:", e);
+    // Fallback content in case R2 is down
+    contentHtml = `
+    <div class="legal-box" style="border-color: red">
+      <p><strong>Offline Mode:</strong> Unable to load the latest terms from server.</p>
+    </div>
+    <p>Please contact <a href="mailto:contact@tulaalife.com">contact@tulaalife.com</a> for the latest version.</p>
+  `;
+}
 ---
 
 <Site
@@ -14,6 +42,7 @@ const effective = "2025-09-16";
     hideFooter={true}
 >
     <main class="legal-wrap">
+        <!-- Custom Header with Logo -->
         <h1 class="legal-title">
             <img
                 src="https://images.tulaa.life/logo.webp"
@@ -25,118 +54,9 @@ const effective = "2025-09-16";
             Tulaa — Terms of Use
         </h1>
 
-        <p class="legal-meta">
-            Version 1.0 · Effective <time datetime={effective}>{effective}</time
-            >
-        </p>
-
-        <div class="legal-box">
-            <p>
-                <strong>Short version:</strong> Tulaa supports wellbeing with yoga,
-                meditation, journaling, water tracking, reminders, and tips. It’s
-                not medical advice. Your logs stay on your device. Analytics and
-                crash reports are optional, anonymous, and never include your personal
-                data. No ads.
-            </p>
-        </div>
-
-        <h2>1) Purpose</h2>
-        <p>
-            Tulaa is a wellbeing companion. It does not diagnose, treat, or
-            prevent disease.
-        </p>
-
-        <h2>2) Health & Safety</h2>
-        <ul>
-            <li>
-                Not a medical service. Consult a qualified professional before
-                starting any new routine.
-            </li>
-            <li>Stop if you feel pain, dizziness, or discomfort.</li>
-            <li>Not for emergencies.</li>
-        </ul>
-
-        <h2>3) Who Can Use</h2>
-        <p>
-            Designed for adults 18+. Teens 16–18 may use with parental guidance.
-            Not for children under 16.
-        </p>
-
-        <h2>4) Your Data</h2>
-        <p>
-            Yoga logs, water logs, moments/journals, rhythms, and period data
-            are stored only on your device. You can export or delete them any
-            time. If you uninstall or reset your device, your local data may be
-            lost.
-        </p>
-
-        <h2>5) Analytics & Crash Reporting</h2>
-        <p>
-            By default, nothing is collected. If you opt in, we may use
-            <a
-                href="https://posthog.com/privacy"
-                target="_blank"
-                rel="nofollow noopener">PostHog</a
-            >
-            for anonymous feature analytics, and
-            <a
-                href="https://sentry.io/privacy"
-                target="_blank"
-                rel="nofollow noopener">Sentry</a
-            >
-            for anonymous crash reports. These never include journals, health logs,
-            or personal data. You can disable them anytime.
-        </p>
-
-        <h2>6) Permissions</h2>
-        <p>
-            Notifications are used only if you set up Rhythms. No camera,
-            contact, or location access.
-        </p>
-
-        <h2>7) Content & Ownership</h2>
-        <p>
-            All yoga, audio, text, visuals, and designs belong to Tulaa. Your
-            logs and entries belong to you. Do not copy or redistribute Tulaa
-            content without permission.
-        </p>
-
-        <h2>8) Free & Paid Features</h2>
-        <p>
-            The core app is free. Premium features or memberships may launch in
-            future, always shown clearly before purchase.
-        </p>
-
-        <h2>9) Acceptable Use</h2>
-        <p>
-            Do not misuse, interfere with, reverse engineer, or use Tulaa for
-            unlawful purposes.
-        </p>
-
-        <h2>10) Availability & Changes</h2>
-        <p>
-            Features may change or be removed. Tulaa is offline-first but
-            continuous uptime is not guaranteed.
-        </p>
-
-        <h2>11) Warranty & Liability</h2>
-        <p>
-            Tulaa is provided “as is”. To the maximum extent permitted by law,
-            we are not liable for indirect or consequential losses. Where
-            liability cannot be excluded, it is limited to INR ₹1,000.
-        </p>
-
-        <h2>12) Governing Law</h2>
-        <p>
-            These Terms are governed by the laws of India, State of Karnataka.
-            Courts in Bengaluru have exclusive jurisdiction.
-        </p>
-
-        <h2>13) Updates</h2>
-        <p>
-            If these Terms change, we’ll show a notice in the app and ask you to
-            accept the new version.
-        </p>
+        <!-- Content from R2 -->
+        <!-- We use 'set:html' to inject the parsed Markdown -->
+        <div class="markdown-body" set:html={contentHtml} />
 
         <p class="legal-meta">
             Need help? <a href="mailto:contact@tulaalife.com"
@@ -158,7 +78,9 @@ const effective = "2025-09-16";
     </main>
 </Site>
 
-<style>
+<style is:global>
+    /* Use is:global to style the injected HTML content */
+
     .legal-wrap {
         max-width: 940px;
         margin: 0 auto;
@@ -170,43 +92,74 @@ const effective = "2025-09-16";
         display: flex;
         align-items: center;
         gap: 8px;
-        margin: 12px 0 8px;
+        margin: 12px 0 24px;
         font-size: 1.9rem;
         font-weight: 750;
     }
 
     .legal-logo {
+        vertical-align: middle;
         border-radius: 8px;
     }
 
     .legal-meta {
         color: var(--muted);
         font-size: 0.9rem;
-        margin: 4px 0 20px;
+        margin: 28px 0 18px;
+        border-top: 1px solid var(--ring);
+        padding-top: 20px;
     }
 
-    .legal-box {
+    /* --- Markdown Styles --- */
+
+    .markdown-body h2 {
+        margin-top: 28px;
+        margin-bottom: 12px;
+        font-size: 1.35rem;
+        font-weight: 700;
+        color: var(--foreground);
+    }
+
+    .markdown-body p,
+    .markdown-body ul,
+    .markdown-body li {
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 12px;
+        color: var(--foreground);
+    }
+
+    .markdown-body ul {
+        padding-left: 24px;
+    }
+
+    .markdown-body li {
+        margin-bottom: 6px;
+    }
+
+    .markdown-body strong {
+        font-weight: 600;
+    }
+
+    /* Convert Markdown Blockquotes (>) into your "Legal Box" style */
+    .markdown-body blockquote {
         background: var(--card);
         border: 1px solid var(--ring);
         padding: 16px 18px;
         border-radius: 14px;
         margin: 18px 0;
+        /* Reset default blockquote margins */
+        margin-inline-start: 0;
+        margin-inline-end: 0;
     }
 
-    h2 {
-        margin-top: 28px;
-        font-size: 1.35rem;
-        font-weight: 700;
+    .markdown-body blockquote p {
+        margin-bottom: 0; /* Remove bottom margin inside box */
     }
 
-    p,
-    ul,
-    li {
-        font-size: 1rem;
-        line-height: 1.55;
-    }
-
-    ul {
-        padding-left: 20px;
+    .markdown-body a {
+        color: var(--primary);
+        text-decoration: underline;
+        text-underline-offset: 4px;
     }
 </style>
