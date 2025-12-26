@@ -1,4 +1,5 @@
 ---
+// Layout.astro
 import FooterCard from "../components/FooterCard.astro";
 
 interface Props {
@@ -22,24 +23,12 @@ const url = new URL(canonicalPath, site).toString();
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="light" data-palette="base">
     <head>
         <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
-
-        <meta
-            name="theme-color"
-            media="(prefers-color-scheme: light)"
-            content="#f9f8f6"
-        />
-        <meta
-            name="theme-color"
-            media="(prefers-color-scheme: dark)"
-            content="#181716"
-        />
-
+        <meta name="theme-color" content="#f9f8f6" />
         <meta name="robots" content="index,follow" />
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -51,20 +40,7 @@ const url = new URL(canonicalPath, site).toString();
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={ogImage} />
-        <meta
-            property="og:image:alt"
-            content="Tulaa — yoga, meditation & journaling"
-        />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
         <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={ogImage} />
-        <meta
-            name="twitter:image:alt"
-            content="Tulaa — yoga, meditation & journaling"
-        />
 
         <link
             rel="icon"
@@ -75,43 +51,61 @@ const url = new URL(canonicalPath, site).toString();
             rel="apple-touch-icon"
             href="https://images.tulaa.life/apple-touch-icon.png"
         />
-
         <link rel="preconnect" href="https://images.tulaa.life" crossorigin />
-
-        <meta
-            name="apple-itunes-app"
-            content="app-id=6748626498, app-argument=https://tulaalife.com"
-        />
 
         <script is:inline>
             (() => {
                 const root = document.documentElement;
+                const palettes = ["base", "sage", "ocean", "lavender", "clay"];
 
-                function applyTheme(theme) {
-                    root.dataset.theme = theme;
-                    root.style.colorScheme = theme;
+                // 1. Initial Load
+                function init() {
+                    try {
+                        const savedTheme =
+                            localStorage.getItem("tulaa-theme") || "light";
+                        const savedPalette =
+                            localStorage.getItem("tulaa-palette") || "base";
+
+                        root.dataset.theme = savedTheme;
+                        root.dataset.palette = savedPalette;
+                        root.style.colorScheme = savedTheme;
+                    } catch {
+                        root.dataset.theme = "light";
+                        root.dataset.palette = "base";
+                    }
                 }
+                init();
 
-                try {
-                    const saved = localStorage.getItem("tulaa-theme");
-                    const initial =
-                        saved === "dark" || saved === "light" ? saved : "light";
-                    applyTheme(initial);
-                } catch {
-                    applyTheme("light");
-                }
-
-                // Expose toggle on window
-                // @ts-ignore
-                window.toggleTheme = function toggleTheme() {
+                // 2. Toggle Light/Dark
+                window.toggleTheme = function () {
                     const current =
                         root.dataset.theme === "dark" ? "dark" : "light";
                     const next = current === "dark" ? "light" : "dark";
-                    applyTheme(next);
-                    try {
-                        localStorage.setItem("tulaa-theme", next);
-                    } catch {}
+
+                    root.dataset.theme = next;
+                    root.style.colorScheme = next;
+                    localStorage.setItem("tulaa-theme", next);
                 };
+
+                // 3. Cycle Palette
+                window.cyclePalette = function () {
+                    const current = root.dataset.palette || "base";
+                    const idx = palettes.indexOf(current);
+                    const next = palettes[(idx + 1) % palettes.length];
+
+                    root.dataset.palette = next;
+                    localStorage.setItem("tulaa-palette", next);
+
+                    // Visual feedback in console or toast could go here
+                    console.log(`Switched to ${next} palette`);
+                };
+
+                // 4. Hotkey Listener (Shift + P)
+                document.addEventListener("keydown", (e) => {
+                    if (e.shiftKey && (e.key === "P" || e.key === "p")) {
+                        window.cyclePalette();
+                    }
+                });
             })();
         </script>
 
@@ -127,94 +121,18 @@ const url = new URL(canonicalPath, site).toString();
                 font-family: "Inter Var";
                 src:
                     local("InterVariable"),
-                    local("Inter Variable"),
                     url("/fonts/InterVariable.woff2") format("woff2");
                 font-weight: 100 900;
-                font-stretch: 75% 125%;
-                font-style: normal;
                 font-display: swap;
-                size-adjust: 105%;
             }
         </style>
 
-        <script type="application/ld+json">
-            {
-                "@context": "https://schema.org",
-                "@type": "SoftwareApplication",
-                "name": "Tulaa",
-                "applicationCategory": "HealthApplication",
-                "operatingSystem": "iOS, Android",
-                "offers": {
-                    "@type": "Offer",
-                    "price": "0",
-                    "priceCurrency": "USD"
-                },
-                "description": "Yoga, meditation, journaling, rhythms and care — privacy-first, ad-free, offline-ready."
-            }
-        </script>
-
         <style>
-            /* ---------- Base & tokens (OKLCH-tuned) ---------- */
-            *,
-            *::before,
-            *::after {
-                box-sizing: border-box;
-            }
-            html,
-            body {
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                overflow-x: hidden;
-            }
-            html {
-                -webkit-font-smoothing: antialiased;
-            }
+            /* ---------- GLOBAL VARIABLES ---------- */
             :root {
-                -webkit-text-size-adjust: 100%;
-                text-size-adjust: 100%;
-            }
-
-            :root {
-                /* THEME: Organic Paper
-                   Approaching white, but with warmth (Hue 85-90)
-                */
-
-                /* Base Backgrounds - Cream/Alabaster */
-                --bg1: oklch(99% 0.01 85);
-                --bg2: oklch(97% 0.02 90);
-
-                /* Text - Warm Charcoal (Stone) instead of pure black */
-                --fg: oklch(32% 0.04 45);
-                --muted: oklch(55% 0.04 45);
-
-                /* Accents - Soft Clay & Sage */
-                --accent: oklch(68% 0.16 40); /* Terracotta */
-                --accent-2: oklch(88% 0.12 95); /* Soft Gold/Mustard */
-
-                /* Surfaces - Vellum/Rice Paper feel */
-                --card: oklch(100% 0 0 / 0.65);
-                --ring: oklch(40% 0.06 45 / 0.15); /* Warm border */
-
-                --btn: var(--fg);
-                --btnText: oklch(98% 0.01 85);
-
-                --radius-xl: 24px;
+                --font-sans: "Inter Var", system-ui, sans-serif;
                 --container: 980px;
-
-                /* Shadows - Warm brown/grey shadows, not blue */
-                --elev-1: 0 4px 12px rgba(45, 40, 35, 0.06);
-                --elev-2: 0 10px 24px rgba(45, 40, 35, 0.08);
-                --elev-3: 0 18px 42px rgba(45, 40, 35, 0.1);
-
-                --font-sans:
-                    "Inter Var", system-ui, -apple-system, BlinkMacSystemFont,
-                    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-
-                --fw-regular: 400;
-                --fw-medium: 500;
-                --fw-semibold: 600;
-                --fw-bold: 700;
+                --radius-xl: 24px;
 
                 --fs-display: clamp(2.2rem, 3.1vw, 2.8rem);
                 --fs-h1: clamp(1.7rem, 2.3vw, 2.1rem);
@@ -225,50 +143,158 @@ const url = new URL(canonicalPath, site).toString();
 
                 --lh-tight: 1.2;
                 --lh-title: 1.24;
-                --lh-body: 1.6; /* Increased slightly for "breathable" feel */
+                --lh-body: 1.6;
 
-                /* Animated blob colours - Soft Peaches and Mist */
-                --blob-1: oklch(94% 0.06 70); /* Soft Peach */
-                --blob-2: oklch(92% 0.05 140); /* Soft Sage */
-                --blob-3: oklch(95% 0.08 90); /* Soft Gold */
+                --fw-regular: 400;
+                --fw-medium: 500;
+                --fw-semibold: 600;
+                --fw-bold: 700;
             }
 
-            [data-theme="dark"] {
-                /* Deep Espresso / Warm Slate */
+            /* =========================================
+               THEME ENGINE (OKLCH)
+               ========================================= */
+
+            /* --- 1. BASE (Original Organic Paper) --- */
+            :root[data-palette="base"] {
+                /* Light */
+                --bg1: oklch(99% 0.01 85);
+                --bg2: oklch(97% 0.02 90);
+                --fg: oklch(32% 0.04 45);
+                --muted: oklch(55% 0.04 45);
+                --accent: oklch(68% 0.16 40); /* Terracotta */
+                --accent-2: oklch(88% 0.12 95); /* Mustard */
+                --card: oklch(100% 0 0 / 0.65);
+                --ring: oklch(40% 0.06 45 / 0.15);
+                --blob-1: oklch(94% 0.06 70);
+                --blob-2: oklch(92% 0.05 140);
+            }
+            :root[data-theme="dark"][data-palette="base"] {
+                /* Dark */
                 --bg1: oklch(18% 0.02 45);
                 --bg2: oklch(22% 0.03 40);
-
-                --fg: oklch(92% 0.01 85); /* Off-white text */
+                --fg: oklch(92% 0.01 85);
                 --muted: oklch(70% 0.02 85);
-
                 --accent: oklch(75% 0.14 45);
                 --accent-2: oklch(70% 0.12 85);
-
                 --card: oklch(25% 0.02 45 / 0.6);
                 --ring: oklch(85% 0.02 85 / 0.12);
-
-                --btn: var(--fg);
-                --btnText: oklch(18% 0.02 45);
-
-                --elev-1: 0 8px 22px rgba(0, 0, 0, 0.3);
-                --elev-2: 0 16px 36px rgba(0, 0, 0, 0.4);
-                --elev-3: 0 22px 56px rgba(0, 0, 0, 0.5);
-
                 --blob-1: oklch(28% 0.08 40);
                 --blob-2: oklch(25% 0.06 140);
-                --blob-3: oklch(30% 0.05 280);
             }
 
-            /* ---------- Background shell ---------- */
+            /* --- 2. SAGE (Forest / Nature) --- */
+            :root[data-palette="sage"] {
+                --bg1: oklch(98% 0.01 140); /* Pale Green */
+                --bg2: oklch(96% 0.02 145);
+                --fg: oklch(28% 0.04 140); /* Deep Green Text */
+                --muted: oklch(50% 0.04 140);
+                --accent: oklch(65% 0.12 145); /* Leaf Green */
+                --accent-2: oklch(85% 0.1 130);
+                --card: oklch(99% 0.01 140 / 0.7);
+                --ring: oklch(40% 0.06 140 / 0.15);
+                --blob-1: oklch(92% 0.08 140);
+                --blob-2: oklch(90% 0.06 160);
+            }
+            :root[data-theme="dark"][data-palette="sage"] {
+                --bg1: oklch(16% 0.03 145); /* Deep Forest */
+                --bg2: oklch(20% 0.04 140);
+                --fg: oklch(94% 0.01 140);
+                --muted: oklch(70% 0.03 140);
+                --accent: oklch(72% 0.14 145);
+                --accent-2: oklch(68% 0.1 130);
+                --card: oklch(22% 0.04 145 / 0.6);
+                --ring: oklch(85% 0.04 140 / 0.12);
+                --blob-1: oklch(25% 0.1 145);
+                --blob-2: oklch(22% 0.08 160);
+            }
 
+            /* --- 3. OCEAN (Calm / Blue) --- */
+            :root[data-palette="ocean"] {
+                --bg1: oklch(99% 0.01 240); /* Pale Blue */
+                --bg2: oklch(97% 0.02 230);
+                --fg: oklch(30% 0.04 250);
+                --muted: oklch(55% 0.04 250);
+                --accent: oklch(65% 0.14 240); /* Sky Blue */
+                --accent-2: oklch(88% 0.08 210);
+                --card: oklch(99% 0.01 240 / 0.7);
+                --ring: oklch(40% 0.06 240 / 0.15);
+                --blob-1: oklch(94% 0.06 240);
+                --blob-2: oklch(92% 0.05 200);
+            }
+            :root[data-theme="dark"][data-palette="ocean"] {
+                --bg1: oklch(18% 0.03 260); /* Deep Navy */
+                --bg2: oklch(22% 0.04 250);
+                --fg: oklch(94% 0.01 240);
+                --muted: oklch(70% 0.03 240);
+                --accent: oklch(70% 0.14 240);
+                --accent-2: oklch(65% 0.1 210);
+                --card: oklch(25% 0.04 260 / 0.6);
+                --ring: oklch(85% 0.04 240 / 0.12);
+                --blob-1: oklch(28% 0.1 260);
+                --blob-2: oklch(25% 0.08 220);
+            }
+
+            /* --- 4. LAVENDER (Spirit / Purple) --- */
+            :root[data-palette="lavender"] {
+                --bg1: oklch(99% 0.01 300); /* Mist Purple */
+                --bg2: oklch(97% 0.02 290);
+                --fg: oklch(30% 0.04 300);
+                --muted: oklch(55% 0.04 300);
+                --accent: oklch(65% 0.15 310); /* Soft Lilac */
+                --accent-2: oklch(88% 0.1 330);
+                --card: oklch(99% 0.01 300 / 0.7);
+                --ring: oklch(40% 0.06 300 / 0.15);
+                --blob-1: oklch(94% 0.08 310);
+                --blob-2: oklch(92% 0.06 330);
+            }
+            :root[data-theme="dark"][data-palette="lavender"] {
+                --bg1: oklch(18% 0.03 300); /* Deep Plum */
+                --bg2: oklch(22% 0.04 290);
+                --fg: oklch(94% 0.01 300);
+                --muted: oklch(70% 0.03 300);
+                --accent: oklch(72% 0.16 310);
+                --accent-2: oklch(68% 0.12 330);
+                --card: oklch(25% 0.04 300 / 0.6);
+                --ring: oklch(85% 0.04 300 / 0.12);
+                --blob-1: oklch(28% 0.12 310);
+                --blob-2: oklch(25% 0.1 330);
+            }
+
+            /* --- 5. CLAY (Earth / Red) --- */
+            :root[data-palette="clay"] {
+                --bg1: oklch(99% 0.01 40); /* Pale Warm */
+                --bg2: oklch(97% 0.02 35);
+                --fg: oklch(30% 0.04 30);
+                --muted: oklch(55% 0.04 30);
+                --accent: oklch(62% 0.18 25); /* Terra Cotta */
+                --accent-2: oklch(85% 0.12 45);
+                --card: oklch(99% 0.01 40 / 0.7);
+                --ring: oklch(40% 0.06 30 / 0.15);
+                --blob-1: oklch(92% 0.1 30);
+                --blob-2: oklch(90% 0.08 50);
+            }
+            :root[data-theme="dark"][data-palette="clay"] {
+                --bg1: oklch(18% 0.03 25); /* Dark Clay */
+                --bg2: oklch(22% 0.04 30);
+                --fg: oklch(94% 0.01 35);
+                --muted: oklch(70% 0.03 35);
+                --accent: oklch(68% 0.18 30);
+                --accent-2: oklch(65% 0.12 45);
+                --card: oklch(25% 0.04 25 / 0.6);
+                --ring: oklch(85% 0.04 30 / 0.12);
+                --blob-1: oklch(28% 0.12 30);
+                --blob-2: oklch(25% 0.1 50);
+            }
+
+            /* =========================================
+               GENERAL CSS
+               ========================================= */
             body {
                 font-family: var(--font-sans);
                 font-size: var(--fs-body);
                 line-height: var(--lh-body);
                 color: var(--fg);
-                /* Simpler, softer gradient base.
-                   Less "Tech", more "Sunlight" 
-                */
                 background: linear-gradient(
                     to bottom right,
                     var(--bg1),
@@ -278,17 +304,17 @@ const url = new URL(canonicalPath, site).toString();
                 flex-direction: column;
                 min-height: 100vh;
                 position: relative;
+                transition:
+                    background 0.3s ease,
+                    color 0.3s ease;
             }
 
-            /* Animated blobs layer */
             .bg-orbit {
                 position: fixed;
-                inset: -100px; /* Reduced inset to keep blobs closer */
+                inset: -100px;
                 pointer-events: none;
                 z-index: -1;
                 overflow: hidden;
-                mix-blend-mode: normal;
-                /* Add a subtle blur to the whole container to soften edges further */
                 filter: blur(60px);
             }
             .bg-orbit::before,
@@ -296,9 +322,8 @@ const url = new URL(canonicalPath, site).toString();
                 content: "";
                 position: absolute;
                 border-radius: 999px;
-                opacity: 0.6; /* More subtle opacity */
-                transform-origin: center;
-                will-change: transform, opacity;
+                opacity: 0.6;
+                transition: background 0.5s ease; /* Smooth palette transition */
             }
             .bg-orbit::before {
                 width: 600px;
@@ -325,38 +350,24 @@ const url = new URL(canonicalPath, site).toString();
                 animation: driftB 55s ease-in-out infinite alternate;
             }
 
-            /* Grain Texture 
-               Kept this, but made it warmer. 
-            */
             body::before {
                 content: "";
                 position: fixed;
                 inset: 0;
                 pointer-events: none;
                 background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
-                opacity: 0.035; /* Very subtle paper grain */
+                opacity: 0.035;
                 z-index: -1;
                 mix-blend-mode: overlay;
             }
 
             img,
             video,
-            svg,
-            canvas {
+            svg {
                 max-width: 100%;
                 height: auto;
                 display: block;
             }
-
-            button,
-            input,
-            select,
-            textarea {
-                font-family: var(--font-sans);
-                font-size: inherit;
-            }
-
-            /* ---------- Typography ---------- */
 
             h1,
             h2,
@@ -366,129 +377,25 @@ const url = new URL(canonicalPath, site).toString();
                 font-weight: var(--fw-semibold);
                 line-height: var(--lh-title);
                 color: var(--fg);
-                letter-spacing: -0.01em; /* Tighter for display text */
-            }
-            h1 {
-                font-size: var(--fs-h1);
-            }
-            h2 {
-                font-size: var(--fs-h2);
-            }
-            h3 {
-                font-size: var(--fs-body);
-                font-weight: var(--fw-medium);
-            }
-            h4 {
-                font-size: var(--fs-body-sm);
-                font-weight: var(--fw-medium);
+                letter-spacing: -0.01em;
             }
 
-            p {
-                margin: 0 0 0.8em; /* Slightly more breathing room */
-                font-size: var(--fs-body);
-                line-height: var(--lh-body);
-                color: color-mix(in oklch, var(--fg), transparent 10%);
-            }
-
-            small {
-                font-size: var(--fs-caption);
-                line-height: 1.4;
-            }
-
+            /* Typography helpers */
             .typ-display {
                 font-size: var(--fs-display);
-                line-height: var(--lh-tight);
                 font-weight: var(--fw-bold);
                 letter-spacing: -0.02em;
+                line-height: var(--lh-tight);
             }
             .typ-h1 {
                 font-size: var(--fs-h1);
-                line-height: var(--lh-title);
-                font-weight: var(--fw-semibold);
-            }
-            .typ-h2 {
-                font-size: var(--fs-h2);
-                line-height: var(--lh-title);
-                font-weight: var(--fw-semibold);
-            }
-            .typ-body {
-                font-size: var(--fs-body);
-                line-height: var(--lh-body);
-                font-weight: var(--fw-regular);
             }
             .typ-body-sm {
                 font-size: var(--fs-body-sm);
-                line-height: var(--lh-body);
-                font-weight: var(--fw-regular);
-                color: var(--muted);
-            }
-            .typ-caption {
-                font-size: var(--fs-caption);
-                line-height: 1.4;
-                font-weight: var(--fw-medium);
-                color: var(--muted);
-                letter-spacing: 0.04em;
-                text-transform: uppercase;
-            }
-
-            .section-heading,
-            .peek__title,
-            .ts-title,
-            .more__title {
-                font-size: var(--fs-h1);
-                line-height: var(--lh-title);
-                font-weight: var(--fw-semibold);
-                text-align: center;
-            }
-            .section-subtitle,
-            .peek__subtitle,
-            .ts-subtitle {
-                font-size: var(--fs-body-sm);
-                line-height: var(--lh-body);
-                color: var(--muted);
-                text-align: center;
-                margin-top: 8px;
-            }
-            .tile__title,
-            .peek-card__title,
-            .ts-item__title {
-                font-size: var(--fs-h2);
-                line-height: var(--lh-title);
-                font-weight: var(--fw-semibold);
-            }
-            .tile__sub,
-            .peek-card__subtitle,
-            .ts-item__sub {
-                font-size: var(--fs-body-sm);
-                line-height: var(--lh-body);
                 color: var(--muted);
             }
 
-            /* ---------- Glassy blocks ---------- */
-
-            .home-block {
-                border-radius: var(--radius-xl);
-                padding: clamp(18px, 3vw, 24px);
-                /* Vellum / Rice Paper Effect */
-                background: linear-gradient(
-                    145deg,
-                    color-mix(in oklch, var(--card), white 20%),
-                    var(--card)
-                );
-                border: 1px solid var(--ring);
-                box-shadow: var(--elev-1);
-                backdrop-filter: blur(24px) saturate(1.2); /* Higher blur for "frosted" look */
-            }
-
-            .home-block--soft {
-                background: color-mix(in oklch, var(--card), white 40%);
-                box-shadow: var(--elev-1);
-                border: 1px solid
-                    color-mix(in oklch, var(--ring), transparent 50%);
-            }
-
-            /* ---------- Header (glassy) ---------- */
-
+            /* Header */
             header {
                 width: 100%;
                 display: flex;
@@ -500,11 +407,9 @@ const url = new URL(canonicalPath, site).toString();
                 position: sticky;
                 top: 0;
                 z-index: 10;
-                /* Softer shadow for header */
                 box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
                 backdrop-filter: blur(16px) saturate(1.1);
             }
-
             header .brand {
                 display: flex;
                 align-items: center;
@@ -520,46 +425,8 @@ const url = new URL(canonicalPath, site).toString();
                 border-radius: 8px;
                 box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             }
-            nav a {
-                color: var(--fg);
-                text-decoration: none;
-                margin-left: 16px;
-                font-size: var(--fs-body-sm);
-                opacity: 0.8;
-                transition: opacity 0.2s ease;
-            }
-            nav a:hover {
-                opacity: 1;
-                text-decoration: none; /* Removed underline, relying on opacity */
-            }
 
-            /* Focus & skip */
-
-            .skip-link {
-                position: absolute;
-                left: -9999px;
-                top: auto;
-            }
-            .skip-link:focus {
-                left: 16px;
-                top: 16px;
-                padding: 8px 12px;
-                background: var(--bg1);
-                border: 1px solid var(--ring);
-                border-radius: 10px;
-                z-index: 100;
-            }
-            a,
-            button {
-                outline: none;
-            }
-            a:focus-visible,
-            button:focus-visible {
-                box-shadow: 0 0 0 3px
-                    color-mix(in oklch, var(--accent), transparent 40%);
-                border-radius: 6px;
-            }
-
+            /* Toggle Button */
             button.theme-toggle {
                 border: 1px solid var(--ring);
                 background: transparent;
@@ -575,6 +442,7 @@ const url = new URL(canonicalPath, site).toString();
                 display: flex;
                 align-items: center;
                 justify-content: center;
+                user-select: none; /* Important for long press */
             }
             button.theme-toggle:hover {
                 background: color-mix(in oklch, var(--fg), transparent 95%);
@@ -583,48 +451,32 @@ const url = new URL(canonicalPath, site).toString();
                 transform: scale(0.95);
             }
 
-            /* ---------- Layout ---------- */
+            .skip-link {
+                position: absolute;
+                left: -9999px;
+            }
+            .skip-link:focus {
+                left: 16px;
+                top: 16px;
+                background: var(--bg1);
+                z-index: 100;
+                padding: 8px 12px;
+                border-radius: 8px;
+            }
 
             main {
                 flex: 1;
                 width: 100%;
                 margin: 0;
-                padding: 32px 0 40px;
+                padding: 32px 0 32px;
             }
-
             main > * {
                 max-width: var(--container);
                 margin-left: auto;
                 margin-right: auto;
                 padding-left: 16px;
                 padding-right: 16px;
-                box-sizing: border-box;
             }
-
-            /* Chips */
-
-            .dl__chips {
-                display: flex;
-                gap: 8px;
-                justify-content: center;
-                flex-wrap: wrap;
-                list-style: none;
-                padding: 0;
-                margin: 16px 0 4px;
-            }
-            .dl__chips li {
-                padding: 6px 14px;
-                border-radius: 999px;
-                font-size: var(--fs-caption);
-                font-weight: var(--fw-medium);
-                color: var(--fg);
-                background: color-mix(in oklch, var(--bg1), transparent 40%);
-                border: 1px solid var(--ring);
-                /* Subtle shine */
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
-            }
-
-            /* Footer */
 
             footer {
                 width: 100%;
@@ -636,22 +488,17 @@ const url = new URL(canonicalPath, site).toString();
                 max-width: var(--container);
                 margin: 40px auto 0;
                 padding: 0 16px;
-                /* box-sizing: border-box; */
             }
             footer p {
                 margin-top: 24px;
                 font-size: var(--fs-caption);
-                color: var(--muted);
-                text-align: center;
                 opacity: 0.7;
             }
             footer .legal {
                 margin-top: 32px;
-                margin-bottom: 24px;
                 display: flex;
                 gap: 20px;
                 justify-content: center;
-                flex-wrap: wrap;
                 font-size: var(--fs-caption);
             }
             footer .legal a {
@@ -662,34 +509,20 @@ const url = new URL(canonicalPath, site).toString();
                 color: var(--fg);
             }
 
-            /* ---------- Motion ---------- */
-
             @keyframes driftA {
                 0% {
-                    transform: translate3d(-30px, 0, 0) scale(1);
-                    opacity: 0.5;
+                    transform: translate3d(-30px, 0, 0);
                 }
                 100% {
-                    transform: translate3d(30px, 30px, 0) scale(1.1);
-                    opacity: 0.4;
+                    transform: translate3d(30px, 30px, 0);
                 }
             }
-
             @keyframes driftB {
                 0% {
-                    transform: translate3d(20px, 15px, 0) scale(1.1);
-                    opacity: 0.4;
+                    transform: translate3d(20px, 15px, 0);
                 }
                 100% {
-                    transform: translate3d(-40px, -15px, 0) scale(0.95);
-                    opacity: 0.3;
-                }
-            }
-
-            @media (prefers-reduced-motion: reduce) {
-                * {
-                    animation: none !important;
-                    transition: none !important;
+                    transform: translate3d(-40px, -15px, 0);
                 }
             }
         </style>
@@ -697,7 +530,6 @@ const url = new URL(canonicalPath, site).toString();
 
     <body>
         <div class="bg-orbit" aria-hidden="true"></div>
-
         <a href="#content" class="skip-link">Skip to content</a>
 
         <header>
@@ -709,12 +541,12 @@ const url = new URL(canonicalPath, site).toString();
                 <span>Tulaa</span>
             </a>
             <div style="display:flex; align-items:center; gap:12px;">
-                <nav aria-label="Site"></nav>
                 <button
                     class="theme-toggle"
                     type="button"
-                    onclick="toggleTheme()"
-                    aria-label="Toggle theme"
+                    aria-label="Toggle theme (Hold to change palette)"
+                    id="themeBtn"
+                    oncontextmenu="return false;"
                 >
                     <span style="opacity: 0.8; font-size: 1.1em;">☼</span>
                 </button>
@@ -731,7 +563,6 @@ const url = new URL(canonicalPath, site).toString();
                     <div class="wrap">
                         <FooterCard />
                     </div>
-
                     <div class="legal" aria-label="Legal and contact">
                         <a href="/legal/privacy">Privacy Policy</a>
                         <a href="/legal/terms">Terms of Use</a>
@@ -746,5 +577,64 @@ const url = new URL(canonicalPath, site).toString();
                 </footer>
             )
         }
+
+        <script is:inline>
+            // LOGIC FOR LONG PRESS
+            (function () {
+                const btn = document.getElementById("themeBtn");
+                let pressTimer;
+                let isLongPress = false;
+
+                const startPress = (e) => {
+                    // Prevent right click menu on mobile
+                    if (e.type === "click" && e.button !== 0) return;
+
+                    isLongPress = false;
+                    pressTimer = setTimeout(() => {
+                        isLongPress = true;
+                        window.cyclePalette();
+                        // Optional: Vibration feedback for mobile
+                        if (navigator.vibrate) navigator.vibrate(50);
+                    }, 500); // 500ms hold time
+                };
+
+                const endPress = (e) => {
+                    clearTimeout(pressTimer);
+                    if (!isLongPress) {
+                        // If it wasn't a long press, it's a click -> Toggle Theme
+                        // We check event type to avoid double firing on touch devices
+                        if (e.type === "mouseup" || e.type === "touchend") {
+                            // Logic handled in click, but we prevent default click if long press occurred
+                        }
+                    } else {
+                        // It was a long press, stop the standard click event
+                        if (e.cancelable) e.preventDefault();
+                    }
+                };
+
+                // Mouse events
+                btn.addEventListener("mousedown", startPress);
+                btn.addEventListener("mouseup", endPress);
+                btn.addEventListener("mouseleave", () =>
+                    clearTimeout(pressTimer),
+                );
+
+                // Touch events
+                btn.addEventListener("touchstart", startPress, {
+                    passive: true,
+                });
+                btn.addEventListener("touchend", endPress);
+
+                // Standard Click (only fires if not long press)
+                btn.addEventListener("click", (e) => {
+                    if (isLongPress) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    } else {
+                        window.toggleTheme();
+                    }
+                });
+            })();
+        </script>
     </body>
 </html>
