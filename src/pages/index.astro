@@ -36,16 +36,16 @@ const daySeed = Number(
 const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
   href: `/yoga/${p.slug}`,
   title: p.title,
-  subtitle: p.subtitle, // shown on small card
-  teaser: p.teaser, // used in preview card
+  subtitle: p.subtitle,
+  teaser: p.teaser,
   image: p.image,
 }));
 
 const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
   href: `/audio/${a.slug}`,
   title: a.title,
-  subtitle: a.subtitle, // small card line
-  teaser: a.teaser, // preview teaser
+  subtitle: a.subtitle,
+  teaser: a.teaser,
   image: a.image,
 }));
 
@@ -69,173 +69,229 @@ const hasTips = tipFive.length > 0;
   canonicalPath="/"
   ogImage={ogImage}
 >
-  <div class="home">
-    <div class="reveal">
+  <div class="home-layout">
+    <section class="reveal section-hero">
       <IntroCard
         variant="hero"
         headline="Tulaa"
         subline="Holistic yoga for pain relief, prenatal health & daily calm with meditation, journaling and private trackers."
         showLogo={true}
       />
-    </div>
+    </section>
 
     {
       hasYoga && (
-        <div class="reveal">
+        <section class="reveal section-stream">
           <PeekScroller
             title="Yoga Plans"
             subtitle="Expert-guided sequences for everyday needs"
             items={yogaItems}
             ctaHref="/yoga"
             ctaLabel="Explore yoga plans"
-            intervalMs={5200}
+            intervalMs={6000}
           />
-        </div>
+        </section>
       )
     }
 
     {
       hasAudio && (
-        <div class="reveal">
+        <section class="reveal section-stream">
           <PeekScroller
             title="Guided Audios"
             subtitle="Gentle voice sessions for calm, focus & rest"
             items={audioItems}
             ctaHref="/audio"
             ctaLabel="Explore audios"
-            intervalMs={5200}
+            intervalMs={6500}
           />
-        </div>
+        </section>
       )
     }
 
     {
       hasTips && (
-        <div class="reveal">
+        <section class="reveal section-stream">
           <TipsScroller
             title="Wellness Tips"
             subtitle="Short, sourced insights for daily care"
             items={tipFive}
-            intervalMs={5200}
+            intervalMs={7000}
             ctaHref="/tips"
             ctaLabel="Explore tips"
           />
-        </div>
+        </section>
       )
     }
 
-    <div class="reveal">
-      <FeatureTiles
-        tiles={[
-          {
-            emoji: "💧",
-            title: "Water tracking",
-            subtitle: "Lightweight, private hydration log",
-          },
-          {
-            emoji: "🌸",
-            title: "Period tracking",
-            subtitle: "Simple cycle logs with insights",
-          },
-          {
-            emoji: "📝",
-            title: "Mood tracking",
-            subtitle: "Daily check-ins & gratitude",
-          },
-          {
-            emoji: "⏰",
-            title: "Rhythms",
-            subtitle: "Gentle, customizable habit reminders",
-          },
-          {
-            emoji: "⏳",
-            title: "Fast tracker",
-            subtitle: "Intermittent fasting tracker",
-          },
-          {
-            emoji: "📰",
-            title: "Wellness articles & tips",
-            subtitle: "Curated guides for better health",
-          },
-        ]}
-      />
-    </div>
+    <section class="reveal section-features">
+      <div class="home-block">
+        <div class="features-header">
+          <h2 class="ts-title">Everything you need</h2>
+          <p class="ts-subtitle">Privacy-first tools for a balanced life</p>
+        </div>
+
+        <FeatureTiles
+          tiles={[
+            {
+              emoji: "💧",
+              title: "Water tracking",
+              subtitle: "Lightweight, private hydration log",
+            },
+            {
+              emoji: "🌸",
+              title: "Period tracking",
+              subtitle: "Simple cycle logs with insights",
+            },
+            {
+              emoji: "📝",
+              title: "Mood tracking",
+              subtitle: "Daily check-ins & gratitude",
+            },
+            {
+              emoji: "⏰",
+              title: "Rhythms",
+              subtitle: "Gentle, customizable habit reminders",
+            },
+            {
+              emoji: "⏳",
+              title: "Fast tracker",
+              subtitle: "Intermittent fasting tracker",
+            },
+            {
+              emoji: "📰",
+              title: "Wellness articles",
+              subtitle: "Curated guides for better health",
+            },
+          ]}
+        />
+
+        <div class="features-cta">
+          <a href="/features" class="btn btn--subtle">View all features</a>
+        </div>
+      </div>
+    </section>
   </div>
 </Site>
 
 <style>
-  .home {
+  /* Main Container */
+  .home-layout {
     width: 100%;
+    /* Max width is inherited from 'main' in Layout, but we ensure it here too */
     max-width: var(--container);
-    margin: 0 auto 24px;
-    padding: 0 20px; /* horizontal padding */
-    box-sizing: border-box; /* make padding work with width: 100% */
+    margin: 0 auto;
     display: flex;
     flex-direction: column;
-    /* gap property is intentionally removed */
+    /* Generous spacing between major sections (Premium feel) */
+    gap: clamp(48px, 6vw, 80px);
   }
 
-  /* Buttons (unchanged, kept for page parity) */
+  /* * Section Specifics 
+   */
+
+  .section-hero {
+    /* Slight extra top margin to clear header gracefully */
+    margin-top: 12px;
+  }
+
+  /* The Features "Block" styling */
+  .section-features .home-block {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+
+  .features-header {
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .features-cta {
+    display: flex;
+    justify-content: center;
+    margin-top: 16px;
+  }
+
+  /* * Buttons 
+   */
   .btn {
-    display: inline-block;
-    padding: 12px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
     border-radius: 999px;
     text-decoration: none;
-    font-weight: 650;
+    font-weight: var(--fw-medium);
     font-size: var(--fs-body-sm);
-    letter-spacing: 0.01em;
-    transition:
-      transform 0.18s ease,
-      box-shadow 0.18s ease,
-      opacity 0.18s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+    cursor: pointer;
   }
+
+  /* Solid button (Primary) */
   .btn--solid {
-    background: var(--btn);
+    background: var(--fg);
     color: var(--btnText);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   }
   .btn--solid:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-  }
-  .btn--solid:active {
-    transform: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    background: color-mix(in oklch, var(--fg), black 5%);
   }
 
-  /* Reveal animation */
+  /* Subtle button (Secondary/Ghost) */
+  .btn--subtle {
+    background: transparent;
+    color: var(--fg);
+    border: 1px solid var(--ring);
+  }
+  .btn--subtle:hover {
+    background: var(--card);
+    border-color: var(--accent);
+  }
+
+  /* * Animation: Reveal 
+   * Using a slightly slower, smoother curve
+   */
   .reveal {
     opacity: 0;
-    transform: translateY(10px);
-    animation: float-up 0.6s ease-out both;
+    transform: translateY(20px);
+    animation: elevate-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
 
-  .reveal:not(:first-child) {
-    border-top: 1px solid rgba(120, 120, 120, 0.15); /* subtle separator */
-    margin-top: clamp(32px, 2vw, 40px);
-    padding-top: clamp(32px, 2vw, 40px);
+  .reveal:nth-child(1) {
+    animation-delay: 0.1s;
+  }
+  .reveal:nth-child(2) {
+    animation-delay: 0.25s;
+  }
+  .reveal:nth-child(3) {
+    animation-delay: 0.4s;
+  }
+  .reveal:nth-child(4) {
+    animation-delay: 0.55s;
+  }
+  .reveal:nth-child(5) {
+    animation-delay: 0.7s;
   }
 
-  .reveal:nth-of-type(2) {
-    animation-delay: 0.04s;
-  }
-  .reveal:nth-of-type(3) {
-    animation-delay: 0.08s;
-  }
-  .reveal:nth-of-type(4) {
-    animation-delay: 0.12s;
+  @keyframes elevate-in {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .reveal {
       animation: none;
-      opacity: 1;
-      transform: none;
-    }
-  }
-
-  @keyframes float-up {
-    to {
       opacity: 1;
       transform: none;
     }

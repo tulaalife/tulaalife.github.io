@@ -29,16 +29,15 @@ const url = new URL(canonicalPath, site).toString();
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
 
-        <!-- Updated theme-colors to match new palette -->
         <meta
             name="theme-color"
             media="(prefers-color-scheme: light)"
-            content="#f5f2f8"
+            content="#f9f8f6"
         />
         <meta
             name="theme-color"
             media="(prefers-color-scheme: dark)"
-            content="#14161a"
+            content="#181716"
         />
 
         <meta name="robots" content="index,follow" />
@@ -46,7 +45,6 @@ const url = new URL(canonicalPath, site).toString();
         <meta name="description" content={description} />
         <link rel="canonical" href={url} />
 
-        <!-- Open Graph / Twitter -->
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Tulaa" />
         <meta property="og:url" content={url} />
@@ -68,7 +66,6 @@ const url = new URL(canonicalPath, site).toString();
             content="Tulaa — yoga, meditation & journaling"
         />
 
-        <!-- Favicons -->
         <link
             rel="icon"
             href="https://images.tulaa.life/favicon.ico"
@@ -79,16 +76,13 @@ const url = new URL(canonicalPath, site).toString();
             href="https://images.tulaa.life/apple-touch-icon.png"
         />
 
-        <!-- perf -->
         <link rel="preconnect" href="https://images.tulaa.life" crossorigin />
 
-        <!-- Smart App Banner -->
         <meta
             name="apple-itunes-app"
             content="app-id=6748626498, app-argument=https://tulaalife.com"
         />
 
-        <!-- Early theme -->
         <script is:inline>
             (() => {
                 const root = document.documentElement;
@@ -121,7 +115,6 @@ const url = new URL(canonicalPath, site).toString();
             })();
         </script>
 
-        <!-- Variable font -->
         <link
             rel="preload"
             as="font"
@@ -144,7 +137,6 @@ const url = new URL(canonicalPath, site).toString();
             }
         </style>
 
-        <!-- Structured data -->
         <script type="application/ld+json">
             {
                 "@context": "https://schema.org",
@@ -184,27 +176,40 @@ const url = new URL(canonicalPath, site).toString();
             }
 
             :root {
-                /* Light — Sunrise Iris */
-                --bg1: oklch(98% 0.045 300);
-                --bg2: oklch(96% 0.06 240);
-                --fg: oklch(22% 0.04 255);
-                --muted: oklch(48% 0.05 255);
-                --accent: oklch(70% 0.18 285);
-                --accent-2: oklch(78% 0.14 35);
-                --card: oklch(100% 0 0 / 0.86);
-                --ring: oklch(40% 0 0 / 0.12);
+                /* THEME: Organic Paper
+                   Approaching white, but with warmth (Hue 85-90)
+                */
+
+                /* Base Backgrounds - Cream/Alabaster */
+                --bg1: oklch(99% 0.01 85);
+                --bg2: oklch(97% 0.02 90);
+
+                /* Text - Warm Charcoal (Stone) instead of pure black */
+                --fg: oklch(32% 0.04 45);
+                --muted: oklch(55% 0.04 45);
+
+                /* Accents - Soft Clay & Sage */
+                --accent: oklch(68% 0.16 40); /* Terracotta */
+                --accent-2: oklch(88% 0.12 95); /* Soft Gold/Mustard */
+
+                /* Surfaces - Vellum/Rice Paper feel */
+                --card: oklch(100% 0 0 / 0.65);
+                --ring: oklch(40% 0.06 45 / 0.15); /* Warm border */
+
                 --btn: var(--fg);
-                --btnText: white;
+                --btnText: oklch(98% 0.01 85);
 
                 --radius-xl: 24px;
                 --container: 980px;
-                --elev-1: 0 6px 18px rgba(10, 12, 16, 0.08);
-                --elev-2: 0 12px 28px rgba(10, 12, 16, 0.12);
-                --elev-3: 0 18px 46px rgba(10, 12, 16, 0.14);
 
-                --font-sans: "Inter Var", system-ui, -apple-system,
-                    BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial,
-                    sans-serif;
+                /* Shadows - Warm brown/grey shadows, not blue */
+                --elev-1: 0 4px 12px rgba(45, 40, 35, 0.06);
+                --elev-2: 0 10px 24px rgba(45, 40, 35, 0.08);
+                --elev-3: 0 18px 42px rgba(45, 40, 35, 0.1);
+
+                --font-sans:
+                    "Inter Var", system-ui, -apple-system, BlinkMacSystemFont,
+                    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
                 --fw-regular: 400;
                 --fw-medium: 500;
@@ -220,32 +225,38 @@ const url = new URL(canonicalPath, site).toString();
 
                 --lh-tight: 1.2;
                 --lh-title: 1.24;
-                --lh-body: 1.55;
+                --lh-body: 1.6; /* Increased slightly for "breathable" feel */
 
-                /* Animated blob colours */
-                --blob-1: color-mix(in oklch, var(--accent) 72%, white 20%);
-                --blob-2: color-mix(in oklch, var(--accent-2) 82%, white 16%);
-                --blob-3: oklch(92% 0.09 210);
+                /* Animated blob colours - Soft Peaches and Mist */
+                --blob-1: oklch(94% 0.06 70); /* Soft Peach */
+                --blob-2: oklch(92% 0.05 140); /* Soft Sage */
+                --blob-3: oklch(95% 0.08 90); /* Soft Gold */
             }
 
             [data-theme="dark"] {
-                --bg1: oklch(15% 0.05 260);
-                --bg2: oklch(20% 0.06 250);
-                --fg: oklch(94% 0.03 255);
-                --muted: oklch(72% 0.03 255);
-                --accent: oklch(78% 0.2 285);
-                --accent-2: oklch(72% 0.16 35);
-                --card: oklch(22% 0.03 255 / 0.74);
-                --ring: oklch(96% 0 0 / 0.14);
-                --btn: var(--fg);
-                --btnText: oklch(15% 0.05 260);
-                --elev-1: 0 8px 22px rgba(0, 0, 0, 0.34);
-                --elev-2: 0 16px 36px rgba(0, 0, 0, 0.4);
-                --elev-3: 0 22px 56px rgba(0, 0, 0, 0.46);
+                /* Deep Espresso / Warm Slate */
+                --bg1: oklch(18% 0.02 45);
+                --bg2: oklch(22% 0.03 40);
 
-                --blob-1: color-mix(in oklch, var(--accent) 60%, black 25%);
-                --blob-2: color-mix(in oklch, var(--accent-2) 65%, black 20%);
-                --blob-3: oklch(24% 0.06 230);
+                --fg: oklch(92% 0.01 85); /* Off-white text */
+                --muted: oklch(70% 0.02 85);
+
+                --accent: oklch(75% 0.14 45);
+                --accent-2: oklch(70% 0.12 85);
+
+                --card: oklch(25% 0.02 45 / 0.6);
+                --ring: oklch(85% 0.02 85 / 0.12);
+
+                --btn: var(--fg);
+                --btnText: oklch(18% 0.02 45);
+
+                --elev-1: 0 8px 22px rgba(0, 0, 0, 0.3);
+                --elev-2: 0 16px 36px rgba(0, 0, 0, 0.4);
+                --elev-3: 0 22px 56px rgba(0, 0, 0, 0.5);
+
+                --blob-1: oklch(28% 0.08 40);
+                --blob-2: oklch(25% 0.06 140);
+                --blob-3: oklch(30% 0.05 280);
             }
 
             /* ---------- Background shell ---------- */
@@ -255,22 +266,14 @@ const url = new URL(canonicalPath, site).toString();
                 font-size: var(--fs-body);
                 line-height: var(--lh-body);
                 color: var(--fg);
-                /* soft base gradient */
-                background: radial-gradient(
-                        1200px 800px at 15% -10%,
-                        var(--bg1),
-                        transparent 65%
-                    ),
-                    radial-gradient(
-                        900px 600px at 85% 0%,
-                        color-mix(in oklch, var(--bg2), white 3%),
-                        transparent 60%
-                    ),
-                    linear-gradient(
-                        135deg,
-                        color-mix(in oklch, var(--bg2), white 6%),
-                        var(--bg1)
-                    );
+                /* Simpler, softer gradient base.
+                   Less "Tech", more "Sunlight" 
+                */
+                background: linear-gradient(
+                    to bottom right,
+                    var(--bg1),
+                    var(--bg2)
+                );
                 display: flex;
                 flex-direction: column;
                 min-height: 100vh;
@@ -280,78 +283,60 @@ const url = new URL(canonicalPath, site).toString();
             /* Animated blobs layer */
             .bg-orbit {
                 position: fixed;
-                inset: -160px;
+                inset: -100px; /* Reduced inset to keep blobs closer */
                 pointer-events: none;
                 z-index: -1;
                 overflow: hidden;
                 mix-blend-mode: normal;
+                /* Add a subtle blur to the whole container to soften edges further */
+                filter: blur(60px);
             }
             .bg-orbit::before,
             .bg-orbit::after {
                 content: "";
                 position: absolute;
                 border-radius: 999px;
-                filter: blur(42px);
-                opacity: 0.85;
+                opacity: 0.6; /* More subtle opacity */
                 transform-origin: center;
                 will-change: transform, opacity;
             }
             .bg-orbit::before {
-                width: 520px;
-                height: 520px;
+                width: 600px;
+                height: 600px;
                 background: radial-gradient(
-                    circle at 30% 20%,
+                    circle,
                     var(--blob-1),
-                    transparent 60%
+                    transparent 70%
                 );
-                top: -80px;
-                left: 8%;
-                animation: driftA 42s ease-in-out infinite alternate;
+                top: -100px;
+                left: -100px;
+                animation: driftA 45s ease-in-out infinite alternate;
             }
             .bg-orbit::after {
-                width: 620px;
-                height: 620px;
+                width: 700px;
+                height: 700px;
                 background: radial-gradient(
-                        circle at 70% 80%,
-                        var(--blob-2),
-                        transparent 60%
-                    ),
-                    radial-gradient(
-                        circle at 10% 90%,
-                        var(--blob-3),
-                        transparent 70%
-                    );
-                bottom: -120px;
-                right: -10%;
-                animation: driftB 52s ease-in-out infinite alternate;
+                    circle,
+                    var(--blob-2),
+                    transparent 70%
+                );
+                bottom: -150px;
+                right: -100px;
+                animation: driftB 55s ease-in-out infinite alternate;
             }
 
-            /* Soft grain + vignette */
+            /* Grain Texture 
+               Kept this, but made it warmer. 
+            */
             body::before {
                 content: "";
                 position: fixed;
                 inset: 0;
                 pointer-events: none;
-                background-image: radial-gradient(
-                    rgba(0, 0, 0, 0.028) 1px,
-                    transparent 0
-                );
-                background-size: 2px 2px;
-                opacity: 0.2;
-                mix-blend-mode: multiply;
-            }
-            body::after {
-                content: "";
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                background: radial-gradient(
-                    1200px 340px at 50% -10%,
-                    color-mix(in oklch, var(--accent-2), transparent 88%),
-                    transparent 72%
-                );
-                opacity: 0.85;
-                animation: haloFloat 36s ease-in-out infinite alternate;
+                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
+                opacity: 0.035; /* Very subtle paper grain */
+                z-index: -1;
+                mix-blend-mode: overlay;
             }
 
             img,
@@ -381,6 +366,7 @@ const url = new URL(canonicalPath, site).toString();
                 font-weight: var(--fw-semibold);
                 line-height: var(--lh-title);
                 color: var(--fg);
+                letter-spacing: -0.01em; /* Tighter for display text */
             }
             h1 {
                 font-size: var(--fs-h1);
@@ -398,9 +384,10 @@ const url = new URL(canonicalPath, site).toString();
             }
 
             p {
-                margin: 0 0 0.6em;
+                margin: 0 0 0.8em; /* Slightly more breathing room */
                 font-size: var(--fs-body);
                 line-height: var(--lh-body);
+                color: color-mix(in oklch, var(--fg), transparent 10%);
             }
 
             small {
@@ -412,7 +399,7 @@ const url = new URL(canonicalPath, site).toString();
                 font-size: var(--fs-display);
                 line-height: var(--lh-tight);
                 font-weight: var(--fw-bold);
-                letter-spacing: 0.01em;
+                letter-spacing: -0.02em;
             }
             .typ-h1 {
                 font-size: var(--fs-h1);
@@ -440,7 +427,7 @@ const url = new URL(canonicalPath, site).toString();
                 line-height: 1.4;
                 font-weight: var(--fw-medium);
                 color: var(--muted);
-                letter-spacing: 0.02em;
+                letter-spacing: 0.04em;
                 text-transform: uppercase;
             }
 
@@ -460,6 +447,7 @@ const url = new URL(canonicalPath, site).toString();
                 line-height: var(--lh-body);
                 color: var(--muted);
                 text-align: center;
+                margin-top: 8px;
             }
             .tile__title,
             .peek-card__title,
@@ -481,31 +469,22 @@ const url = new URL(canonicalPath, site).toString();
             .home-block {
                 border-radius: var(--radius-xl);
                 padding: clamp(18px, 3vw, 24px);
-                background: radial-gradient(
-                        120% 150% at 0% 0%,
-                        color-mix(in oklch, var(--accent-2), transparent 88%),
-                        transparent 60%
-                    ),
-                    linear-gradient(
-                        180deg,
-                        color-mix(in oklch, var(--card), white 6%),
-                        color-mix(in oklch, var(--card), transparent 4%)
-                    );
-                border: 1px solid
-                    color-mix(in oklch, var(--ring), transparent 20%);
-                box-shadow:
-                    0 14px 32px rgba(10, 12, 16, 0.12),
-                    0 0 0 1px rgba(255, 255, 255, 0.18);
-                backdrop-filter: blur(18px) saturate(1.06);
+                /* Vellum / Rice Paper Effect */
+                background: linear-gradient(
+                    145deg,
+                    color-mix(in oklch, var(--card), white 20%),
+                    var(--card)
+                );
+                border: 1px solid var(--ring);
+                box-shadow: var(--elev-1);
+                backdrop-filter: blur(24px) saturate(1.2); /* Higher blur for "frosted" look */
             }
 
             .home-block--soft {
-                background: linear-gradient(
-                    145deg,
-                    color-mix(in oklch, var(--card), white 10%),
-                    color-mix(in oklch, var(--card), transparent 4%)
-                );
+                background: color-mix(in oklch, var(--card), white 40%);
                 box-shadow: var(--elev-1);
+                border: 1px solid
+                    color-mix(in oklch, var(--ring), transparent 50%);
             }
 
             /* ---------- Header (glassy) ---------- */
@@ -516,14 +495,14 @@ const url = new URL(canonicalPath, site).toString();
                 align-items: center;
                 justify-content: space-between;
                 padding: 14px 24px;
-                background: color-mix(in oklch, var(--card), transparent 8%);
-                border-bottom: 1px solid
-                    color-mix(in oklch, var(--ring), transparent 10%);
+                background: color-mix(in oklch, var(--bg1), transparent 15%);
+                border-bottom: 1px solid var(--ring);
                 position: sticky;
                 top: 0;
                 z-index: 10;
-                box-shadow: var(--elev-1);
-                backdrop-filter: blur(10px) saturate(1.05);
+                /* Softer shadow for header */
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+                backdrop-filter: blur(16px) saturate(1.1);
             }
 
             header .brand {
@@ -539,18 +518,19 @@ const url = new URL(canonicalPath, site).toString();
                 width: 28px;
                 height: 28px;
                 border-radius: 8px;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             }
             nav a {
                 color: var(--fg);
                 text-decoration: none;
                 margin-left: 16px;
                 font-size: var(--fs-body-sm);
-                opacity: 0.9;
+                opacity: 0.8;
+                transition: opacity 0.2s ease;
             }
             nav a:hover {
                 opacity: 1;
-                text-decoration: underline;
+                text-decoration: none; /* Removed underline, relying on opacity */
             }
 
             /* Focus & skip */
@@ -564,9 +544,10 @@ const url = new URL(canonicalPath, site).toString();
                 left: 16px;
                 top: 16px;
                 padding: 8px 12px;
-                background: var(--card);
+                background: var(--bg1);
                 border: 1px solid var(--ring);
                 border-radius: 10px;
+                z-index: 100;
             }
             a,
             button {
@@ -576,24 +557,30 @@ const url = new URL(canonicalPath, site).toString();
             button:focus-visible {
                 box-shadow: 0 0 0 3px
                     color-mix(in oklch, var(--accent), transparent 40%);
-                border-radius: 12px;
+                border-radius: 6px;
             }
 
             button.theme-toggle {
-                border: 1px solid
-                    color-mix(in oklch, var(--ring), transparent 20%);
-                background: linear-gradient(
-                    180deg,
-                    color-mix(in oklch, var(--card), white 5%),
-                    color-mix(in oklch, var(--card), transparent 10%)
-                );
+                border: 1px solid var(--ring);
+                background: transparent;
                 border-radius: 50%;
                 width: 36px;
                 height: 36px;
-                font-size: 18px;
+                font-size: 16px;
                 cursor: pointer;
                 color: var(--fg);
-                box-shadow: var(--elev-1);
+                transition:
+                    background 0.2s ease,
+                    transform 0.1s;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            button.theme-toggle:hover {
+                background: color-mix(in oklch, var(--fg), transparent 95%);
+            }
+            button.theme-toggle:active {
+                transform: scale(0.95);
             }
 
             /* ---------- Layout ---------- */
@@ -623,24 +610,18 @@ const url = new URL(canonicalPath, site).toString();
                 flex-wrap: wrap;
                 list-style: none;
                 padding: 0;
-                margin: 12px 0 2px;
+                margin: 16px 0 4px;
             }
             .dl__chips li {
-                padding: 7px 12px;
+                padding: 6px 14px;
                 border-radius: 999px;
                 font-size: var(--fs-caption);
                 font-weight: var(--fw-medium);
                 color: var(--fg);
-                background: linear-gradient(
-                    180deg,
-                    color-mix(in oklch, var(--card), white 12%),
-                    color-mix(in oklch, var(--card), transparent 12%)
-                );
-                border: 1px solid
-                    color-mix(in oklch, var(--accent), transparent 88%);
-                box-shadow:
-                    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-                    0 4px 10px rgba(0, 0, 0, 0.06);
+                background: color-mix(in oklch, var(--bg1), transparent 40%);
+                border: 1px solid var(--ring);
+                /* Subtle shine */
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.03);
             }
 
             /* Footer */
@@ -649,10 +630,11 @@ const url = new URL(canonicalPath, site).toString();
                 width: 100%;
                 text-align: center;
                 color: var(--muted);
+                padding-bottom: 32px;
             }
             footer .wrap {
                 max-width: var(--container);
-                margin: 32px auto 0;
+                margin: 40px auto 0;
                 padding: 0 24px;
                 box-sizing: border-box;
             }
@@ -661,55 +643,46 @@ const url = new URL(canonicalPath, site).toString();
                 font-size: var(--fs-caption);
                 color: var(--muted);
                 text-align: center;
+                opacity: 0.7;
             }
             footer .legal {
-                margin-top: 24px;
+                margin-top: 32px;
                 margin-bottom: 24px;
                 display: flex;
-                gap: 14px;
+                gap: 20px;
                 justify-content: center;
                 flex-wrap: wrap;
                 font-size: var(--fs-caption);
             }
             footer .legal a {
                 color: var(--muted);
+                text-decoration: none;
             }
             footer .legal a:hover {
-                text-decoration: underline;
+                color: var(--fg);
             }
 
             /* ---------- Motion ---------- */
 
             @keyframes driftA {
                 0% {
-                    transform: translate3d(-40px, 0, 0) scale(1);
-                    opacity: 0.9;
+                    transform: translate3d(-30px, 0, 0) scale(1);
+                    opacity: 0.5;
                 }
                 100% {
-                    transform: translate3d(40px, 40px, 0) scale(1.05);
-                    opacity: 0.75;
+                    transform: translate3d(30px, 30px, 0) scale(1.1);
+                    opacity: 0.4;
                 }
             }
 
             @keyframes driftB {
                 0% {
-                    transform: translate3d(30px, 20px, 0) scale(1.1);
-                    opacity: 0.85;
+                    transform: translate3d(20px, 15px, 0) scale(1.1);
+                    opacity: 0.4;
                 }
                 100% {
-                    transform: translate3d(-60px, -20px, 0) scale(0.95);
-                    opacity: 0.7;
-                }
-            }
-
-            @keyframes haloFloat {
-                0% {
-                    transform: translate3d(0, 0, 0);
-                    opacity: 0.9;
-                }
-                100% {
-                    transform: translate3d(0, 22px, 0);
-                    opacity: 0.75;
+                    transform: translate3d(-40px, -15px, 0) scale(0.95);
+                    opacity: 0.3;
                 }
             }
 
@@ -743,7 +716,7 @@ const url = new URL(canonicalPath, site).toString();
                     onclick="toggleTheme()"
                     aria-label="Toggle theme"
                 >
-                    🌓
+                    <span style="opacity: 0.8; font-size: 1.1em;">☼</span>
                 </button>
             </div>
         </header>
