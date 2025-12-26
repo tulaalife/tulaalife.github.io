@@ -10,18 +10,21 @@ export interface Props {
 }
 
 const {
-    headline = "Tulaa",
-    subline = "Holistic yoga for pain relief, prenatal health & daily calm — with meditation and private trackers.",
+    // CHANGED: Clearer value prop including top keywords (Yoga, Wellness, Private)
+    headline = "Holistic Yoga & Private Wellness",
+    // CHANGED: Benefit-driven outcomes (Relief, Calm) + Technical benefits (Offline, Ad-free)
+    subline = "Find your daily calm with expert-led yoga, meditation, and cycle tracking. A completely offline, ad-free sanctuary that respects your privacy.",
     iosHref = "https://apps.apple.com/in/app/tulaa/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
     iosIconSrc = "/assets/icons/appstore.svg",
     androidIconSrc = "/assets/icons/playstore.svg",
 } = Astro.props;
 
+// CHANGED: Punchier, trust-building chips
 const chips = [
-    "Free expert-led yoga",
-    "No login required",
-    "Offline & privacy-first",
+    "Free Expert-Led Yoga",
+    "No Account Needed",
+    "100% Offline & Private",
 ];
 ---
 
@@ -39,9 +42,9 @@ const chips = [
     </div>
 
     <div class="dl__copy">
-        <h2 class="dl__title typ-display">
+        <h1 class="dl__title typ-display">
             {headline}
-        </h2>
+        </h1>
         <p class="dl__sub typ-body-sm">{subline}</p>
 
         <ul class="dl__chips" aria-label="App highlights">
@@ -96,7 +99,7 @@ const chips = [
 
 <style>
     .dl {
-        /* HERO SPECIFIC VARIABLES (Merged from dl--hero) */
+        /* HERO SPECIFIC VARIABLES */
         --r: 30px;
         --padY: 40px;
         --padX: 32px;
@@ -107,7 +110,7 @@ const chips = [
         display: grid;
         place-items: center;
         text-align: center;
-        gap: 18px; /* Larger gap for hero */
+        gap: 18px;
         padding: var(--padY) var(--padX);
         border-radius: var(--r);
         box-sizing: border-box;
@@ -116,7 +119,6 @@ const chips = [
         max-width: 100%;
         margin-inline: auto;
 
-        /* GLASS EFFECT */
         background:
             radial-gradient(
                 140% 180% at 50% 0%,
@@ -143,7 +145,6 @@ const chips = [
         }
     }
 
-    /* LOGO STYLES */
     .dl__logo-wrap {
         position: relative;
         display: inline-flex;
@@ -178,7 +179,6 @@ const chips = [
         filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.22));
     }
 
-    /* TEXT STYLES */
     .dl__copy {
         max-width: 640px;
         margin-inline: auto;
@@ -203,7 +203,6 @@ const chips = [
         opacity: 0.96;
     }
 
-    /* CHIPS */
     .dl__chips {
         display: flex;
         gap: 8px;
@@ -231,7 +230,6 @@ const chips = [
             0 4px 10px rgba(15, 18, 23, 0.06);
     }
 
-    /* BUTTONS */
     .dl__buttons {
         display: flex;
         gap: 12px;
@@ -318,7 +316,6 @@ const chips = [
 </style>
 
 <script is:inline>
-    // Swap order by platform
     (() => {
         const ua = navigator.userAgent || "";
         const isiOS =
@@ -326,7 +323,6 @@ const chips = [
             (/Macintosh/.test(ua) && "ontouchend" in document);
         const isAndroid = /Android/.test(ua);
 
-        // Note: We use querySelectorAll so this works if multiple cards exist
         document.querySelectorAll(".dl").forEach((el) => {
             if (isAndroid) el.classList.add("is-android");
             else if (isiOS) el.classList.add("is-ios");

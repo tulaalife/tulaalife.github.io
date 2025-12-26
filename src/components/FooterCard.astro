@@ -10,18 +10,21 @@ export interface Props {
 }
 
 const {
-    headline = "Download Tulaa",
-    subline = "Start your journey to holistic health today.",
+    // CHANGED: Active voice "Start Your Journey"
+    headline = "Start Your Holistic Health Journey",
+    // CHANGED: Simplified "all-in-one" messaging
+    subline = "Everything you need for mind and body balance: Yoga, journaling, and health tracking in one secure, ad-free space.",
     iosHref = "https://apps.apple.com/in/app/tulaa/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
     iosIconSrc = "/assets/icons/appstore.svg",
     androidIconSrc = "/assets/icons/playstore.svg",
 } = Astro.props;
 
+// CHANGED: Organized specifically for feature-scanning
 const chips = [
-    "Yoga · Meditation · Journaling",
-    "Water & period tracking",
-    "Gentle habit reminders",
+    "Yoga, Meditation & Journaling",
+    "Cycle & Water Tracker",
+    "Gentle Habit Reminders",
 ];
 ---
 
@@ -84,7 +87,7 @@ const chips = [
 
 <style>
     .dl {
-        /* FOOTER VARIABLES (Standard size) */
+        /* FOOTER VARIABLES */
         --r: 24px;
         --padY: 28px;
         --padX: 20px;
@@ -173,7 +176,6 @@ const chips = [
             0 4px 10px rgba(15, 18, 23, 0.06);
     }
 
-    /* BUTTONS */
     .dl__buttons {
         display: flex;
         gap: 12px;
@@ -246,7 +248,6 @@ const chips = [
 </style>
 
 <script is:inline>
-    // Swap order by platform
     (() => {
         const ua = navigator.userAgent || "";
         const isiOS =
