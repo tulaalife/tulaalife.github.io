@@ -123,11 +123,12 @@ const hasTips = tipFive.length > 0;
 
     <section class="reveal section-features">
       <div class="home-block">
-        <div class="features-header">
-          <h2 class="ts-title">Everything you need</h2>
-          <p class="ts-subtitle">Privacy-first tools for a balanced life</p>
-        </div>
-
+        <header class="feature-tiles-header">
+          <h2 class="feature-tiles-title">Essential Wellness Tools</h2>
+          <p class="feature-tiles-subtitle">
+            100% private, ad-free tools for a healthier you
+          </p>
+        </header>
         <FeatureTiles
           tiles={[
             {
@@ -162,10 +163,6 @@ const hasTips = tipFive.length > 0;
             },
           ]}
         />
-
-        <div class="features-cta">
-          <a href="/features" class="btn btn--subtle">View all features</a>
-        </div>
       </div>
     </section>
   </div>
@@ -199,17 +196,6 @@ const hasTips = tipFive.length > 0;
     gap: 32px;
     padding-top: 40px;
     padding-bottom: 40px;
-  }
-
-  .features-header {
-    text-align: center;
-    margin-bottom: 8px;
-  }
-
-  .features-cta {
-    display: flex;
-    justify-content: center;
-    margin-top: 16px;
   }
 
   /* * Buttons 
@@ -248,6 +234,23 @@ const hasTips = tipFive.length > 0;
   .btn--subtle:hover {
     background: var(--card);
     border-color: var(--accent);
+  }
+
+  .feature-tiles-header {
+    text-align: center;
+    padding: 0 16px;
+  }
+
+  .feature-tiles-title {
+    font-size: var(--fs-h1);
+    margin: 0 0 6px;
+    letter-spacing: -0.01em;
+  }
+
+  .feature-tiles-subtitle {
+    margin: 0;
+    font-size: var(--fs-body);
+    color: var(--muted);
   }
 
   /* * Animation: Reveal 

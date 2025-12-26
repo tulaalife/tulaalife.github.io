@@ -11,15 +11,13 @@ interface Props {
     tiles: Tile[];
 }
 
-const { title = "More ways Tulaa helps", tiles } = Astro.props;
+const { tiles } = Astro.props;
 ---
 
 <section
     class:list={["more", "home-block", "home-block--soft"]}
     aria-labelledby="more"
 >
-    <h2 id="more" class="more__title section-heading">{title}</h2>
-
     <div class="more__wrap">
         <ul class="more__grid" role="list">
             {
