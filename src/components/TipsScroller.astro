@@ -5,82 +5,74 @@ export interface TipItem {
     tip: string;
     benefit?: string;
     icon?: string; // emoji or URL
+    slug?: string; // for linking
 }
+
 export interface Props {
     title: string;
     subtitle?: string;
-    items: TipItem[]; // ~5 recommended
-    intervalMs?: number; // default 5200ms
-    ctaHref?: string; // optional CTA (Explore tips)
+    items: TipItem[];
+    ctaHref?: string;
     ctaLabel?: string;
 }
 
-const {
-    title,
-    subtitle,
-    items = [],
-    intervalMs = 5200,
-    ctaHref,
-    ctaLabel,
-} = Astro.props;
+const { title, subtitle, items = [], ctaHref, ctaLabel } = Astro.props;
 
 const hasCTA = Boolean(ctaHref && ctaLabel);
+
+// 1. Circular Illusion: Repeat items
+const REPEAT_COUNT = 12;
+const displayItems = Array(REPEAT_COUNT).fill(items).flat();
 ---
 
 {
     items.length > 0 && (
-        <section
-            class:list={["ts-wrap", "home-block"]}
-            data-interval={String(intervalMs)}
-            tabindex="0"
-            role="region"
-            aria-label={title}
-        >
-            <header class="ts-header">
-                <h2 class="ts-title">{title}</h2>
-                {subtitle && <p class="ts-subtitle">{subtitle}</p>}
+        <section class="tips-shelf-section" aria-label={title}>
+            <header class="tips-shelf-header">
+                <h2 class="tips-shelf-title">{title}</h2>
+                {subtitle && <p class="tips-shelf-subtitle">{subtitle}</p>}
             </header>
 
-            <div class="ts-panel" aria-live="polite">
-                <ul class="ts-track" role="list">
-                    {items.map((t, idx) => (
-                        <li
-                            class="ts-slide"
-                            aria-hidden={idx === 0 ? "false" : "true"}
-                            data-active={idx === 0 ? "true" : "false"}
-                        >
-                            <div class="ts-card">
-                                <div class="ts-icon" aria-hidden="true">
+            {/* Added ID for JS targeting */}
+            <div class="tips-viewport" id={`tips-${title.replace(/\s+/g, "")}`}>
+                <ul class="tips-track" role="list">
+                    {displayItems.map((t, index) => (
+                        <li class="tips-item">
+                            <a
+                                href={t.slug ? `/tips/${t.slug}` : "#"}
+                                class="tips-card"
+                            >
+                                <div class="tips-card-icon">
                                     {t.icon?.startsWith("http") ? (
                                         <img
                                             src={t.icon}
                                             alt=""
                                             loading="lazy"
-                                            decoding="async"
                                         />
                                     ) : (
                                         <span>{t.icon ?? "💡"}</span>
                                     )}
                                 </div>
-                                <div class="ts-body">
-                                    <h3 class="ts-h3">{t.tip}</h3>
+                                <div class="tips-card-body">
+                                    <h3 class="tips-card-title">{t.tip}</h3>
                                     {t.benefit && (
-                                        <p class="ts-p">{t.benefit}</p>
+                                        <p class="tips-card-desc">
+                                            {t.benefit}
+                                        </p>
                                     )}
                                 </div>
-                            </div>
+                            </a>
                         </li>
                     ))}
                 </ul>
             </div>
 
             {hasCTA && (
-                <div class="ts-ctaRow">
+                <div class="tips-footer">
                     <CTAButton
                         href={ctaHref!}
                         label={ctaLabel!}
-                        icon="↗"
-                        variant="solid"
+                        variant="soft"
                         size="lg"
                     />
                 </div>
@@ -89,242 +81,216 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
     )
 }
 
+<script
+    is:inline
+    define:vars={{
+        itemCount: items.length,
+        repeatCount: REPEAT_COUNT,
+        title,
+    }}
+>
+    (function () {
+        const id = `tips-${title.replace(/\s+/g, "")}`;
+        const viewport = document.getElementById(id);
+        if (!viewport) return;
+
+        // 2. Daily Random Seeding Logic
+        const today = new Date();
+        const dateSeed =
+            today.getFullYear() * 10000 +
+            (today.getMonth() + 1) * 100 +
+            today.getDate();
+
+        const pseudoRandom = (seed) => {
+            let x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        };
+
+        // Calculate a start index in the middle set
+        const middleBatch = Math.floor(repeatCount / 2);
+        const randomOffset = Math.floor(pseudoRandom(dateSeed) * itemCount);
+        const startIndex = middleBatch * itemCount + randomOffset;
+
+        // Find the specific card to scroll to
+        const cards = viewport.querySelectorAll(".tips-item");
+        const targetCard = cards[startIndex];
+
+        if (targetCard) {
+            // 3. Instant Scroll to Center
+            targetCard.scrollIntoView({
+                behavior: "auto",
+                block: "nearest",
+                inline: "center",
+            });
+
+            // Enable smooth scrolling AFTER the initial jump
+            requestAnimationFrame(() => {
+                viewport.style.scrollBehavior = "smooth";
+            });
+        }
+    })();
+</script>
+
 <style>
-    /* Root sits inside .home and reuses .home-block for the glossy shell */
-    .ts-wrap {
+    /* Section Layout */
+    .tips-shelf-section {
         width: 100%;
-        max-width: 100%; /* let <main> / parent container control rail width */
-        padding: 0;
         display: flex;
         flex-direction: column;
-        gap: clamp(12px, 2vw, 18px);
+        /* Increased gap to ensure header doesn't crowd content */
+        gap: 20px;
     }
 
-    /* Heading */
-    .ts-header {
+    /* Header */
+    .tips-shelf-header {
         text-align: center;
-    }
-    .ts-title {
-        font-size: var(--fs-h1);
-        font-weight: var(--fw-semibold);
-        margin: 0;
-        letter-spacing: 0.01em;
-    }
-    .ts-subtitle {
-        margin: 4px 0 0;
-        color: var(--muted);
-        font-size: var(--fs-body-sm);
+        padding: 0 16px;
     }
 
-    /* Inner panel – now “flat” so home-block provides main gloss */
-    .ts-panel {
-        --r: 18px;
-        border-radius: var(--r);
-        background: transparent;
-        border: none;
-        box-shadow: none;
+    .tips-shelf-title {
+        font-size: var(--fs-h1);
+        margin: 0 0 6px;
+        letter-spacing: -0.01em;
+    }
+
+    .tips-shelf-subtitle {
+        margin: 0;
+        font-size: var(--fs-body);
+        color: var(--muted);
+    }
+
+    /* Viewport (Scroll Container) */
+    .tips-viewport {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+
+        /* Controlled by JS */
+        scroll-behavior: auto;
+
+        /* PADDING FIXES:
+           - Top: 20px for hover lift
+           - Bottom: 50px ensures shadows don't clip and separates content from footer
+        */
+        padding: 20px 0 50px;
+
+        /* Removed negative margins to prevent overlap */
+        margin: 0;
+
+        /* Snapping */
+        scroll-snap-type: x mandatory;
+    }
+
+    .tips-viewport::-webkit-scrollbar {
+        display: none;
     }
 
     /* Track */
-    .ts-track {
-        position: relative;
-        padding: 0;
+    .tips-track {
+        display: flex;
+        gap: 16px;
+
+        /* CENTERING LOGIC: 50% - (CardWidth / 2) */
+        /* Card width is 260px, so 130px */
+        padding-inline: calc(50% - 130px);
+
         margin: 0;
         list-style: none;
-        height: var(--ts-h, auto);
-        min-height: 112px;
+        width: max-content;
+        box-sizing: border-box;
     }
 
-    /* Slide stack */
-    .ts-slide {
-        position: absolute;
-        inset: 0;
+    /* Item */
+    .tips-item {
+        flex: 0 0 auto;
+        width: 260px;
+        scroll-snap-align: center;
+        scroll-snap-stop: always;
+    }
+
+    /* Card Styling */
+    .tips-card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        background: var(--card);
+        border: 1px solid var(--ring);
+        border-radius: 20px;
+        padding: 24px; /* Increased internal padding */
+        text-decoration: none;
+        color: inherit;
+        transition:
+            transform 0.2s ease,
+            box-shadow 0.2s ease,
+            border-color 0.2s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .tips-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--elev-2);
+        border-color: color-mix(in oklch, var(--accent), transparent 60%);
+    }
+
+    /* Icon "Stamp" */
+    .tips-card-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 12px;
+        background: var(--bg2);
         display: flex;
         align-items: center;
         justify-content: center;
-        opacity: 0;
-        transform: translateY(8px) scale(0.985);
-        transition:
-            opacity 0.45s ease,
-            transform 0.45s ease;
-    }
-    .ts-slide[data-active="true"] {
-        opacity: 1;
-        transform: translateY(0) scale(1);
+        font-size: 24px;
+        margin-bottom: 20px;
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 50%);
     }
 
-    /* Icon + text block */
-    .ts-card {
-        width: 100%;
-        margin: 0 auto;
-        display: flex;
-        flex-direction: column; /* <-- CHANGED: Stack icon and text */
-        align-items: center;
-        gap: 16px;
-        padding: 16px; /* <-- CHANGED: Added more padding */
-
-        /* v-- MOVED FROM .ts-icon --v */
-        background: linear-gradient(
-            180deg,
-            color-mix(in oklch, var(--card), white 12%),
-            color-mix(in oklch, var(--card), transparent 12%)
-        );
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 28%);
-        box-shadow:
-            inset 0 2px 4px rgba(255, 255, 255, 0.65),
-            0 6px 18px rgba(0, 0, 0, 0.08);
-        /* ^-- END MOVED STYLES --^ */
-
-        border-radius: 18px;
-        transition: transform 0.2s ease;
-    }
-
-    .ts-card:hover {
-        transform: translateY(-1px);
-    }
-
-    /* Icon badge */
-    .ts-icon {
-        width: 52px;
-        height: 52px;
-        border-radius: 16px;
-        display: grid;
-        place-items: center;
-        font-size: 28px;
-
-        /* v-- REMOVED GLOSS STYLES --v */
-        border: none;
-        box-shadow: none;
-        /* ^-- END REMOVED STYLES --^ */
-    }
-
-    .ts-icon img {
-        width: 30px;
-        height: 30px;
+    .tips-card-icon img {
+        width: 28px;
+        height: 28px;
         object-fit: contain;
     }
 
     /* Text */
-    .ts-body {
+    .tips-card-body {
         flex: 1;
-        width: 100%; /* <-- ADDED: For safety in flex column */
-        text-align: center; /* <-- ADDED: Center-align the text */
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
     }
-    .ts-h3 {
-        margin: 0 0 6px;
-        font-size: var(--fs-body);
+
+    .tips-card-title {
+        margin: 0;
+        font-size: 1.1rem;
         font-weight: var(--fw-semibold);
-        line-height: 1.35;
+        line-height: 1.3;
+        color: var(--fg);
     }
-    .ts-p {
+
+    .tips-card-desc {
         margin: 0;
         font-size: var(--fs-body-sm);
         color: var(--muted);
-        line-height: 1.55;
+        line-height: 1.5;
+
+        /* Clamp to 4 lines */
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    /* CTA */
-    .ts-ctaRow {
+    /* Footer */
+    .tips-footer {
         display: flex;
         justify-content: center;
-        margin-top: clamp(12px, 2vw, 20px);
-    }
-
-    @media (max-width: 640px) {
-        .ts-card {
-        }
-        .ts-icon {
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
-            font-size: 24px;
-        }
+        /* Pull it up slightly if the viewport padding is too generous, 
+           or leave as is for safety. 
+           With 50px bottom padding on viewport, we have plenty of space.
+        */
+        margin-top: 8px;
     }
 </style>
-
-<script is:inline>
-    (() => {
-        function boot(root) {
-            const track = root.querySelector(".ts-track");
-            const slides = Array.from(root.querySelectorAll(".ts-slide"));
-            if (!track || slides.length === 0) return;
-
-            const setActive = (el, active) => {
-                el.setAttribute("data-active", active ? "true" : "false");
-                el.setAttribute("aria-hidden", active ? "false" : "true");
-            };
-
-            const adjustHeight = () => {
-                const activeCard = root.querySelector(
-                    '.ts-slide[data-active="true"] .ts-card',
-                );
-                if (!activeCard) return;
-                track.style.setProperty(
-                    "--ts-h",
-                    activeCard.getBoundingClientRect().height + "px",
-                );
-            };
-
-            slides.forEach((el, i) => setActive(el, i === 0));
-            adjustHeight();
-
-            if (slides.length <= 1) return;
-
-            let idx = 0;
-            const interval = Math.max(
-                2400,
-                Number(root.getAttribute("data-interval") || 5200),
-            );
-            let timer = null;
-            let stopped = false; // stop autoplay after user interaction
-            let hovered = false;
-
-            const next = () => {
-                const prev = slides[idx];
-                idx = (idx + 1) % slides.length;
-                const cur = slides[idx];
-                setActive(prev, false);
-                setActive(cur, true);
-                adjustHeight();
-            };
-
-            const tick = () => {
-                if (!hovered && !stopped) next();
-            };
-
-            const start = () => {
-                stop();
-                timer = setInterval(tick, interval);
-            };
-
-            const stop = () => {
-                if (timer) clearInterval(timer);
-                timer = null;
-            };
-
-            const stopForUser = () => {
-                if (stopped) return;
-                stopped = true;
-                stop();
-            };
-
-            ["pointerdown", "touchstart", "wheel", "keydown"].forEach((ev) => {
-                root.addEventListener(ev, stopForUser, { passive: true });
-            });
-
-            root.addEventListener("mouseenter", () => (hovered = true));
-            root.addEventListener("mouseleave", () => (hovered = false));
-
-            setTimeout(start, 200);
-            window.addEventListener("resize", adjustHeight);
-        }
-
-        const init = () => document.querySelectorAll(".ts-wrap").forEach(boot);
-
-        if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", init, { once: true });
-        } else {
-            init();
-        }
-    })();
-</script>

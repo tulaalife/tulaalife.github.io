@@ -4,437 +4,354 @@ import CTAButton from "./CTAButton.astro";
 export interface Item {
   href: string;
   title: string;
-  subtitle?: string;   // small card text
-  teaser?: string;     // preview teaser
+  subtitle?: string;
+  teaser?: string;
   image?: string;
   emojiFallback?: string;
 }
 
 export interface Props {
   title: string;
-  subtitle?: string;   // section subtitle under heading
+  subtitle?: string;
   items: Item[];
   ctaHref?: string;
   ctaLabel?: string;
-  intervalMs?: number;
 }
 
-const {
-  title,
-  subtitle,
-  items = [],
-  ctaHref,
-  ctaLabel,
-  intervalMs = 5200,
-} = Astro.props;
+const { title, subtitle, items = [], ctaHref, ctaLabel } = Astro.props;
 
 const hasCTA = Boolean(ctaHref && ctaLabel);
-const initial = items[0] ?? null;
-const initialTeaser = initial?.teaser || initial?.subtitle || "";
+
+// 1. Create a "Circular" illusion by repeating the list multiple times.
+// We repeat enough times so the user feels like they can scroll endlessly.
+const REPEAT_COUNT = 12;
+const displayItems = Array(REPEAT_COUNT).fill(items).flat();
 ---
 
-{items.length > 0 && (
-  <section
-    class:list={["peek", "home-block"]}
-    role="region"
-    aria-labelledby={`peek-title-${title.replaceAll(" ", "-")}`}
-    data-interval={String(intervalMs)}
-  >
-    <header class="peek__head">
-      <h2
-        id={`peek-title-${title.replaceAll(" ", "-")}`}
-        class="peek__title"
-      >
-        {title}
-      </h2>
-      {subtitle && <p class="peek__subtitle">{subtitle}</p>}
-    </header>
+{
+  items.length > 0 && (
+    <section class="shelf-section" aria-label={title}>
+      <header class="shelf-header">
+        <h2 class="shelf-title">{title}</h2>
+        {subtitle && <p class="shelf-subtitle">{subtitle}</p>}
+      </header>
 
-    {/* Preview card */}
-    <a
-      class="peek__preview"
-      data-preview
-      href={initial?.href}
-      aria-label={`Open: ${initial?.title ?? ""}`}
-    >
-      {/* REMOVED style attribute for bg-url here */}
-      <div class="peek__media" data-media>
-        {initial?.image ? (
-          <img src={initial.image} alt="" loading="eager" />
-        ) : (
-          <div class="peek__emoji" data-emoji>
-            {initial?.emojiFallback ?? "🧘"}
-          </div>
-        )}
+      {/* ID used for JS targeting */}
+      <div class="shelf-viewport" id={`shelf-${title.replace(/\s+/g, "")}`}>
+        <ul class="shelf-track" role="list">
+          {displayItems.map((it, index) => (
+            <li class="shelf-item">
+              <a href={it.href} class="shelf-card">
+                <div class="shelf-media">
+                  {it.image ? (
+                    <img
+                      src={it.image}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      style="opacity: 0"
+                      onload="this.style.opacity='1'"
+                    />
+                  ) : (
+                    <div class="shelf-emoji">{it.emojiFallback ?? "🧘"}</div>
+                  )}
+                </div>
+
+                <div class="shelf-content">
+                  <h3 class="shelf-card-title">{it.title}</h3>
+                  <p class="shelf-card-sub">
+                    {it.subtitle || it.teaser || "View plan"}
+                  </p>
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
       </div>
-      <div class="peek__meta">
-        <div class="peek__meta-title" data-title>
-          {initial?.title}
+
+      {hasCTA && (
+        <div class="shelf-footer">
+          <CTAButton
+            href={ctaHref!}
+            label={ctaLabel!}
+            variant="soft"
+            size="lg"
+          />
         </div>
-        {initialTeaser && (
-          <div class="peek__meta-sub" data-subtitle>
-            {initialTeaser}
-          </div>
-        )}
-      </div>
-    </a>
+      )}
+    </section>
+  )
+}
 
-    {/* Carousel */}
-    <div class="peek__rail-wrap">
-      <ul class="peek__rail" data-rail>
-        {items.map((it, idx) => (
-          <li
-            role="option"
-            aria-selected={idx === 0 ? "true" : "false"}
-          >
-            <button
-              type="button"
-              class="peek__card"
-              data-card
-              data-index={String(idx)}
-              data-href={it.href}
-              data-title={it.title}
-              data-subtitle={it.teaser || it.subtitle || ""} 
-              data-image={it.image ?? ""}
-              data-emoji={it.emojiFallback ?? ""}
-            >
-              <div class="peek__thumb">
-                {it.image ? (
-                  <img src={it.image} alt="" loading="lazy" decoding="async" />
-                ) : (
-                  <div class="peek__thumb-emoji">
-                    {it.emojiFallback ?? "🧩"}
-                  </div>
-                )}
-              </div>
-              <div class="peek__card-title">{it.title}</div>
-              {it.subtitle && (
-                <div class="peek__card-sub">{it.subtitle}</div>
-              )}
-            </button>
-          </li>
-        ))}
-      </ul>
-    </div>
+<script
+  is:inline
+  define:vars={{ itemCount: items.length, repeatCount: REPEAT_COUNT, title }}
+>
+  (function () {
+    const id = `shelf-${title.replace(/\s+/g, "")}`;
+    const viewport = document.getElementById(id);
+    if (!viewport) return;
 
-    {/* CTA below carousel */}
-    {hasCTA && (
-      <div class="peek__cta-wrap">
-        <CTAButton
-          href={ctaHref!}
-          label={ctaLabel!}
-          variant="solid"
-          size="lg"
-        />
-      </div>
-    )}
+    // 2. Daily Random Seeding Logic
+    // Generate a numeric seed from today's date (YYYYMMDD) so everyone gets the same start daily
+    const today = new Date();
+    const dateSeed =
+      today.getFullYear() * 10000 +
+      (today.getMonth() + 1) * 100 +
+      today.getDate();
 
-    <script is:inline>
-      (function () {
-        const root = document.currentScript?.closest(".peek");
-        if (!root) return;
-        const rail = root.querySelector("[data-rail]");
-        const preview = root.querySelector("[data-preview]");
-        const media = root.querySelector("[data-media]");
-        const titleEl = root.querySelector("[data-title]");
-        const subEl = root.querySelector("[data-subtitle]");
-        
-        const preloadedImages = new Set();
+    const pseudoRandom = (seed) => {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    };
 
-        function applyOrientation(imgUrl) {
-          if (!media) return;
-          
-          const im = new Image();
-          im.loading = "eager";
-          im.alt = "";
-          im.src = imgUrl;
-          
-          im.onload = () => {
-            media.innerHTML = ""; 
-            media.appendChild(im);
-            // REMOVED: media.style.setProperty("--bg-url"...) logic
-          };
-          
-          im.onerror = () => {
-             // handle error silently
-          };
-        }
+    // Calculate a start index in the middle set of the cloned items
+    const middleBatch = Math.floor(repeatCount / 2);
+    const randomOffset = Math.floor(pseudoRandom(dateSeed) * itemCount);
+    const startIndex = middleBatch * itemCount + randomOffset;
 
-        function setSelected(cardBtn) {
-          if (!cardBtn || !preview || !media) return;
+    // Find the specific card to scroll to
+    const cards = viewport.querySelectorAll(".shelf-item");
+    const targetCard = cards[startIndex];
 
-          rail?.querySelectorAll('li[role="option"]').forEach((opt) =>
-            opt.setAttribute(
-              "aria-selected",
-              opt.contains(cardBtn) ? "true" : "false"
-            )
-          );
+    if (targetCard) {
+      // 3. Instant Scroll to Center
+      // 'inline: center' ensures the card is perfectly in the middle
+      targetCard.scrollIntoView({
+        behavior: "auto",
+        block: "nearest",
+        inline: "center",
+      });
 
-          const href = cardBtn.dataset.href || "#";
-          const title = cardBtn.dataset.title || "";
-          const sub = cardBtn.dataset.subtitle || "";
-          const img = cardBtn.dataset.image || "";
-          const emo = cardBtn.dataset.emoji || "";
-
-          preview.href = href;
-
-          if (img) {
-            applyOrientation(img);
-          } else {
-            media.innerHTML =
-              `<div class="peek__emoji">${emo || "🧘"}</div>`;
-          }
-
-          if (titleEl) titleEl.textContent = title;
-          if (subEl) {
-            subEl.textContent = sub || "";
-            subEl.style.display = sub ? "" : "none";
-          }
-        }
-
-        rail?.addEventListener("click", (e) => {
-          const btn = e.target.closest("[data-card]");
-          if (btn) setSelected(btn);
-        });
-        
-        rail?.addEventListener("mouseover", (e) => {
-          const btn = e.target.closest("[data-card]");
-          if (!btn) return;
-          
-          const imgUrl = btn.dataset.image;
-          if (imgUrl && !preloadedImages.has(imgUrl)) {
-            const link = document.createElement("link");
-            link.rel = "preload";
-            link.as = "image";
-            link.href = imgUrl;
-            document.head.appendChild(link);
-            preloadedImages.add(imgUrl);
-          }
-        });
-
-        const first = rail?.querySelector("[data-card]");
-        if (first) setSelected(first);
-      })();
-    </script>
-  </section>
-)}
+      // Enable smooth scrolling AFTER the initial jump so user interaction feels nice
+      requestAnimationFrame(() => {
+        viewport.style.scrollBehavior = "smooth";
+      });
+    }
+  })();
+</script>
 
 <style>
-/* Shell */
-.peek {
-  width: 100%;
-  display: grid;
-  gap: clamp(18px, 2.4vw, 26px);
-  justify-items: center;
-  font-family: var(--font-sans);
-  padding-inline: 4px;
-}
+  /* --- Section Layout --- */
+  .shelf-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
 
-/* Section heading */
-.peek__head {
-  text-align: center;
-}
-.peek__title {
-  font-size: var(--fs-h1);
-  font-weight: var(--fw-semibold);
-  letter-spacing: 0.01em;
-  margin: 0;
-}
-.peek__subtitle {
-  margin: 6px 0 0;
-  color: var(--muted);
-  font-size: var(--fs-body-sm);
-}
+  /* --- Header --- */
+  .shelf-header {
+    text-align: center;
+    padding: 0 16px;
+  }
 
-/* Preview (hero) card */
-.peek__preview {
-  width: min(100%, 960px);
-  display: grid;
-  gap: 0;
-  text-decoration: none;
-  border-radius: 26px;
-  overflow: hidden;
-  background:
-    radial-gradient(
-      130% 180% at 50% 0%,
-      color-mix(in oklch, var(--accent-2), transparent 88%),
-      transparent 70%
-    ),
-    linear-gradient(
-      180deg,
-      color-mix(in oklch, var(--card), white 4%),
-      color-mix(in oklch, var(--card), transparent 8%)
+  .shelf-title {
+    font-size: var(--fs-h1);
+    letter-spacing: -0.01em;
+    margin: 0 0 6px;
+  }
+
+  .shelf-subtitle {
+    margin: 0;
+    font-size: var(--fs-body);
+    color: var(--muted);
+    max-width: 600px;
+    margin-inline: auto;
+  }
+
+  /* --- Scroll Viewport --- */
+  .shelf-viewport {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    /* Controlled by JS (starts auto, becomes smooth) */
+    scroll-behavior: auto;
+
+    /* Breathing room for shadows */
+    padding: 20px 0 40px;
+    margin: -20px 0 -40px;
+
+    /* Gradient Mask for fading edges
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 2%,
+      black 98%,
+      transparent 100%
     );
-  border: 1px solid color-mix(in oklch, var(--ring), transparent 16%);
-  box-shadow:
-    0 18px 40px rgba(10, 12, 16, 0.12),
-    0 0 0 1px rgba(255, 255, 255, 0.14);
-  transition:
-    transform 0.18s ease,
-    box-shadow 0.18s ease,
-    border-color 0.18s ease;
-}
-.peek__preview:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in oklch, var(--accent), transparent 70%);
-  box-shadow:
-    0 22px 46px rgba(10, 12, 16, 0.16),
-    0 0 0 1px rgba(255, 255, 255, 0.18);
-}
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 2%,
+      black 98%,
+      transparent 100%
+    ); */
 
-.peek__media {
-  position: relative;
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-  isolation: isolate;
-  background: var(--card); /* Background color for the empty space */
-  border-radius: 24px;
-}
-
-.peek__media > img {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  
-  /* CHANGE HERE: 'contain' ensures the whole image is visible */
-  object-fit: contain; 
-  
-  /* Centers the image in the available space */
-  object-position: center; 
-  
-  display: block;
-  transition: opacity 0.2s ease;
-}
-/* --- END CHANGED CSS --- */
-
-.peek__emoji {
-  position: relative;
-  z-index: 2;
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  font-size: clamp(48px, 8vw, 80px);
-}
-
-.peek__meta {
-  text-align: center;
-  padding: 10px 18px 18px;
-}
-.peek__meta-title {
-  font-family: var(--font-sans);
-  font-weight: var(--fw-semibold);
-  font-size: var(--fs-h2);
-  color: var(--fg);
-}
-.peek__meta-sub {
-  margin-top: 4px;
-  font-size: var(--fs-body-sm);
-  color: var(--muted);
-}
-
-/* Carousel rail */
-.peek__rail-wrap {
-  width: min(100%, 960px);
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  padding-bottom: 2px;
-}
-.peek__rail {
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: min(56%, 320px);
-  gap: 14px;
-  padding: 6px 2px 4px;
-  margin: 0;
-  list-style: none;
-  scroll-snap-type: x proximity;
-}
-.peek__rail li {
-  scroll-snap-align: center;
-}
-
-/* Cards */
-.peek__card {
-  background: color-mix(in oklch, var(--card), transparent 4%);
-  border-radius: 16px;
-  border: 1px solid color-mix(in oklch, var(--ring), transparent 24%);
-  display: grid;
-  gap: 8px;
-  text-align: left;
-  cursor: pointer;
-  padding: 6px 8px 10px;
-  transition:
-    transform 0.22s ease,
-    box-shadow 0.22s ease,
-    border-color 0.22s ease,
-    background 0.22s ease;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-}
-.peek__thumb {
-  aspect-ratio: 4 / 3;
-  border-radius: 12px;
-  overflow: hidden;
-}
-.peek__thumb img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.25s ease;
-}
-.peek__thumb-emoji {
-  width: 100%;
-  height: 100%;
-  display: grid;
-  place-items: center;
-  font-size: 32px;
-}
-
-.peek__card-title {
-  font-family: var(--font-sans);
-  font-weight: var(--fw-medium);
-  font-size: var(--fs-body);
-  color: var(--fg);
-}
-.peek__card-sub {
-  font-size: var(--fs-body-sm);
-  line-height: var(--lh-body);
-  color: var(--muted);
-  margin-bottom: 4px;
-}
-
-/* Hover + selected state */
-.peek__card:hover {
-  transform: translateY(-2px);
-  border-color: color-mix(in oklch, var(--accent), transparent 28%);
-  background: color-mix(in oklch, var(--card), transparent 0%);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
-}
-.peek__card:hover .peek__thumb img {
-  transform: scale(1.04);
-}
-
-/* Selected */
-.peek__rail li[aria-selected="true"] .peek__card {
-  border-color: color-mix(in oklch, var(--accent), transparent 16%);
-  box-shadow:
-    0 10px 26px rgba(0, 0, 0, 0.18),
-    0 0 0 1px color-mix(in oklch, var(--accent), transparent 62%);
-}
-
-/* CTA */
-.peek__cta-wrap {
-  margin-top: clamp(12px, 2.4vw, 22px);
-}
-
-/* Small screens */
-@media (max-width: 640px) {
-  .peek__rail {
-    grid-auto-columns: 70%;
+    /* Enforce snapping */
+    scroll-snap-type: x mandatory;
   }
-  .peek__meta-title {
+
+  .shelf-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* --- Track --- */
+  .shelf-track {
+    display: flex;
+    gap: 20px;
+
+    /* PADDING LOGIC FOR CENTERING:
+       50% of viewport minus half the card width (280px / 2 = 140px).
+       This ensures the first item sits perfectly in the center.
+    */
+    padding-inline: calc(50% - 140px);
+
+    width: max-content;
+    margin: 0;
+    list-style: none;
+    box-sizing: border-box;
+  }
+
+  /* --- Items --- */
+  .shelf-item {
+    flex: 0 0 auto;
+    width: 280px;
+
+    /* SNAP LOGIC: Always snap center */
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+
+  /* Desktop Adjustments */
+  @media (min-width: 600px) {
+    .shelf-item {
+      width: 320px;
+    }
+    .shelf-track {
+      /* Adjust padding for larger card width (320px / 2 = 160px) */
+      padding-inline: calc(50% - 160px);
+    }
+  }
+
+  /* --- Card Styling --- */
+  .shelf-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background: var(--card);
+    border: 1px solid var(--ring);
+    border-radius: 20px;
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition:
+      transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+      box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+      border-color 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  }
+
+  .shelf-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--elev-2);
+    border-color: color-mix(in oklch, var(--accent), transparent 60%);
+  }
+
+  .shelf-card:active {
+    transform: translateY(-2px);
+    transition-duration: 0.1s;
+  }
+
+  /* --- Media & Loader --- */
+
+  @keyframes shimmer {
+    0% {
+      background-position: 200% 0;
+    }
+    100% {
+      background-position: -200% 0;
+    }
+  }
+
+  .shelf-media {
+    aspect-ratio: 3 / 2;
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid color-mix(in oklch, var(--ring), transparent 50%);
+
+    /* Skeleton Loader Background */
+    background: linear-gradient(
+      90deg,
+      var(--bg2) 25%,
+      color-mix(in oklch, var(--bg2), white 10%) 37%,
+      var(--bg2) 63%
+    );
+    background-size: 400% 100%;
+    animation: shimmer 1.8s ease infinite;
+  }
+
+  .shelf-media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Fade in transition */
+    transition:
+      transform 0.5s ease,
+      opacity 0.6s ease;
+  }
+
+  .shelf-card:hover .shelf-media img {
+    transform: scale(1.05);
+  }
+
+  .shelf-emoji {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+  }
+
+  /* --- Content --- */
+  .shelf-content {
+    padding: 16px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+  }
+
+  .shelf-card-title {
+    margin: 0;
     font-size: var(--fs-h2);
+    font-size: 1.25rem;
+    line-height: 1.3;
+    color: var(--fg);
   }
-}
+
+  .shelf-card-sub {
+    margin: 0;
+    font-size: var(--fs-body-sm);
+    color: var(--muted);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* --- Footer --- */
+  .shelf-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 8px;
+  }
 </style>

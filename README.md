@@ -7,7 +7,6 @@ Tulaa brings together:
 - 🧘‍♀️ Guided Yoga and Meditation  
 - 💧 Hydration and Wellness Tracking  
 - 🩸 Period and Mood Tracking  
-- ✍️ Private Journaling (Moments)  
 - 🔔 Rhythms and Daily Reminders  
 - 🌿 Curated Health Tips
 

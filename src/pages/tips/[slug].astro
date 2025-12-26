@@ -19,88 +19,221 @@ const description = tip.benefit || "Gentle wellness tip from Tulaa.";
 ---
 
 <Site title={pageTitle} description={description} canonicalPath={canonical}>
-  <main class="wrap" style="max-width:940px;margin:0 auto;padding:24px;">
+  <main class="content-shell">
+    <article class="home-block tip-card">
+      
+      <nav class="tip-nav">
+        <a href="/tips" class="back-link">
+          <span class="arrow">←</span> Back to Tips
+        </a>
+        <span class="category-pill">{tip.category || "General"}</span>
+      </nav>
 
-    <nav aria-label="Breadcrumb" style="margin-bottom:8px;">
-      <a href="/tips" class="td-back">← All Health Tips</a>
-    </nav>
+      <header class="tip-header">
+        {tip.icon && (
+            <div class="icon-ring" role="img" aria-hidden="true">
+                {tip.icon}
+            </div>
+        )}
+        <h1 class="tip-title">{tip.tip}</h1>
+      </header>
 
-    <header style="margin-top:12px;">
-      <h1 class="td-title">
-        {tip.icon && <span aria-hidden="true">{tip.icon}</span>}
-        <span>{tip.tip}</span>
-      </h1>
+      <div class="tip-body">
+        <p class="benefit-text">{tip.benefit}</p>
+        
+        {tip.precaution && (
+          <aside class="precaution-box" role="note">
+            <div class="precaution-header">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+                <strong>Note</strong>
+            </div>
+            <p>{tip.precaution}</p>
+          </aside>
+        )}
+      </div>
 
-      <p class="td-sub">Category: {tip.category || "General"}</p>
-    </header>
+      <footer class="tip-footer">
+        <div class="separator"></div>
+        <p class="app-hint">Get daily tips & reminders in the Tulaa App</p>
+        <div class="button-row">
+            <CTAButton href="https://apps.apple.com/app/id6748626498" label="Get App" variant="solid" size="md" />
+            <CTAButton href="/tips" label="More Tips" variant="soft" size="md" />
+        </div>
+      </footer>
 
-    <p class="td-benefit">{tip.benefit}</p>
+    </article>
 
-    {tip.precaution && (
-      <p class="td-prec" role="note">
-        ⚠️ <strong>Precaution:</strong> {tip.precaution}
-      </p>
-    )}
-
-    <div style="margin-top:18px;display:flex;gap:10px;flex-wrap:wrap;">
-      <CTAButton href="/tips" label="Browse more tips" variant="soft" size="md" />
-    </div>
-
-    <script type="application/ld+json">
-      {JSON.stringify({
+    <script type="application/ld+json" set:html={JSON.stringify({
         "@context": "https://schema.org",
         "@type": "CreativeWork",
         "name": tip.tip,
         "about": "Health tip",
+        "text": tip.benefit,
         "publisher": { "@type": "Organization", "name": "Tulaa" },
         "isAccessibleForFree": true,
         "url": `https://tulaalife.com${canonical}`,
-        "keywords": tip.category
-          ? [tip.category, "wellness", "self-care"]
-          : ["wellness", "self-care"],
-      })}
+        "keywords": tip.category ? [tip.category, "wellness", "self-care"] : ["wellness", "self-care"],
+      })}>
     </script>
   </main>
 </Site>
 
 <style>
-  .td-back {
-    text-decoration: none;
-    font-family: var(--font-sans);
-    color: var(--accent);
-  }
-  .td-back:hover {
-    text-decoration: underline;
+  /* Layout */
+  .content-shell {
+    width: 100%;
+    max-width: 720px; /* Narrow width for "Card" feel */
+    margin: 0 auto;
+    padding: 0 16px;
   }
 
-  .td-title {
-    margin: 6px 0 10px;
+  .tip-card {
+    padding: clamp(24px, 5vw, 40px);
+    display: flex;
+    flex-direction: column;
+    /* .home-block handles the glass effect */
+  }
+
+  /* Navigation */
+  .tip-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+
+  .back-link {
+    font-size: var(--fs-body-sm);
+    font-weight: var(--fw-medium);
+    color: var(--muted);
+    text-decoration: none;
     display: flex;
     align-items: center;
     gap: 6px;
-    font-family: var(--font-sans);
-    font-size: var(--fs-h1);
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--accent);
+  }
+  .back-link .arrow {
+    transition: transform 0.2s;
+  }
+  .back-link:hover .arrow {
+    transform: translateX(-3px);
+  }
+
+  .category-pill {
+    font-size: 0.75rem;
     font-weight: var(--fw-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 4px 12px;
+    border-radius: 99px;
+    background: color-mix(in oklch, var(--accent), transparent 90%);
+    color: var(--accent);
+    border: 1px solid color-mix(in oklch, var(--accent), transparent 80%);
   }
 
-  .td-sub {
-    margin: 0;
-    color: var(--muted);
-    font-family: var(--font-sans);
-    font-size: var(--fs-body);
+  /* Header */
+  .tip-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
   }
 
-  .td-benefit {
-    margin-top: 16px;
-    font-family: var(--font-sans);
+  .icon-ring {
+    font-size: 3rem;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg2);
+    border-radius: 50%;
+    border: 1px solid var(--ring);
+    box-shadow: var(--elev-1);
+  }
+
+  .tip-title {
+    font-size: clamp(1.8rem, 4vw, 2.2rem);
+    line-height: 1.15;
+    color: var(--fg);
+    max-width: 20ch; /* Prevent lines getting too long */
+    /* Use a serif or slightly more display-like weight if available, otherwise bold sans */
+    font-weight: var(--fw-bold);
+    letter-spacing: -0.01em;
+  }
+
+  /* Body */
+  .tip-body {
+    text-align: center; /* Centered text works well for short "insights" */
+    max-width: 50ch;
+    margin: 0 auto;
+  }
+
+  .benefit-text {
     font-size: var(--fs-body-lg);
-    line-height: var(--lh-body);
+    line-height: 1.6;
+    color: var(--muted);
   }
 
-  .td-prec {
-    margin-top: 12px;
-    color: var(--muted);
-    font-family: var(--font-sans);
+  /* Precaution Box */
+  .precaution-box {
+    margin-top: 32px;
+    background: color-mix(in srgb, #f59e0b 12%, transparent); /* Warm Amber/Warning tint */
+    border: 1px solid color-mix(in srgb, #f59e0b 30%, transparent);
+    padding: 16px 20px;
+    border-radius: 12px;
+    text-align: left;
+  }
+
+  .precaution-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #b45309; /* Dark Amber */
+    font-size: var(--fs-body-sm);
+    margin-bottom: 4px;
+  }
+  [data-theme="dark"] .precaution-header {
+    color: #fbbf24; /* Lighter Amber for dark mode */
+  }
+
+  .precaution-box p {
+    margin: 0;
     font-size: var(--fs-body);
+    color: var(--fg);
+    opacity: 0.9;
+  }
+
+  /* Footer */
+  .tip-footer {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .separator {
+    width: 40px;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--ring);
+    margin-bottom: 8px;
+  }
+
+  .app-hint {
+    font-size: var(--fs-caption);
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  .button-row {
+    display: flex;
+    gap: 12px;
   }
 </style>

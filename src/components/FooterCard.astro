@@ -1,64 +1,36 @@
 ---
-// IntroCard.astro — refined, premium hero/footer download card
+// FooterCard.astro — Compact footer version
 export interface Props {
     headline?: string;
     subline?: string;
     iosHref?: string;
     androidHref?: string;
-    variant?: "hero" | "footer";
-    showLogo?: boolean;
-
     iosIconSrc?: string;
     androidIconSrc?: string;
 }
 
 const {
-    headline = "Tulaa",
-    subline = "Holistic yoga for pain relief, prenatal health & daily calm — with meditation and private trackers.",
+    // CHANGED: Active voice "Start Your Journey"
+    headline = "Start Your Holistic Health Journey",
+    // CHANGED: Simplified "all-in-one" messaging
+    subline = "Everything you need for mind and body balance: Yoga, journaling, and health tracking in one secure, ad-free space.",
     iosHref = "https://apps.apple.com/in/app/tulaa/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
-    variant = "hero",
-    showLogo = true,
     iosIconSrc = "/assets/icons/appstore.svg",
     androidIconSrc = "/assets/icons/playstore.svg",
 } = Astro.props;
 
-const isHero = variant === "hero";
-
-const heroChips = [
-    "Free expert-led yoga",
-    "No login required",
-    "Offline & privacy-first",
+// CHANGED: Organized specifically for feature-scanning
+const chips = [
+    "Yoga, Meditation & Journaling",
+    "Cycle & Water Tracker",
+    "Gentle Habit Reminders",
 ];
-
-const footerChips = [
-    "Yoga · Meditation · Journaling",
-    "Water & period tracking",
-    "Gentle habit reminders",
-];
-
-const chips = isHero ? heroChips : footerChips;
 ---
 
-<section class:list={["dl", "dl--hero"]} aria-label="Download Tulaa">
-    {
-        isHero && showLogo && (
-            <div class="dl__logo-wrap">
-                <div class="dl__logo-halo" aria-hidden="true" />
-                <img
-                    class="dl__logo"
-                    src="/assets/icons/logo.webp"
-                    width="120"
-                    height="120"
-                    alt=""
-                    decoding="async"
-                />
-            </div>
-        )
-    }
-
+<section class="dl" aria-label="Download Tulaa">
     <div class="dl__copy">
-        <h2 class={`dl__title ${isHero ? "typ-display" : "typ-h1"}`}>
+        <h2 class="dl__title typ-h1">
             {headline}
         </h2>
         <p class="dl__sub typ-body-sm">{subline}</p>
@@ -69,7 +41,6 @@ const chips = isHero ? heroChips : footerChips;
     </div>
 
     <div class="dl__buttons" role="group" aria-label="Store links">
-        <!-- iOS -->
         <a
             class="store-btn btn--ios"
             href={iosHref}
@@ -91,7 +62,6 @@ const chips = isHero ? heroChips : footerChips;
             </span>
         </a>
 
-        <!-- Android -->
         <a
             class="store-btn btn--android"
             href={androidHref}
@@ -117,6 +87,7 @@ const chips = isHero ? heroChips : footerChips;
 
 <style>
     .dl {
+        /* FOOTER VARIABLES */
         --r: 24px;
         --padY: 28px;
         --padX: 20px;
@@ -135,10 +106,9 @@ const chips = isHero ? heroChips : footerChips;
         width: 100%;
         max-width: 100%;
         margin-inline: auto;
-        margin-block: 0; /* let parent control vertical spacing */
 
-        /* GLASS: semi-transparent base + blur */
-        background: radial-gradient(
+        background:
+            radial-gradient(
                 140% 180% at 50% 0%,
                 color-mix(in oklch, var(--accent-2), transparent 88%),
                 transparent 70%
@@ -163,46 +133,6 @@ const chips = isHero ? heroChips : footerChips;
         }
     }
 
-    .dl--hero {
-        --r: 30px;
-        --padY: 40px;
-        --padX: 32px;
-        gap: 18px;
-    }
-
-    .dl__logo-wrap {
-        position: relative;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .dl__logo-halo {
-        position: absolute;
-        inset: 1px;
-        border-radius: 999px;
-        background: radial-gradient(
-                circle at 30% 0%,
-                color-mix(in oklch, var(--accent-2), transparent 70%),
-                transparent 25%
-            ),
-            radial-gradient(
-                circle at 70% 100%,
-                color-mix(in oklch, var(--accent), transparent 78%),
-                transparent 30%
-            );
-        opacity: 0.4;
-        filter: blur(40px);
-        z-index: -1;
-    }
-
-    .dl__logo {
-        width: 140px;
-        height: 140px;
-        border-radius: 2px;
-        filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.22));
-    }
-
     .dl__copy {
         max-width: 640px;
         margin-inline: auto;
@@ -211,14 +141,6 @@ const chips = isHero ? heroChips : footerChips;
     .dl__title {
         margin: 0 0 2px;
         text-align: center;
-    }
-
-    .dl--hero .dl__title.typ-display {
-        font-size: clamp(2rem, 3vw, 3rem);
-        letter-spacing: 0.02em;
-        text-shadow:
-            0 2px 4px rgba(0, 0, 0, 0.18),
-            0 0 1px rgba(0, 0, 0, 0.24);
     }
 
     .dl__sub {
@@ -292,12 +214,6 @@ const chips = isHero ? heroChips : footerChips;
         transform: translateY(0);
     }
 
-    .store-btn:focus-visible {
-        outline: 2px solid
-            color-mix(in oklch, var(--ring, #5fa7ff), transparent 20%);
-        outline-offset: 2px;
-    }
-
     .store-btn__icon {
         width: 22px;
         height: 22px;
@@ -324,35 +240,14 @@ const chips = isHero ? heroChips : footerChips;
         letter-spacing: 0.01em;
     }
 
-    @media (max-width: 640px) {
-        .dl--hero {
-            --padY: 28px;
-            --padX: 18px;
-        }
-        .dl--hero .dl__title.typ-display {
-            font-size: clamp(2rem, 6vw, 2.4rem);
-        }
-        .dl__logo {
-            width: 96px;
-            height: 96px;
-        }
-    }
-
     @media (max-width: 420px) {
         .dl__buttons {
             gap: 10px;
         }
     }
-
-    @media (prefers-reduced-motion: reduce) {
-        .store-btn {
-            transition: none;
-        }
-    }
 </style>
 
 <script is:inline>
-    // Swap order by platform
     (() => {
         const ua = navigator.userAgent || "";
         const isiOS =

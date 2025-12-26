@@ -2,108 +2,194 @@
 import Site from "../../layouts/Site.astro";
 import CTAButton from "../../components/CTAButton.astro";
 import { tips } from "../../data/generated";
+
+const title = "Wellness Tips";
+const description = "Daily insights, self-care reminders, and health rhythms.";
 ---
 
 <Site
-    title="Wellness Tips · Tulaa"
-    description="Short wellness insights and self-care reminders from Tulaa."
+    title={`${title} · Tulaa`}
+    description={description}
     canonicalPath="/tips"
 >
-    <main class="wrap" style="max-width:940px;margin:0 auto;padding:24px;">
-        <h1 class="tips-title">Health & Wellness Tips</h1>
+    <main class="wrap tips-container">
+        <header class="tips-header">
+            <h1 class="tips-title">{title}</h1>
+            <p class="tips-subtitle">{description}</p>
+        </header>
 
-        <ul class="tips-grid" aria-label="List of wellness tips">
+        <div class="tips-grid" role="list">
             {
                 tips.map((t) => (
-                    <li class="tips-card">
-                        <a href={`/tips/${t.slug}`} class="tips-link">
-                            <div class="tips-icon">{t.icon ?? "💡"}</div>
+                    <article class="tip-card">
+                        <a href={`/tips/${t.slug}`} class="tip-link">
+                            <div class="tip-icon-stamp">{t.icon ?? "💡"}</div>
 
-                            <div class="tips-body">
-                                <h3 class="tips-h3">{t.tip}</h3>
-                                <p class="tips-sub">{t.benefit}</p>
+                            <div class="tip-content">
+                                <h3 class="tip-heading">{t.tip}</h3>
+                                <p class="tip-preview">{t.benefit}</p>
+                                <span class="tip-read-more">Read more →</span>
                             </div>
                         </a>
-                    </li>
+                    </article>
                 ))
             }
-        </ul>
+        </div>
 
-        <div class="tips-cta">
+        <div class="tips-footer-cta">
+            <p class="cta-label">Looking for personalized daily tips?</p>
             <CTAButton
-                href="tulaa://app/tips"
-                label="Open full tips library in Tulaa app"
+                href="https://apps.apple.com/app/id6748626498"
+                label="Open Tulaa App"
                 variant="solid"
-                size="lg"
+                size="md"
             />
         </div>
     </main>
 </Site>
 
 <style>
+    /* Layout */
+    .tips-container {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 24px 20px 64px;
+    }
+
+    /* Header */
+    .tips-header {
+        text-align: center;
+        margin-bottom: 48px;
+        padding-top: 20px;
+    }
+
     .tips-title {
-        margin: 0 0 12px;
-        font-family: var(--font-sans);
-        font-size: var(--fs-h1);
-        font-weight: var(--fw-bold);
+        font-size: var(--fs-display);
+        letter-spacing: -0.02em;
+        margin-bottom: 8px;
     }
 
+    .tips-subtitle {
+        font-size: var(--fs-body-lg);
+        color: var(--muted);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    /* Grid */
     .tips-grid {
-        list-style: none;
-        padding: 0;
-        margin: 0;
         display: grid;
-        gap: 14px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 20px;
+        margin-bottom: 48px;
     }
 
-    .tips-card {
+    /* Card */
+    .tip-card {
         background: var(--card);
-        border-radius: 14px;
         border: 1px solid var(--ring);
-        padding: 14px;
+        border-radius: 20px;
         transition:
-            transform 0.2s ease,
-            box-shadow 0.2s ease;
-    }
-    .tips-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+            transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+            box-shadow 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-color 0.25s ease;
+        /* Subtle initial shadow */
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
     }
 
-    .tips-link {
-        display: flex;
-        gap: 12px;
+    .tip-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--elev-2);
+        border-color: color-mix(in oklch, var(--accent), transparent 70%);
+    }
+
+    .tip-link {
         text-decoration: none;
         color: inherit;
+        padding: 24px;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    /* Icon Stamp */
+    .tip-icon-stamp {
+        width: 48px;
+        height: 48px;
+        font-size: 1.5rem;
+        display: flex;
         align-items: center;
+        justify-content: center;
+        background: var(--bg2);
+        border-radius: 12px;
+        border: 1px solid color-mix(in oklch, var(--ring), transparent 50%);
     }
 
-    .tips-icon {
-        font-size: 1.6rem;
-        flex-shrink: 0;
+    /* Content */
+    .tip-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
-    .tips-body {
+    .tip-heading {
+        font-size: var(--fs-h3); /* Slightly smaller heading */
+        font-size: 1.15rem;
+        font-weight: var(--fw-semibold);
+        line-height: 1.3;
+        margin: 0 0 8px;
+        color: var(--fg);
+    }
+
+    .tip-preview {
+        font-size: var(--fs-body-sm);
+        color: var(--muted);
+        line-height: 1.5;
+        margin: 0 0 16px;
+        /* Clamp to 3 lines to keep grid uniform */
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
         flex: 1;
     }
 
-    .tips-h3 {
-        margin: 0 0 4px;
-        font-family: var(--font-sans);
-        font-size: var(--fs-body-lg);
-        font-weight: var(--fw-semibold);
+    .tip-read-more {
+        font-size: 0.8rem;
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0;
+        transform: translateX(-10px);
+        transition: all 0.25s ease;
     }
 
-    .tips-sub {
-        margin: 0;
-        color: var(--muted);
-        font-size: var(--fs-body-sm);
-        line-height: var(--lh-body);
+    /* Hover State for "Read More" */
+    .tip-card:hover .tip-read-more {
+        opacity: 1;
+        transform: translateX(0);
     }
 
-    .tips-cta {
-        margin-top: 28px;
+    /* Footer CTA */
+    .tips-footer-cta {
+        text-align: center;
+        padding-top: 32px;
+        border-top: 1px solid var(--ring);
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .cta-label {
+        font-size: var(--fs-body);
+        color: var(--muted);
+        margin: 0;
     }
 </style>
