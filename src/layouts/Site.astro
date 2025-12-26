@@ -1,7 +1,5 @@
 ---
 import FooterCard from "../components/FooterCard.astro";
-import HeaderCard from "../components/HeaderCard.astro";
-import IntroCard from "../components/IntroCard.astro";
 
 interface Props {
     title: string;
@@ -731,10 +729,7 @@ const url = new URL(canonicalPath, site).toString();
             !hideFooter && (
                 <footer>
                     <div class="wrap">
-                        <FooterCard
-                            headline="Download the Tulaa App"
-                            subline="Your holistic yoga companion with meditation, journaling, water and period tracking, rhythms and more, all private and ad-free."
-                        />
+                        <FooterCard />
                     </div>
 
                     <div class="legal" aria-label="Legal and contact">
