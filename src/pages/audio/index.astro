@@ -1,169 +1,210 @@
 ---
 import Site from "../../layouts/Site.astro";
 import { guidedAudios } from "../../data/generated";
+
+const title = "Guided Audios";
+const description = "Gentle voice-guided sessions for calm, focus, and rest.";
 ---
 
 <Site
-    title="Guided Audios · Tulaa"
-    description="Gentle voice-guided sessions for calm, focus, and rest."
+    title={`${title} · Tulaa`}
+    description={description}
+    canonicalPath="/audio"
 >
-    <main class="wrap ga-page">
-        <h1 class="ga-title">Guided Audios</h1>
+    <main class="wrap ga-container">
+        <header class="ga-header">
+            <h1 class="ga-title">{title}</h1>
+            <p class="ga-subtitle">{description}</p>
+        </header>
 
-        <ul class="ga-list" role="list">
+        <div class="ga-grid">
             {
                 guidedAudios.map((a) => (
-                    <li class="ga-item">
-                        <a href={`/audio/${a.slug}`} class="ga-link">
-                            <div class="ga-card">
-                                <div class="ga-thumb">
-                                    <img
-                                        src={a.image}
-                                        alt={a.title}
-                                        loading="lazy"
-                                        decoding="async"
-                                    />
-                                </div>
-
-                                <div class="ga-text">
-                                    <h3 class="ga-item-title">{a.title}</h3>
-                                    <p class="ga-item-sub">{a.teaser}</p>
+                    <article class="ga-card">
+                        <a
+                            href={`/audio/${a.slug}`}
+                            class="ga-link"
+                            aria-label={`Listen to ${a.title}`}
+                        >
+                            <div class="ga-cover-frame">
+                                <img
+                                    src={a.image}
+                                    alt=""
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <div class="ga-play-overlay">
+                                    <span class="ga-play-icon">▶</span>
                                 </div>
                             </div>
+
+                            <div class="ga-content">
+                                <h3 class="ga-item-title">{a.title}</h3>
+                                <p class="ga-item-sub">{a.teaser}</p>
+                            </div>
                         </a>
-                    </li>
+                    </article>
                 ))
             }
-        </ul>
+        </div>
     </main>
 </Site>
 
 <style>
-    .ga-page {
-        max-width: 940px;
+    /* Layout */
+    .ga-container {
+        max-width: var(--container);
         margin: 0 auto;
-        padding: 24px 16px 32px;
+        padding: 24px 20px 64px;
     }
 
-    @media (min-width: 768px) {
-        .ga-page {
-            padding: 32px 20px 40px;
-        }
+    /* Header */
+    .ga-header {
+        text-align: center;
+        margin-bottom: 48px;
+        padding-top: 20px;
     }
 
     .ga-title {
-        margin: 0 0 16px;
-        font-family: var(--font-sans);
-        font-size: var(--fs-h2);
-        font-weight: var(--fw-bold);
-        color: var(--fg);
+        font-size: var(--fs-display);
+        margin-bottom: 8px;
+        letter-spacing: -0.02em;
     }
 
-    .ga-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
+    .ga-subtitle {
+        font-size: var(--fs-body-lg);
+        color: var(--muted);
+        max-width: 600px;
+        margin: 0 auto;
     }
 
-    @media (min-width: 900px) {
-        .ga-list {
-            gap: 14px;
-        }
+    /* Grid System */
+    .ga-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 32px 24px;
     }
 
-    .ga-item {
-        border-radius: 18px;
-        background: color-mix(in srgb, var(--card) 80%, transparent);
-        border: 1px solid color-mix(in srgb, var(--ring) 70%, transparent);
-        backdrop-filter: blur(20px);
-        box-shadow: 0 12px 25px rgba(15, 23, 42, 0.12);
-        overflow: hidden;
+    /* Card Styling */
+    .ga-card {
+        /* No border/background on the wrapper itself for a cleaner "Album" look,
+           or we can add a subtle one. Let's keep it clean. */
+        position: relative;
     }
 
     .ga-link {
-        display: block;
+        display: flex;
+        flex-direction: column;
         text-decoration: none;
         color: inherit;
+        group: all; /* enable group hover logic if supported, or just use nested selectors */
+        height: 100%;
     }
 
-    .ga-card {
-        display: grid;
-        grid-template-columns: auto minmax(0, 1fr);
-        gap: 14px;
-        align-items: center;
-        padding: 12px 14px;
-    }
-
-    @media (min-width: 768px) {
-        .ga-card {
-            padding: 14px 18px;
-            gap: 16px;
-        }
-    }
-
-    .ga-thumb {
-        width: 90px; /* or whatever you prefer */
-        aspect-ratio: 2 / 3; /* matches 1024×1536 */
-        border-radius: 14px;
+    /* Cover Art */
+    .ga-cover-frame {
+        width: 100%;
+        aspect-ratio: 1 / 1; /* Square for "Album/Audio" feel */
+        border-radius: 20px; /* Soft, large radius */
         overflow: hidden;
-        flex-shrink: 0;
-        background: var(--card-soft);
+        position: relative;
+        background: var(--bg2);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); /* Soft shadow lifting it off page */
+        border: 1px solid var(--ring);
+        transition:
+            transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
+            box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
     }
 
-    @media (min-width: 768px) {
-        .ga-thumb {
-            width: 112px;
-        }
-    }
-
-    .ga-thumb img {
+    .ga-cover-frame img {
         width: 100%;
         height: 100%;
-        display: block;
         object-fit: cover;
-        object-position: center;
+        transition: transform 0.6s ease;
     }
 
-    .ga-text {
-        min-width: 0;
+    /* Play Overlay */
+    .ga-play-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        backdrop-filter: blur(2px);
+    }
+
+    .ga-play-icon {
+        width: 48px;
+        height: 48px;
+        background: white;
+        color: black;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 18px;
+        padding-left: 4px; /* Optical center */
+        transform: scale(0.8);
+        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    /* Content Text */
+    .ga-content {
+        margin-top: 16px;
+        text-align: center; /* Center align title for albums usually looks best */
+        padding: 0 4px;
     }
 
     .ga-item-title {
-        margin: 0 0 4px;
-        font-family: var(--font-sans);
-        font-size: var(--fs-h4);
+        font-size: var(--fs-h2);
+        font-size: clamp(1.1rem, 1.3vw, 1.25rem);
         font-weight: var(--fw-semibold);
+        margin-bottom: 6px;
         color: var(--fg);
     }
 
     .ga-item-sub {
-        margin: 0;
-        font-family: var(--font-sans);
-        font-size: var(--fs-body);
+        font-size: var(--fs-body-sm);
         color: var(--muted);
-        line-height: var(--lh-body);
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
-    /* Premium-ish hover/focus for desktop */
-    @media (hover: hover) and (pointer: fine) {
-        .ga-link:hover .ga-item,
-        .ga-link:focus-visible .ga-item {
-            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.22);
-        }
-
-        .ga-link:hover .ga-card,
-        .ga-link:focus-visible .ga-card {
-            transform: translateY(-1px);
-            transition: transform 160ms ease-out;
-        }
+    /* Interactive States */
+    .ga-link:hover .ga-cover-frame {
+        transform: translateY(-6px);
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
     }
 
+    .ga-link:hover .ga-cover-frame img {
+        transform: scale(1.05);
+    }
+
+    .ga-link:hover .ga-play-overlay {
+        opacity: 1;
+    }
+
+    .ga-link:hover .ga-play-icon {
+        transform: scale(1);
+    }
+
+    .ga-link:hover .ga-item-title {
+        color: var(--accent); /* Highlight title on hover */
+        transition: color 0.2s ease;
+    }
+
+    /* Focus */
     .ga-link:focus-visible {
-        outline: 2px solid var(--accent);
-        outline-offset: 3px;
-        border-radius: inherit;
+        outline: none;
+    }
+    .ga-link:focus-visible .ga-cover-frame {
+        box-shadow: 0 0 0 4px var(--accent);
     }
 </style>
