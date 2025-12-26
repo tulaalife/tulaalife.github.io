@@ -94,7 +94,7 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
         const viewport = document.getElementById(id);
         if (!viewport) return;
 
-        // 2. Daily Random Seeding Logic
+        // 1. Daily Random Seeding Logic
         const today = new Date();
         const dateSeed =
             today.getFullYear() * 10000 +
@@ -106,22 +106,25 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
             return x - Math.floor(x);
         };
 
-        // Calculate a start index in the middle set
         const middleBatch = Math.floor(repeatCount / 2);
         const randomOffset = Math.floor(pseudoRandom(dateSeed) * itemCount);
         const startIndex = middleBatch * itemCount + randomOffset;
 
-        // Find the specific card to scroll to
+        // 2. Find target
         const cards = viewport.querySelectorAll(".tips-item");
         const targetCard = cards[startIndex];
 
         if (targetCard) {
-            // 3. Instant Scroll to Center
-            targetCard.scrollIntoView({
-                behavior: "auto",
-                block: "nearest",
-                inline: "center",
-            });
+            // 3. SAFE SCROLL (scrollLeft)
+            // This stays strictly inside the container and ignores the main window.
+            const cardLeft = targetCard.offsetLeft;
+            const cardWidth = targetCard.offsetWidth;
+            const viewportWidth = viewport.offsetWidth;
+
+            // Math: Position of card - Half viewport + Half card (to center it)
+            const targetPosition = cardLeft - viewportWidth / 2 + cardWidth / 2;
+
+            viewport.scrollLeft = targetPosition;
 
             // Enable smooth scrolling AFTER the initial jump
             requestAnimationFrame(() => {

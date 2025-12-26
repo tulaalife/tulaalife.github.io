@@ -93,7 +93,6 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
     if (!viewport) return;
 
     // 2. Daily Random Seeding Logic
-    // Generate a numeric seed from today's date (YYYYMMDD) so everyone gets the same start daily
     const today = new Date();
     const dateSeed =
       today.getFullYear() * 10000 +
@@ -105,32 +104,41 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
       return x - Math.floor(x);
     };
 
-    // Calculate a start index in the middle set of the cloned items
     const middleBatch = Math.floor(repeatCount / 2);
     const randomOffset = Math.floor(pseudoRandom(dateSeed) * itemCount);
     const startIndex = middleBatch * itemCount + randomOffset;
 
-    // Find the specific card to scroll to
     const cards = viewport.querySelectorAll(".shelf-item");
     const targetCard = cards[startIndex];
 
     if (targetCard) {
-      // 3. Instant Scroll to Center
-      // 'inline: center' ensures the card is perfectly in the middle
-      targetCard.scrollIntoView({
+      // 3. Instant Scroll to Center (Corrected)
+      // We calculate the position manually to avoid scrolling the main body window
+
+      const viewportRect = viewport.getBoundingClientRect();
+      const cardRect = targetCard.getBoundingClientRect();
+
+      // Calculate how far the card is from the left edge of the viewport
+      const offsetFromViewport = cardRect.left - viewportRect.left;
+
+      // Calculate the adjustment needed to center it
+      // currentScroll + (offset - (halfViewport - halfCard))
+      const centerOffset = (viewport.clientWidth - targetCard.clientWidth) / 2;
+      const scrollTarget =
+        viewport.scrollLeft + offsetFromViewport - centerOffset;
+
+      viewport.scrollTo({
+        left: scrollTarget,
         behavior: "auto",
-        block: "nearest",
-        inline: "center",
       });
 
-      // Enable smooth scrolling AFTER the initial jump so user interaction feels nice
+      // Enable smooth scrolling AFTER the initial jump
       requestAnimationFrame(() => {
         viewport.style.scrollBehavior = "smooth";
       });
     }
   })();
 </script>
-
 <style>
   /* --- Section Layout --- */
   .shelf-section {
