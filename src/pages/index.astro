@@ -5,6 +5,8 @@ import { yogaPlans, guidedAudios, tips } from "../data/generated";
 import TipsScroller from "../components/TipsScroller.astro";
 import IntroCard from "../components/IntroCard.astro";
 import PeekScroller from "../components/PeekScroller.astro";
+import FooterCard from "../components/FooterCard.astro";
+import HeaderCard from "../components/HeaderCard.astro";
 
 const title = "Tulaa — Yoga, Meditation & Daily Wellness";
 const description =
@@ -71,11 +73,9 @@ const hasTips = tipFive.length > 0;
 >
   <div class="home-layout">
     <section class="reveal section-hero">
-      <IntroCard
-        variant="hero"
+      <HeaderCard
         headline="Tulaa"
         subline="Holistic yoga for pain relief, prenatal health & daily calm with meditation, journaling and private trackers."
-        showLogo={true}
       />
     </section>
 
@@ -187,6 +187,7 @@ const hasTips = tipFive.length > 0;
   .section-hero {
     /* Slight extra top margin to clear header gracefully */
     margin-top: 12px;
+    padding: 0 16px;
   }
 
   /* The Features "Block" styling */
