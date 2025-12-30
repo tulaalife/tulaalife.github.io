@@ -21,7 +21,7 @@ const canonical = `/yoga/${plan.slug}`;
         "Gentle preview of this Tulaa yoga plan."}
     canonicalPath={canonical}
 >
-    <main class="content-shell">
+    <div class="content-shell">
         <article class="home-block plan-card">
             <nav class="plan-nav">
                 <a href="/yoga" class="back-link">
@@ -89,13 +89,12 @@ const canonical = `/yoga/${plan.slug}`;
                 </div>
             </footer>
         </article>
-    </main>
+    </div>
 </Site>
 
 <style>
     /* Layout Wrapper */
     .content-shell {
-        width: 100%;
         max-width: 860px; /* Optimal reading width */
         margin: 0 auto;
         padding: 0 16px;

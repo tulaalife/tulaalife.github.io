@@ -19,7 +19,7 @@ const description = tip.benefit || "Gentle wellness tip from Tulaa.";
 ---
 
 <Site title={pageTitle} description={description} canonicalPath={canonical}>
-  <main class="content-shell">
+  <div class="content-shell">
     <article class="home-block tip-card">
       
       <nav class="tip-nav">
@@ -75,16 +75,15 @@ const description = tip.benefit || "Gentle wellness tip from Tulaa.";
         "keywords": tip.category ? [tip.category, "wellness", "self-care"] : ["wellness", "self-care"],
       })}>
     </script>
-  </main>
+  </div>
 </Site>
 
 <style>
   /* Layout */
   .content-shell {
-    width: 100%;
-    max-width: 720px; /* Narrow width for "Card" feel */
+    /* 2. Removed width: 100% and padding to fix mobile overflow */
+    max-width: 720px; 
     margin: 0 auto;
-    padding: 0 16px;
   }
 
   .tip-card {
