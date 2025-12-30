@@ -5,7 +5,8 @@ export interface TipItem {
     tip: string;
     benefit?: string;
     icon?: string; // emoji or URL
-    slug?: string; // for linking
+    slug?: string;
+    href?: string; // <--- 1. Add this to interface
 }
 
 export interface Props {
@@ -38,8 +39,9 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
                 <ul class="tips-track" role="list">
                     {displayItems.map((t, index) => (
                         <li class="tips-item">
+                            {/* 2. FIX: Use t.href if available, fallback to slug */}
                             <a
-                                href={t.slug ? `/tips/${t.slug}` : "#"}
+                                href={t.href || `/tips/${t.slug}`}
                                 class="tips-card"
                             >
                                 <div class="tips-card-icon">
@@ -116,12 +118,10 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
 
         if (targetCard) {
             // 3. SAFE SCROLL (scrollLeft)
-            // This stays strictly inside the container and ignores the main window.
             const cardLeft = targetCard.offsetLeft;
             const cardWidth = targetCard.offsetWidth;
             const viewportWidth = viewport.offsetWidth;
 
-            // Math: Position of card - Half viewport + Half card (to center it)
             const targetPosition = cardLeft - viewportWidth / 2 + cardWidth / 2;
 
             viewport.scrollLeft = targetPosition;
@@ -140,7 +140,6 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
         width: 100%;
         display: flex;
         flex-direction: column;
-        /* Increased gap to ensure header doesn't crowd content */
         gap: 20px;
     }
 
@@ -169,20 +168,9 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
         overflow-y: hidden;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-
-        /* Controlled by JS */
         scroll-behavior: auto;
-
-        /* PADDING FIXES:
-           - Top: 20px for hover lift
-           - Bottom: 50px ensures shadows don't clip and separates content from footer
-        */
         padding: 20px 0 50px;
-
-        /* Removed negative margins to prevent overlap */
         margin: 0;
-
-        /* Snapping */
         scroll-snap-type: x mandatory;
     }
 
@@ -194,11 +182,7 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
     .tips-track {
         display: flex;
         gap: 16px;
-
-        /* CENTERING LOGIC: 50% - (CardWidth / 2) */
-        /* Card width is 260px, so 130px */
         padding-inline: calc(50% - 130px);
-
         margin: 0;
         list-style: none;
         width: max-content;
@@ -221,7 +205,7 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
         background: var(--card);
         border: 1px solid var(--ring);
         border-radius: 20px;
-        padding: 24px; /* Increased internal padding */
+        padding: 24px;
         text-decoration: none;
         color: inherit;
         transition:
@@ -278,8 +262,6 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
         font-size: var(--fs-body-sm);
         color: var(--muted);
         line-height: 1.5;
-
-        /* Clamp to 4 lines */
         display: -webkit-box;
         -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
@@ -290,10 +272,6 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
     .tips-footer {
         display: flex;
         justify-content: center;
-        /* Pull it up slightly if the viewport padding is too generous, 
-           or leave as is for safety. 
-           With 50px bottom padding on viewport, we have plenty of space.
-        */
         margin-top: 8px;
     }
 </style>
