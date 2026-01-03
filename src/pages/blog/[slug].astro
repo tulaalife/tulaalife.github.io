@@ -43,7 +43,11 @@ const renderContent = (ops: any[]) => {
     return converter.convert();
 };
 
-const contentHtml = renderContent(post.content?.ops || []);
+const ops = Array.isArray(post.content)
+    ? post.content
+    : post.content?.ops || [];
+
+const contentHtml = renderContent(ops);
 
 const dateStr = new Date(post.date).toLocaleDateString("en-US", {
     year: "numeric",
