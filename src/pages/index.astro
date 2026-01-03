@@ -1,7 +1,8 @@
 ---
 import Site from "../layouts/Site.astro";
 import FeatureTiles from "../components/FeatureTiles.astro";
-import { yogaPlans, guidedAudios, tips } from "../data/generated";
+// 1. Import blogPosts here
+import { yogaPlans, guidedAudios, tips, blogPosts } from "../data/generated";
 import TipsScroller from "../components/TipsScroller.astro";
 import PeekScroller from "../components/PeekScroller.astro";
 import HeaderCard from "../components/HeaderCard.astro";
@@ -49,6 +50,24 @@ const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
   image: a.image,
 }));
 
+// 2. Prepare Blog Items
+const blogItems = seededShuffle(blogPosts, daySeed + 20).map((b) => {
+  // Format date for the subtitle (e.g., "Mar 15, 2024")
+  const dateStr = new Date(b.date).toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  return {
+    href: `/blog/${b.slug}`,
+    title: b.title,
+    subtitle: dateStr, // Using date as subtitle looks professional
+    teaser: b.excerpt,
+    image: b.image,
+  };
+});
+
 const tipFive = seededShuffle(tips, daySeed + 13)
   .slice(0, 5)
   .map((t) => ({
@@ -60,6 +79,7 @@ const tipFive = seededShuffle(tips, daySeed + 13)
 
 const hasYoga = yogaItems.length > 0;
 const hasAudio = audioItems.length > 0;
+const hasBlog = blogItems.length > 0; // Check if blogs exist
 const hasTips = tipFive.length > 0;
 ---
 
@@ -102,6 +122,21 @@ const hasTips = tipFive.length > 0;
       )
     }
 
+    {/* 3. New Blog Section */}
+    {
+      hasBlog && (
+        <section class="reveal section-stream">
+          <PeekScroller
+            title="Latest Articles"
+            subtitle="Insights on sleep, movement, and mindful living"
+            items={blogItems}
+            ctaHref="/blog"
+            ctaLabel="Read the blog"
+          />
+        </section>
+      )
+    }
+
     {
       hasTips && (
         <section class="reveal section-stream">
@@ -129,32 +164,32 @@ const hasTips = tipFive.length > 0;
             {
               emoji: "💧",
               title: "Hydration",
-              subtitle: "Log daily water intake", // 22 chars
+              subtitle: "Log daily water intake",
             },
             {
               emoji: "🌸",
               title: "Cycles",
-              subtitle: "Track period & insights", // 23 chars
+              subtitle: "Track period & insights",
             },
             {
               emoji: "📝",
               title: "Mood",
-              subtitle: "Daily check-ins & notes", // 23 chars
+              subtitle: "Daily check-ins & notes",
             },
             {
               emoji: "⏰",
               title: "Rhythms",
-              subtitle: "Gentle habit reminders", // 22 chars
+              subtitle: "Gentle habit reminders",
             },
             {
               emoji: "⏳",
               title: "Fasting",
-              subtitle: "Monitor eating windows", // 22 chars
+              subtitle: "Monitor eating windows",
             },
             {
               emoji: "📰",
               title: "Library",
-              subtitle: "Curated wellness guides", // 23 chars
+              subtitle: "Curated wellness guides",
             },
           ]}
         />
@@ -167,25 +202,19 @@ const hasTips = tipFive.length > 0;
   /* Main Container */
   .home-layout {
     width: 100%;
-    /* Max width is inherited from 'main' in Layout, but we ensure it here too */
     max-width: var(--container);
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    /* Generous spacing between major sections (Premium feel) */
     gap: clamp(48px, 6vw, 80px);
   }
 
-  /* * Section Specifics 
-   */
-
+  /* Section Specifics */
   .section-hero {
-    /* Slight extra top margin to clear header gracefully */
     margin-top: 12px;
     padding: 0 16px;
   }
 
-  /* The Features "Block" styling */
   .section-features .home-block {
     display: flex;
     flex-direction: column;
@@ -194,8 +223,7 @@ const hasTips = tipFive.length > 0;
     padding-bottom: 40px;
   }
 
-  /* * Buttons 
-   */
+  /* Buttons */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -209,7 +237,6 @@ const hasTips = tipFive.length > 0;
     cursor: pointer;
   }
 
-  /* Solid button (Primary) */
   .btn--solid {
     background: var(--fg);
     color: var(--btnText);
@@ -221,7 +248,6 @@ const hasTips = tipFive.length > 0;
     background: color-mix(in oklch, var(--fg), black 5%);
   }
 
-  /* Subtle button (Secondary/Ghost) */
   .btn--subtle {
     background: transparent;
     color: var(--fg);
@@ -249,9 +275,7 @@ const hasTips = tipFive.length > 0;
     color: var(--muted);
   }
 
-  /* * Animation: Reveal 
-   * Using a slightly slower, smoother curve
-   */
+  /* Animation: Reveal */
   .reveal {
     opacity: 0;
     transform: translateY(20px);
@@ -273,6 +297,9 @@ const hasTips = tipFive.length > 0;
   .reveal:nth-child(5) {
     animation-delay: 0.7s;
   }
+  .reveal:nth-child(6) {
+    animation-delay: 0.85s;
+  } /* Added for extra section */
 
   @keyframes elevate-in {
     from {

@@ -12,6 +12,7 @@ const TABLES = {
     plans: 'plans',
     audios: 'guided_audio_sessions',
     tips: 'health_tips',
+    posts: 'posts', // <--- NEW
 };
 const N_TIPS = 10; // homepage slice size
 
@@ -113,7 +114,7 @@ async function loadAudios() {
     })).filter(a => a.slug && a.image);
 }
 
-// ✅ New: return ALL tips (no slicing here)
+// ✅ Return ALL tips (no slicing here)
 async function loadAllTips() {
     const { data, error } = await sb
         .from(TABLES.tips)
@@ -134,6 +135,54 @@ async function loadAllTips() {
     })).filter(t => t.slug && t.tip && t.benefit);
 }
 
+// ✅ NEW: Load Blog Posts
+async function loadPosts() {
+    // Select all fields needed for SEO, Index listing, AND the detailed content page.
+    const { data, error } = await sb
+        .from(TABLES.posts)
+        .select(`
+            slug, title, excerpt, cover_image_url, 
+            status, published_at, language, 
+            seo_title, seo_description, 
+            content, goal_ids, suitable_time_of_day,
+            cta_link, cta_text
+        `)
+        .eq('status', 'published') // Only fetch published posts
+        .not('slug', 'is', null)
+        .order('published_at', { ascending: false }); // Newest first
+
+    if (error) throw error;
+
+    return (data ?? []).map((r) => {
+        // Fallback Logic:
+        // 1. Title: Use seo_title if present, else title
+        // 2. Desc: Use seo_description, else excerpt, else auto-generated teaser from excerpt
+        const metaTitle = r.seo_title || r.title;
+        const metaDesc = r.seo_description || r.excerpt || '';
+
+        return {
+            slug: toAbs(r.slug),
+            language: r.language || 'en',
+            title: toAbs(r.title),
+            excerpt: toAbs(r.excerpt),
+            image: ensureHttps(toAbs(r.cover_image_url)),
+            date: r.published_at, // Keep as ISO string for Astro to format
+
+            // Meta / SEO pre-calculated
+            metaTitle: toAbs(metaTitle),
+            metaDescription: toAbs(metaDesc),
+
+            // Content & Actions
+            content: r.content, // Pass the JSONB through
+            cta: (r.cta_link && r.cta_text) ? { link: r.cta_link, text: r.cta_text } : null,
+
+            // Tags
+            goals: r.goal_ids || [],
+            timeOfDay: r.suitable_time_of_day || [],
+        };
+    });
+}
+
 // ---- Emit
 function toTsArray(varName, arr) {
     const json = JSON.stringify(arr, null, 2);
@@ -141,22 +190,25 @@ function toTsArray(varName, arr) {
 }
 
 async function run() {
-    const [plans, audios, tipsAll] = await Promise.all([
+    const [plans, audios, tipsAll, posts] = await Promise.all([
         loadPlans(),
         loadAudios(),
         loadAllTips(),
+        loadPosts(), // <--- NEW
     ]);
 
     // homepage selection stays limited & daily-shuffled
     const daySeed = Number(new Date().toISOString().slice(0, 10).replaceAll('-', ''));
     const tips = seededShuffle(tipsAll, daySeed).slice(0, N_TIPS);
 
+    // Note: You might need to add 'BlogPost' to your types definition file
     const ts = `import type { YogaPlanPreview, GuidedAudioPreview, TipPreview } from './types';
 
 ${toTsArray('yogaPlans', plans)}
 ${toTsArray('guidedAudios', audios)}
 ${toTsArray('tips', tips)}           // homepage: limited
 ${toTsArray('allTips', tipsAll)}     // detail pages: FULL set
+${toTsArray('blogPosts', posts)}     // blog pages: FULL set
 `;
 
     const outDir = path.join(__dirname, '..', 'src', 'data');
@@ -164,7 +216,7 @@ ${toTsArray('allTips', tipsAll)}     // detail pages: FULL set
     fs.writeFileSync(path.join(outDir, 'generated.ts'), outBanner(ts), 'utf8');
 
     console.log(
-        `[fetch-content] Wrote src/data/generated.ts with ${plans.length} plans, ${audios.length} audios, ${tips.length} tips (home) & ${tipsAll.length} tips (all).`
+        `[fetch-content] Wrote src/data/generated.ts with ${plans.length} plans, ${audios.length} audios, ${tipsAll.length} tips & ${posts.length} posts.`
     );
 }
 
