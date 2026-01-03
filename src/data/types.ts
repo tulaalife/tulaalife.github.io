@@ -31,3 +31,23 @@ export interface TipPreview {
     deeplink: string;    // tulaa://tips/{slug}
     locale?: Locale;
 }
+
+export interface BlogPost {
+    slug: string;
+    language: string;
+    title: string;
+    excerpt: string;
+    image: string;
+    date: string;
+    metaTitle?: string;
+    metaDescription?: string;
+    content: {
+        ops: any[];
+    };
+    cta?: {
+        link: string;
+        text: string;
+    } | null;
+    goals?: string[];
+    timeOfDay?: string[];
+}

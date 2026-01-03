@@ -1,0 +1,393 @@
+---
+import Site from "../../layouts/Site.astro";
+import CTAButton from "../../components/CTAButton.astro";
+import { blogPosts } from "../../data/generated";
+import type { BlogPost } from "../../data/types";
+import { QuillDeltaToHtmlConverter } from "quill-delta-to-html"; // 1. Import the package
+
+interface Props {
+    post: BlogPost;
+}
+
+export async function getStaticPaths() {
+    return blogPosts.map((post) => ({
+        params: { slug: post.slug },
+        props: { post },
+    }));
+}
+
+const { post } = Astro.props;
+const canonical = `/blog/${post.slug}`;
+
+// --- AUTHOR DATA ---
+const author = {
+    name: "Latika",
+    title: "Yoga Therapist · 10+ years experience",
+    image: "https://api.tulaa.life/storage/v1/object/public/images/latika_profile.jpg",
+    websiteUrl: "https://yogawithlatika.com",
+    websiteDisplay: "yogawithlatika.com",
+};
+
+// --- NEW: Robust Rendering Function ---
+const renderContent = (ops: any[]) => {
+    if (!ops || !Array.isArray(ops)) return "";
+
+    // 2. Configure the converter
+    const converter = new QuillDeltaToHtmlConverter(ops, {
+        paragraphTag: "p", // Wraps standard text in <p> tags
+        inlineStyles: true, // Allows specific sizing/fonts if present
+        encodeHtml: false, // Prevents double-escaping of characters
+    });
+
+    // 3. Convert to HTML string
+    return converter.convert();
+};
+
+const contentHtml = renderContent(post.content?.ops || []);
+
+const dateStr = new Date(post.date).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+});
+
+// Helper for CTA logic
+const primaryLink = post.cta?.link || "https://tulaa.life/app";
+const primaryLabel = post.cta?.text || "Open in App";
+---
+
+<Site
+    title={post.metaTitle || post.title}
+    description={post.metaDescription || post.excerpt}
+    canonicalPath={canonical}
+    ogImage={post.image}
+>
+    <div class="content-shell">
+        <article class="home-block article-card">
+            {/* Navigation */}
+            <nav class="article-nav">
+                <a href="/blog" class="back-link">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path d="m15 18-6-6 6-6"></path></svg
+                    >
+                    Back to Blog
+                </a>
+            </nav>
+
+            {/* Header */}
+            <header class="article-header">
+                <div class="meta-tags">
+                    <time datetime={post.date}>{dateStr}</time>
+                    {
+                        post.language === "hi" && (
+                            <span class="lang-tag">Hindi</span>
+                        )
+                    }
+                </div>
+                <h1 class="article-title">{post.title}</h1>
+                {post.excerpt && <p class="article-subtitle">{post.excerpt}</p>}
+            </header>
+
+            {/* Cover Image */}
+            <div class="image-frame">
+                <img
+                    src={post.image}
+                    alt={post.title}
+                    width="1200"
+                    height="630"
+                    loading="eager"
+                />
+            </div>
+
+            {/* Main Content */}
+            <div class="article-body">
+                <div class="rich-text" set:html={contentHtml} />
+            </div>
+
+            {/* Author Bio Section */}
+            <div class="author-bio">
+                <div class="author-avatar">
+                    <img src={author.image} alt={author.name} loading="lazy" />
+                </div>
+                <div class="author-info">
+                    <span class="author-label">Written by</span>
+                    <h3 class="author-name">{author.name}</h3>
+                    <p class="author-creds">{author.title}</p>
+                    <a
+                        href={author.websiteUrl}
+                        target="_blank"
+                        rel="noopener"
+                        class="author-link"
+                    >
+                        {author.websiteDisplay} ↗
+                    </a>
+                </div>
+            </div>
+
+            {/* Footer */}
+            <footer class="article-footer">
+                <div class="app-prompt">
+                    <span class="prompt-icon">📱</span>
+                    <p>Read full articles in the Tulaa app.</p>
+                </div>
+
+                <div class="button-group">
+                    <CTAButton
+                        href={primaryLink}
+                        label={primaryLabel}
+                        variant="solid"
+                        size="md"
+                    />
+                    <CTAButton
+                        href="/blog"
+                        label="Browse Blog"
+                        variant="soft"
+                        size="md"
+                    />
+                </div>
+            </footer>
+        </article>
+    </div>
+</Site>
+
+<style>
+    .content-shell {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 16px 64px;
+    }
+
+    .article-card {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .article-nav {
+        padding-top: 16px;
+    }
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: var(--fs-body-sm);
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.2s;
+    }
+    .back-link:hover {
+        color: var(--accent);
+    }
+
+    /* Header */
+    .article-header {
+        text-align: center;
+        max-width: 720px;
+        margin: 0 auto;
+    }
+    .meta-tags {
+        font-size: var(--fs-caption);
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: center;
+        gap: 12px;
+        align-items: center;
+    }
+    .lang-tag {
+        background: var(--bg2);
+        padding: 2px 6px;
+        border-radius: 4px;
+        border: 1px solid var(--ring);
+    }
+
+    .article-title {
+        font-size: clamp(2rem, 5vw, 2.8rem);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+        color: var(--fg);
+    }
+    .article-subtitle {
+        font-size: 1.25rem;
+        line-height: 1.5;
+        color: var(--muted);
+        font-weight: 400;
+    }
+
+    /* Image */
+    .image-frame {
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: var(--elev-2);
+        margin-bottom: 16px;
+    }
+    .image-frame img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    /* Rich Text Body */
+    .article-body {
+        max-width: 68ch;
+        margin: 0 auto;
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: var(--fg);
+    }
+
+    /* Styles for content generated by quill-delta-to-html */
+    .rich-text :global(p) {
+        margin-bottom: 1.5em;
+    }
+    .rich-text :global(strong) {
+        font-weight: 700;
+        color: var(--fg);
+    }
+    .rich-text :global(em) {
+        font-style: italic;
+    }
+    .rich-text :global(a) {
+        color: var(--accent);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+    .rich-text :global(h1),
+    .rich-text :global(h2),
+    .rich-text :global(h3) {
+        margin-top: 2em;
+        margin-bottom: 0.8em;
+        line-height: 1.3;
+        font-weight: 600;
+    }
+    /* Add list styles which were missing before */
+    .rich-text :global(ul),
+    .rich-text :global(ol) {
+        margin-bottom: 1.5em;
+        padding-left: 1.5em;
+    }
+    .rich-text :global(li) {
+        margin-bottom: 0.5em;
+    }
+
+    /* Author Bio Styles */
+    .author-bio {
+        max-width: 68ch;
+        margin: 24px auto 0;
+        padding: 24px;
+        background: var(--bg2);
+        border: 1px solid var(--ring);
+        border-radius: 16px;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .author-avatar {
+        flex-shrink: 0;
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid var(--card);
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .author-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .author-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .author-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--muted);
+        margin-bottom: 4px;
+    }
+
+    .author-name {
+        font-size: 1.1rem;
+        font-weight: var(--fw-bold);
+        color: var(--fg);
+        margin: 0 0 2px 0;
+    }
+
+    .author-creds {
+        font-size: 0.9rem;
+        color: var(--muted);
+        margin: 0 0 6px 0;
+    }
+
+    .author-link {
+        font-size: 0.85rem;
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: var(--fw-medium);
+    }
+    .author-link:hover {
+        text-decoration: underline;
+    }
+
+    @media (max-width: 500px) {
+        .author-bio {
+            flex-direction: column;
+            text-align: center;
+            gap: 12px;
+        }
+    }
+
+    /* Footer */
+    .article-footer {
+        margin-top: 24px;
+        padding-top: 40px;
+        border-top: 1px solid var(--ring);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .app-prompt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--muted);
+        font-size: var(--fs-body-sm);
+        background: color-mix(in oklch, var(--card), white 50%);
+        padding: 8px 16px;
+        border-radius: 99px;
+        border: 1px solid var(--ring);
+        text-align: center;
+    }
+
+    .prompt-icon {
+        font-size: 1.2em;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+</style>
