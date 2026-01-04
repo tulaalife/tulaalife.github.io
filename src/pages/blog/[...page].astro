@@ -1,25 +1,28 @@
 ---
 import Site from "../../layouts/Site.astro";
 import { blogPosts } from "../../data/generated";
+import type { Page, GetStaticPaths } from "astro"; // 1. Added GetStaticPaths
 
-// --- Configuration ---
-const PER_PAGE = 12;
-const page = Number(Astro.url.searchParams.get("page") ?? 1);
+interface Props {
+    page: Page<(typeof blogPosts)[number]>;
+}
 
-// Sort by Date (Newest First)
-const sortedPosts = [...blogPosts].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-);
+// 2. Updated function syntax to infer types automatically
+export const getStaticPaths = (async ({ paginate }) => {
+    const sortedPosts = [...blogPosts].sort(
+        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+    );
 
-const start = (page - 1) * PER_PAGE;
-const items = sortedPosts.slice(start, start + PER_PAGE);
-const totalPages = Math.max(1, Math.ceil(sortedPosts.length / PER_PAGE));
+    return paginate(sortedPosts, { pageSize: 12 });
+}) satisfies GetStaticPaths;
+
+// 3. Access props
+const { page } = Astro.props;
 
 const title = "Wellness Blog";
 const description =
     "Insights on yoga, sleep, and mindful living from Tulaa experts.";
 
-// Helper: Format Date (e.g., "Mar 15, 2024")
 const formatDate = (isoString: string) => {
     return new Date(isoString).toLocaleDateString("en-US", {
         month: "short",
@@ -30,9 +33,9 @@ const formatDate = (isoString: string) => {
 ---
 
 <Site
-    title={`${title} · Tulaa`}
+    title={`${title} · Page ${page.currentPage}`}
     description={description}
-    canonicalPath="/blog"
+    canonicalPath={page.url.current}
 >
     <main class="wrap blog-container">
         <header class="blog-header">
@@ -41,8 +44,9 @@ const formatDate = (isoString: string) => {
         </header>
 
         <div class="blog-grid">
+            {/* page.data is now typed correctly */}
             {
-                items.map((post) => (
+                page.data.map((post) => (
                     <article class="blog-card">
                         <a href={`/blog/${post.slug}`} class="blog-link">
                             <div class="blog-thumb-frame">
@@ -74,20 +78,22 @@ const formatDate = (isoString: string) => {
         </div>
 
         {
-            totalPages > 1 && (
+            page.lastPage > 1 && (
                 <nav class="blog-pagination" aria-label="Pagination">
-                    {page > 1 ? (
-                        <a href={`/blog?page=${page - 1}`} class="btn-pill">
+                    {page.url.prev ? (
+                        <a href={page.url.prev} class="btn-pill">
                             ← Previous
                         </a>
                     ) : (
                         <span class="btn-pill disabled">← Previous</span>
                     )}
+
                     <span class="page-meta">
-                        Page {page} of {totalPages}
+                        Page {page.currentPage} of {page.lastPage}
                     </span>
-                    {page < totalPages ? (
-                        <a href={`/blog?page=${page + 1}`} class="btn-pill">
+
+                    {page.url.next ? (
+                        <a href={page.url.next} class="btn-pill">
                             Next →
                         </a>
                     ) : (
@@ -105,7 +111,6 @@ const formatDate = (isoString: string) => {
         margin: 0 auto;
         padding: 24px 20px 64px;
     }
-
     .blog-header {
         text-align: center;
         margin-bottom: 48px;
@@ -122,8 +127,6 @@ const formatDate = (isoString: string) => {
         max-width: 600px;
         margin: 0 auto;
     }
-
-    /* Grid Layout */
     .blog-grid {
         display: grid;
         grid-template-columns: 1fr;
@@ -134,8 +137,6 @@ const formatDate = (isoString: string) => {
             grid-template-columns: repeat(2, 1fr);
         }
     }
-
-    /* Card Styles */
     .blog-card {
         background: var(--card);
         border: 1px solid var(--ring);
@@ -152,26 +153,23 @@ const formatDate = (isoString: string) => {
         box-shadow: var(--elev-2);
         border-color: color-mix(in oklch, var(--accent), transparent 70%);
     }
-
     .blog-link {
         text-decoration: none;
         color: inherit;
         display: flex;
-        flex-direction: column; /* Stack vertically on mobile */
+        flex-direction: column;
         height: 100%;
     }
     @media (min-width: 500px) {
         .blog-link {
-            flex-direction: row; /* Side-by-side on desktop/tablet */
+            flex-direction: row;
         }
     }
-
-    /* Image Thumbnail */
     .blog-thumb-frame {
         position: relative;
         overflow: hidden;
         background: color-mix(in oklch, var(--bg1), grey 5%);
-        aspect-ratio: 16/9; /* Default for mobile stack */
+        aspect-ratio: 16/9;
     }
     @media (min-width: 500px) {
         .blog-thumb-frame {
@@ -191,8 +189,6 @@ const formatDate = (isoString: string) => {
     .blog-card:hover .blog-thumb-frame img {
         transform: scale(1.05);
     }
-
-    /* Content */
     .blog-content {
         padding: 20px;
         display: flex;
@@ -200,7 +196,6 @@ const formatDate = (isoString: string) => {
         justify-content: center;
         flex: 1;
     }
-
     .blog-meta {
         display: flex;
         align-items: center;
@@ -218,14 +213,12 @@ const formatDate = (isoString: string) => {
         font-size: 0.7rem;
         text-transform: uppercase;
     }
-
     .blog-item-title {
         font-size: clamp(1.15rem, 1.5vw, 1.3rem);
         margin: 0 0 8px;
         line-height: 1.25;
         color: var(--fg);
     }
-
     .blog-item-desc {
         font-size: var(--fs-body-sm);
         color: var(--muted);
@@ -236,7 +229,6 @@ const formatDate = (isoString: string) => {
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-
     .blog-more {
         font-size: var(--fs-caption);
         font-weight: var(--fw-bold);
@@ -245,8 +237,6 @@ const formatDate = (isoString: string) => {
         letter-spacing: 0.05em;
         margin-top: auto;
     }
-
-    /* Pagination */
     .blog-pagination {
         margin-top: 48px;
         display: flex;
