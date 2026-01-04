@@ -51,7 +51,11 @@ const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
 }));
 
 // 2. Prepare Blog Items
-const blogItems = seededShuffle(blogPosts, daySeed + 20).map((b) => {
+const blogItems = seededShuffle(
+  // Filter for English posts only before shuffling
+  blogPosts.filter((b) => b.language === "en"),
+  daySeed + 20,
+).map((b) => {
   // Format date for the subtitle (e.g., "Mar 15, 2024")
   const dateStr = new Date(b.date).toLocaleDateString("en-US", {
     month: "short",
@@ -62,7 +66,7 @@ const blogItems = seededShuffle(blogPosts, daySeed + 20).map((b) => {
   return {
     href: `/blog/${b.slug}`,
     title: b.title,
-    subtitle: dateStr, // Using date as subtitle looks professional
+    subtitle: dateStr,
     teaser: b.excerpt,
     image: b.image,
   };
