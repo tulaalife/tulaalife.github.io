@@ -2,14 +2,22 @@
 import Site from "../../layouts/Site.astro";
 import CTAButton from "../../components/CTAButton.astro";
 import { yogaPlans } from "../../data/generated";
+import type { GetStaticPaths } from "astro";
 
-export async function getStaticPaths() {
+// 1. Define Props so TypeScript knows what 'plan' looks like
+interface Props {
+    plan: (typeof yogaPlans)[number];
+}
+
+// 2. Add 'satisfies' to ensure the function structure is correct
+export const getStaticPaths = (async () => {
     return yogaPlans.map((p) => ({
         params: { slug: p.slug },
         props: { plan: p },
     }));
-}
+}) satisfies GetStaticPaths;
 
+// 3. Destructure props (now fully typed)
 const { plan } = Astro.props;
 const canonical = `/yoga/${plan.slug}`;
 ---
@@ -93,9 +101,9 @@ const canonical = `/yoga/${plan.slug}`;
 </Site>
 
 <style>
-    /* Layout Wrapper */
+    /* ... Your styles are perfectly fine, keep them exactly as they are ... */
     .content-shell {
-        max-width: 860px; /* Optimal reading width */
+        max-width: 860px;
         margin: 0 auto;
         padding: 0 16px;
     }
@@ -104,10 +112,8 @@ const canonical = `/yoga/${plan.slug}`;
         display: flex;
         flex-direction: column;
         gap: clamp(24px, 4vw, 32px);
-        /* The .home-block class from Layout handles the glass background/border */
     }
 
-    /* Navigation */
     .plan-nav {
         display: flex;
         align-items: center;
@@ -130,7 +136,6 @@ const canonical = `/yoga/${plan.slug}`;
         transform: translateX(-2px);
     }
 
-    /* Typography */
     .plan-header {
         text-align: center;
         margin: 0 auto;
@@ -142,7 +147,6 @@ const canonical = `/yoga/${plan.slug}`;
         line-height: 1.1;
         letter-spacing: -0.02em;
         margin-bottom: 12px;
-        /* A subtle gradient on the text can add a premium touch */
         background: linear-gradient(
             180deg,
             var(--fg) 0%,
@@ -154,13 +158,12 @@ const canonical = `/yoga/${plan.slug}`;
     }
 
     .plan-subtitle {
-        font-size: var(--fs-body-lg); /* Slightly larger than standard body */
+        font-size: var(--fs-body-lg);
         color: var(--muted);
         font-weight: var(--fw-regular);
         line-height: 1.4;
     }
 
-    /* Image Styling */
     .image-frame {
         width: 100%;
         border-radius: 16px;
@@ -179,22 +182,18 @@ const canonical = `/yoga/${plan.slug}`;
         transition: transform 0.7s ease;
     }
 
-    /* Subtle zoom effect on load/hover could go here if desired */
-
-    /* Content Styling */
     .plan-body {
-        max-width: 68ch; /* Optimal character width for reading */
+        max-width: 68ch;
         margin: 0 auto;
     }
 
     .plan-lead {
-        font-size: 1.15rem; /* Lead paragraph size */
+        font-size: 1.15rem;
         line-height: 1.6;
         color: var(--fg);
         margin-bottom: 32px;
     }
 
-    /* Benefits Module */
     .benefits-module {
         background: color-mix(in oklch, var(--accent), transparent 94%);
         border: 1px solid color-mix(in oklch, var(--accent), transparent 85%);
@@ -222,7 +221,6 @@ const canonical = `/yoga/${plan.slug}`;
         opacity: 0.9;
     }
 
-    /* Footer / Actions */
     .plan-footer {
         margin-top: 16px;
         padding-top: 24px;
