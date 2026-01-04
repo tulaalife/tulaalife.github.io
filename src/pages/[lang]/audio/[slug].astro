@@ -6,13 +6,10 @@ import Site from "../../../layouts/Site.astro";
 // src/pages/[lang]/audio/[slug].astro
 
 export async function getStaticPaths() {
-    // FILTER: Only generate paths for NON-English content
-    return guidedAudios
-        .filter((a) => a.language !== "en")
-        .map((a) => ({
-            params: { lang: a.language, slug: a.slug },
-            props: { audio: a },
-        }));
+    return guidedAudios.map((a) => ({
+        params: { lang: a.language, slug: a.slug },
+        props: { audio: a },
+    }));
 }
 
 const { audio } = Astro.props;
