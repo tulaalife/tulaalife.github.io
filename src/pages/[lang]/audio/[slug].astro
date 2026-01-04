@@ -1,26 +1,50 @@
 ---
-import Site from "../../layouts/Site.astro";
-import CTAButton from "../../components/CTAButton.astro";
-import { guidedAudios } from "../../data/generated";
+import CTAButton from "../../../components/CTAButton.astro";
+import { guidedAudios } from "../../../data/generated";
+import Site from "../../../layouts/Site.astro";
+
+// src/pages/[lang]/audio/[slug].astro
 
 export async function getStaticPaths() {
-    // FILTER: Only generate paths for 'en' here.
-    // Hindi paths will be handled by [lang]/audio/[slug].astro
+    // FILTER: Only generate paths for NON-English content
     return guidedAudios
-        .filter((a) => a.language === "en")
+        .filter((a) => a.language !== "en")
         .map((a) => ({
-            params: { slug: a.slug },
+            params: { lang: a.language, slug: a.slug },
             props: { audio: a },
         }));
 }
 
 const { audio } = Astro.props;
-const canonical = `/audio/${audio.slug}`;
+const { lang } = Astro.params;
+
+// Canonical includes the language prefix
+const canonical = `/${lang}/audio/${audio.slug}`;
+
+// Helper to translate UI elements (Basic Map)
+const LABELS = {
+    hi: {
+        back: "लाइब्रेरी पर वापस जाएं", // Back to Library
+        tag: "गाइडेड ऑडियो", // Guided Audio
+        listen: "Tulaa ऐप में पूरा सेशन सुनें।", // Listen in Tulaa App
+        btnApp: "ऐप में चलाएं", // Play in App
+        btnBrowse: "लाइब्रेरी ब्राउज़ करें", // Browse Library
+    },
+};
+
+// Fallback to English if string missing
+const t = LABELS[lang as keyof typeof LABELS] || {
+    back: "Back to Library",
+    tag: "Guided Audio",
+    listen: "Listen to the full session offline in the Tulaa app.",
+    btnApp: "Play in App",
+    btnBrowse: "Browse Library",
+};
 ---
 
 <Site
-    title={`${audio.title} · Guided Audio · Tulaa`}
-    description={audio.teaser || "Gentle audio preview from Tulaa."}
+    title={`${audio.title} · Tulaa`}
+    description={audio.teaser || "Audio session from Tulaa."}
     canonicalPath={canonical}
 >
     <div class="content-shell">
@@ -39,12 +63,12 @@ const canonical = `/audio/${audio.slug}`;
                         stroke-linejoin="round"
                         class="icon-arrow"><path d="m15 18-6-6 6-6"></path></svg
                     >
-                    <span>Back to Library</span>
+                    <span>{t.back}</span>
                 </a>
             </nav>
 
             <header class="audio-header">
-                <div class="tag-pill">Guided Audio</div>
+                <div class="tag-pill">{t.tag}</div>
                 <h1 class="audio-title">{audio.title}</h1>
                 {
                     audio.subtitle && (
@@ -84,19 +108,20 @@ const canonical = `/audio/${audio.slug}`;
             <footer class="audio-footer">
                 <div class="app-prompt">
                     <span class="prompt-icon">🎧</span>
-                    <p>Listen to the full session offline in the Tulaa app.</p>
+                    <p>{t.listen}</p>
                 </div>
 
                 <div class="button-group">
+                    {/* Deep link now includes lang due to script update */}
                     <CTAButton
-                        href="https://apps.apple.com/app/id6748626498"
-                        label="Play in App"
+                        href={audio.deeplink}
+                        label={t.btnApp}
                         variant="solid"
                         size="md"
                     />
                     <CTAButton
                         href="/audio"
-                        label="Browse Library"
+                        label={t.btnBrowse}
                         variant="soft"
                         size="md"
                     />
@@ -107,6 +132,8 @@ const canonical = `/audio/${audio.slug}`;
 </Site>
 
 <style>
+    /* ... Same styles as audio/[slug].astro ... */
+    /* Copy the styles from your existing detail page here */
     /* Layout Wrapper */
     .content-shell {
         max-width: 860px;
@@ -195,15 +222,14 @@ const canonical = `/audio/${audio.slug}`;
         justify-content: center;
     }
 
-    /* 3. Updated Image Frame to match Yoga Plan styling */
     .image-frame {
         position: relative;
         width: 100%;
         max-width: 600px;
         aspect-ratio: 16/9;
-        border-radius: 16px; /* Matched to Yoga Plan */
+        border-radius: 16px;
         overflow: hidden;
-        border: 1px solid var(--ring); /* Added border to match Yoga Plan */
+        border: 1px solid var(--ring);
         box-shadow: var(--elev-2);
         background: var(--bg2);
     }
@@ -215,7 +241,6 @@ const canonical = `/audio/${audio.slug}`;
         transition: transform 0.7s ease;
     }
 
-    /* Play Button Overlay Effect */
     .play-overlay {
         position: absolute;
         inset: 0;
@@ -249,7 +274,6 @@ const canonical = `/audio/${audio.slug}`;
         margin-left: 4px;
     }
 
-    /* Hover Effects for Image */
     .image-frame:hover img {
         transform: scale(1.04);
     }

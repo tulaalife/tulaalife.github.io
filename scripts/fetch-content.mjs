@@ -95,23 +95,30 @@ async function loadPlans() {
 }
 
 async function loadAudios() {
+    // 1. Select 'language'
     const { data, error } = await sb
         .from(TABLES.audios)
-        .select('slug,title,subtitle,description,image_url,updated_at')
+        .select('slug, language, title, subtitle, description, image_url, updated_at')
         .not('slug', 'is', null)
         .not('image_url', 'is', null)
         .order('title', { ascending: true });
 
     if (error) throw error;
 
-    return (data ?? []).map((r) => ({
-        slug: toAbs(r.slug),
-        title: toAbs(r.title),
-        subtitle: teaser(r.subtitle),
-        teaser: teaser(r.description),
-        image: ensureHttps(toAbs(r.image_url)),
-        deeplink: `tulaa://app/audio/${toAbs(r.slug)}`,
-    })).filter(a => a.slug && a.image);
+    return (data ?? []).map((r) => {
+        const lang = r.language || 'en';
+        return {
+            slug: toAbs(r.slug),
+            language: lang, // <--- 2. Map it
+            title: toAbs(r.title),
+            subtitle: teaser(r.subtitle),
+            teaser: teaser(r.description),
+            image: ensureHttps(toAbs(r.image_url)),
+            // 3. Update Deep Link to include language (matches your Flutter Router)
+            // e.g. tulaa://hi/audio/my-slug
+            deeplink: `tulaa://${lang}/audio/${toAbs(r.slug)}`,
+        };
+    }).filter(a => a.slug && a.image);
 }
 
 // ✅ Return ALL tips (no slicing here)
