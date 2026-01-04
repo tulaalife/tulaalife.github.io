@@ -7,6 +7,20 @@
                 ],
                 "components": [
                     {
+                        "comment": "--- Localized Routes (e.g. /en/yoga/slug) ---",
+                        "/": "/*/yoga/*"
+                    },
+                    {
+                        "/": "/*/audio/*"
+                    },
+                    {
+                        "/": "/*/tips/*"
+                    },
+                    {
+                        "/": "/*/blog/*"
+                    },
+                    {
+                        "comment": "--- Standard/Legacy Routes ---",
                         "/": "/yoga/*"
                     },
                     {
