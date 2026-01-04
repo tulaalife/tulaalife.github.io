@@ -13,6 +13,7 @@ export interface YogaPlanPreview {
 
 export interface GuidedAudioPreview {
     slug: string;
+    language: string;
     title: string;
     subtitle: string;
     teaser: string;

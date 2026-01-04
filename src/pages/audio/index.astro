@@ -1,6 +1,10 @@
 ---
+// src/pages/audio/index.astro
 import Site from "../../layouts/Site.astro";
 import { guidedAudios } from "../../data/generated";
+
+// FILTER: Only show English sessions on the main library page
+const displayAudios = guidedAudios.filter((a) => a.language === "en");
 
 const title = "Guided Audios";
 const description = "Gentle voice-guided sessions for calm, focus, and rest.";
@@ -19,7 +23,7 @@ const description = "Gentle voice-guided sessions for calm, focus, and rest.";
 
         <div class="ga-grid">
             {
-                guidedAudios.map((a) => (
+                displayAudios.map((a) => (
                     <article class="ga-card">
                         <a
                             href={`/audio/${a.slug}`}
