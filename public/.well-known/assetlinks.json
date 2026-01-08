@@ -1,5 +1,6 @@
 [
     {
+        "comment": "Production App (Release Key)",
         "relation": [
             "delegate_permission/common.handle_all_urls"
         ],
@@ -8,6 +9,32 @@
             "package_name": "life.tulaa",
             "sha256_cert_fingerprints": [
                 "5A:BD:E7:D3:C4:7B:FD:EC:BC:AE:49:99:25:CC:3C:15:3B:E0:00:7C:81:9A:A3:82:44:8E:3B:D1:28:59:FF:D9"
+            ]
+        }
+    },
+    {
+        "comment": "Dev Flavor (Debug Key - for local testing)",
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "life.tulaa.dev",
+            "sha256_cert_fingerprints": [
+                "57:46:E7:84:B9:DC:FB:E0:B1:60:CD:65:20:FD:4D:30:DE:C9:9B:72:17:D2:3F:D3:17:52:8E:3E:E5:56:72:08"
+            ]
+        }
+    },
+    {
+        "comment": "Prod Flavor running locally (Debug Key - optional but helpful)",
+        "relation": [
+            "delegate_permission/common.handle_all_urls"
+        ],
+        "target": {
+            "namespace": "android_app",
+            "package_name": "life.tulaa",
+            "sha256_cert_fingerprints": [
+                "57:46:E7:84:B9:DC:FB:E0:B1:60:CD:65:20:FD:4D:30:DE:C9:9B:72:17:D2:3F:D3:17:52:8E:3E:E5:56:72:08"
             ]
         }
     }
