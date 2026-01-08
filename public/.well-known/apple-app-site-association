@@ -7,26 +7,26 @@
                 ],
                 "components": [
                     {
-                        "comment": "--- Localized Routes (e.g. /en/yoga/slug) ---",
+                        "comment": "--- Localized Routes (Yoga Only) ---",
                         "/": "/*/yoga/*"
-                    },
-                    {
-                        "/": "/*/audio/*"
-                    },
-                    {
-                        "/": "/*/tips/*"
-                    },
-                    {
-                        "/": "/*/blog/*"
                     },
                     {
                         "comment": "--- Standard/Legacy Routes ---",
                         "/": "/yoga/*"
                     },
                     {
+                        "comment": "Audio",
                         "/": "/audio/*"
                     },
                     {
+                        "comment": "Blog",
+                        "/": "/blog*"
+                    },
+                    {
+                        "/": "/blogs*"
+                    },
+                    {
+                        "comment": "Tips",
                         "/": "/tips/*"
                     },
                     {
@@ -79,12 +79,6 @@
                     },
                     {
                         "/": "/fasting*"
-                    },
-                    {
-                        "/": "/blog*"
-                    },
-                    {
-                        "/": "/blogs*"
                     }
                 ]
             }
