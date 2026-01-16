@@ -1,22 +1,27 @@
 ---
 import Site from "../../layouts/Site.astro";
 import { blogPosts } from "../../data/generated";
-import type { Page, GetStaticPaths } from "astro"; // 1. Added GetStaticPaths
+import type { Page, GetStaticPaths } from "astro";
 
 interface Props {
     page: Page<(typeof blogPosts)[number]>;
 }
 
-// 2. Updated function syntax to infer types automatically
 export const getStaticPaths = (async ({ paginate }) => {
-    const sortedPosts = [...blogPosts].sort(
+    // 1. Filter: Keep only English posts (or posts with no lang defined)
+    const englishPosts = blogPosts.filter(
+        (p) => !p.language || p.language === "en",
+    );
+
+    // 2. Sort: Newest first
+    const sortedPosts = [...englishPosts].sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
 
+    // 3. Paginate
     return paginate(sortedPosts, { pageSize: 12 });
 }) satisfies GetStaticPaths;
 
-// 3. Access props
 const { page } = Astro.props;
 
 const title = "Wellness Blog";
@@ -44,7 +49,6 @@ const formatDate = (isoString: string) => {
         </header>
 
         <div class="blog-grid">
-            {/* page.data is now typed correctly */}
             {
                 page.data.map((post) => (
                     <article class="blog-card">
@@ -63,9 +67,6 @@ const formatDate = (isoString: string) => {
                                     <span class="blog-date">
                                         {formatDate(post.date)}
                                     </span>
-                                    {post.language === "hi" && (
-                                        <span class="badge-lang">Hindi</span>
-                                    )}
                                 </div>
                                 <h3 class="blog-item-title">{post.title}</h3>
                                 <p class="blog-item-desc">{post.excerpt}</p>
@@ -106,6 +107,7 @@ const formatDate = (isoString: string) => {
 </Site>
 
 <style>
+    /* Styles remain exactly the same, removed unused .badge-lang */
     .blog-container {
         max-width: var(--container);
         margin: 0 auto;
@@ -204,14 +206,6 @@ const formatDate = (isoString: string) => {
         font-size: var(--fs-caption);
         color: var(--muted);
         font-weight: var(--fw-medium);
-    }
-    .badge-lang {
-        background: color-mix(in oklch, var(--accent), transparent 90%);
-        color: var(--accent);
-        padding: 2px 6px;
-        border-radius: 4px;
-        font-size: 0.7rem;
-        text-transform: uppercase;
     }
     .blog-item-title {
         font-size: clamp(1.15rem, 1.5vw, 1.3rem);
