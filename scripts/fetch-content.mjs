@@ -156,7 +156,7 @@ async function loadAudios() {
             subtitle: teaser(r.subtitle),
             teaser: teaser(r.description),
             image: ensureHttps(toAbs(r.image_url)),
-            deeplink: `tulaa://${lang}/audio/${toAbs(r.slug)}`,
+            deeplink: `tulaa://audio/${toAbs(r.slug)}`,
         };
     }).filter(a => a.slug && a.image);
 }
