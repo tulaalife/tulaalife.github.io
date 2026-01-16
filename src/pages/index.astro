@@ -49,7 +49,7 @@ const audioItems = seededShuffle(
   guidedAudios.filter((a) => a.language === "en"), // <--- Added Filter
   daySeed + 7,
 ).map((a) => ({
-  href: `/en/audio/${a.slug}`, // Ensure link goes to /en/ path
+  href: `/audio/${a.slug}`,
   title: a.title,
   subtitle: a.subtitle,
   teaser: a.teaser,
