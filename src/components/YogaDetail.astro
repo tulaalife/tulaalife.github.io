@@ -1,0 +1,235 @@
+---
+import Site from "../layouts/Site.astro";
+import CTAButton from "./CTAButton.astro";
+import type { YogaPlanPreview } from "../data/types"; // Ensure path is correct
+
+interface Props {
+    plan: YogaPlanPreview;
+    canonicalPath: string;
+    lang: string;
+    labels: {
+        back: string;
+        openApp: string;
+        browse: string;
+    };
+    backLink?: string; // Optional custom back link
+    browseLink?: string; // Optional custom browse link
+}
+
+const { plan, canonicalPath, lang, labels, backLink, browseLink } = Astro.props;
+
+// Default links if not provided
+const finalBackLink = backLink || `/${lang}/yoga`;
+const finalBrowseLink = browseLink || `/${lang}/yoga`;
+---
+
+<Site
+    title={`${plan.title} · Yoga Plan · Tulaa`}
+    description={plan.teaser ||
+        plan.subtitle ||
+        "Gentle preview of this Tulaa yoga plan."}
+    canonicalPath={canonicalPath}
+    ogImage={plan.image}
+>
+    <div class="content-shell">
+        <article class="home-block plan-card">
+            <nav class="plan-nav">
+                <a href={finalBackLink} class="back-link">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                    {labels.back}
+                </a>
+            </nav>
+
+            <header class="plan-header">
+                <h1 class="plan-title">{plan.title}</h1>
+                {plan.subtitle && <p class="plan-subtitle">{plan.subtitle}</p>}
+            </header>
+
+            <div class="image-frame">
+                <img
+                    src={plan.image}
+                    alt={plan.title}
+                    width="1200"
+                    height="630"
+                    loading="eager"
+                />
+            </div>
+
+            <div class="plan-body">
+                {plan.teaser && <p class="plan-lead">{plan.teaser}</p>}
+
+                {
+                    plan.benefits && (
+                        <div class="benefits-module">
+                            <h3 class="benefits-label">
+                                <span class="icon">✦</span> Key Benefits
+                            </h3>
+                            <p class="benefits-text">{plan.benefits}</p>
+                        </div>
+                    )
+                }
+            </div>
+
+            <footer class="plan-footer">
+                <p class="app-note">Available exclusively in the Tulaa App</p>
+                <div class="button-group">
+                    <CTAButton
+                        href="https://apps.apple.com/app/id6748626498"
+                        label={labels.openApp}
+                        variant="solid"
+                        size="md"
+                    />
+                    <CTAButton
+                        href={finalBrowseLink}
+                        label={labels.browse}
+                        variant="soft"
+                        size="md"
+                    />
+                </div>
+            </footer>
+        </article>
+    </div>
+</Site>
+
+<style>
+    /* ... Paste all CSS from your original [slug].astro file here ... */
+    .content-shell {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 16px;
+    }
+    .plan-card {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(24px, 4vw, 32px);
+    }
+    .plan-nav {
+        display: flex;
+        align-items: center;
+    }
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: var(--fs-body-sm);
+        font-weight: var(--fw-medium);
+        color: var(--muted);
+        text-decoration: none;
+        transition:
+            color 0.2s ease,
+            transform 0.2s ease;
+    }
+    .back-link:hover {
+        color: var(--accent);
+        transform: translateX(-2px);
+    }
+    .plan-header {
+        text-align: center;
+        margin: 0 auto;
+        max-width: 650px;
+    }
+    .plan-title {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        margin-bottom: 12px;
+        background: linear-gradient(
+            180deg,
+            var(--fg) 0%,
+            color-mix(in oklch, var(--fg), transparent 20%) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        padding-top: 0.15em;
+        padding-bottom: 0.1em;
+    }
+    .plan-subtitle {
+        font-size: var(--fs-body-lg);
+        color: var(--muted);
+        font-weight: var(--fw-regular);
+        line-height: 1.4;
+    }
+    .image-frame {
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--ring);
+        box-shadow: var(--elev-2);
+        position: relative;
+    }
+    .image-frame img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.7s ease;
+    }
+    .plan-body {
+        max-width: 68ch;
+        margin: 0 auto;
+    }
+    .plan-lead {
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: var(--fg);
+        margin-bottom: 32px;
+    }
+    .benefits-module {
+        background: color-mix(in oklch, var(--accent), transparent 94%);
+        border: 1px solid color-mix(in oklch, var(--accent), transparent 85%);
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+    }
+    .benefits-label {
+        font-size: var(--fs-caption);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent);
+        font-weight: var(--fw-bold);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .benefits-text {
+        font-size: var(--fs-body);
+        color: var(--fg);
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+    .plan-footer {
+        margin-top: 16px;
+        padding-top: 24px;
+        border-top: 1px solid var(--ring);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        text-align: center;
+    }
+    .app-note {
+        font-size: var(--fs-caption);
+        color: var(--muted);
+        font-style: italic;
+    }
+    .button-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+</style>

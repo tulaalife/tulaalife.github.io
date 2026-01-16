@@ -1,0 +1,234 @@
+---
+import Site from "../layouts/Site.astro";
+import type { Page } from "astro";
+import type { YogaPlanPreview } from "../data/types"; // Ensure path is correct
+
+interface Props {
+    page: Page<YogaPlanPreview>;
+    title: string;
+    description: string;
+    canonicalPath: string;
+    lang: string;
+    labels: {
+        title: string;
+        description: string;
+        view: string;
+        prev: string;
+        next: string;
+        metaPage: string;
+    };
+}
+
+const { page, title, description, canonicalPath, lang, labels } = Astro.props;
+---
+
+<Site title={title} description={description} canonicalPath={canonicalPath}>
+    <main class="wrap yp-container">
+        <header class="yp-header">
+            <h1 class="yp-title">{labels.title}</h1>
+            <p class="yp-subtitle">{labels.description}</p>
+        </header>
+
+        <div class="yp-grid">
+            {
+                page.data.map((p) => (
+                    <article class="yp-card">
+                        <a href={`/${lang}/yoga/${p.slug}`} class="yp-link">
+                            <div class="yp-thumb-frame">
+                                <img
+                                    src={p.image}
+                                    alt=""
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+
+                            <div class="yp-content">
+                                <h3 class="yp-item-title">{p.title}</h3>
+                                <p class="yp-item-desc">{p.teaser}</p>
+                                <span class="yp-more">{labels.view} →</span>
+                            </div>
+                        </a>
+                    </article>
+                ))
+            }
+        </div>
+
+        {/* Pagination Controls */}
+        {
+            page.lastPage > 1 && (
+                <nav class="yp-pagination" aria-label="Pagination">
+                    {page.url.prev ? (
+                        <a href={page.url.prev} class="btn-pill">
+                            {labels.prev}
+                        </a>
+                    ) : (
+                        <span class="btn-pill disabled">{labels.prev}</span>
+                    )}
+
+                    <span class="yp-page-meta">
+                        {labels.metaPage} {page.currentPage} of {page.lastPage}
+                    </span>
+
+                    {page.url.next ? (
+                        <a href={page.url.next} class="btn-pill">
+                            {labels.next}
+                        </a>
+                    ) : (
+                        <span class="btn-pill disabled">{labels.next}</span>
+                    )}
+                </nav>
+            )
+        }
+    </main>
+</Site>
+
+<style>
+    /* ... Paste all your CSS from the original file here ... */
+    .yp-container {
+        max-width: var(--container);
+        margin: 0 auto;
+        padding: 24px 20px 64px;
+    }
+    .yp-header {
+        text-align: center;
+        margin-bottom: 40px;
+        padding-top: 20px;
+    }
+    .yp-title {
+        font-size: var(--fs-display);
+        letter-spacing: -0.02em;
+        margin-bottom: 8px;
+    }
+    .yp-subtitle {
+        font-size: var(--fs-body-lg);
+        color: var(--muted);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+    .yp-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    @media (min-width: 800px) {
+        .yp-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+    }
+    .yp-card {
+        background: var(--card);
+        border: 1px solid var(--ring);
+        border-radius: 20px;
+        overflow: hidden;
+        transition:
+            transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+            box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
+            border-color 0.3s ease;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+    }
+    .yp-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--elev-2);
+        border-color: color-mix(in oklch, var(--accent), transparent 70%);
+    }
+    .yp-link {
+        text-decoration: none;
+        color: inherit;
+        display: flex;
+        align-items: stretch;
+        height: 100%;
+    }
+    .yp-thumb-frame {
+        width: 130px;
+        flex-shrink: 0;
+        position: relative;
+        overflow: hidden;
+        border-right: 1px solid
+            color-mix(in oklch, var(--ring), transparent 50%);
+        background: color-mix(in oklch, var(--bg1), grey 5%);
+    }
+    @media (max-width: 450px) {
+        .yp-thumb-frame {
+            width: 100px;
+        }
+    }
+    .yp-thumb-frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .yp-card:hover .yp-thumb-frame img {
+        transform: scale(1.05);
+    }
+    .yp-content {
+        padding: 16px 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .yp-item-title {
+        font-size: clamp(1.1rem, 1.5vw, 1.25rem);
+        margin-bottom: 6px;
+        line-height: 1.2;
+    }
+    .yp-item-desc {
+        font-size: var(--fs-body-sm);
+        color: var(--muted);
+        line-height: 1.5;
+        margin: 0 0 12px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    .yp-more {
+        font-size: var(--fs-caption);
+        font-weight: var(--fw-bold);
+        color: var(--accent);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        opacity: 0.8;
+    }
+    .yp-card:hover .yp-more {
+        opacity: 1;
+        text-decoration: underline;
+    }
+    .yp-pagination {
+        margin-top: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+    }
+    .yp-page-meta {
+        font-size: var(--fs-caption);
+        color: var(--muted);
+        font-variant-numeric: tabular-nums;
+    }
+    .btn-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 8px 16px;
+        border-radius: 999px;
+        font-size: var(--fs-body-sm);
+        font-weight: var(--fw-medium);
+        text-decoration: none;
+        color: var(--fg);
+        border: 1px solid var(--ring);
+        background: transparent;
+        transition: all 0.2s;
+    }
+    .btn-pill:not(.disabled):hover {
+        background: var(--card);
+        border-color: var(--accent);
+        transform: translateY(-1px);
+    }
+    .btn-pill.disabled {
+        opacity: 0.4;
+        cursor: default;
+        border-color: transparent;
+    }
+</style>
