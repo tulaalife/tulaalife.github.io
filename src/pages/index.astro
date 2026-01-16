@@ -1,7 +1,6 @@
 ---
 import Site from "../layouts/Site.astro";
 import FeatureTiles from "../components/FeatureTiles.astro";
-// 1. Import blogPosts here
 import { yogaPlans, guidedAudios, tips, blogPosts } from "../data/generated";
 import TipsScroller from "../components/TipsScroller.astro";
 import PeekScroller from "../components/PeekScroller.astro";
@@ -33,30 +32,35 @@ const daySeed = Number(
   new Date().toISOString().slice(0, 10).replaceAll("-", ""),
 );
 
-// Data (daily shuffle)
-const yogaItems = seededShuffle(yogaPlans, daySeed).map((p) => ({
-  href: `/yoga/${p.slug}`,
+// 1. Filter & Process Yoga Items (English Only)
+const yogaItems = seededShuffle(
+  yogaPlans.filter((p) => p.language === "en"), // <--- Added Filter
+  daySeed,
+).map((p) => ({
+  href: `/en/yoga/${p.slug}`, // Ensure link goes to /en/ path
   title: p.title,
   subtitle: p.subtitle,
   teaser: p.teaser,
   image: p.image,
 }));
 
-const audioItems = seededShuffle(guidedAudios, daySeed + 7).map((a) => ({
-  href: `/audio/${a.slug}`,
+// 2. Filter & Process Audio Items (English Only)
+const audioItems = seededShuffle(
+  guidedAudios.filter((a) => a.language === "en"), // <--- Added Filter
+  daySeed + 7,
+).map((a) => ({
+  href: `/en/audio/${a.slug}`, // Ensure link goes to /en/ path
   title: a.title,
   subtitle: a.subtitle,
   teaser: a.teaser,
   image: a.image,
 }));
 
-// 2. Prepare Blog Items
+// 3. Process Blog Items (Already English filtered)
 const blogItems = seededShuffle(
-  // Filter for English posts only before shuffling
   blogPosts.filter((b) => b.language === "en"),
   daySeed + 20,
 ).map((b) => {
-  // Format date for the subtitle (e.g., "Mar 15, 2024")
   const dateStr = new Date(b.date).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -83,7 +87,7 @@ const tipFive = seededShuffle(tips, daySeed + 13)
 
 const hasYoga = yogaItems.length > 0;
 const hasAudio = audioItems.length > 0;
-const hasBlog = blogItems.length > 0; // Check if blogs exist
+const hasBlog = blogItems.length > 0;
 const hasTips = tipFive.length > 0;
 ---
 
@@ -126,7 +130,6 @@ const hasTips = tipFive.length > 0;
       )
     }
 
-    {/* 3. New Blog Section */}
     {
       hasBlog && (
         <section class="reveal section-stream">

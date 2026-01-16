@@ -1,19 +1,36 @@
 ---
+import YogaDetail from "../../components/YogaDetail.astro";
 import { yogaPlans } from "../../data/generated";
+import type { GetStaticPaths } from "astro";
 
-export async function getStaticPaths() {
-    // 1. Filter to keep ONLY English plans.
-    // This prevents duplicate slug errors and ensures we target the /en/ version.
-    const englishPlans = yogaPlans.filter((p) => p.language === "en");
-
-    return englishPlans.map((p) => ({
-        params: { slug: p.slug },
-    }));
+interface Props {
+    plan: (typeof yogaPlans)[number];
 }
 
-const { slug } = Astro.params;
+export const getStaticPaths = (async () => {
+    const englishPlans = yogaPlans.filter((p) => p.language === "en");
+    return englishPlans.map((p) => ({
+        params: { slug: p.slug },
+        props: { plan: p },
+    }));
+}) satisfies GetStaticPaths;
 
-// 2. Perform the redirect
-// In static builds, this automatically generates an HTML page with a meta-refresh tag.
-return Astro.redirect(`/en/yoga/${slug}`);
+const { plan } = Astro.props;
+const lang = "en";
+const canonical = `/en/yoga/${plan.slug}`;
+
+const t = {
+    back: "Back to Plans",
+    openApp: "Open in App",
+    browse: "Browse other plans",
+};
 ---
+
+<YogaDetail
+    plan={plan}
+    canonicalPath={canonical}
+    lang={lang}
+    labels={t}
+    backLink="/yoga"
+    browseLink="/yoga"
+/>
