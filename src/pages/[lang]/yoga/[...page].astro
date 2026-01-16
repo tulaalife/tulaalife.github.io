@@ -1,44 +1,76 @@
 ---
-import Site from "../../layouts/Site.astro";
-import { yogaPlans } from "../../data/generated";
+import Site from "../../../layouts/Site.astro"; // Updated import depth
+import { yogaPlans } from "../../../data/generated";
 import type { Page, GetStaticPaths } from "astro";
 
-// 1. Define Props for TypeScript safety
+// 1. Define Props
 interface Props {
     page: Page<(typeof yogaPlans)[number]>;
 }
 
-// 2. Generate Static Paths
+// 2. Generate Static Paths (Language Aware)
 export const getStaticPaths = (async ({ paginate }) => {
-    // paginate() automatically handles the slicing based on pageSize
-    return paginate(yogaPlans, { pageSize: 20 });
+    const languages = ["en", "hi"];
+
+    // For each language, filter the plans and create a paginated route
+    return languages.flatMap((lang) => {
+        const langPlans = yogaPlans.filter((p) => p.language === lang);
+
+        return paginate(langPlans, {
+            params: { lang },
+            pageSize: 20,
+        });
+    });
 }) satisfies GetStaticPaths;
 
-// 3. Get the 'page' prop
+// 3. Get Props & Params
 const { page } = Astro.props;
+const { lang } = Astro.params;
 
-const title = "Yoga Plans";
-const description =
-    "Expert-guided sequences for every need — from pain relief to prenatal care.";
+// 4. Translation Labels
+const LABELS = {
+    hi: {
+        title: "योग कार्यक्रम",
+        description:
+            "हर ज़रूरत के लिए विशेषज्ञ-निर्देशित क्रम — दर्द निवारण से लेकर प्रसव पूर्व देखभाल तक।",
+        view: "योजना देखें",
+        prev: "← पिछला",
+        next: "अगला →",
+        metaPage: "पेज",
+    },
+};
+
+// Fallback to English
+const t = LABELS[lang as keyof typeof LABELS] || {
+    title: "Yoga Plans",
+    description:
+        "Expert-guided sequences for every need — from pain relief to prenatal care.",
+    view: "View Plan",
+    prev: "← Previous",
+    next: "Next →",
+    metaPage: "Page",
+};
+
+const pageTitle = `${t.title} · ${t.metaPage} ${page.currentPage}`;
 ---
 
 <Site
-    title={`${title} · Page ${page.currentPage}`}
-    description={description}
-    canonicalPath={page.url.current}
+    title={pageTitle}
+    description={t.description}
+    canonicalPath={`/${lang}/yoga`}
 >
     <main class="wrap yp-container">
         <header class="yp-header">
-            <h1 class="yp-title">{title}</h1>
-            <p class="yp-subtitle">{description}</p>
+            <h1 class="yp-title">{t.title}</h1>
+            <p class="yp-subtitle">{t.description}</p>
         </header>
 
         <div class="yp-grid">
-            {/* 4. Use page.data instead of 'items' */}
             {
                 page.data.map((p) => (
                     <article class="yp-card">
-                        <a href={`/yoga/${p.slug}`} class="yp-link">
+                        {/* FIX: Link includes {lang} to avoid redirecting to English */}
+                        <a href={`/${lang}/yoga/${p.slug}`} class="yp-link">
                             <div class="yp-thumb-frame">
                                 <img
                                     src={p.image}
@@ -51,7 +83,7 @@ const description =
                             <div class="yp-content">
                                 <h3 class="yp-item-title">{p.title}</h3>
                                 <p class="yp-item-desc">{p.teaser}</p>
-                                <span class="yp-more">View Plan →</span>
+                                <span class="yp-more">{t.view} →</span>
                             </div>
                         </a>
                     </article>
@@ -59,28 +91,28 @@ const description =
             }
         </div>
 
-        {/* 5. Static Pagination Controls */}
+        {/* Pagination Controls */}
         {
             page.lastPage > 1 && (
                 <nav class="yp-pagination" aria-label="Pagination">
                     {page.url.prev ? (
                         <a href={page.url.prev} class="btn-pill">
-                            ← Previous
+                            {t.prev}
                         </a>
                     ) : (
-                        <span class="btn-pill disabled">← Previous</span>
+                        <span class="btn-pill disabled">{t.prev}</span>
                     )}
 
                     <span class="yp-page-meta">
-                        Page {page.currentPage} of {page.lastPage}
+                        {t.metaPage} {page.currentPage} of {page.lastPage}
                     </span>
 
                     {page.url.next ? (
                         <a href={page.url.next} class="btn-pill">
-                            Next →
+                            {t.next}
                         </a>
                     ) : (
-                        <span class="btn-pill disabled">Next →</span>
+                        <span class="btn-pill disabled">{t.next}</span>
                     )}
                 </nav>
             )
@@ -89,7 +121,7 @@ const description =
 </Site>
 
 <style>
-    /* ... The styles remain exactly the same ... */
+    /* ... Keep your existing styles exactly as they were ... */
     .yp-container {
         max-width: var(--container);
         margin: 0 auto;
