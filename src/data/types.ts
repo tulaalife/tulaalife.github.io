@@ -2,13 +2,13 @@ export type Locale = 'en' | 'hi'; // keep for future, we’re not setting it yet
 
 export interface YogaPlanPreview {
     slug: string;
+    language: string;
     title: string;
     subtitle: string;
-    teaser: string;      // short description (~160 chars)
-    benefits?: string;   // flattened from insights[]
-    image: string;       // absolute URL
-    deeplink: string;    // tulaa://yoga/{slug}
-    locale?: Locale;
+    teaser: string;
+    benefits: string;
+    image: string;
+    deeplink: string;
 }
 
 export interface GuidedAudioPreview {
