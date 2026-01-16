@@ -24,6 +24,8 @@ const hasCTA = Boolean(ctaHref && ctaLabel);
 // 1. Circular Illusion: Repeat items
 const REPEAT_COUNT = 12;
 const displayItems = Array(REPEAT_COUNT).fill(items).flat();
+// Generate a safe ID for JS targeting
+const shelfId = `tips-${title.replace(/\s+/g, "")}`;
 ---
 
 {
@@ -34,12 +36,16 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
                 {subtitle && <p class="tips-shelf-subtitle">{subtitle}</p>}
             </header>
 
-            {/* Added ID for JS targeting */}
-            <div class="tips-viewport" id={`tips-${title.replace(/\s+/g, "")}`}>
+            {/* UPDATED: Added data attributes for the script */}
+            <div
+                class="tips-viewport"
+                id={shelfId}
+                data-item-count={items.length}
+                data-repeat-count={REPEAT_COUNT}
+            >
                 <ul class="tips-track" role="list">
                     {displayItems.map((t, index) => (
                         <li class="tips-item">
-                            {/* 2. FIX: Use t.href if available, fallback to slug */}
                             <a
                                 href={t.href || `/tips/${t.slug}`}
                                 class="tips-card"
@@ -83,55 +89,65 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
     )
 }
 
-<script
-    is:inline
-    define:vars={{
-        itemCount: items.length,
-        repeatCount: REPEAT_COUNT,
-        title,
-    }}
->
-    (function () {
-        const id = `tips-${title.replace(/\s+/g, "")}`;
-        const viewport = document.getElementById(id);
-        if (!viewport) return;
+<script>
+    // Standard Module Script - runs on page load and navigation
+    document.addEventListener("astro:page-load", () => {
+        const viewports =
+            document.querySelectorAll<HTMLElement>(".tips-viewport");
 
-        // 1. Daily Random Seeding Logic
-        const today = new Date();
-        const dateSeed =
-            today.getFullYear() * 10000 +
-            (today.getMonth() + 1) * 100 +
-            today.getDate();
+        viewports.forEach((viewport) => {
+            const itemCount = Number(viewport.dataset.itemCount || 0);
+            const repeatCount = Number(viewport.dataset.repeatCount || 0);
 
-        const pseudoRandom = (seed) => {
-            let x = Math.sin(seed) * 10000;
-            return x - Math.floor(x);
-        };
+            if (itemCount === 0) return;
 
-        const middleBatch = Math.floor(repeatCount / 2);
-        const randomOffset = Math.floor(pseudoRandom(dateSeed) * itemCount);
-        const startIndex = middleBatch * itemCount + randomOffset;
+            // 1. Daily Random Seeding Logic
+            const today = new Date();
+            const dateSeed =
+                today.getFullYear() * 10000 +
+                (today.getMonth() + 1) * 100 +
+                today.getDate();
 
-        // 2. Find target
-        const cards = viewport.querySelectorAll(".tips-item");
-        const targetCard = cards[startIndex];
+            const pseudoRandom = (seed: number) => {
+                let x = Math.sin(seed) * 10000;
+                return x - Math.floor(x);
+            };
 
-        if (targetCard) {
-            // 3. SAFE SCROLL (scrollLeft)
-            const cardLeft = targetCard.offsetLeft;
-            const cardWidth = targetCard.offsetWidth;
-            const viewportWidth = viewport.offsetWidth;
+            const middleBatch = Math.floor(repeatCount / 2);
+            const randomOffset = Math.floor(pseudoRandom(dateSeed) * itemCount);
+            const startIndex = middleBatch * itemCount + randomOffset;
 
-            const targetPosition = cardLeft - viewportWidth / 2 + cardWidth / 2;
+            // 2. Find target card
+            const cards = viewport.querySelectorAll(".tips-item");
+            const targetCard = cards[startIndex] as HTMLElement;
 
-            viewport.scrollLeft = targetPosition;
+            if (targetCard) {
+                // 3. Robust Scroll Calculation
+                const viewportRect = viewport.getBoundingClientRect();
+                const cardRect = targetCard.getBoundingClientRect();
 
-            // Enable smooth scrolling AFTER the initial jump
-            requestAnimationFrame(() => {
-                viewport.style.scrollBehavior = "smooth";
-            });
-        }
-    })();
+                // Distance from left edge of viewport
+                const offsetFromViewport = cardRect.left - viewportRect.left;
+
+                // Calculate center offset
+                const centerOffset =
+                    (viewport.clientWidth - targetCard.clientWidth) / 2;
+                const scrollTarget =
+                    viewport.scrollLeft + offsetFromViewport - centerOffset;
+
+                // Instant Jump
+                viewport.scrollTo({
+                    left: scrollTarget,
+                    behavior: "auto",
+                });
+
+                // Enable smooth scrolling AFTER the initial jump
+                requestAnimationFrame(() => {
+                    viewport.style.scrollBehavior = "smooth";
+                });
+            }
+        });
+    });
 </script>
 
 <style>
