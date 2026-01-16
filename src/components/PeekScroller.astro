@@ -23,9 +23,10 @@ const { title, subtitle, items = [], ctaHref, ctaLabel } = Astro.props;
 const hasCTA = Boolean(ctaHref && ctaLabel);
 
 // 1. Create a "Circular" illusion by repeating the list multiple times.
-// We repeat enough times so the user feels like they can scroll endlessly.
 const REPEAT_COUNT = 12;
 const displayItems = Array(REPEAT_COUNT).fill(items).flat();
+// Generate a safe ID for the scroll container
+const shelfId = `shelf-${title.replace(/\s+/g, "")}`;
 ---
 
 {
@@ -36,8 +37,15 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
         {subtitle && <p class="shelf-subtitle">{subtitle}</p>}
       </header>
 
-      {/* ID used for JS targeting */}
-      <div class="shelf-viewport" id={`shelf-${title.replace(/\s+/g, "")}`}>
+      {/* UPDATED: Added data attributes so our script can read them easily.
+         We removed the JS variable dependency.
+      */}
+      <div
+        class="shelf-viewport"
+        id={shelfId}
+        data-item-count={items.length}
+        data-repeat-count={REPEAT_COUNT}
+      >
         <ul class="shelf-track" role="list">
           {displayItems.map((it, index) => (
             <li class="shelf-item">
@@ -83,62 +91,68 @@ const displayItems = Array(REPEAT_COUNT).fill(items).flat();
   )
 }
 
-<script
-  is:inline
-  define:vars={{ itemCount: items.length, repeatCount: REPEAT_COUNT, title }}
->
-  (function () {
-    const id = `shelf-${title.replace(/\s+/g, "")}`;
-    const viewport = document.getElementById(id);
-    if (!viewport) return;
+<script>
+  // Standard Module Script - runs once on bundle load.
+  // We attach the listener to handle every navigation event.
+  document.addEventListener("astro:page-load", () => {
+    const viewports = document.querySelectorAll<HTMLElement>(".shelf-viewport");
 
-    // 2. Daily Random Seeding Logic
-    const today = new Date();
-    const dateSeed =
-      today.getFullYear() * 10000 +
-      (today.getMonth() + 1) * 100 +
-      today.getDate();
+    viewports.forEach((viewport) => {
+      // Prevent double-initialization if needed, though usually safe to re-run
+      // if (viewport.dataset.scrolled) return;
 
-    const pseudoRandom = (seed) => {
-      let x = Math.sin(seed) * 10000;
-      return x - Math.floor(x);
-    };
+      const itemCount = Number(viewport.dataset.itemCount || 0);
+      const repeatCount = Number(viewport.dataset.repeatCount || 0);
 
-    const middleBatch = Math.floor(repeatCount / 2);
-    const randomOffset = Math.floor(pseudoRandom(dateSeed) * itemCount);
-    const startIndex = middleBatch * itemCount + randomOffset;
+      if (itemCount === 0) return;
 
-    const cards = viewport.querySelectorAll(".shelf-item");
-    const targetCard = cards[startIndex];
+      // Daily Random Seeding Logic
+      const today = new Date();
+      const dateSeed =
+        today.getFullYear() * 10000 +
+        (today.getMonth() + 1) * 100 +
+        today.getDate();
 
-    if (targetCard) {
-      // 3. Instant Scroll to Center (Corrected)
-      // We calculate the position manually to avoid scrolling the main body window
+      const pseudoRandom = (seed: number) => {
+        let x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+      };
 
-      const viewportRect = viewport.getBoundingClientRect();
-      const cardRect = targetCard.getBoundingClientRect();
+      const middleBatch = Math.floor(repeatCount / 2);
+      const randomOffset = Math.floor(pseudoRandom(dateSeed) * itemCount);
+      const startIndex = middleBatch * itemCount + randomOffset;
 
-      // Calculate how far the card is from the left edge of the viewport
-      const offsetFromViewport = cardRect.left - viewportRect.left;
+      const cards = viewport.querySelectorAll(".shelf-item");
+      const targetCard = cards[startIndex] as HTMLElement;
 
-      // Calculate the adjustment needed to center it
-      // currentScroll + (offset - (halfViewport - halfCard))
-      const centerOffset = (viewport.clientWidth - targetCard.clientWidth) / 2;
-      const scrollTarget =
-        viewport.scrollLeft + offsetFromViewport - centerOffset;
+      if (targetCard) {
+        // Calculate Position
+        const viewportRect = viewport.getBoundingClientRect();
+        const cardRect = targetCard.getBoundingClientRect();
+        const offsetFromViewport = cardRect.left - viewportRect.left;
 
-      viewport.scrollTo({
-        left: scrollTarget,
-        behavior: "auto",
-      });
+        // Ensure clientWidth is available (it will be, inside astro:page-load)
+        const centerOffset =
+          (viewport.clientWidth - targetCard.clientWidth) / 2;
+        const scrollTarget =
+          viewport.scrollLeft + offsetFromViewport - centerOffset;
 
-      // Enable smooth scrolling AFTER the initial jump
-      requestAnimationFrame(() => {
-        viewport.style.scrollBehavior = "smooth";
-      });
-    }
-  })();
+        // Instant Jump
+        viewport.scrollTo({
+          left: scrollTarget,
+          behavior: "auto",
+        });
+
+        // Enable smooth scrolling AFTER the initial jump
+        requestAnimationFrame(() => {
+          viewport.style.scrollBehavior = "smooth";
+          viewport.dataset.scrolled = "true"; // Mark as done
+        });
+      }
+    });
+  });
 </script>
+
 <style>
   /* --- Section Layout --- */
   .shelf-section {

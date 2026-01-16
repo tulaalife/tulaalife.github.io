@@ -41,8 +41,9 @@ const t = LABELS[lang as keyof typeof LABELS] || {
 
 <Site
     title={`${audio.title} · Tulaa`}
-    description={audio.teaser || "Audio session from Tulaa."}
+    description={audio.teaser || "Guided meditation session from Tulaa."}
     canonicalPath={canonical}
+    ogImage={audio.image}
 >
     <div class="content-shell">
         <article class="home-block audio-card">
