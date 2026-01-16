@@ -52,13 +52,14 @@ const t = LABELS[lang as keyof typeof LABELS] || {
 };
 
 const pageTitle = `${t.title} · ${t.metaPage} ${page.currentPage}`;
+
+const canonical =
+    page.currentPage === 1
+        ? `/${lang}/yoga`
+        : `/${lang}/yoga/${page.currentPage}`;
 ---
 
-<Site
-    title={pageTitle}
-    description={t.description}
-    canonicalPath={`/${lang}/yoga`}
->
+<Site title={pageTitle} description={t.description} canonicalPath={canonical}>
     <main class="wrap yp-container">
         <header class="yp-header">
             <h1 class="yp-title">{t.title}</h1>
