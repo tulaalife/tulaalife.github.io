@@ -1,6 +1,7 @@
 ---
 // Layout.astro
 import FooterCard from "../components/FooterCard.astro";
+import { ClientRouter } from "astro:transitions"; // Modern router for Astro 5.0+
 
 interface Props {
     title: string;
@@ -20,6 +21,11 @@ const {
 
 const site = "https://tulaalife.com";
 const url = new URL(canonicalPath, site).toString();
+
+// Process the image URL to ensure it is absolute
+const socialImage = ogImage.startsWith("http")
+    ? ogImage
+    : new URL(ogImage, site).toString();
 ---
 
 <!doctype html>
@@ -28,19 +34,33 @@ const url = new URL(canonicalPath, site).toString();
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
-        <meta name="theme-color" content="#f9f8f6" />
-        <meta name="robots" content="index,follow" />
+        <meta name="theme-color" content="#f9f8f6" id="theme-color-meta" />
+
         <title>{title}</title>
+
         <meta name="description" content={description} />
         <link rel="canonical" href={url} />
+        <meta name="robots" content="index,follow" />
 
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Tulaa" />
+        <meta property="og:locale" content="en_US" />
         <meta property="og:url" content={url} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
-        <meta property="og:image" content={ogImage} />
+        <meta property="og:image" content={socialImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta
+            property="og:image:alt"
+            content="Tulaa – Yoga, Meditation & Daily Wellness"
+        />
+
         <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={socialImage} />
+        <meta name="twitter:site" content="@tulaalife" />
 
         <link
             rel="icon"
@@ -51,15 +71,25 @@ const url = new URL(canonicalPath, site).toString();
             rel="apple-touch-icon"
             href="https://images.tulaa.life/apple-touch-icon.png"
         />
-        <link rel="preconnect" href="https://images.tulaa.life" crossorigin />
+
+        <ClientRouter />
 
         <script is:inline>
             (() => {
                 const root = document.documentElement;
                 const palettes = ["base", "sage", "ocean", "lavender", "clay"];
 
-                // 1. Initial Load
+                // Colors for mobile browser address bar
+                const metaColors = {
+                    light: "#f9f8f6", // Matches --bg1 light
+                    dark: "#1a1a1a", // Matches generic dark bg
+                };
+
+                // 1. Initial Load & Re-init function
                 function init() {
+                    const metaThemeColor =
+                        document.getElementById("theme-color-meta");
+
                     try {
                         const savedTheme =
                             localStorage.getItem("tulaa-theme") || "light";
@@ -69,15 +99,29 @@ const url = new URL(canonicalPath, site).toString();
                         root.dataset.theme = savedTheme;
                         root.dataset.palette = savedPalette;
                         root.style.colorScheme = savedTheme;
+
+                        // Update meta tag for mobile browsers
+                        if (metaThemeColor) {
+                            metaThemeColor.setAttribute(
+                                "content",
+                                metaColors[savedTheme],
+                            );
+                        }
                     } catch {
                         root.dataset.theme = "light";
                         root.dataset.palette = "base";
                     }
                 }
-                init();
 
-                // 2. Toggle Light/Dark
+                // Run on initial load
+                init();
+                // Run after every View Transition navigation
+                document.addEventListener("astro:page-load", init);
+
+                // 2. Toggle Light/Dark (Global Function)
                 window.toggleTheme = function () {
+                    const metaThemeColor =
+                        document.getElementById("theme-color-meta");
                     const current =
                         root.dataset.theme === "dark" ? "dark" : "light";
                     const next = current === "dark" ? "light" : "dark";
@@ -85,9 +129,17 @@ const url = new URL(canonicalPath, site).toString();
                     root.dataset.theme = next;
                     root.style.colorScheme = next;
                     localStorage.setItem("tulaa-theme", next);
+
+                    // Update browser address bar
+                    if (metaThemeColor) {
+                        metaThemeColor.setAttribute(
+                            "content",
+                            metaColors[next],
+                        );
+                    }
                 };
 
-                // 3. Cycle Palette
+                // 3. Cycle Palette (Global Function)
                 window.cyclePalette = function () {
                     const current = root.dataset.palette || "base";
                     const idx = palettes.indexOf(current);
@@ -95,17 +147,19 @@ const url = new URL(canonicalPath, site).toString();
 
                     root.dataset.palette = next;
                     localStorage.setItem("tulaa-palette", next);
-
-                    // Visual feedback in console or toast could go here
                     console.log(`Switched to ${next} palette`);
                 };
 
                 // 4. Hotkey Listener (Shift + P)
-                document.addEventListener("keydown", (e) => {
-                    if (e.shiftKey && (e.key === "P" || e.key === "p")) {
-                        window.cyclePalette();
-                    }
-                });
+                // Use a persistent listener on document so we don't need to re-attach
+                if (!window.hasTulaaHotkey) {
+                    document.addEventListener("keydown", (e) => {
+                        if (e.shiftKey && (e.key === "P" || e.key === "p")) {
+                            window.cyclePalette();
+                        }
+                    });
+                    window.hasTulaaHotkey = true;
+                }
             })();
         </script>
 
@@ -320,6 +374,21 @@ const url = new URL(canonicalPath, site).toString();
                 transition:
                     background 0.3s ease,
                     color 0.3s ease;
+            }
+
+            /* Accessibility Fix for reduced motion */
+            @media (prefers-reduced-motion: reduce) {
+                .bg-orbit::before,
+                .bg-orbit::after {
+                    animation: none !important;
+                }
+                *,
+                *::before,
+                *::after {
+                    transition-duration: 0.01ms !important;
+                    animation-duration: 0.01ms !important;
+                    scroll-behavior: auto !important;
+                }
             }
 
             .bg-orbit {
@@ -591,63 +660,64 @@ const url = new URL(canonicalPath, site).toString();
             )
         }
 
-        <script is:inline>
-            // LOGIC FOR LONG PRESS
-            (function () {
+        <script>
+            // 1. Declare the custom properties on Window so TS recognizes them
+            declare global {
+                interface Window {
+                    cyclePalette: () => void;
+                    toggleTheme: () => void;
+                }
+            }
+
+            document.addEventListener("astro:page-load", () => {
                 const btn = document.getElementById("themeBtn");
-                let pressTimer;
+                if (!btn) return;
+
+                // 2. Explicitly type the timer (handles browser compatibility)
+                let pressTimer: ReturnType<typeof setTimeout>;
                 let isLongPress = false;
 
-                const startPress = (e) => {
-                    // Prevent right click menu on mobile
-                    if (e.type === "click" && e.button !== 0) return;
+                // 3. Type the event as MouseEvent or TouchEvent
+                const startPress = (e: MouseEvent | TouchEvent) => {
+                    // Safe check: Only check .button if it is actually a MouseEvent
+                    if (e instanceof MouseEvent && e.button !== 0) return;
 
                     isLongPress = false;
                     pressTimer = setTimeout(() => {
                         isLongPress = true;
                         window.cyclePalette();
-                        // Optional: Vibration feedback for mobile
                         if (navigator.vibrate) navigator.vibrate(50);
-                    }, 500); // 500ms hold time
+                    }, 500);
                 };
 
-                const endPress = (e) => {
+                // 4. Generic Event type for endPress
+                const endPress = (e: Event) => {
                     clearTimeout(pressTimer);
-                    if (!isLongPress) {
-                        // If it wasn't a long press, it's a click -> Toggle Theme
-                        // We check event type to avoid double firing on touch devices
-                        if (e.type === "mouseup" || e.type === "touchend") {
-                            // Logic handled in click, but we prevent default click if long press occurred
-                        }
-                    } else {
-                        // It was a long press, stop the standard click event
-                        if (e.cancelable) e.preventDefault();
-                    }
                 };
 
-                // Mouse events
+                // Mouse
                 btn.addEventListener("mousedown", startPress);
                 btn.addEventListener("mouseup", endPress);
                 btn.addEventListener("mouseleave", () =>
                     clearTimeout(pressTimer),
                 );
 
-                // Touch events
+                // Touch
                 btn.addEventListener("touchstart", startPress, {
                     passive: true,
                 });
                 btn.addEventListener("touchend", endPress);
 
-                // Standard Click (only fires if not long press)
-                btn.addEventListener("click", (e) => {
+                // 5. Explicitly type the click event
+                btn.addEventListener("click", (e: MouseEvent) => {
                     if (isLongPress) {
                         e.preventDefault();
-                        e.stopPropagation();
+                        e.stopImmediatePropagation();
                     } else {
                         window.toggleTheme();
                     }
                 });
-            })();
+            });
         </script>
     </body>
 </html>
