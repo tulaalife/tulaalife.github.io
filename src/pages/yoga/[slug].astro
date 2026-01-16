@@ -1,19 +1,271 @@
 ---
+import Site from "../../layouts/Site.astro";
+import CTAButton from "../../components/CTAButton.astro";
 import { yogaPlans } from "../../data/generated";
+import type { GetStaticPaths } from "astro";
 
-export async function getStaticPaths() {
-    // 1. Filter to keep ONLY English plans.
-    // This prevents duplicate slug errors and ensures we target the /en/ version.
+// 1. Define Props
+interface Props {
+    plan: (typeof yogaPlans)[number];
+}
+
+// 2. Generate Static Paths (English Only)
+export const getStaticPaths = (async () => {
+    // Filter to keep ONLY English plans
     const englishPlans = yogaPlans.filter((p) => p.language === "en");
 
     return englishPlans.map((p) => ({
         params: { slug: p.slug },
+        props: { plan: p },
     }));
-}
+}) satisfies GetStaticPaths;
 
-const { slug } = Astro.params;
+// 3. Destructure props
+const { plan } = Astro.props;
 
-// 2. Perform the redirect
-// In static builds, this automatically generates an HTML page with a meta-refresh tag.
-return Astro.redirect(`/en/yoga/${slug}`);
+// 4. Hardcode Language to English
+const lang = "en";
+
+// 5. Set Canonical to the /en/ version (SEO Best Practice)
+const canonical = `/en/yoga/${plan.slug}`;
+
+// 6. Hardcode English Labels
+const t = {
+    back: "Back to Plans",
+    openApp: "Open in App",
+    browse: "Browse other plans",
+};
 ---
+
+<Site
+    title={`${plan.title} · Yoga Plan · Tulaa`}
+    description={plan.teaser ||
+        plan.subtitle ||
+        "Gentle preview of this Tulaa yoga plan."}
+    canonicalPath={canonical}
+    ogImage={plan.image}
+>
+    <div class="content-shell">
+        <article class="home-block plan-card">
+            <nav class="plan-nav">
+                {
+                    /* Link back to the root /yoga listing (which you also made direct) */
+                }
+                <a href="/yoga" class="back-link">
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path d="m15 18-6-6 6-6"></path>
+                    </svg>
+                    {t.back}
+                </a>
+            </nav>
+
+            <header class="plan-header">
+                <h1 class="plan-title">{plan.title}</h1>
+                {plan.subtitle && <p class="plan-subtitle">{plan.subtitle}</p>}
+            </header>
+
+            <div class="image-frame">
+                <img
+                    src={plan.image}
+                    alt={plan.title}
+                    width="1200"
+                    height="630"
+                    loading="eager"
+                />
+            </div>
+
+            <div class="plan-body">
+                {plan.teaser && <p class="plan-lead">{plan.teaser}</p>}
+
+                {
+                    plan.benefits && (
+                        <div class="benefits-module">
+                            <h3 class="benefits-label">
+                                <span class="icon">✦</span> Key Benefits
+                            </h3>
+                            <p class="benefits-text">{plan.benefits}</p>
+                        </div>
+                    )
+                }
+            </div>
+
+            <footer class="plan-footer">
+                <p class="app-note">Available exclusively in the Tulaa App</p>
+                <div class="button-group">
+                    <CTAButton
+                        href="https://apps.apple.com/app/id6748626498"
+                        label={t.openApp}
+                        variant="solid"
+                        size="md"
+                    />
+                    {/* Link to other English plans */}
+                    <CTAButton
+                        href="/yoga"
+                        label={t.browse}
+                        variant="soft"
+                        size="md"
+                    />
+                </div>
+            </footer>
+        </article>
+    </div>
+</Site>
+
+<style>
+    /* ... Copy the exact same styles from your [lang]/yoga/[slug].astro file ... */
+    /* ... Or ideally, move these styles to a shared .css file to avoid duplication ... */
+
+    .content-shell {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 0 16px;
+    }
+
+    .plan-card {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(24px, 4vw, 32px);
+    }
+
+    .plan-nav {
+        display: flex;
+        align-items: center;
+    }
+
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: var(--fs-body-sm);
+        font-weight: var(--fw-medium);
+        color: var(--muted);
+        text-decoration: none;
+        transition:
+            color 0.2s ease,
+            transform 0.2s ease;
+    }
+    .back-link:hover {
+        color: var(--accent);
+        transform: translateX(-2px);
+    }
+
+    .plan-header {
+        text-align: center;
+        margin: 0 auto;
+        max-width: 650px;
+    }
+
+    .plan-title {
+        font-size: clamp(1.8rem, 4vw, 2.5rem);
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        margin-bottom: 12px;
+        background: linear-gradient(
+            180deg,
+            var(--fg) 0%,
+            color-mix(in oklch, var(--fg), transparent 20%) 100%
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        padding-top: 0.15em;
+        padding-bottom: 0.1em;
+    }
+
+    .plan-subtitle {
+        font-size: var(--fs-body-lg);
+        color: var(--muted);
+        font-weight: var(--fw-regular);
+        line-height: 1.4;
+    }
+
+    .image-frame {
+        width: 100%;
+        border-radius: 16px;
+        overflow: hidden;
+        border: 1px solid var(--ring);
+        box-shadow: var(--elev-2);
+        position: relative;
+    }
+
+    .image-frame img {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 16/9;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.7s ease;
+    }
+
+    .plan-body {
+        max-width: 68ch;
+        margin: 0 auto;
+    }
+
+    .plan-lead {
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: var(--fg);
+        margin-bottom: 32px;
+    }
+
+    .benefits-module {
+        background: color-mix(in oklch, var(--accent), transparent 94%);
+        border: 1px solid color-mix(in oklch, var(--accent), transparent 85%);
+        border-radius: 16px;
+        padding: 24px;
+        position: relative;
+    }
+
+    .benefits-label {
+        font-size: var(--fs-caption);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--accent);
+        font-weight: var(--fw-bold);
+        margin-bottom: 8px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .benefits-text {
+        font-size: var(--fs-body);
+        color: var(--fg);
+        line-height: 1.6;
+        opacity: 0.9;
+    }
+
+    .plan-footer {
+        margin-top: 16px;
+        padding-top: 24px;
+        border-top: 1px solid var(--ring);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .app-note {
+        font-size: var(--fs-caption);
+        color: var(--muted);
+        font-style: italic;
+    }
+
+    .button-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+</style>
