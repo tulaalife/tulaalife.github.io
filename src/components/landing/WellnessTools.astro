@@ -48,10 +48,6 @@
     .section {
         padding: 100px 0;
     }
-    .bg-subtle {
-        background-color: var(--bg-sub);
-    }
-
     .grid-layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -101,6 +97,9 @@
     }
 
     @media (max-width: 768px) {
+        .section {
+            padding: 64px 0;
+        }
         .grid-layout {
             grid-template-columns: 1fr;
             text-align: center;
