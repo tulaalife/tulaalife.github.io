@@ -1,10 +1,17 @@
 ---
 import Site from "../layouts/Site.astro";
 import type { Page } from "astro";
-import type { YogaPlanPreview } from "../data/types";
+
+interface Plan {
+    slug: string;
+    title: string;
+    teaser: string;
+    image: string;
+    language?: string;
+}
 
 interface Props {
-    page: Page<YogaPlanPreview>;
+    page: Page<Plan>;
     title: string;
     description: string;
     canonicalPath: string;
@@ -23,11 +30,11 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 ---
 
 <Site title={title} description={description} canonicalPath={canonicalPath}>
-    <main class="page-container">
-        <header class="page-header">
-            <h1 class="title">{labels.title}</h1>
-            <p class="subtitle">{labels.description}</p>
-        </header>
+    <main class="listing-container">
+        <div class="listing-header">
+            <h1 class="page-title">{labels.title}</h1>
+            <p class="page-subtitle">{labels.description}</p>
+        </div>
 
         <div class="plans-grid">
             {
@@ -45,6 +52,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
                         <div class="card-content">
                             <h3 class="card-title">{p.title}</h3>
                             <p class="card-desc">{p.teaser}</p>
+
                             <div class="card-footer">
                                 <span class="view-link">{labels.view}</span>
                                 <span class="icon">→</span>
@@ -84,44 +92,55 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 </Site>
 
 <style>
-    /* Layout */
-    .page-container {
+    /* =========================================
+       LISTING LAYOUT
+       ========================================= */
+
+    .listing-container {
         max-width: var(--container-width);
         margin: 0 auto;
-        padding: 40px 24px 80px;
+        padding: calc(var(--header-height) + 60px) 24px 80px;
     }
 
-    /* Header */
-    .page-header {
+    /* Header Styles */
+    .listing-header {
         text-align: center;
         margin-bottom: 60px;
-        padding-top: 20px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+        /* Ensure it behaves like a normal block */
+        position: relative;
     }
-    .title {
-        font-size: var(--text-h1);
+
+    .page-title {
+        font-size: var(--text-display);
         margin-bottom: 16px;
         letter-spacing: -0.02em;
+        line-height: 1.1;
     }
-    .subtitle {
-        font-size: 1.125rem;
+
+    .page-subtitle {
+        font-size: 1.15rem;
         color: var(--text-muted);
-        max-width: 600px;
-        margin: 0 auto;
         line-height: 1.5;
     }
 
-    /* Grid */
+    /* Grid System */
     .plans-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 32px;
     }
 
-    /* Cards */
+    /* =========================================
+       PLAN CARD
+       ========================================= */
+
     .plan-card {
         display: flex;
         flex-direction: column;
-        background: var(--bg-sub); /* Subtle grey/off-white background */
+        background: var(--bg-sub);
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
         overflow: hidden;
@@ -131,6 +150,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
             transform 0.3s ease,
             box-shadow 0.3s ease,
             border-color 0.3s;
+        height: 100%;
     }
 
     .plan-card:hover {
@@ -139,27 +159,28 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         border-color: color-mix(in srgb, var(--primary), transparent 70%);
     }
 
-    /* Image Wrapper (Aspect Ratio) */
+    /* Image - Fixed 4:3 Aspect Ratio */
     .card-image {
         position: relative;
         width: 100%;
-        aspect-ratio: 16/9; /* Cinematic ratio */
+        aspect-ratio: 4/3;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
+        background: var(--bg-main);
     }
 
     .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
+        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .plan-card:hover .card-image img {
-        transform: scale(1.05); /* Subtle zoom on hover */
+        transform: scale(1.06);
     }
 
-    /* Content */
+    /* Content Area */
     .card-content {
         padding: 24px;
         display: flex;
@@ -168,42 +189,47 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     }
 
     .card-title {
-        font-size: 1.25rem;
+        font-size: 1.35rem;
         font-weight: var(--fw-bold);
-        margin-bottom: 8px;
+        margin-bottom: 10px;
         line-height: 1.2;
+        letter-spacing: -0.01em;
     }
 
     .card-desc {
-        font-size: 0.95rem;
+        font-size: 1rem;
         color: var(--text-muted);
         line-height: 1.6;
         margin-bottom: 24px;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
         flex-grow: 1;
     }
 
-    /* Footer / Action */
+    /* Footer / Link */
     .card-footer {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: 600;
         color: var(--primary);
+        margin-top: auto;
     }
 
     .plan-card:hover .icon {
         transform: translateX(4px);
-        transition: transform 0.2s;
+        transition: transform 0.2s ease;
     }
 
-    /* Pagination */
+    /* =========================================
+       PAGINATION
+       ========================================= */
+
     .pagination {
-        margin-top: 64px;
+        margin-top: 80px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -211,7 +237,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     }
 
     .page-meta {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         color: var(--text-muted);
         font-variant-numeric: tabular-nums;
     }
@@ -219,9 +245,9 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     .btn-pill {
         display: inline-flex;
         align-items: center;
-        padding: 10px 20px;
+        padding: 10px 24px;
         border-radius: 999px;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         font-weight: 500;
         text-decoration: none;
         color: var(--text-main);
@@ -233,6 +259,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     .btn-pill:not(.disabled):hover {
         border-color: var(--primary);
         color: var(--primary);
+        background: var(--bg-sub);
     }
 
     .btn-pill.disabled {
@@ -241,12 +268,15 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         background: transparent;
     }
 
-    /* Mobile */
+    /* Mobile Tweaks */
     @media (max-width: 600px) {
-        .plans-grid {
-            grid-template-columns: 1fr; /* Stack on mobile */
+        .listing-container {
+            padding-top: calc(var(--header-height) + 40px);
         }
-        .page-header {
+        .plans-grid {
+            grid-template-columns: 1fr;
+        }
+        .listing-header {
             margin-bottom: 40px;
         }
     }
