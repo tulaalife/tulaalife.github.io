@@ -18,126 +18,125 @@ const highlights = [
 ];
 ---
 
-<section class="footer-card">
-    <div class="glow glow-1"></div>
-    <div class="glow glow-2"></div>
+<section class="footer-card-container">
+    <div class="footer-card">
+        <div class="mesh-gradient"></div>
+        <div class="glow-orb"></div>
 
-    <div class="content">
-        <h2 class="title">{headline}</h2>
-        <p class="sub">{subline}</p>
+        <div class="content">
+            <h2 class="title">{headline}</h2>
+            <p class="sub">{subline}</p>
 
-        <ul class="highlights">
-            {highlights.map((item) => <li>{item}</li>)}
-        </ul>
+            <ul class="highlights">
+                {highlights.map((item) => <li>{item}</li>)}
+            </ul>
 
-        <div class="actions">
-            <StoreButtons centered={true} inverted={true} />
+            <div class="actions">
+                <div class="button-wrapper">
+                    <StoreButtons centered={true} />
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
 <style>
+    /* Container to ensure absolute centering on mobile */
+    .footer-card-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
     .footer-card {
-        --card-padding: clamp(3rem, 5vw, 4.5rem) 1.5rem;
+        --card-bg-light: color-mix(in oklch, var(--primary), black 15%);
+        --card-bg-dark: color-mix(in oklch, var(--primary), black 40%);
 
         position: relative;
         width: 100%;
         max-width: var(--container-width);
-        margin: 0 auto;
-        padding: var(--card-padding);
-        border-radius: 32px;
+        padding: clamp(3rem, 8vw, 5rem) 2rem;
+        border-radius: 40px;
         text-align: center;
         overflow: hidden;
-        isolation: isolate; /* Creates a stacking context for glows */
+        isolation: isolate;
 
-        /* GLASS BASE: Rich Gradient */
         background: linear-gradient(
-            135deg,
-            var(--primary),
-            color-mix(in srgb, var(--primary), black 30%)
+            145deg,
+            var(--card-bg-light),
+            var(--primary)
         );
-
-        /* Glass Edge Border */
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-top: 1px solid rgba(255, 255, 255, 0.3); /* Simulates top light */
-
-        /* Deep Shadow */
+        border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow:
-            0 20px 40px -10px rgba(0, 0, 0, 0.2),
-            0 0 0 1px rgba(255, 255, 255, 0.05) inset; /* Inner rim light */
+            0 25px 50px -12px rgba(0, 0, 0, 0.25),
+            inset 0 1px 1px rgba(255, 255, 255, 0.2);
 
         color: white;
     }
 
-    /* Dark Mode: Darker, deeper glass */
     :global([data-theme="dark"]) .footer-card {
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--primary), black 20%),
-            color-mix(in srgb, var(--primary), black 60%)
-        );
-        border-color: rgba(255, 255, 255, 0.08);
-        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5);
+        background: linear-gradient(160deg, var(--card-bg-dark), #09090b);
+        border-color: rgba(255, 255, 255, 0.05);
     }
 
-    /* Decorative Background Blobs (The "Depth") */
-    .glow {
+    /* Decorative Depth */
+    .mesh-gradient {
         position: absolute;
-        border-radius: 50%;
-        filter: blur(80px);
+        inset: 0;
+        background-image:
+            radial-gradient(
+                at 0% 0%,
+                rgba(255, 255, 255, 0.12) 0px,
+                transparent 50%
+            ),
+            radial-gradient(
+                at 100% 100%,
+                rgba(0, 0, 0, 0.15) 0px,
+                transparent 50%
+            );
         z-index: -1;
-        opacity: 0.6;
     }
 
-    .glow-1 {
-        top: -20%;
-        left: -10%;
-        width: 300px;
-        height: 300px;
-        background: radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.2),
-            transparent 70%
-        );
-    }
-
-    .glow-2 {
-        bottom: -20%;
-        right: -10%;
-        width: 250px;
-        height: 250px;
-        background: radial-gradient(
-            circle,
-            rgba(255, 255, 255, 0.15),
-            transparent 70%
-        );
+    .glow-orb {
+        position: absolute;
+        top: -10%;
+        right: -5%;
+        width: 350px;
+        height: 350px;
+        background: var(--primary);
+        filter: blur(80px);
+        opacity: 0.25;
+        z-index: -1;
     }
 
     .content {
         position: relative;
         z-index: 2;
-        max-width: 620px;
+        max-width: 600px;
         margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Ensures text blocks are centered */
     }
 
     .title {
-        font-size: clamp(2rem, 5vw, 3rem);
-        font-weight: var(--fw-bold);
-        margin-bottom: 16px;
+        font-size: clamp(2.25rem, 6vw, 3.5rem);
+        font-weight: 800;
+        margin-bottom: 1.25rem;
         line-height: 1.1;
-        letter-spacing: -0.02em;
-        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        letter-spacing: -0.04em;
+        color: #fff;
     }
 
     .sub {
-        font-size: 1.15rem;
-        margin-bottom: 40px;
-        color: rgba(255, 255, 255, 0.95);
-        line-height: 1.5;
-        font-weight: 400;
+        font-size: clamp(1rem, 2vw, 1.15rem);
+        margin-bottom: 3rem;
+        color: rgba(255, 255, 255, 0.85);
+        line-height: 1.6;
     }
 
-    /* Glassmorphic Chips */
+    /* Glass Chips */
     .highlights {
         display: flex;
         flex-wrap: wrap;
@@ -145,45 +144,60 @@ const highlights = [
         gap: 12px;
         list-style: none;
         padding: 0;
-        margin: 0 0 48px;
+        margin: 0 0 3.5rem;
     }
 
     .highlights li {
-        font-size: 0.95rem;
-        font-weight: 600;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
         padding: 10px 20px;
         border-radius: 99px;
-
-        /* The Glass Effect */
         background: rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         color: white;
-        transition:
-            transform 0.2s,
-            background 0.2s;
-    }
-
-    .highlights li:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: translateY(-2px);
     }
 
     .actions {
+        width: 100%;
         display: flex;
         justify-content: center;
     }
 
-    /* Mobile Polish */
-    @media (max-width: 600px) {
-        .highlights {
-            gap: 8px;
+    /* Prevents StoreButtons from stretching */
+    .button-wrapper {
+        width: auto;
+        display: inline-block;
+        min-width: 160px; /* Adjust based on button size */
+    }
+
+    /* Mobile Fixes */
+    @media (max-width: 768px) {
+        .footer-card {
+            padding: 3.5rem 1.5rem;
+            border-radius: 32px;
         }
+
+        .title {
+            letter-spacing: -0.02em; /* Slightly looser for small screens */
+        }
+
+        .highlights {
+            flex-direction: column;
+            width: 100%;
+            max-width: 260px; /* Keeps chips uniform on mobile */
+        }
+
         .highlights li {
-            padding: 8px 16px;
-            font-size: 0.85rem;
+            width: 100%;
+            padding: 12px;
+        }
+
+        .button-wrapper {
+            width: 100%;
+            max-width: 200px; /* Constrains the App Store/Play Store buttons */
         }
     }
 </style>
