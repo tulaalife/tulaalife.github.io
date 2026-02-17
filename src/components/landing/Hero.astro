@@ -211,22 +211,17 @@ import StoreButtons from "../StoreButtons.astro";
         margin: 0 auto;
         z-index: 2;
 
+        aspect-ratio: 540 / 1174;
+
         background-color: #000;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
 
-        aspect-ratio: 300 / 533;
-        border-radius: 36px; /* Increased slightly to mask corners better */
-
-        box-shadow: 0 25px 60px -10px rgba(0, 0, 0, 0.3);
-
-        /* Thicker bezel to hide edges */
+        border-radius: 36px;
         border: 10px solid #1a1a1a;
 
         overflow: hidden;
-        transform: translateZ(0);
-        -webkit-mask-image: -webkit-radial-gradient(white, black);
     }
 
     /* Subtle Shimmer: Darker gradient for premium feel */
@@ -257,22 +252,20 @@ import StoreButtons from "../StoreButtons.astro";
     }
 
     .app-video {
-        /* Increased scale to ensure no pixel bleeding at edges */
-        width: 102%;
-        height: 102%;
-        margin-left: -1%;
-        margin-top: -1%;
+        position: absolute;
+        inset: 0;
 
-        /* Tighter radius to ensure it stays UNDER the bezel border */
-        border-radius: 28px;
+        width: 100%;
+        height: 100%;
 
         object-fit: cover;
-        background-color: transparent;
+
+        /* 👇 IMPORTANT FIX */
+        border-radius: 26px; /* 36 - 10 */
 
         opacity: 0;
-        transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1); /* Smoother fade */
+        transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
 
-        position: relative;
         z-index: 10;
     }
 
