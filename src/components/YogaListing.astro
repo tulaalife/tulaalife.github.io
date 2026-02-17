@@ -1,7 +1,7 @@
 ---
 import Site from "../layouts/Site.astro";
 import type { Page } from "astro";
-import type { YogaPlanPreview } from "../data/types"; // Ensure path is correct
+import type { YogaPlanPreview } from "../data/types";
 
 interface Props {
     page: Page<YogaPlanPreview>;
@@ -23,59 +23,59 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 ---
 
 <Site title={title} description={description} canonicalPath={canonicalPath}>
-    <main class="wrap yp-container">
-        <header class="yp-header">
-            <h1 class="yp-title">{labels.title}</h1>
-            <p class="yp-subtitle">{labels.description}</p>
+    <main class="page-container">
+        <header class="page-header">
+            <h1 class="title">{labels.title}</h1>
+            <p class="subtitle">{labels.description}</p>
         </header>
 
-        <div class="yp-grid">
+        <div class="plans-grid">
             {
                 page.data.map((p) => (
-                    <article class="yp-card">
-                        <a href={`/${lang}/yoga/${p.slug}`} class="yp-link">
-                            <div class="yp-thumb-frame">
-                                <img
-                                    src={p.image}
-                                    alt=""
-                                    loading="lazy"
-                                    decoding="async"
-                                />
-                            </div>
+                    <a href={`/${lang}/yoga/${p.slug}`} class="plan-card">
+                        <div class="card-image">
+                            <img
+                                src={p.image}
+                                alt={p.title}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </div>
 
-                            <div class="yp-content">
-                                <h3 class="yp-item-title">{p.title}</h3>
-                                <p class="yp-item-desc">{p.teaser}</p>
-                                <span class="yp-more">{labels.view} →</span>
+                        <div class="card-content">
+                            <h3 class="card-title">{p.title}</h3>
+                            <p class="card-desc">{p.teaser}</p>
+                            <div class="card-footer">
+                                <span class="view-link">{labels.view}</span>
+                                <span class="icon">→</span>
                             </div>
-                        </a>
-                    </article>
+                        </div>
+                    </a>
                 ))
             }
         </div>
 
-        {/* Pagination Controls */}
         {
             page.lastPage > 1 && (
-                <nav class="yp-pagination" aria-label="Pagination">
+                <nav class="pagination" aria-label="Pagination">
                     {page.url.prev ? (
                         <a href={page.url.prev} class="btn-pill">
-                            {labels.prev}
+                            ← {labels.prev}
                         </a>
                     ) : (
-                        <span class="btn-pill disabled">{labels.prev}</span>
+                        <span class="btn-pill disabled">← {labels.prev}</span>
                     )}
 
-                    <span class="yp-page-meta">
-                        {labels.metaPage} {page.currentPage} of {page.lastPage}
+                    <span class="page-meta">
+                        {labels.metaPage} {page.currentPage} / {page.lastPage}
                     </span>
 
                     {page.url.next ? (
                         <a href={page.url.next} class="btn-pill">
-                            {labels.next}
+                            {labels.next} →
                         </a>
                     ) : (
-                        <span class="btn-pill disabled">{labels.next}</span>
+                        <span class="btn-pill disabled">{labels.next} →</span>
                     )}
                 </nav>
             )
@@ -84,151 +84,170 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 </Site>
 
 <style>
-    /* ... Paste all your CSS from the original file here ... */
-    .yp-container {
-        max-width: var(--container);
+    /* Layout */
+    .page-container {
+        max-width: var(--container-width);
         margin: 0 auto;
-        padding: 24px 20px 64px;
+        padding: 40px 24px 80px;
     }
-    .yp-header {
+
+    /* Header */
+    .page-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 60px;
         padding-top: 20px;
     }
-    .yp-title {
-        font-size: var(--fs-display);
+    .title {
+        font-size: var(--text-h1);
+        margin-bottom: 16px;
         letter-spacing: -0.02em;
-        margin-bottom: 8px;
     }
-    .yp-subtitle {
-        font-size: var(--fs-body-lg);
-        color: var(--muted);
+    .subtitle {
+        font-size: 1.125rem;
+        color: var(--text-muted);
         max-width: 600px;
         margin: 0 auto;
+        line-height: 1.5;
     }
-    .yp-grid {
+
+    /* Grid */
+    .plans-grid {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 32px;
     }
-    @media (min-width: 800px) {
-        .yp-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 24px;
-        }
-    }
-    .yp-card {
-        background: var(--card);
-        border: 1px solid var(--ring);
-        border-radius: 20px;
+
+    /* Cards */
+    .plan-card {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-sub); /* Subtle grey/off-white background */
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
         overflow: hidden;
-        transition:
-            transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-            box-shadow 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-            border-color 0.3s ease;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-    }
-    .yp-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--elev-2);
-        border-color: color-mix(in oklch, var(--accent), transparent 70%);
-    }
-    .yp-link {
         text-decoration: none;
         color: inherit;
-        display: flex;
-        align-items: stretch;
-        height: 100%;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s;
     }
-    .yp-thumb-frame {
-        width: 130px;
-        flex-shrink: 0;
+
+    .plan-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+        border-color: color-mix(in srgb, var(--primary), transparent 70%);
+    }
+
+    /* Image Wrapper (Aspect Ratio) */
+    .card-image {
         position: relative;
+        width: 100%;
+        aspect-ratio: 16/9; /* Cinematic ratio */
         overflow: hidden;
-        border-right: 1px solid
-            color-mix(in oklch, var(--ring), transparent 50%);
-        background: color-mix(in oklch, var(--bg1), grey 5%);
+        border-bottom: 1px solid var(--border);
     }
-    @media (max-width: 450px) {
-        .yp-thumb-frame {
-            width: 100px;
-        }
-    }
-    .yp-thumb-frame img {
+
+    .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
     }
-    .yp-card:hover .yp-thumb-frame img {
-        transform: scale(1.05);
+
+    .plan-card:hover .card-image img {
+        transform: scale(1.05); /* Subtle zoom on hover */
     }
-    .yp-content {
-        padding: 16px 20px;
+
+    /* Content */
+    .card-content {
+        padding: 24px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        flex-grow: 1;
     }
-    .yp-item-title {
-        font-size: clamp(1.1rem, 1.5vw, 1.25rem);
-        margin-bottom: 6px;
+
+    .card-title {
+        font-size: 1.25rem;
+        font-weight: var(--fw-bold);
+        margin-bottom: 8px;
         line-height: 1.2;
     }
-    .yp-item-desc {
-        font-size: var(--fs-body-sm);
-        color: var(--muted);
-        line-height: 1.5;
-        margin: 0 0 12px;
+
+    .card-desc {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 24px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        flex-grow: 1;
     }
-    .yp-more {
-        font-size: var(--fs-caption);
-        font-weight: var(--fw-bold);
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        opacity: 0.8;
+
+    /* Footer / Action */
+    .card-footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: var(--primary);
     }
-    .yp-card:hover .yp-more {
-        opacity: 1;
-        text-decoration: underline;
+
+    .plan-card:hover .icon {
+        transform: translateX(4px);
+        transition: transform 0.2s;
     }
-    .yp-pagination {
-        margin-top: 48px;
+
+    /* Pagination */
+    .pagination {
+        margin-top: 64px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
+        gap: 20px;
     }
-    .yp-page-meta {
-        font-size: var(--fs-caption);
-        color: var(--muted);
+
+    .page-meta {
+        font-size: 0.9rem;
+        color: var(--text-muted);
         font-variant-numeric: tabular-nums;
     }
+
     .btn-pill {
         display: inline-flex;
         align-items: center;
-        padding: 8px 16px;
+        padding: 10px 20px;
         border-radius: 999px;
-        font-size: var(--fs-body-sm);
-        font-weight: var(--fw-medium);
+        font-size: 0.9rem;
+        font-weight: 500;
         text-decoration: none;
-        color: var(--fg);
-        border: 1px solid var(--ring);
-        background: transparent;
+        color: var(--text-main);
+        background: var(--bg-main);
+        border: 1px solid var(--border);
         transition: all 0.2s;
     }
+
     .btn-pill:not(.disabled):hover {
-        background: var(--card);
-        border-color: var(--accent);
-        transform: translateY(-1px);
+        border-color: var(--primary);
+        color: var(--primary);
     }
+
     .btn-pill.disabled {
-        opacity: 0.4;
-        cursor: default;
-        border-color: transparent;
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: transparent;
+    }
+
+    /* Mobile */
+    @media (max-width: 600px) {
+        .plans-grid {
+            grid-template-columns: 1fr; /* Stack on mobile */
+        }
+        .page-header {
+            margin-bottom: 40px;
+        }
     }
 </style>
