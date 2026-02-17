@@ -51,8 +51,11 @@ const socialImage = ogImage.startsWith("http")
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={socialImage} />
 
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/webp" href="/assets/icons/logo.webp" />
+
+        <link rel="apple-touch-icon" href="/assets/icons/logo.webp" />
+
+        <!-- <link rel="icon" type="image/svg+xml" href="/favicon.svg" /> -->
 
         <ClientRouter />
 
