@@ -99,7 +99,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     .listing-container {
         max-width: var(--container-width);
         margin: 0 auto;
-        padding: calc(var(--header-height) + 60px) 24px 80px;
+        padding: 60px 24px 80px;
     }
 
     /* Header Styles */
@@ -271,7 +271,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     /* Mobile Tweaks */
     @media (max-width: 600px) {
         .listing-container {
-            padding-top: calc(var(--header-height) + 40px);
+            padding-top: 40px;
         }
         .plans-grid {
             grid-template-columns: 1fr;

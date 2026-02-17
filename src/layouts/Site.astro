@@ -167,6 +167,10 @@ const socialImage = ogImage.startsWith("http")
                 --text-sm: 0.9rem;
             }
 
+            .page-content {
+                padding-top: var(--header-height);
+            }
+
             /* --- LIGHT THEME (Apple / Zen Style) --- */
             :root[data-theme="light"] {
                 --bg-main: oklch(100% 0 0); /* Pure White */
@@ -349,7 +353,7 @@ const socialImage = ogImage.startsWith("http")
             </div>
         </header>
 
-        <main>
+        <main class="page-content">
             <slot />
         </main>
 
