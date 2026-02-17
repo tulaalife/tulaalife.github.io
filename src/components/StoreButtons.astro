@@ -2,89 +2,153 @@
 interface Props {
     centered?: boolean;
     inverted?: boolean;
+    iosHref?: string;
+    androidHref?: string;
 }
 
-const { centered = false, inverted = false } = Astro.props;
+const {
+    centered = false,
+    inverted = false,
+    iosHref = "#",
+    androidHref = "#",
+} = Astro.props;
+
+const iosIconSrc = "/assets/icons/appstore.svg";
+const androidIconSrc = "/assets/icons/playstore.svg";
 ---
 
 <div class:list={["store-buttons", { centered }]}>
-    <a href="#" class:list={["store-btn", { inverted }]}>
-        <span class="icon"></span>
-        <div class="text">
-            <span class="small">Download on the</span>
-            <span class="large">App Store</span>
-        </div>
+    <a
+        href={iosHref}
+        class:list={["store-btn", { inverted }]}
+        target="_blank"
+        rel="noopener"
+        aria-label="Download on the App Store"
+    >
+        <img
+            src={iosIconSrc}
+            alt=""
+            class="store-btn__icon"
+            width="24"
+            height="24"
+            aria-hidden="true"
+        />
+        <span class="store-btn__text">
+            <small>Download on</small>
+            <strong>App Store</strong>
+        </span>
     </a>
-    <a href="#" class:list={["store-btn", { inverted }]}>
-        <span class="icon">▶</span>
-        <div class="text">
-            <span class="small">Get it on</span>
-            <span class="large">Google Play</span>
-        </div>
+
+    <a
+        href={androidHref}
+        class:list={["store-btn", { inverted }]}
+        target="_blank"
+        rel="noopener"
+        aria-label="Get it on Google Play"
+    >
+        <img
+            src={androidIconSrc}
+            alt=""
+            class="store-btn__icon"
+            width="24"
+            height="24"
+            aria-hidden="true"
+        />
+        <span class="store-btn__text">
+            <small>Get it on</small>
+            <strong>Google Play</strong>
+        </span>
     </a>
 </div>
 
 <style>
     .store-buttons {
         display: flex;
-        gap: 16px;
+        gap: 12px;
         flex-wrap: wrap;
     }
+
     .store-buttons.centered {
         justify-content: center;
     }
 
     .store-btn {
-        display: flex;
+        --btn-h: 52px;
+        --btn-r: 12px;
+
+        height: var(--btn-h);
+        border-radius: var(--btn-r);
+        display: inline-flex;
         align-items: center;
         gap: 10px;
-        background: var(--text-main);
-        color: var(--bg-main);
-        padding: 10px 20px;
-        border-radius: 12px;
-        transition:
-            transform 0.2s,
-            opacity 0.2s;
-        min-width: 160px;
+        padding: 0 16px;
         text-decoration: none;
+        white-space: nowrap;
+        transition:
+            transform 0.14s ease,
+            box-shadow 0.14s ease;
+
+        /* High-end dark theme default */
+        background: linear-gradient(180deg, #121314, #0f0f10 60%);
+        color: #ffffff;
+        border: 1px solid color-mix(in oklch, #ffffff, transparent 82%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
+    /* Adaptive Inverted Style */
     .store-btn.inverted {
-        background: white;
-        color: black;
-    }
-    /* Dark mode support for inverted buttons */
-    :global([data-theme="dark"]) .store-btn.inverted {
-        background: black;
-        color: white;
+        background: linear-gradient(180deg, #ffffff, #f5f5f7 60%);
+        color: #000000;
+        border: 1px solid color-mix(in oklch, #000000, transparent 90%);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     }
 
     .store-btn:hover {
-        transform: translateY(-2px);
-        opacity: 0.9;
+        transform: translateY(-1px);
+        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
     }
 
-    .store-btn .icon {
-        font-size: 1.5rem;
-        line-height: 1;
+    .store-btn:active {
+        transform: translateY(0);
     }
-    .store-btn .text {
+
+    .store-btn__icon {
+        width: 22px;
+        height: 22px;
+        object-fit: contain;
+    }
+
+    /* Icon color logic for inverted mode */
+    .store-btn.inverted .store-btn__icon {
+        filter: brightness(0); /* Forces icons to black if they were white */
+    }
+
+    .store-btn__text {
         display: flex;
         flex-direction: column;
         line-height: 1.1;
-    }
-    .store-btn .small {
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-    .store-btn .large {
-        font-size: 1rem;
-        font-weight: 600;
+        text-align: left;
     }
 
-    @media (max-width: 768px) {
+    .store-btn__text small {
+        font-size: 10px;
+        text-transform: none;
+        opacity: 0.8;
+    }
+
+    .store-btn__text strong {
+        font-size: 15px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+    }
+
+    @media (max-width: 480px) {
         .store-buttons {
+            justify-content: center;
+        }
+        .store-btn {
+            flex: 1;
+            min-width: 150px;
             justify-content: center;
         }
     }
