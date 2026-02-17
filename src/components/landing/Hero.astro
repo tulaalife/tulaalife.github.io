@@ -7,24 +7,33 @@ import StoreButtons from "../StoreButtons.astro";
 <section id="hero" class="hero-section">
     <div class="container hero-grid">
         <div class="hero-content">
-            <div class="badge">100% Free & Offline</div>
+            <div class="badge">✨ 100% Free. Private. Offline.</div>
             <h1 class="hero-title">
-                Your Private Sanctuary for <span class="text-gradient"
-                    >Holistic Wellness.</span
-                >
+                Expert Yoga Therapy. <br />
+                <span class="text-gradient">No Ads. No Login.</span>
             </h1>
-            <p class="hero-sub">
-                Find your balance with expert-led yoga, meditation, and mindful
-                journaling.
-                <strong>No login. No subscription. No internet needed.</strong>
+
+            <div
+                style="background: var(--bg-sub); padding: 12px 16px; border-radius: 12px; margin-bottom: 24px; display: inline-block; border: 1px solid var(--border);"
+            >
+                <p style="margin: 0; font-size: 0.95rem; line-height: 1.4;">
+                    <strong>By Latika Bissa</strong> • Gold Medalist & M.Sc Yoga Therapy<br
+                    />
+                    <span style="opacity: 0.8; font-size: 0.9rem;"
+                        >10+ Years of Clinical Experience</span
+                    >
+                </p>
+            </div>
+
+            <p class="hero-sub" style="margin-top: 0;">
+                Specialized plans for <strong
+                    >Back Pain, PCOS, Thyroid, and Prenatal care.</strong
+                >
+                Designed to help you heal, without tracking your data.
             </p>
 
             <div class="cta-wrapper">
                 <StoreButtons centered={false} />
-            </div>
-
-            <div class="trust-pill">
-                <span class="dot"></span> Curated by Latika Bissa (M.Sc Yoga Therapy)
             </div>
         </div>
 
@@ -165,15 +174,6 @@ import StoreButtons from "../StoreButtons.astro";
         line-height: 1.1;
         margin-bottom: 24px;
     }
-    .text-gradient {
-        background: linear-gradient(
-            135deg,
-            var(--primary),
-            color-mix(in srgb, var(--primary), black 20%)
-        );
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
     .hero-sub {
         font-size: 1.2rem;
         color: var(--text-muted);
@@ -185,22 +185,43 @@ import StoreButtons from "../StoreButtons.astro";
         justify-content: flex-start;
         width: 100%;
     }
+    /* Make the gradient pop a bit more */
+    .text-gradient {
+        background: linear-gradient(135deg, var(--primary), #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+
+        /* 👇 ADD THESE LINES */
+        padding-bottom: 0.2em; /* Adds space for the 'g' */
+        margin-bottom: -0.2em; /* Pulls the layout back up so it doesn't look gappy */
+        display: inline-block; /* Essential for padding to work on text spans */
+        line-height: 1.2; /* Ensure line height isn't too tight */
+    }
+
+    /* Make the trust pill look more authoritative */
     .trust-pill {
         margin-top: 32px;
         display: inline-flex;
         align-items: center;
-        gap: 8px;
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        background: var(--bg-sub);
-        padding: 8px 16px;
+        gap: 10px;
+        font-size: 0.95rem; /* Slightly larger */
+        color: var(--text-main); /* Darker text for readability */
+        background: rgba(
+            var(--primary-rgb),
+            0.1
+        ); /* Subtle tint of primary color */
+        padding: 10px 20px;
         border-radius: 99px;
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        font-weight: 500;
     }
+
     .dot {
         width: 8px;
         height: 8px;
         background-color: #22c55e;
         border-radius: 50%;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); /* Pulse effect ring */
     }
 
     /* --- UPDATED VISUAL STYLES --- */
