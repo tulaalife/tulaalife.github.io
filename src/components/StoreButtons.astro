@@ -1,0 +1,91 @@
+---
+interface Props {
+    centered?: boolean;
+    inverted?: boolean;
+}
+
+const { centered = false, inverted = false } = Astro.props;
+---
+
+<div class:list={["store-buttons", { centered }]}>
+    <a href="#" class:list={["store-btn", { inverted }]}>
+        <span class="icon"></span>
+        <div class="text">
+            <span class="small">Download on the</span>
+            <span class="large">App Store</span>
+        </div>
+    </a>
+    <a href="#" class:list={["store-btn", { inverted }]}>
+        <span class="icon">▶</span>
+        <div class="text">
+            <span class="small">Get it on</span>
+            <span class="large">Google Play</span>
+        </div>
+    </a>
+</div>
+
+<style>
+    .store-buttons {
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .store-buttons.centered {
+        justify-content: center;
+    }
+
+    .store-btn {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--text-main);
+        color: var(--bg-main);
+        padding: 10px 20px;
+        border-radius: 12px;
+        transition:
+            transform 0.2s,
+            opacity 0.2s;
+        min-width: 160px;
+        text-decoration: none;
+    }
+
+    .store-btn.inverted {
+        background: white;
+        color: black;
+    }
+    /* Dark mode support for inverted buttons */
+    :global([data-theme="dark"]) .store-btn.inverted {
+        background: black;
+        color: white;
+    }
+
+    .store-btn:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    .store-btn .icon {
+        font-size: 1.5rem;
+        line-height: 1;
+    }
+    .store-btn .text {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.1;
+    }
+    .store-btn .small {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    .store-btn .large {
+        font-size: 1rem;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .store-buttons {
+            justify-content: center;
+        }
+    }
+</style>

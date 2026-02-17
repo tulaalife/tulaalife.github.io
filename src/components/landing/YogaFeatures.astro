@@ -1,0 +1,127 @@
+---
+
+---
+
+<section class="section section-yoga">
+    <div class="container grid-layout reverse-mobile">
+        <div class="visual-col">
+            <img
+                src="/images/yoga-plans-collage.png"
+                alt="Tulaa Yoga Plans Interface"
+                class="feature-img shadow-lg"
+            />
+        </div>
+        <div class="text-col">
+            <h2 class="section-title">
+                Expert-Led Yoga for <br />Real Life Needs.
+            </h2>
+            <p class="body-text">
+                These aren’t just workouts. They are battle-tested therapies
+                curated by <strong>Latika Bissa</strong>, a Yoga Therapist with
+                10+ years of clinical experience.
+            </p>
+
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="check">✓</span>
+                    <div>
+                        <strong>Pain Relief</strong>
+                        <p>
+                            Sciatica, Neck Pain, Knees, Back Pain, Carpal
+                            Tunnel.
+                        </p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="check">✓</span>
+                    <div>
+                        <strong>Women’s Health</strong>
+                        <p>
+                            Prenatal (Trimesters), Postnatal, PCOS, Cycle
+                            Syncing.
+                        </p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="check">✓</span>
+                    <div>
+                        <strong>Chronic Conditions</strong>
+                        <p>Thyroid, Diabetes, BP Management, Scoliosis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .section {
+        padding: 100px 0;
+    }
+    .grid-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+    }
+    .feature-img {
+        width: 100%;
+        height: auto;
+        border-radius: var(--radius-lg);
+    }
+    .shadow-lg {
+        box-shadow: var(--shadow);
+    }
+
+    .section-title {
+        font-size: var(--text-h1);
+        margin-bottom: 24px;
+    }
+    .body-text {
+        font-size: var(--text-body);
+        color: var(--text-muted);
+        margin-bottom: 32px;
+    }
+
+    .feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .feature-item {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    .check {
+        color: var(--primary);
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-top: -2px;
+    }
+
+    @media (max-width: 768px) {
+        .grid-layout {
+            grid-template-columns: 1fr;
+            text-align: center;
+            gap: 40px;
+        }
+        .reverse-mobile {
+            display: flex;
+            flex-direction: column-reverse;
+        }
+        .feature-item {
+            justify-content: flex-start;
+            text-align: left;
+        }
+        .text-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .feature-list {
+            width: 100%;
+            text-align: left;
+        }
+    }
+</style>
