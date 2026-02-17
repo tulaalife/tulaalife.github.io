@@ -1,0 +1,128 @@
+---
+
+---
+
+<section class="section section-yoga">
+    <div class="container grid-layout reverse-mobile">
+        <div class="visual-col">
+            <img
+                src="/images/yoga-plans-collage.webp"
+                alt="Tulaa Yoga Plans Interface"
+            />
+        </div>
+        <div class="text-col">
+    <h2 class="section-title">
+        Yoga for Every Body, <br />
+        <span class="text-gradient">At Every Stage.</span>
+    </h2>
+    <p class="body-text">
+        From your first trimester to your golden years, Tulaa adapts to you. 
+        Our research-backed plans are designed for real bodies, real pain, and real life.
+    </p>
+
+    <div class="feature-list">
+        <div class="feature-item">
+            <span class="check">✓</span>
+            <div>
+                <strong>For the Office Worker</strong>
+                <p>
+                    Instant relief for "Tech Neck," Eye Strain, and Lower Back pain from long sitting hours.
+                </p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <span class="check">✓</span>
+            <div>
+                <strong>For Seniors & Beginners</strong>
+                <p>
+                    Gentle Chair Yoga, Arthritis care, and Balance improvement routines that are safe and effective.
+                </p>
+            </div>
+        </div>
+        <div class="feature-item">
+            <span class="check">✓</span>
+            <div>
+                <strong>For Chronic Conditions</strong>
+                <p>Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.</p>
+            </div>
+        </div>
+    </div>
+</div>
+    </div>
+</section>
+
+<style>
+    .section {
+        padding: 100px 0;
+    }
+    .grid-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 80px;
+        align-items: center;
+    }
+    .feature-img {
+        width: 100%;
+        max-width: 100%
+        height: auto;
+        border-radius: var(--radius-lg);
+    }
+    .shadow-lg {
+        box-shadow: var(--shadow);
+    }
+
+    .section-title {
+        font-size: var(--text-h1);
+        margin-bottom: 24px;
+    }
+    .body-text {
+        font-size: var(--text-body);
+        color: var(--text-muted);
+        margin-bottom: 32px;
+    }
+
+    .feature-list {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+    }
+    .feature-item {
+        display: flex;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    .check {
+        color: var(--primary);
+        font-weight: bold;
+        font-size: 1.2rem;
+        margin-top: -2px;
+    }
+
+    @media (max-width: 768px) {
+        .section {
+            padding: 64px 0;
+        }
+        .grid-layout {
+            grid-template-columns: 1fr;
+            text-align: center;
+            gap: 40px;
+        }
+        .reverse-mobile {
+            display: flex;
+            flex-direction: column-reverse;
+        }
+        .feature-item {
+            justify-content: flex-start;
+            text-align: left;
+        }
+        .text-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .feature-list {
+            width: 100%;
+            text-align: left;
+        }
+    }
+</style>

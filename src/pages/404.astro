@@ -1,129 +1,131 @@
 ---
-// src/pages/404.astro
 import Site from "../layouts/Site.astro";
-import CTAButton from "../components/CTAButton.astro";
 
 const title = "Page not found · Tulaa";
 const description =
-    "This page doesn’t exist. Open the Tulaa app or explore yoga plans, guided audios, and wellness tips.";
+    "This page doesn’t exist. Return home or explore our wellness resources.";
 ---
 
 <Site title={title} description={description} canonicalPath="/404">
-    <main class="nf-wrap">
-        <section class="nf-card" aria-labelledby="nf-title">
-            <p class="nf-tag">404 — Not found</p>
-            <h1 id="nf-title" class="nf-title">We couldn’t find that page</h1>
-            <p class="nf-body">
-                The link you followed doesn’t match a live page yet.&nbsp;You
-                can go back home, or jump straight into yoga plans, guided
-                audios, or health tips.
+    <main class="error-container">
+        <div class="error-content">
+            <span class="error-code">404</span>
+            <h1 class="error-title">Breath out. Let’s refocus.</h1>
+            <p class="error-desc">
+                The page you are looking for seems to have wandered off. Don't
+                worry, you are still in a safe space.
             </p>
 
-            <div class="nf-actions">
-                <CTAButton
-                    href="/"
-                    label="Go to Tulaa home"
-                    variant="solid"
-                    size="lg"
-                />
-                <CTAButton
-                    href="/yoga"
-                    label="Browse yoga plans"
-                    variant="soft"
-                    size="md"
-                />
-                <CTAButton
-                    href="/audio"
-                    label="Guided audios"
-                    variant="soft"
-                    size="md"
-                />
-                <CTAButton
-                    href="/tips"
-                    label="Health tips"
-                    variant="soft"
-                    size="md"
-                />
+            <div class="action-grid">
+                <a href="/" class="btn-primary"> Return Home </a>
+
+                <div class="secondary-links">
+                    <a href="/en/yoga" class="link-pill">Yoga Plans</a>
+                </div>
             </div>
-
-            <p class="nf-sub">
-                If you tapped a link inside the app, make sure you have the
-                latest version of Tulaa installed.
-            </p>
-        </section>
+        </div>
     </main>
 </Site>
 
 <style>
-    .nf-wrap {
-        max-width: 980px;
-        margin: 0 auto;
-        padding: 40px 24px 56px;
-        box-sizing: border-box;
-    }
-
-    .nf-card {
-        border-radius: var(--radius-xl);
-        padding: clamp(24px, 4vw, 32px);
-        background: radial-gradient(
-                120% 150% at 0% 0%,
-                color-mix(in oklch, var(--accent-2), transparent 88%),
-                transparent 60%
-            ),
-            linear-gradient(
-                180deg,
-                color-mix(in oklch, var(--card), white 6%),
-                color-mix(in oklch, var(--card), transparent 4%)
-            );
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 18%);
-        box-shadow: var(--elev-2);
-        backdrop-filter: blur(18px) saturate(1.03);
-        text-align: left;
-    }
-
-    .nf-tag {
-        margin: 0 0 6px;
-        font-size: var(--fs-caption);
-        font-weight: var(--fw-medium);
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--muted);
-    }
-
-    .nf-title {
-        margin: 0 0 10px;
-        font-family: var(--font-sans);
-        font-size: var(--fs-h1);
-        font-weight: var(--fw-semibold);
-        line-height: var(--lh-title);
-    }
-
-    .nf-body {
-        margin: 0 0 18px;
-        font-size: var(--fs-body);
-        color: var(--fg);
-    }
-
-    .nf-actions {
+    /* Centered Layout */
+    .error-container {
+        min-height: 80vh; /* Takes up most of the screen */
         display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        text-align: center;
+
+        /* Subtle background glow */
+        background: radial-gradient(
+            circle at 50% 50%,
+            var(--bg-sub) 0%,
+            var(--bg-main) 70%
+        );
+    }
+
+    .error-content {
+        max-width: 500px;
+        margin-top: -60px; /* Visual balance */
+    }
+
+    /* Typography */
+    .error-code {
+        font-size: 5rem;
+        font-weight: var(--fw-bold);
+        color: var(--primary);
+        opacity: 0.2;
+        line-height: 1;
+        display: block;
+        margin-bottom: 24px;
+        letter-spacing: -0.05em;
+    }
+
+    .error-title {
+        font-size: clamp(2rem, 5vw, 2.5rem);
+        font-weight: var(--fw-bold);
+        color: var(--text-main);
+        margin-bottom: 16px;
+        line-height: 1.1;
+    }
+
+    .error-desc {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        margin-bottom: 40px;
+        line-height: 1.6;
+    }
+
+    /* Actions */
+    .action-grid {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--text-main);
+        color: var(--bg-main);
+        padding: 14px 32px;
+        border-radius: 99px;
+        font-weight: 600;
+        text-decoration: none;
+        transition:
+            transform 0.2s,
+            opacity 0.2s;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        opacity: 0.9;
+    }
+
+    /* Secondary Links */
+    .secondary-links {
+        display: flex;
+        gap: 12px;
         flex-wrap: wrap;
-        gap: 10px;
-        margin-top: 8px;
-        margin-bottom: 12px;
+        justify-content: center;
     }
 
-    .nf-sub {
-        margin: 8px 0 0;
-        font-size: var(--fs-body-sm);
-        color: var(--muted);
+    .link-pill {
+        padding: 8px 20px;
+        border: 1px solid var(--border);
+        border-radius: 99px;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.95rem;
+        transition: all 0.2s;
     }
 
-    @media (max-width: 640px) {
-        .nf-wrap {
-            padding-top: 28px;
-        }
-        .nf-card {
-            padding: 20px 18px 24px;
-        }
+    .link-pill:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--bg-sub);
     }
 </style>

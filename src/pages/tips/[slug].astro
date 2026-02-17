@@ -29,14 +29,14 @@ const description = tip.benefit || "Gentle wellness tip from Tulaa.";
         <span class="category-pill">{tip.category || "General"}</span>
       </nav>
 
-      <header class="tip-header">
+      <div class="tip-header">
         {tip.icon && (
             <div class="icon-ring" role="img" aria-hidden="true">
                 {tip.icon}
             </div>
         )}
         <h1 class="tip-title">{tip.tip}</h1>
-      </header>
+      </div>
 
       <div class="tip-body">
         <p class="benefit-text">{tip.benefit}</p>

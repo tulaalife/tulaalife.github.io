@@ -15,4 +15,4 @@ and support your personal journey toward gentle, consistent wellbeing.
 
 Learn more at 👉 [https://tulaalife.com](https://tulaalife.com)
 
-© 2025 TULAALIFE WELLNESS PRIVATE LIMITED. All rights reserved.
+© 2026 TULAALIFE WELLNESS PRIVATE LIMITED. All rights reserved.

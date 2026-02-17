@@ -1,263 +1,193 @@
 ---
-// FooterCard.astro — Compact footer version
-export interface Props {
+import StoreButtons from "./StoreButtons.astro";
+
+interface Props {
     headline?: string;
     subline?: string;
-    iosHref?: string;
-    androidHref?: string;
-    iosIconSrc?: string;
-    androidIconSrc?: string;
 }
 
 const {
-    // CHANGED: Active voice "Start Your Journey"
-    headline = "Start Your Holistic Health Journey",
-    // CHANGED: Simplified "all-in-one" messaging
-    subline = "Everything you need for mind and body balance: Yoga, journaling, and health tracking in one secure, ad-free space.",
-    iosHref = "https://apps.apple.com/in/app/tulaa/id6748626498",
-    androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
-    iosIconSrc = "/assets/icons/appstore.svg",
-    androidIconSrc = "/assets/icons/playstore.svg",
+    headline = "Start Your Journey.",
+    subline = "Expert yoga, daily tracking, and mindfulness. One app, completely free.",
 } = Astro.props;
 
-// CHANGED: Organized specifically for feature-scanning
-const chips = [
-    "Yoga, Meditation & Journaling",
-    "Cycle & Water Tracker",
-    "Gentle Habit Reminders",
+const highlights = [
+    "100% Free & Offline",
+    "No Account Needed",
+    "Privacy First",
 ];
 ---
 
-<section class="dl" aria-label="Download Tulaa">
-    <div class="dl__copy">
-        <h2 class="dl__title typ-h1">
-            {headline}
-        </h2>
-        <p class="dl__sub typ-body-sm">{subline}</p>
+<section class="footer-card-container">
+    <div class="footer-card">
+        <div class="mesh-gradient"></div>
+        <div class="glow-orb"></div>
 
-        <ul class="dl__chips" aria-label="App highlights">
-            {chips.map((chip) => <li>{chip}</li>)}
-        </ul>
-    </div>
+        <div class="content">
+            <h2 class="title">{headline}</h2>
+            <p class="sub">{subline}</p>
 
-    <div class="dl__buttons" role="group" aria-label="Store links">
-        <a
-            class="store-btn btn--ios"
-            href={iosHref}
-            target="_blank"
-            rel="noopener"
-            aria-label="Download on the App Store"
-        >
-            <img
-                class="store-btn__icon"
-                src={iosIconSrc}
-                alt=""
-                width="24"
-                height="24"
-                aria-hidden="true"
-            />
-            <span class="store-btn__text">
-                <small>Download on</small>
-                <strong>App Store</strong>
-            </span>
-        </a>
+            <ul class="highlights">
+                {highlights.map((item) => <li>{item}</li>)}
+            </ul>
 
-        <a
-            class="store-btn btn--android"
-            href={androidHref}
-            target="_blank"
-            rel="noopener"
-            aria-label="Get it on Google Play"
-        >
-            <img
-                class="store-btn__icon"
-                src={androidIconSrc}
-                alt=""
-                width="24"
-                height="24"
-                aria-hidden="true"
-            />
-            <span class="store-btn__text">
-                <small>Get it on</small>
-                <strong>Google Play</strong>
-            </span>
-        </a>
+            <StoreButtons centered={true} />
+        </div>
     </div>
 </section>
 
 <style>
-    .dl {
-        /* FOOTER VARIABLES */
-        --r: 24px;
-        --padY: 28px;
-        --padX: 20px;
-        --btn-h: 52px;
-        --btn-r: 12px;
+    .footer-card-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        /* Reduced margin slightly */
+        margin: 0.5rem 0;
+    }
+
+    .footer-card {
+        --card-bg-light: color-mix(in oklch, var(--primary), black 15%);
+        --card-bg-dark: color-mix(in oklch, var(--primary), black 40%);
 
         position: relative;
-        display: grid;
-        place-items: center;
-        text-align: center;
-        gap: 16px;
-        padding: var(--padY) var(--padX);
-        border-radius: var(--r);
-        box-sizing: border-box;
-
         width: 100%;
-        max-width: 100%;
-        margin-inline: auto;
-
-        background:
-            radial-gradient(
-                140% 180% at 50% 0%,
-                color-mix(in oklch, var(--accent-2), transparent 88%),
-                transparent 70%
-            ),
-            linear-gradient(
-                180deg,
-                color-mix(in oklch, var(--card), transparent 12%),
-                color-mix(in oklch, var(--card), transparent 28%)
-            );
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 20%);
-        box-shadow:
-            0 18px 40px rgba(15, 18, 23, 0.1),
-            0 0 0 1px rgba(255, 255, 255, 0.18);
-        isolation: isolate;
-        overflow: hidden;
-    }
-
-    @supports (backdrop-filter: blur(10px)) {
-        .dl {
-            backdrop-filter: blur(18px) saturate(1.25);
-            -webkit-backdrop-filter: blur(18px) saturate(1.25);
-        }
-    }
-
-    .dl__copy {
-        max-width: 640px;
-        margin-inline: auto;
-    }
-
-    .dl__title {
-        margin: 0 0 2px;
+        max-width: var(--container-width);
+        /* SIGNIFICANTLY REDUCED PADDING */
+        padding: 2.5rem 2rem;
+        border-radius: 32px; /* Slightly tighter radius for compact look */
         text-align: center;
-    }
+        overflow: hidden;
+        isolation: isolate;
 
-    .dl__sub {
-        margin: 0;
-        font-size: var(--fs-body);
-        opacity: 0.96;
-    }
-
-    .dl__chips {
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        flex-wrap: wrap;
-        list-style: none;
-        padding: 0;
-        margin: 14px 0 4px;
-    }
-
-    .dl__chips li {
-        padding: 7px 12px;
-        border-radius: 999px;
-        font-size: var(--fs-caption);
-        font-weight: var(--fw-medium);
-        color: var(--fg);
         background: linear-gradient(
-            180deg,
-            color-mix(in oklch, var(--card), white 10%),
-            color-mix(in oklch, var(--card), transparent 4%)
+            145deg,
+            var(--card-bg-light),
+            var(--primary)
         );
-        border: 1px solid color-mix(in oklch, var(--accent), transparent 88%);
+        border: 1px solid rgba(255, 255, 255, 0.1);
         box-shadow:
-            inset 0 1px 0 rgba(255, 255, 255, 0.6),
-            0 4px 10px rgba(15, 18, 23, 0.06);
+            0 20px 40px -12px rgba(0, 0, 0, 0.25),
+            inset 0 1px 1px rgba(255, 255, 255, 0.2);
+
+        color: white;
     }
 
-    .dl__buttons {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        justify-content: center;
-        margin-top: 10px;
+    :global([data-theme="dark"]) .footer-card {
+        background: linear-gradient(160deg, var(--card-bg-dark), #09090b);
+        border-color: rgba(255, 255, 255, 0.05);
     }
 
-    .store-btn {
-        height: var(--btn-h);
-        border-radius: var(--btn-r);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 0 14px;
-        text-decoration: none;
-        white-space: nowrap;
-        font-family: var(--font-sans);
-        background: linear-gradient(180deg, #121314, #0f0f10 60%);
-        color: #fff;
-        border: 1px solid color-mix(in oklch, #ffffff, transparent 82%);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        transition:
-            transform 0.14s ease,
-            box-shadow 0.14s ease,
-            background 0.14s ease;
+    /* Decorative Depth */
+    .mesh-gradient {
+        position: absolute;
+        inset: 0;
+        background-image:
+            radial-gradient(
+                at 0% 0%,
+                rgba(255, 255, 255, 0.12) 0px,
+                transparent 50%
+            ),
+            radial-gradient(
+                at 100% 100%,
+                rgba(0, 0, 0, 0.15) 0px,
+                transparent 50%
+            );
+        z-index: -1;
     }
 
-    .store-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+    .glow-orb {
+        position: absolute;
+        top: -20%;
+        right: -10%;
+        width: 300px;
+        height: 300px;
+        background: var(--primary);
+        filter: blur(80px);
+        opacity: 0.25;
+        z-index: -1;
     }
 
-    .store-btn:active {
-        transform: translateY(0);
-    }
-
-    .store-btn__icon {
-        width: 22px;
-        height: 22px;
-        object-fit: contain;
-        flex: 0 0 auto;
-    }
-
-    .store-btn__text {
+    .content {
+        position: relative;
+        z-index: 2;
+        max-width: 600px;
+        margin: 0 auto;
         display: flex;
         flex-direction: column;
-        line-height: 1.05;
-        text-align: left;
+        align-items: center;
     }
 
-    .store-btn__text small {
-        font-size: var(--fs-caption);
-        letter-spacing: 0.02em;
-        opacity: 0.9;
+    .title {
+        /* Reduced font size for compactness */
+        font-size: clamp(1.75rem, 5vw, 2.5rem);
+        font-weight: 800;
+        margin-bottom: 0.75rem;
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+        color: #fff;
     }
 
-    .store-btn__text strong {
-        font-size: var(--fs-body-sm);
-        font-weight: var(--fw-semibold);
-        letter-spacing: 0.01em;
+    .sub {
+        font-size: clamp(0.95rem, 2vw, 1.05rem);
+        /* Reduced bottom margin */
+        margin-bottom: 1.75rem;
+        color: rgba(255, 255, 255, 0.9);
+        line-height: 1.5;
+        max-width: 480px; /* Constrain width to prevent long lines */
     }
 
-    @media (max-width: 420px) {
-        .dl__buttons {
-            gap: 10px;
+    /* Glass Chips */
+    .highlights {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px; /* Tighter gap */
+        list-style: none;
+        padding: 0;
+        margin: 0 0 2rem; /* Reduced bottom margin */
+    }
+
+    .highlights li {
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        /* Smaller padding inside pills */
+        padding: 6px 14px;
+        border-radius: 99px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+
+    /* Mobile Fixes */
+    @media (max-width: 768px) {
+        .footer-card {
+            /* Compact mobile padding */
+            padding: 2rem 1.25rem;
+            border-radius: 24px;
+        }
+
+        .title {
+            margin-bottom: 0.5rem;
+        }
+
+        .sub {
+            margin-bottom: 1.5rem;
+        }
+
+        /* REMOVED: flex-direction: column on highlights.
+           Keeping them row/wrap saves significant vertical space on mobile.
+        */
+        .highlights {
+            max-width: 100%;
+        }
+
+        .highlights li {
+            /* Allow pills to shrink slightly if needed */
+            padding: 6px 12px;
+            font-size: 0.65rem;
         }
     }
 </style>
-
-<script is:inline>
-    (() => {
-        const ua = navigator.userAgent || "";
-        const isiOS =
-            /iPhone|iPad|iPod/.test(ua) ||
-            (/Macintosh/.test(ua) && "ontouchend" in document);
-        const isAndroid = /Android/.test(ua);
-
-        document.querySelectorAll(".dl").forEach((el) => {
-            if (isAndroid) el.classList.add("is-android");
-            else if (isiOS) el.classList.add("is-ios");
-        });
-    })();
-</script>

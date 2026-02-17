@@ -1,7 +1,6 @@
 ---
-// Layout.astro
 import FooterCard from "../components/FooterCard.astro";
-import { ClientRouter } from "astro:transitions"; // Modern router for Astro 5.0+
+import { ClientRouter } from "astro:transitions";
 
 interface Props {
     title: string;
@@ -13,28 +12,26 @@ interface Props {
 
 const {
     title,
-    description = "Yoga, meditation, journaling, rhythms and care — privacy-first, ad-free, offline-ready.",
+    description = "Your private sanctuary for holistic wellness. Yoga, meditation, and tracking—offline and free.",
     canonicalPath = "/",
-    ogImage = "https://images.tulaa.life/logo.webp",
+    ogImage = "https://images.tulaa.life/logo.webp", // Ensure this exists or update
     hideFooter = false,
 } = Astro.props;
 
 const site = "https://tulaalife.com";
 const url = new URL(canonicalPath, site).toString();
-
-// Process the image URL to ensure it is absolute
 const socialImage = ogImage.startsWith("http")
     ? ogImage
     : new URL(ogImage, site).toString();
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light" data-palette="base">
+<html lang="en" data-theme="light">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
-        <meta name="theme-color" content="#f9f8f6" id="theme-color-meta" />
+        <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
 
         <title>{title}</title>
 
@@ -44,84 +41,55 @@ const socialImage = ogImage.startsWith("http")
 
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Tulaa" />
-        <meta property="og:locale" content="en_US" />
         <meta property="og:url" content={url} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={socialImage} />
-        <meta property="og:image:width" content="1200" />
-        <meta property="og:image:height" content="630" />
-        <meta
-            property="og:image:alt"
-            content="Tulaa – Yoga, Meditation & Daily Wellness"
-        />
 
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={socialImage} />
-        <meta name="twitter:site" content="@tulaalife" />
 
-        <link
-            rel="icon"
-            href="https://images.tulaa.life/favicon.ico"
-            sizes="any"
-        />
-        <link
-            rel="apple-touch-icon"
-            href="https://images.tulaa.life/apple-touch-icon.png"
-        />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
         <ClientRouter />
 
         <script is:inline>
             (() => {
                 const root = document.documentElement;
-                const palettes = ["base", "sage", "ocean", "lavender", "clay"];
+                const metaColor = document.getElementById("theme-color-meta");
 
-                // Colors for mobile browser address bar
-                const metaColors = {
-                    light: "#f9f8f6", // Matches --bg1 light
-                    dark: "#1a1a1a", // Matches generic dark bg
+                // Define precise background colors for browser chrome (address bar)
+                const bgColors = {
+                    light: "#ffffff",
+                    dark: "#18181b",
                 };
 
-                // 1. Initial Load & Re-init function
-                function init() {
-                    const metaThemeColor =
-                        document.getElementById("theme-color-meta");
-
-                    try {
-                        const savedTheme =
-                            localStorage.getItem("tulaa-theme") || "light";
-                        const savedPalette =
-                            localStorage.getItem("tulaa-palette") || "base";
-
-                        root.dataset.theme = savedTheme;
-                        root.dataset.palette = savedPalette;
-                        root.style.colorScheme = savedTheme;
-
-                        // Update meta tag for mobile browsers
-                        if (metaThemeColor) {
-                            metaThemeColor.setAttribute(
-                                "content",
-                                metaColors[savedTheme],
-                            );
-                        }
-                    } catch {
-                        root.dataset.theme = "light";
-                        root.dataset.palette = "base";
-                    }
+                function getSystemTheme() {
+                    return window.matchMedia("(prefers-color-scheme: dark)")
+                        .matches
+                        ? "dark"
+                        : "light";
                 }
 
-                // Run on initial load
+                function init() {
+                    // Check local storage or fallback to system preference
+                    const saved = localStorage.getItem("tulaa-theme");
+                    const theme = saved || getSystemTheme();
+
+                    root.dataset.theme = theme;
+                    root.style.colorScheme = theme;
+                    if (metaColor)
+                        metaColor.setAttribute("content", bgColors[theme]);
+                }
+
                 init();
-                // Run after every View Transition navigation
                 document.addEventListener("astro:page-load", init);
 
-                // 2. Toggle Light/Dark (Global Function)
+                // Global Toggle Function
                 window.toggleTheme = function () {
-                    const metaThemeColor =
-                        document.getElementById("theme-color-meta");
                     const current =
                         root.dataset.theme === "dark" ? "dark" : "light";
                     const next = current === "dark" ? "light" : "dark";
@@ -130,36 +98,9 @@ const socialImage = ogImage.startsWith("http")
                     root.style.colorScheme = next;
                     localStorage.setItem("tulaa-theme", next);
 
-                    // Update browser address bar
-                    if (metaThemeColor) {
-                        metaThemeColor.setAttribute(
-                            "content",
-                            metaColors[next],
-                        );
-                    }
+                    if (metaColor)
+                        metaColor.setAttribute("content", bgColors[next]);
                 };
-
-                // 3. Cycle Palette (Global Function)
-                window.cyclePalette = function () {
-                    const current = root.dataset.palette || "base";
-                    const idx = palettes.indexOf(current);
-                    const next = palettes[(idx + 1) % palettes.length];
-
-                    root.dataset.palette = next;
-                    localStorage.setItem("tulaa-palette", next);
-                    console.log(`Switched to ${next} palette`);
-                };
-
-                // 4. Hotkey Listener (Shift + P)
-                // Use a persistent listener on document so we don't need to re-attach
-                if (!window.hasTulaaHotkey) {
-                    document.addEventListener("keydown", (e) => {
-                        if (e.shiftKey && (e.key === "P" || e.key === "p")) {
-                            window.cyclePalette();
-                        }
-                    });
-                    window.hasTulaaHotkey = true;
-                }
             })();
         </script>
 
@@ -170,282 +111,115 @@ const socialImage = ogImage.startsWith("http")
             href="/fonts/InterVariable.woff2"
             crossorigin
         />
+
         <style>
             @font-face {
                 font-family: "Inter Var";
-                src:
-                    local("InterVariable"),
-                    url("/fonts/InterVariable.woff2") format("woff2");
+                src: url("/fonts/InterVariable.woff2") format("woff2");
                 font-weight: 100 900;
                 font-display: swap;
             }
         </style>
 
-        <style>
+        <style is:global>
+            /* =========================================
+               RESET & BASE
+               ========================================= */
             *,
             *::before,
             *::after {
-                box-sizing: border-box; /* This is non-negotiable! Must be there. */
+                box-sizing: border-box;
             }
-
             html,
             body {
                 margin: 0;
                 padding: 0;
                 width: 100%;
-                overflow-x: hidden; /* Prevents accidental horizontal scroll */
+                overflow-x: hidden;
             }
-            /* ---------- GLOBAL VARIABLES ---------- */
+
+            /* =========================================
+               DESIGN SYSTEM (Streamlined)
+               ========================================= */
             :root {
-                --font-sans: "Inter Var", system-ui, sans-serif;
-                --container: 980px;
-                --radius-xl: 24px;
+                /* Layout */
+                --container-width: 1120px; /* Wider for better screenshot grids */
+                --header-height: 64px;
+                --radius-lg: 24px;
+                --radius-md: 16px;
+                --radius-sm: 8px;
 
-                --fs-display: clamp(2.2rem, 3.1vw, 2.8rem);
-                --fs-h1: clamp(1.7rem, 2.3vw, 2.1rem);
-                --fs-h2: clamp(1.35rem, 1.8vw, 1.6rem);
-                --fs-body: 0.98rem;
-                --fs-body-sm: 0.9rem;
-                --fs-caption: 0.78rem;
-
-                --lh-tight: 1.2;
-                --lh-title: 1.24;
-                --lh-body: 1.6;
-
+                /* Typography */
+                --font-sans:
+                    "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
                 --fw-regular: 400;
                 --fw-medium: 500;
                 --fw-semibold: 600;
-                --fw-bold: 700;
+                --fw-bold: 750; /* Slightly bolder for headers */
+
+                /* Font Sizes (Fluid) */
+                --text-display: clamp(2.5rem, 5vw, 3.75rem); /* Big Hero Text */
+                --text-h1: clamp(2rem, 3.5vw, 2.5rem);
+                --text-h2: clamp(1.5rem, 2.5vw, 2rem);
+                --text-h3: 1.25rem;
+                --text-body: 1.05rem; /* Slightly larger for readability */
+                --text-sm: 0.9rem;
+            }
+
+            .page-content {
+                padding-top: var(--header-height);
+            }
+
+            /* --- LIGHT THEME (Apple / Zen Style) --- */
+            :root[data-theme="light"] {
+                --bg-main: oklch(100% 0 0); /* Pure White */
+                --bg-sub: oklch(
+                    97% 0 0
+                ); /* Very light grey for cards/sections */
+
+                --text-main: oklch(20% 0 0); /* Soft Black */
+                --text-muted: oklch(50% 0 0); /* Grey */
+
+                --primary: oklch(62% 0.14 145); /* Tulaa Sage Green */
+                --primary-fg: oklch(98% 0 0); /* Text on primary button */
+
+                --border: oklch(92% 0 0); /* Subtle borders */
+                --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+            }
+
+            /* --- DARK THEME (OLED / Night) --- */
+            :root[data-theme="dark"] {
+                --bg-main: oklch(15% 0.01 145); /* Deep Charcoal/Green tint */
+                --bg-sub: oklch(18% 0.01 145);
+
+                --text-main: oklch(96% 0 0); /* White */
+                --text-muted: oklch(65% 0 0);
+
+                --primary: oklch(70% 0.12 145); /* Lighter Sage for dark mode */
+                --primary-fg: oklch(15% 0.02 145);
+
+                --border: oklch(25% 0 0);
+                --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             }
 
             /* =========================================
-               THEME ENGINE (OKLCH)
-               ========================================= */
-
-            /* --- 1. BASE (Original Organic Paper) --- */
-            :root[data-palette="base"] {
-                /* Light */
-                --bg1: oklch(99% 0.01 85);
-                --bg2: oklch(97% 0.02 90);
-                --fg: oklch(32% 0.04 45);
-                --muted: oklch(55% 0.04 45);
-                --accent: oklch(68% 0.16 40); /* Terracotta */
-                --accent-2: oklch(88% 0.12 95); /* Mustard */
-                --card: oklch(100% 0 0 / 0.65);
-                --ring: oklch(40% 0.06 45 / 0.15);
-                --blob-1: oklch(94% 0.06 70);
-                --blob-2: oklch(92% 0.05 140);
-            }
-            :root[data-theme="dark"][data-palette="base"] {
-                /* Dark */
-                --bg1: oklch(18% 0.02 45);
-                --bg2: oklch(22% 0.03 40);
-                --fg: oklch(92% 0.01 85);
-                --muted: oklch(70% 0.02 85);
-                --accent: oklch(75% 0.14 45);
-                --accent-2: oklch(70% 0.12 85);
-                --card: oklch(25% 0.02 45 / 0.6);
-                --ring: oklch(85% 0.02 85 / 0.12);
-                --blob-1: oklch(28% 0.08 40);
-                --blob-2: oklch(25% 0.06 140);
-            }
-
-            /* --- 2. SAGE (Forest / Nature) --- */
-            :root[data-palette="sage"] {
-                --bg1: oklch(98% 0.01 140); /* Pale Green */
-                --bg2: oklch(96% 0.02 145);
-                --fg: oklch(28% 0.04 140); /* Deep Green Text */
-                --muted: oklch(50% 0.04 140);
-                --accent: oklch(65% 0.12 145); /* Leaf Green */
-                --accent-2: oklch(85% 0.1 130);
-                --card: oklch(99% 0.01 140 / 0.7);
-                --ring: oklch(40% 0.06 140 / 0.15);
-                --blob-1: oklch(92% 0.08 140);
-                --blob-2: oklch(90% 0.06 160);
-            }
-            :root[data-theme="dark"][data-palette="sage"] {
-                --bg1: oklch(16% 0.03 145); /* Deep Forest */
-                --bg2: oklch(20% 0.04 140);
-                --fg: oklch(94% 0.01 140);
-                --muted: oklch(70% 0.03 140);
-                --accent: oklch(72% 0.14 145);
-                --accent-2: oklch(68% 0.1 130);
-                --card: oklch(22% 0.04 145 / 0.6);
-                --ring: oklch(85% 0.04 140 / 0.12);
-                --blob-1: oklch(25% 0.1 145);
-                --blob-2: oklch(22% 0.08 160);
-            }
-
-            /* --- 3. OCEAN (Calm / Blue) --- */
-            :root[data-palette="ocean"] {
-                --bg1: oklch(99% 0.01 240); /* Pale Blue */
-                --bg2: oklch(97% 0.02 230);
-                --fg: oklch(30% 0.04 250);
-                --muted: oklch(55% 0.04 250);
-                --accent: oklch(65% 0.14 240); /* Sky Blue */
-                --accent-2: oklch(88% 0.08 210);
-                --card: oklch(99% 0.01 240 / 0.7);
-                --ring: oklch(40% 0.06 240 / 0.15);
-                --blob-1: oklch(94% 0.06 240);
-                --blob-2: oklch(92% 0.05 200);
-            }
-            :root[data-theme="dark"][data-palette="ocean"] {
-                --bg1: oklch(18% 0.03 260); /* Deep Navy */
-                --bg2: oklch(22% 0.04 250);
-                --fg: oklch(94% 0.01 240);
-                --muted: oklch(70% 0.03 240);
-                --accent: oklch(70% 0.14 240);
-                --accent-2: oklch(65% 0.1 210);
-                --card: oklch(25% 0.04 260 / 0.6);
-                --ring: oklch(85% 0.04 240 / 0.12);
-                --blob-1: oklch(28% 0.1 260);
-                --blob-2: oklch(25% 0.08 220);
-            }
-
-            /* --- 4. LAVENDER (Spirit / Purple) --- */
-            :root[data-palette="lavender"] {
-                --bg1: oklch(99% 0.01 300); /* Mist Purple */
-                --bg2: oklch(97% 0.02 290);
-                --fg: oklch(30% 0.04 300);
-                --muted: oklch(55% 0.04 300);
-                --accent: oklch(65% 0.15 310); /* Soft Lilac */
-                --accent-2: oklch(88% 0.1 330);
-                --card: oklch(99% 0.01 300 / 0.7);
-                --ring: oklch(40% 0.06 300 / 0.15);
-                --blob-1: oklch(94% 0.08 310);
-                --blob-2: oklch(92% 0.06 330);
-            }
-            :root[data-theme="dark"][data-palette="lavender"] {
-                --bg1: oklch(18% 0.03 300); /* Deep Plum */
-                --bg2: oklch(22% 0.04 290);
-                --fg: oklch(94% 0.01 300);
-                --muted: oklch(70% 0.03 300);
-                --accent: oklch(72% 0.16 310);
-                --accent-2: oklch(68% 0.12 330);
-                --card: oklch(25% 0.04 300 / 0.6);
-                --ring: oklch(85% 0.04 300 / 0.12);
-                --blob-1: oklch(28% 0.12 310);
-                --blob-2: oklch(25% 0.1 330);
-            }
-
-            /* --- 5. CLAY (Earth / Red) --- */
-            :root[data-palette="clay"] {
-                --bg1: oklch(99% 0.01 40); /* Pale Warm */
-                --bg2: oklch(97% 0.02 35);
-                --fg: oklch(30% 0.04 30);
-                --muted: oklch(55% 0.04 30);
-                --accent: oklch(62% 0.18 25); /* Terra Cotta */
-                --accent-2: oklch(85% 0.12 45);
-                --card: oklch(99% 0.01 40 / 0.7);
-                --ring: oklch(40% 0.06 30 / 0.15);
-                --blob-1: oklch(92% 0.1 30);
-                --blob-2: oklch(90% 0.08 50);
-            }
-            :root[data-theme="dark"][data-palette="clay"] {
-                --bg1: oklch(18% 0.03 25); /* Dark Clay */
-                --bg2: oklch(22% 0.04 30);
-                --fg: oklch(94% 0.01 35);
-                --muted: oklch(70% 0.03 35);
-                --accent: oklch(68% 0.18 30);
-                --accent-2: oklch(65% 0.12 45);
-                --card: oklch(25% 0.04 25 / 0.6);
-                --ring: oklch(85% 0.04 30 / 0.12);
-                --blob-1: oklch(28% 0.12 30);
-                --blob-2: oklch(25% 0.1 50);
-            }
-
-            /* =========================================
-               GENERAL CSS
+               GLOBAL STYLES
                ========================================= */
             body {
                 font-family: var(--font-sans);
-                font-size: var(--fs-body);
-                line-height: var(--lh-body);
-                color: var(--fg);
-                background: linear-gradient(
-                    to bottom right,
-                    var(--bg1),
-                    var(--bg2)
-                );
-                display: flex;
-                flex-direction: column;
-                min-height: 100vh;
-                position: relative;
+                font-size: var(--text-body);
+                line-height: 1.6;
+                color: var(--text-main);
+                background-color: var(--bg-main);
                 transition:
-                    background 0.3s ease,
+                    background-color 0.3s ease,
                     color 0.3s ease;
-            }
-
-            /* Accessibility Fix for reduced motion */
-            @media (prefers-reduced-motion: reduce) {
-                .bg-orbit::before,
-                .bg-orbit::after {
-                    animation: none !important;
-                }
-                *,
-                *::before,
-                *::after {
-                    transition-duration: 0.01ms !important;
-                    animation-duration: 0.01ms !important;
-                    scroll-behavior: auto !important;
-                }
-            }
-
-            .bg-orbit {
-                position: fixed;
-                inset: -100px;
-                pointer-events: none;
-                z-index: -1;
-                overflow: hidden;
-                filter: blur(60px);
-            }
-            .bg-orbit::before,
-            .bg-orbit::after {
-                content: "";
-                position: absolute;
-                border-radius: 999px;
-                opacity: 0.6;
-                transition: background 0.5s ease; /* Smooth palette transition */
-            }
-            .bg-orbit::before {
-                width: 600px;
-                height: 600px;
-                background: radial-gradient(
-                    circle,
-                    var(--blob-1),
-                    transparent 70%
-                );
-                top: -100px;
-                left: -100px;
-                animation: driftA 45s ease-in-out infinite alternate;
-            }
-            .bg-orbit::after {
-                width: 700px;
-                height: 700px;
-                background: radial-gradient(
-                    circle,
-                    var(--blob-2),
-                    transparent 70%
-                );
-                bottom: -150px;
-                right: -100px;
-                animation: driftB 55s ease-in-out infinite alternate;
-            }
-
-            body::before {
-                content: "";
-                position: fixed;
-                inset: 0;
-                pointer-events: none;
-                background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.4'/%3E%3C/svg%3E");
-                opacity: 0.035;
-                z-index: -1;
-                mix-blend-mode: overlay;
+                /* Anti-aliasing for that crisp look */
+                -webkit-font-smoothing: antialiased;
             }
 
             img,
-            video,
-            svg {
+            video {
                 max-width: 100%;
                 height: auto;
                 display: block;
@@ -456,267 +230,165 @@ const socialImage = ogImage.startsWith("http")
             h3,
             h4 {
                 margin: 0;
-                font-weight: var(--fw-semibold);
-                line-height: var(--lh-title);
-                color: var(--fg);
-                letter-spacing: -0.01em;
-            }
-
-            /* Typography helpers */
-            .typ-display {
-                font-size: var(--fs-display);
                 font-weight: var(--fw-bold);
-                letter-spacing: -0.02em;
-                line-height: var(--lh-tight);
-            }
-            .typ-h1 {
-                font-size: var(--fs-h1);
-            }
-            .typ-body-sm {
-                font-size: var(--fs-body-sm);
-                color: var(--muted);
+                line-height: 1.15;
+                color: var(--text-main);
+                letter-spacing: -0.025em; /* Tight tracking for modern feel */
             }
 
-            /* Header */
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            /* Utility Classes */
+            .container {
+                max-width: var(--container-width);
+                margin: 0 auto;
+                padding: 0 24px;
+            }
+
+            /* Header Styles */
             header {
-                width: 100%;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: var(--header-height);
+                z-index: 50;
+                /* Glassmorphism */
+                background: color-mix(in srgb, var(--bg-main), transparent 15%);
+                backdrop-filter: blur(12px);
+                border-bottom: 1px solid
+                    color-mix(in srgb, var(--border), transparent 50%);
+            }
+
+            header .inner {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
-                padding: 14px 24px;
-                background: color-mix(in oklch, var(--bg1), transparent 15%);
-                border-bottom: 1px solid var(--ring);
-                position: sticky;
-                top: 0;
-                z-index: 10;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-                backdrop-filter: blur(16px) saturate(1.1);
+                height: 100%;
             }
-            header .brand {
+
+            .logo {
                 display: flex;
                 align-items: center;
                 gap: 10px;
-                font-weight: 650;
-                font-size: var(--fs-body);
-                text-decoration: none;
-                color: var(--fg);
+                font-weight: var(--fw-bold);
+                font-size: 1.1rem;
+                letter-spacing: -0.01em;
             }
-            header img {
-                width: 28px;
-                height: 28px;
+            .logo img {
+                width: 32px;
+                height: 32px;
                 border-radius: 8px;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
             }
 
-            /* Toggle Button */
-            button.theme-toggle {
-                border: 1px solid var(--ring);
-                background: transparent;
-                border-radius: 50%;
-                width: 36px;
-                height: 36px;
-                font-size: 16px;
+            .theme-toggle {
+                background: none;
+                border: none;
                 cursor: pointer;
-                color: var(--fg);
-                transition:
-                    background 0.2s ease,
-                    transform 0.1s;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                user-select: none; /* Important for long press */
+                color: var(--text-main);
+                padding: 8px;
+                border-radius: 50%;
+                transition: background 0.2s;
             }
-            button.theme-toggle:hover {
-                background: color-mix(in oklch, var(--fg), transparent 95%);
-            }
-            button.theme-toggle:active {
-                transform: scale(0.95);
+            .theme-toggle:hover {
+                background: var(--bg-sub);
             }
 
-            .skip-link {
-                position: absolute;
-                left: -9999px;
-            }
-            .skip-link:focus {
-                left: 16px;
-                top: 16px;
-                background: var(--bg1);
-                z-index: 100;
-                padding: 8px 12px;
-                border-radius: 8px;
-            }
-
-            main {
-                flex: 1;
-                width: 100%;
-                margin: 0;
-                padding: 32px 0 32px;
-            }
-            main > * {
-                max-width: var(--container);
-                margin-left: auto;
-                margin-right: auto;
-                padding-left: 16px;
-                padding-right: 16px;
-            }
-
+            /* Footer */
             footer {
-                width: 100%;
+                margin-top: 80px;
+                padding-bottom: 40px;
                 text-align: center;
-                color: var(--muted);
-                padding-bottom: 32px;
+                color: var(--text-muted);
             }
-            footer .wrap {
-                max-width: var(--container);
-                margin: 40px auto 0;
-                padding: 0 16px;
+            footer a:hover {
+                color: var(--text-main);
+                text-decoration: underline;
             }
-            footer p {
+            .legal {
                 margin-top: 24px;
-                font-size: var(--fs-caption);
-                opacity: 0.7;
-            }
-            footer .legal {
-                margin-top: 32px;
                 display: flex;
-                gap: 20px;
+                gap: 24px;
                 justify-content: center;
-                font-size: var(--fs-caption);
-            }
-            footer .legal a {
-                color: var(--muted);
-                text-decoration: none;
-            }
-            footer .legal a:hover {
-                color: var(--fg);
-            }
-
-            @keyframes driftA {
-                0% {
-                    transform: translate3d(-30px, 0, 0);
-                }
-                100% {
-                    transform: translate3d(30px, 30px, 0);
-                }
-            }
-            @keyframes driftB {
-                0% {
-                    transform: translate3d(20px, 15px, 0);
-                }
-                100% {
-                    transform: translate3d(-40px, -15px, 0);
-                }
+                font-size: var(--text-sm);
             }
         </style>
     </head>
 
     <body>
-        <div class="bg-orbit" aria-hidden="true"></div>
-        <a href="#content" class="skip-link">Skip to content</a>
-
         <header>
-            <a class="brand" href="/" aria-label="Tulaa home">
-                <img
-                    src="https://images.tulaa.life/logo.webp"
-                    alt="Tulaa logo"
-                />
-                <span>Tulaa</span>
-            </a>
-            <div style="display:flex; align-items:center; gap:12px;">
+            <div class="container inner">
+                <a href="/" class="logo">
+                    <img
+                        src="https://images.tulaa.life/logo.webp"
+                        alt="Tulaa Logo"
+                    />
+                    <span>Tulaa</span>
+                </a>
+
                 <button
-                    class="theme-toggle"
-                    type="button"
-                    aria-label="Toggle theme (Hold to change palette)"
                     id="themeBtn"
-                    oncontextmenu="return false;"
+                    class="theme-toggle"
+                    aria-label="Toggle Theme"
                 >
-                    <span style="opacity: 0.8; font-size: 1.1em;">☼</span>
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><circle cx="12" cy="12" r="5"></circle><path
+                            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                        ></path></svg
+                    >
                 </button>
             </div>
         </header>
 
-        <main id="content">
+        <main class="page-content">
             <slot />
         </main>
 
         {
             !hideFooter && (
                 <footer>
-                    <div class="wrap">
+                    <div class="container">
                         <FooterCard />
+                        <div class="legal">
+                            <a href="/legal/privacy">Privacy</a>
+                            <a href="/legal/terms">Terms</a>
+                            <a href="mailto:contact@tulaalife.com">Contact</a>
+                        </div>
+                        <p style="font-size: 0.8rem; margin-top: 20px; opacity: 0.6;">
+                            © {new Date().getFullYear()} Tulaalife Wellness
+                            Private Limited
+                        </p>
                     </div>
-                    <div class="legal" aria-label="Legal and contact">
-                        <a href="/legal/privacy">Privacy Policy</a>
-                        <a href="/legal/terms">Terms of Use</a>
-                        <a href="mailto:contact@tulaalife.com" rel="noopener">
-                            Contact Us
-                        </a>
-                    </div>
-                    <p>
-                        © {new Date().getFullYear()} Tulaalife Wellness Private
-                        Limited · All rights reserved.
-                    </p>
                 </footer>
             )
         }
 
         <script>
-            // 1. Declare the custom properties on Window so TS recognizes them
+            // 1. Tell TypeScript about our custom function
             declare global {
                 interface Window {
-                    cyclePalette: () => void;
                     toggleTheme: () => void;
                 }
             }
 
+            // 2. Your event listener code
             document.addEventListener("astro:page-load", () => {
                 const btn = document.getElementById("themeBtn");
-                if (!btn) return;
-
-                // 2. Explicitly type the timer (handles browser compatibility)
-                let pressTimer: ReturnType<typeof setTimeout>;
-                let isLongPress = false;
-
-                // 3. Type the event as MouseEvent or TouchEvent
-                const startPress = (e: MouseEvent | TouchEvent) => {
-                    // Safe check: Only check .button if it is actually a MouseEvent
-                    if (e instanceof MouseEvent && e.button !== 0) return;
-
-                    isLongPress = false;
-                    pressTimer = setTimeout(() => {
-                        isLongPress = true;
-                        window.cyclePalette();
-                        if (navigator.vibrate) navigator.vibrate(50);
-                    }, 500);
-                };
-
-                // 4. Generic Event type for endPress
-                const endPress = (e: Event) => {
-                    clearTimeout(pressTimer);
-                };
-
-                // Mouse
-                btn.addEventListener("mousedown", startPress);
-                btn.addEventListener("mouseup", endPress);
-                btn.addEventListener("mouseleave", () =>
-                    clearTimeout(pressTimer),
-                );
-
-                // Touch
-                btn.addEventListener("touchstart", startPress, {
-                    passive: true,
-                });
-                btn.addEventListener("touchend", endPress);
-
-                // 5. Explicitly type the click event
-                btn.addEventListener("click", (e: MouseEvent) => {
-                    if (isLongPress) {
-                        e.preventDefault();
-                        e.stopImmediatePropagation();
-                    } else {
-                        window.toggleTheme();
-                    }
-                });
+                if (btn) {
+                    btn.addEventListener("click", () => window.toggleTheme());
+                }
             });
         </script>
     </body>

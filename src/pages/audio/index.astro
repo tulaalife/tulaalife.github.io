@@ -1,9 +1,7 @@
 ---
-// src/pages/audio/index.astro
 import Site from "../../layouts/Site.astro";
 import { guidedAudios } from "../../data/generated";
 
-// FILTER: Only show English sessions on the main library page
 const displayAudios = guidedAudios.filter((a) => a.language === "en");
 
 const title = "Guided Audios";
@@ -15,200 +13,211 @@ const description = "Gentle voice-guided sessions for calm, focus, and rest.";
     description={description}
     canonicalPath="/audio"
 >
-    <main class="wrap ga-container">
-        <header class="ga-header">
-            <h1 class="ga-title">{title}</h1>
-            <p class="ga-subtitle">{description}</p>
-        </header>
+    <div class="listing-container">
+        <div class="listing-header">
+            <h1 class="page-title">{title}</h1>
+            <p class="page-subtitle">{description}</p>
+        </div>
 
-        <div class="ga-grid">
+        <div class="audio-grid">
             {
                 displayAudios.map((a) => (
-                    <article class="ga-card">
-                        <a
-                            href={`/audio/${a.slug}`}
-                            class="ga-link"
-                            aria-label={`Listen to ${a.title}`}
-                        >
-                            <div class="ga-cover-frame">
-                                <img
-                                    src={a.image}
-                                    alt=""
-                                    loading="lazy"
-                                    decoding="async"
-                                />
-                                <div class="ga-play-overlay">
-                                    <span class="ga-play-icon">▶</span>
-                                </div>
+                    <a
+                        href={`/audio/${a.slug}`}
+                        class="audio-card"
+                        aria-label={`Listen to ${a.title}`}
+                    >
+                        <div class="audio-cover">
+                            <img
+                                src={a.image}
+                                alt={a.title}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <div class="play-overlay">
+                                <div class="play-button">▶</div>
                             </div>
+                        </div>
 
-                            <div class="ga-content">
-                                <h3 class="ga-item-title">{a.title}</h3>
-                                <p class="ga-item-sub">{a.teaser}</p>
-                            </div>
-                        </a>
-                    </article>
+                        <div class="audio-content">
+                            <h3 class="audio-title">{a.title}</h3>
+                            <p class="audio-desc">{a.teaser}</p>
+                        </div>
+                    </a>
                 ))
             }
         </div>
-    </main>
+    </div>
 </Site>
 
 <style>
-    /* Layout */
-    .ga-container {
-        max-width: var(--container);
+    /* =========================================
+       SHARED LISTING STYLE (Yoga Aligned)
+    ========================================= */
+
+    .listing-container {
+        max-width: var(--container-width);
         margin: 0 auto;
-        padding: 24px 20px 64px;
+        padding: 60px 24px 80px;
     }
 
-    /* Header */
-    .ga-header {
+    .listing-header {
         text-align: center;
-        margin-bottom: 48px;
-        padding-top: 20px;
+        margin-bottom: 60px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    .ga-title {
-        font-size: var(--fs-display);
-        margin-bottom: 8px;
+    .page-title {
+        font-size: var(--text-display);
+        margin-bottom: 16px;
         letter-spacing: -0.02em;
+        line-height: 1.1;
     }
 
-    .ga-subtitle {
-        font-size: var(--fs-body-lg);
-        color: var(--muted);
-        max-width: 600px;
-        margin: 0 auto;
+    .page-subtitle {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        line-height: 1.5;
     }
 
-    /* Grid System */
-    .ga-grid {
+    /* =========================================
+       GRID
+    ========================================= */
+
+    .audio-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-        gap: 32px 24px;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 32px;
     }
 
-    /* Card Styling */
-    .ga-card {
-        /* No border/background on the wrapper itself for a cleaner "Album" look,
-           or we can add a subtle one. Let's keep it clean. */
-        position: relative;
-    }
+    /* =========================================
+       CARD
+    ========================================= */
 
-    .ga-link {
+    .audio-card {
         display: flex;
         flex-direction: column;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
         text-decoration: none;
         color: inherit;
-        group: all; /* enable group hover logic if supported, or just use nested selectors */
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
         height: 100%;
     }
 
-    /* Cover Art */
-    .ga-cover-frame {
-        width: 100%;
-        aspect-ratio: 1 / 1; /* Square for "Album/Audio" feel */
-        border-radius: 20px; /* Soft, large radius */
-        overflow: hidden;
-        position: relative;
-        background: var(--bg2);
-        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06); /* Soft shadow lifting it off page */
-        border: 1px solid var(--ring);
-        transition:
-            transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1),
-            box-shadow 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    .audio-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+        border-color: color-mix(in srgb, var(--primary), transparent 70%);
     }
 
-    .ga-cover-frame img {
+    /* =========================================
+       COVER
+    ========================================= */
+
+    .audio-cover {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-main);
+    }
+
+    .audio-cover img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.6s ease;
+        transition: transform 0.5s ease;
+    }
+
+    .audio-card:hover .audio-cover img {
+        transform: scale(1.06);
     }
 
     /* Play Overlay */
-    .ga-play-overlay {
+    .play-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.2);
+        background: rgba(0, 0, 0, 0.25);
         display: flex;
         align-items: center;
         justify-content: center;
         opacity: 0;
         transition: opacity 0.3s ease;
-        backdrop-filter: blur(2px);
     }
 
-    .ga-play-icon {
-        width: 48px;
-        height: 48px;
+    .audio-card:hover .play-overlay {
+        opacity: 1;
+    }
+
+    .play-button {
+        width: 54px;
+        height: 54px;
         background: white;
         color: black;
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 18px;
-        padding-left: 4px; /* Optical center */
-        transform: scale(0.8);
+        font-size: 20px;
+        padding-left: 4px;
+        transform: scale(0.85);
         transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
     }
 
-    /* Content Text */
-    .ga-content {
-        margin-top: 16px;
-        text-align: center; /* Center align title for albums usually looks best */
-        padding: 0 4px;
-    }
-
-    .ga-item-title {
-        font-size: var(--fs-h2);
-        font-size: clamp(1.1rem, 1.3vw, 1.25rem);
-        font-weight: var(--fw-semibold);
-        margin-bottom: 6px;
-        color: var(--fg);
-    }
-
-    .ga-item-sub {
-        font-size: var(--fs-body-sm);
-        color: var(--muted);
-        line-height: 1.4;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-    }
-
-    /* Interactive States */
-    .ga-link:hover .ga-cover-frame {
-        transform: translateY(-6px);
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
-    }
-
-    .ga-link:hover .ga-cover-frame img {
-        transform: scale(1.05);
-    }
-
-    .ga-link:hover .ga-play-overlay {
-        opacity: 1;
-    }
-
-    .ga-link:hover .ga-play-icon {
+    .audio-card:hover .play-button {
         transform: scale(1);
     }
 
-    .ga-link:hover .ga-item-title {
-        color: var(--accent); /* Highlight title on hover */
-        transition: color 0.2s ease;
+    /* =========================================
+       CONTENT
+    ========================================= */
+
+    .audio-content {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
 
-    /* Focus */
-    .ga-link:focus-visible {
-        outline: none;
+    .audio-title {
+        font-size: 1.25rem;
+        font-weight: var(--fw-bold);
+        margin-bottom: 8px;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
     }
-    .ga-link:focus-visible .ga-cover-frame {
-        box-shadow: 0 0 0 4px var(--accent);
+
+    .audio-desc {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex-grow: 1;
+    }
+
+    /* =========================================
+       MOBILE
+    ========================================= */
+
+    @media (max-width: 600px) {
+        .listing-container {
+            padding: 40px 20px 60px;
+        }
+
+        .audio-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
