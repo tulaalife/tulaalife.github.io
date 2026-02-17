@@ -373,6 +373,14 @@ const socialImage = ogImage.startsWith("http")
         }
 
         <script>
+            // 1. Tell TypeScript about our custom function
+            declare global {
+                interface Window {
+                    toggleTheme: () => void;
+                }
+            }
+
+            // 2. Your event listener code
             document.addEventListener("astro:page-load", () => {
                 const btn = document.getElementById("themeBtn");
                 if (btn) {
