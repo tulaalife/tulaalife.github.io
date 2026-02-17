@@ -17,10 +17,12 @@ import StoreButtons from "../StoreButtons.astro";
                 style="background: var(--bg-sub); padding: 12px 16px; border-radius: 12px; margin-bottom: 24px; display: inline-block; border: 1px solid var(--border);"
             >
                 <p style="margin: 0; font-size: 0.95rem; line-height: 1.4;">
-                    <strong>By Latika Bissa</strong> • Gold Medalist & M.Sc Yoga Therapy<br
-                    />
+                    <strong>By Latika Bissa</strong><br /><span
+                        style="opacity: 0.8; font-size: 0.9rem;"
+                        >🏅 Gold Medalist, M.Sc Yoga Therapy</span
+                    ><br />
                     <span style="opacity: 0.8; font-size: 0.9rem;"
-                        >10+ Years of Clinical Experience</span
+                        >🧘‍♀️ 10+ Years of Clinical Experience</span
                     >
                 </p>
             </div>
@@ -281,8 +283,15 @@ import StoreButtons from "../StoreButtons.astro";
         opacity: 1;
     }
 
+    /* Fix for Dark Mode Device Frame */
     :global([data-theme="dark"]) .phone-frame-wrapper {
-        border-color: #0a0a0a;
+        /* Make border lighter (Space Gray) so it's visible against dark bg */
+        border-color: #333333;
+
+        /* Add a subtle white outline (rim light) to separate it from the background */
+        box-shadow:
+            0 0 0 1px rgba(255, 255, 255, 0.1),
+            0 20px 50px -10px rgba(0, 0, 0, 0.5);
     }
 
     .glow-blob {
@@ -300,7 +309,7 @@ import StoreButtons from "../StoreButtons.astro";
 
     @media (max-width: 768px) {
         .hero-section {
-            padding-top: 80px;
+            padding-top: 32px;
             padding-bottom: 60px;
             min-height: 100dvh;
         }
