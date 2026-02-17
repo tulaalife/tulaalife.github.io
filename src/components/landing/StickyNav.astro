@@ -1,19 +1,15 @@
----
-
----
-
 <nav id="sticky-nav" class="sticky-nav">
     <div class="container sticky-inner">
         <div class="sticky-logo">
             <img
-                src="https://images.tulaa.life/logo.webp"
+                src="assets/icons/logo.webp"
                 alt="Tulaa"
                 width="32"
                 height="32"
             />
             <span class="font-bold">Tulaa</span>
         </div>
-        <a href="#download" class="btn-sm">Download App</a>
+        <a href="#download-content" class="btn-sm">Download App</a>
     </div>
 </nav>
 
@@ -45,11 +41,12 @@
         display: flex;
         align-items: center;
         gap: 8px;
-        font-weight: 600;
+        font-weight: bold;
+        color: var(--text-main);
     }
     .btn-sm {
         background: var(--primary);
-        color: var(--primary-fg);
+        color: #ffffff;
         padding: 8px 16px;
         border-radius: 99px;
         font-size: 0.9rem;
@@ -64,7 +61,6 @@
 
 <script>
     const nav = document.getElementById("sticky-nav");
-    // We look for the hero section by ID now to be safe
     const hero = document.getElementById("hero");
 
     if (nav && hero) {
