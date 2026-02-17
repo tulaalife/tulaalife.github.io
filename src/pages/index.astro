@@ -1,329 +1,678 @@
 ---
-import Site from "../layouts/Site.astro";
-import FeatureTiles from "../components/FeatureTiles.astro";
-import { yogaPlans, guidedAudios, tips, blogPosts } from "../data/generated";
-import TipsScroller from "../components/TipsScroller.astro";
-import PeekScroller from "../components/PeekScroller.astro";
-import HeaderCard from "../components/HeaderCard.astro";
+// src/pages/index.astro
+import Layout from "../layouts/Site.astro";
 
-const title = "Tulaa — Yoga, Meditation & Daily Wellness";
+// Metadata
+const title = "Tulaa — Your Private Sanctuary for Holistic Wellness";
 const description =
-  "Expert-guided yoga & meditations — offline, ad-free, and privacy-first. Plus journaling, rhythms, and lightweight trackers.";
-const ogImage = "https://images.tulaa.life/logo.webp";
-
-/** Seeded (daily) shuffle: changes order once per day */
-function seededShuffle<T>(arr: readonly T[], seed: number): T[] {
-  const copy = Array.from(arr);
-  let x = seed || 1;
-  const rand = () => {
-    x ^= x << 13;
-    x ^= x >>> 17;
-    x ^= x << 5;
-    return (x >>> 0) / 0xffffffff;
-  };
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(rand() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-const daySeed = Number(
-  new Date().toISOString().slice(0, 10).replaceAll("-", ""),
-);
-
-// 1. Filter & Process Yoga Items (English Only)
-const yogaItems = seededShuffle(
-  yogaPlans.filter((p) => p.language === "en"), // <--- Added Filter
-  daySeed,
-).map((p) => ({
-  href: `/en/yoga/${p.slug}`, // Ensure link goes to /en/ path
-  title: p.title,
-  subtitle: p.subtitle,
-  teaser: p.teaser,
-  image: p.image,
-}));
-
-// 2. Filter & Process Audio Items (English Only)
-const audioItems = seededShuffle(
-  guidedAudios.filter((a) => a.language === "en"), // <--- Added Filter
-  daySeed + 7,
-).map((a) => ({
-  href: `/audio/${a.slug}`,
-  title: a.title,
-  subtitle: a.subtitle,
-  teaser: a.teaser,
-  image: a.image,
-}));
-
-// 3. Process Blog Items (Already English filtered)
-const blogItems = seededShuffle(
-  blogPosts.filter((b) => b.language === "en"),
-  daySeed + 20,
-).map((b) => {
-  const dateStr = new Date(b.date).toLocaleDateString("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  });
-
-  return {
-    href: `/blog/${b.slug}`,
-    title: b.title,
-    subtitle: dateStr,
-    teaser: b.excerpt,
-    image: b.image,
-  };
-});
-
-const tipFive = seededShuffle(tips, daySeed + 13)
-  .slice(0, 5)
-  .map((t) => ({
-    href: `/tips/${t.slug}`,
-    tip: t.tip,
-    benefit: t.benefit ?? "Short, sourced self-care tip",
-    icon: t.icon ?? "💡",
-  }));
-
-const hasYoga = yogaItems.length > 0;
-const hasAudio = audioItems.length > 0;
-const hasBlog = blogItems.length > 0;
-const hasTips = tipFive.length > 0;
+  "Free, offline, expert-led yoga and wellness tools. No login required. No tracking. Just you and your practice.";
 ---
 
-<Site
-  title={title}
-  description={description}
-  canonicalPath="/"
-  ogImage={ogImage}
->
-  <div class="home-layout">
-    <section class="reveal section-hero">
-      <HeaderCard />
-    </section>
+<Layout title={title} description={description} hideFooter={true}>
+  <nav id="sticky-nav" class="sticky-nav">
+    <div class="container sticky-inner">
+      <div class="sticky-logo">
+        <img
+          src="https://images.tulaa.life/logo.webp"
+          alt="Tulaa"
+          width="32"
+          height="32"
+        />
+        <span class="font-bold">Tulaa</span>
+      </div>
+      <a href="#download" class="btn-sm">Download App</a>
+    </div>
+  </nav>
 
-    {
-      hasYoga && (
-        <section class="reveal section-stream">
-          <PeekScroller
-            title="Yoga Plans"
-            subtitle="Expert-guided sequences for everyday needs"
-            items={yogaItems}
-            ctaHref="/yoga"
-            ctaLabel="Explore yoga plans"
-          />
-        </section>
-      )
-    }
+  <section class="hero-section">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <div class="badge">100% Free & Offline</div>
+        <h1 class="hero-title">
+          Your Private Sanctuary for <span class="text-gradient"
+            >Holistic Wellness.</span
+          >
+        </h1>
+        <p class="hero-sub">
+          Find your balance with expert-led yoga, meditation, and mindful
+          journaling.
+          <strong>No login. No subscription. No internet needed.</strong>
+        </p>
 
-    {
-      hasAudio && (
-        <section class="reveal section-stream">
-          <PeekScroller
-            title="Guided Audios"
-            subtitle="Gentle audio sessions for calm, focus & rest"
-            items={audioItems}
-            ctaHref="/audio"
-            ctaLabel="Explore audios"
-          />
-        </section>
-      )
-    }
+        <div class="store-buttons">
+          <a href="#" class="store-btn">
+            <span class="icon"></span>
+            <div class="text">
+              <span class="small">Download on the</span>
+              <span class="large">App Store</span>
+            </div>
+          </a>
+          <a href="#" class="store-btn">
+            <span class="icon">▶</span>
+            <div class="text">
+              <span class="small">Get it on</span>
+              <span class="large">Google Play</span>
+            </div>
+          </a>
+        </div>
 
-    {
-      hasBlog && (
-        <section class="reveal section-stream">
-          <PeekScroller
-            title="Latest Articles"
-            subtitle="Insights on sleep, movement, and mindful living"
-            items={blogItems}
-            ctaHref="/blog"
-            ctaLabel="Read the blog"
-          />
-        </section>
-      )
-    }
+        <div class="trust-pill">
+          <span class="dot"></span> Curated by Latika Bissa (M.Sc Yoga Therapy)
+        </div>
+      </div>
 
-    {
-      hasTips && (
-        <section class="reveal section-stream">
-          <TipsScroller
-            title="Wellness Tips"
-            subtitle="Short, sourced insights for daily care"
-            items={tipFive}
-            ctaHref="/tips"
-            ctaLabel="Explore tips"
-          />
-        </section>
-      )
-    }
+      <div class="hero-visual">
+        <div class="phone-frame-wrapper">
+          <video
+            class="app-video"
+            poster="/poster.jpg"
+            autoplay
+            loop
+            muted
+            playsinline
+            width="300"
+            height="533"
+          >
+            <source src="/website-app-demo.webm" type="video/webm" />
+            <source src="/website-app-demo.mp4" type="video/mp4" />
 
-    <section class="reveal section-features">
-      <div class="home-block">
-        <header class="feature-tiles-header">
-          <h2 class="feature-tiles-title">Essential Wellness Tools</h2>
-          <p class="feature-tiles-subtitle">
-            100% private, ad-free tools for a healthier you
-          </p>
-        </header>
-        <FeatureTiles
-          tiles={[
-            {
-              emoji: "💧",
-              title: "Hydration",
-              subtitle: "Log daily water intake",
-            },
-            {
-              emoji: "🌸",
-              title: "Cycles",
-              subtitle: "Track period & insights",
-            },
-            {
-              emoji: "📝",
-              title: "Mood",
-              subtitle: "Daily check-ins & notes",
-            },
-            {
-              emoji: "⏰",
-              title: "Rhythms",
-              subtitle: "Gentle habit reminders",
-            },
-            {
-              emoji: "⏳",
-              title: "Fasting",
-              subtitle: "Monitor eating windows",
-            },
-            {
-              emoji: "📰",
-              title: "Blogs",
-              subtitle: "Curated wellness guides",
-            },
-          ]}
+            Your browser does not support the video tag.
+          </video>
+          <div class="glow-blob"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-yoga">
+    <div class="container grid-layout reverse-mobile">
+      <div class="visual-col">
+        <img
+          src="/images/yoga-plans-collage.png"
+          alt="Tulaa Yoga Plans Interface"
+          class="feature-img shadow-lg"
         />
       </div>
-    </section>
-  </div>
-</Site>
+      <div class="text-col">
+        <h2 class="section-title">
+          Expert-Led Yoga for <br />Real Life Needs.
+        </h2>
+        <p class="body-text">
+          These aren’t just workouts. They are battle-tested therapies curated
+          by <strong>Latika Bissa</strong>, a Yoga Therapist with 10+ years of
+          clinical experience.
+        </p>
+
+        <div class="feature-list">
+          <div class="feature-item">
+            <span class="check">✓</span>
+            <div>
+              <strong>Pain Relief</strong>
+              <p>Sciatica, Neck Pain, Knees, Back Pain, Carpal Tunnel.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="check">✓</span>
+            <div>
+              <strong>Women’s Health</strong>
+              <p>Prenatal (Trimesters), Postnatal, PCOS, Cycle Syncing.</p>
+            </div>
+          </div>
+          <div class="feature-item">
+            <span class="check">✓</span>
+            <div>
+              <strong>Chronic Conditions</strong>
+              <p>Thyroid, Diabetes, BP Management, Scoliosis.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-tools bg-subtle">
+    <div class="container grid-layout">
+      <div class="text-col">
+        <h2 class="section-title">Replace 5 Apps <br />With One.</h2>
+        <p class="body-text">
+          Simplify your wellness stack. Tulaa brings your essential health
+          trackers into one secure, ad-free space.
+        </p>
+
+        <div class="tools-grid">
+          <div class="tool-card">
+            <span class="emoji">🌸</span>
+            <strong>Cycle Tracker</strong>
+            <p>Smart predictions & symptom logging.</p>
+          </div>
+          <div class="tool-card">
+            <span class="emoji">⏰</span>
+            <strong>Rhythm</strong>
+            <p>Build healthy habits with streaks.</p>
+          </div>
+          <div class="tool-card">
+            <span class="emoji">💧</span>
+            <strong>Hydration</strong>
+            <p>Log water intake easily.</p>
+          </div>
+          <div class="tool-card">
+            <span class="emoji">⏳</span>
+            <strong>Fasting</strong>
+            <p>Track eating windows.</p>
+          </div>
+        </div>
+      </div>
+      <div class="visual-col">
+        <img
+          src="/images/trackers-collage.png"
+          alt="Cycle, Water and Habit trackers"
+          class="feature-img"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-mind">
+    <div class="container center-text">
+      <h2 class="section-title">
+        Calm Your Mind. <br />Understand Your Emotions.
+      </h2>
+      <p class="body-text max-w-md">
+        From traditional chanting to anxiety relief. Log your moods to spot
+        patterns and journal your thoughts in a private, safe space.
+      </p>
+    </div>
+
+    <div class="container wide-visual">
+      <img
+        src="/images/mind-mood-split.png"
+        alt="Meditation and Journaling Interface"
+        class="feature-img"
+      />
+    </div>
+  </section>
+
+  <section class="section section-privacy">
+    <div class="container">
+      <div class="privacy-box">
+        <div class="lock-icon">
+          <svg
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            ><rect x="3" y="11" width="18" height="11" rx="2" ry="2"
+            ></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg
+          >
+        </div>
+        <h2 class="section-title">100% Private. <br />100% Yours.</h2>
+        <p class="body-text max-w-md">
+          We believe your health data belongs to you, not an ad network.
+        </p>
+
+        <ul class="privacy-list">
+          <li>🚫 <span>No Account Needed</span></li>
+          <li>📴 <span>Works 100% Offline</span></li>
+          <li>🔒 <span>Data Stored Locally</span></li>
+          <li>📦 <span>Export/Delete Anytime</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="download" class="section section-cta">
+    <div class="container">
+      <div class="cta-card">
+        <h2 class="cta-title">Start Your Journey Today.</h2>
+        <p class="cta-sub">Inclusive. Non-judgmental. Completely Free.</p>
+
+        <div class="store-buttons centered">
+          <a href="#" class="store-btn inverted">
+            <span class="icon"></span>
+            <div class="text">
+              <span class="small">Download on the</span>
+              <span class="large">App Store</span>
+            </div>
+          </a>
+          <a href="#" class="store-btn inverted">
+            <span class="icon">▶</span>
+            <div class="text">
+              <span class="small">Get it on</span>
+              <span class="large">Google Play</span>
+            </div>
+          </a>
+        </div>
+        <p class="legal-line">
+          © {new Date().getFullYear()} Tulaalife Wellness Pvt Ltd.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>
 
 <style>
-  /* Main Container */
-  .home-layout {
+  /* =========================================
+       LOCAL STYLES FOR LANDING PAGE
+       ========================================= */
+
+  /* --- General Utils --- */
+  .text-gradient {
+    background: linear-gradient(
+      135deg,
+      var(--primary),
+      color-mix(in srgb, var(--primary), black 20%)
+    );
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .section {
+    padding: 100px 0;
+  }
+  .bg-subtle {
+    background-color: var(--bg-sub);
+  }
+  .feature-img {
     width: 100%;
-    max-width: var(--container);
-    margin: 0 auto;
+    height: auto;
+    border-radius: var(--radius-lg);
+  }
+  .shadow-lg {
+    box-shadow: var(--shadow);
+  }
+  .max-w-md {
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* --- Sticky Nav --- */
+  .sticky-nav {
+    position: fixed;
+    top: -80px; /* Hidden initially */
+    left: 0;
+    right: 0;
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    z-index: 99;
+    transition: top 0.3s ease;
+  }
+  :global([data-theme="dark"]) .sticky-nav {
+    background: rgba(20, 20, 20, 0.9);
+  }
+
+  .sticky-nav.visible {
+    top: 0;
+  }
+
+  .sticky-inner {
+    height: 64px;
     display: flex;
-    flex-direction: column;
-    gap: clamp(48px, 6vw, 80px);
+    align-items: center;
+    justify-content: space-between;
   }
-
-  /* Section Specifics */
-  .section-hero {
-    margin-top: 12px;
-    padding: 0 16px;
-  }
-
-  .section-features .home-block {
+  .sticky-logo {
     display: flex;
-    flex-direction: column;
-    gap: 32px;
-    padding-top: 40px;
-    padding-bottom: 40px;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+  }
+  .btn-sm {
+    background: var(--primary);
+    color: var(--primary-fg);
+    padding: 8px 16px;
+    border-radius: 99px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: transform 0.2s;
+  }
+  .btn-sm:hover {
+    transform: scale(1.05);
   }
 
-  /* Buttons */
-  .btn {
+  /* --- Hero Section --- */
+  .hero-section {
+    padding-top: 140px; /* Account for fixed header */
+    padding-bottom: 80px;
+    overflow: hidden;
+  }
+  .hero-grid {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 99px;
+    background: var(--bg-sub);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-bottom: 24px;
+    border: 1px solid var(--border);
+  }
+  .hero-title {
+    font-size: var(--text-display);
+    line-height: 1.1;
+    margin-bottom: 24px;
+  }
+  .hero-sub {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 40px;
+    max-width: 500px;
+  }
+  .trust-pill {
+    margin-top: 32px;
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    padding: 12px 24px;
-    border-radius: 999px;
-    text-decoration: none;
-    font-weight: var(--fw-medium);
-    font-size: var(--fs-body-sm);
-    transition: all 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
-    cursor: pointer;
+    gap: 8px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    background: var(--bg-sub);
+    padding: 8px 16px;
+    border-radius: 99px;
+  }
+  .dot {
+    width: 8px;
+    height: 8px;
+    background-color: #22c55e;
+    border-radius: 50%;
   }
 
-  .btn--solid {
-    background: var(--fg);
-    color: var(--btnText);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  /* Video/Phone Frame */
+  .phone-frame-wrapper {
+    position: relative;
+    width: 300px;
+    margin: 0 auto;
+    z-index: 2;
   }
-  .btn--solid:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
-    background: color-mix(in oklch, var(--fg), black 5%);
+  .app-video {
+    width: 100%;
+    border-radius: 40px; /* Approximate iPhone corner radius */
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+    border: 8px solid #333; /* Simple CSS Bezel if image fails */
+    aspect-ratio: 9/19.5;
+    object-fit: cover;
   }
-
-  .btn--subtle {
-    background: transparent;
-    color: var(--fg);
-    border: 1px solid var(--ring);
-  }
-  .btn--subtle:hover {
-    background: var(--card);
-    border-color: var(--accent);
-  }
-
-  .feature-tiles-header {
-    text-align: center;
-    padding: 0 16px;
+  :global([data-theme="dark"]) .app-video {
+    border-color: #111;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   }
 
-  .feature-tiles-title {
-    font-size: var(--fs-h1);
-    margin: 0 0 6px;
-    letter-spacing: -0.01em;
+  .glow-blob {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 120%;
+    height: 80%;
+    background: var(--primary);
+    filter: blur(80px);
+    opacity: 0.2;
+    z-index: -1;
   }
 
-  .feature-tiles-subtitle {
+  /* --- Feature Sections --- */
+  .grid-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
+  .section-title {
+    font-size: var(--text-h1);
+    margin-bottom: 24px;
+  }
+  .body-text {
+    font-size: var(--text-body);
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+  .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  .feature-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .check {
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: -2px;
+  }
+
+  /* Tools Grid */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  .tool-card {
+    background: var(--bg-main);
+    padding: 20px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+  }
+  .tool-card .emoji {
+    font-size: 1.5rem;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .tool-card strong {
+    display: block;
+    margin-bottom: 4px;
+  }
+  .tool-card p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
     margin: 0;
-    font-size: var(--fs-body);
-    color: var(--muted);
   }
 
-  /* Animation: Reveal */
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    animation: elevate-in 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+  /* Mind & Mood */
+  .center-text {
+    text-align: center;
+    margin-bottom: 60px;
+  }
+  .wide-visual {
+    max-width: 900px;
+    margin: 0 auto;
   }
 
-  .reveal:nth-child(1) {
-    animation-delay: 0.1s;
+  /* Privacy */
+  .section-privacy {
+    text-align: center;
   }
-  .reveal:nth-child(2) {
-    animation-delay: 0.25s;
+  .privacy-box {
+    background: var(--bg-sub);
+    padding: 60px 20px;
+    border-radius: var(--radius-lg);
+    max-width: 800px;
+    margin: 0 auto;
   }
-  .reveal:nth-child(3) {
-    animation-delay: 0.4s;
+  .lock-icon {
+    color: var(--primary);
+    margin-bottom: 20px;
   }
-  .reveal:nth-child(4) {
-    animation-delay: 0.55s;
+  .privacy-list {
+    list-style: none;
+    padding: 0;
+    margin-top: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px 32px;
   }
-  .reveal:nth-child(5) {
-    animation-delay: 0.7s;
+  .privacy-list li {
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .reveal:nth-child(6) {
-    animation-delay: 0.85s;
-  } /* Added for extra section */
 
-  @keyframes elevate-in {
-    from {
-      opacity: 0;
-      transform: translateY(24px);
+  /* CTA Section */
+  .cta-card {
+    background: linear-gradient(
+      135deg,
+      var(--primary),
+      color-mix(in srgb, var(--primary), white 40%)
+    );
+    padding: 80px 20px;
+    border-radius: 32px;
+    text-align: center;
+    color: white;
+  }
+  :global([data-theme="dark"]) .cta-card {
+    background: linear-gradient(
+      135deg,
+      var(--primary),
+      color-mix(in srgb, var(--primary), black 60%)
+    );
+  }
+  .cta-title {
+    color: white;
+    margin-bottom: 16px;
+    font-size: var(--text-h1);
+  }
+  .cta-sub {
+    opacity: 0.9;
+    font-size: 1.2rem;
+    margin-bottom: 40px;
+  }
+  .legal-line {
+    margin-top: 60px;
+    font-size: 0.8rem;
+    opacity: 0.6;
+  }
+
+  /* Store Buttons */
+  .store-buttons {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .store-buttons.centered {
+    justify-content: center;
+  }
+
+  .store-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--text-main);
+    color: var(--bg-main);
+    padding: 10px 20px;
+    border-radius: 12px;
+    transition:
+      transform 0.2s,
+      opacity 0.2s;
+    min-width: 160px;
+  }
+  .store-btn.inverted {
+    background: white;
+    color: black;
+  }
+  :global([data-theme="dark"]) .store-btn.inverted {
+    background: black;
+    color: white;
+  }
+
+  .store-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+  }
+  .store-btn .icon {
+    font-size: 1.5rem;
+    line-height: 1;
+  }
+  .store-btn .text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.1;
+  }
+  .store-btn .small {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .store-btn .large {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  /* --- Responsive --- */
+  @media (max-width: 768px) {
+    .hero-grid,
+    .grid-layout {
+      grid-template-columns: 1fr;
+      text-align: center;
+      gap: 40px;
     }
-    to {
-      opacity: 1;
-      transform: translateY(0);
+    .reverse-mobile {
+      display: flex;
+      flex-direction: column-reverse;
     }
-  }
 
-  @media (prefers-reduced-motion: reduce) {
-    .reveal {
-      animation: none;
-      opacity: 1;
-      transform: none;
+    .hero-content {
+      order: 2;
+    }
+    .hero-visual {
+      order: 1;
+      margin-bottom: 20px;
+    }
+
+    .store-buttons {
+      justify-content: center;
+    }
+    .feature-item {
+      justify-content: flex-start;
+      text-align: left;
+    }
+
+    /* Center text on mobile but keep lists aligned left */
+    .text-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .feature-list,
+    .tools-grid {
+      width: 100%;
+      text-align: left;
     }
   }
 </style>
+
+<script>
+  // Sticky Nav Logic
+  const nav = document.getElementById("sticky-nav");
+  const hero = document.querySelector(".hero-section");
+
+  if (nav && hero) {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // If hero is NOT intersecting (scrolled past), show nav
+          if (!entry.isIntersecting) {
+            nav.classList.add("visible");
+          } else {
+            nav.classList.remove("visible");
+          }
+        });
+      },
+      { threshold: 0.1 },
+    ); // Trigger when 10% of hero is visible
+
+    observer.observe(hero);
+  }
+</script>
