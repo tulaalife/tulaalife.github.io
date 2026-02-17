@@ -89,9 +89,8 @@ const primaryLabel = post.cta?.text || "Open in App";
             </nav>
 
             {/* Header */}
-            <header class="article-header">
+            <div class="article-header">
                 <div class="meta-tags">
-                    <time datetime={post.date}>{dateStr}</time>
                     {
                         post.language === "hi" && (
                             <span class="lang-tag">Hindi</span>
@@ -100,7 +99,7 @@ const primaryLabel = post.cta?.text || "Open in App";
                 </div>
                 <h1 class="article-title">{post.title}</h1>
                 {post.excerpt && <p class="article-subtitle">{post.excerpt}</p>}
-            </header>
+            </div>
 
             {/* Cover Image */}
             <div class="image-frame">

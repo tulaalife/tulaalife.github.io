@@ -8,17 +8,14 @@ interface Props {
 }
 
 export const getStaticPaths = (async ({ paginate }) => {
-    // 1. Filter: Keep only English posts (or posts with no lang defined)
     const englishPosts = blogPosts.filter(
         (p) => !p.language || p.language === "en",
     );
 
-    // 2. Sort: Newest first
     const sortedPosts = [...englishPosts].sort(
         (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );
 
-    // 3. Paginate
     return paginate(sortedPosts, { pageSize: 12 });
 }) satisfies GetStaticPaths;
 
@@ -42,45 +39,46 @@ const formatDate = (isoString: string) => {
     description={description}
     canonicalPath={page.url.current}
 >
-    <main class="wrap blog-container">
-        <header class="blog-header">
-            <h1 class="blog-title">{title}</h1>
-            <p class="blog-subtitle">{description}</p>
-        </header>
+    <div class="listing-container">
+        <div class="listing-header">
+            <h1 class="page-title">{title}</h1>
+            <p class="page-subtitle">{description}</p>
+        </div>
 
         <div class="blog-grid">
             {
                 page.data.map((post) => (
-                    <article class="blog-card">
-                        <a href={`/blog/${post.slug}`} class="blog-link">
-                            <div class="blog-thumb-frame">
-                                <img
-                                    src={post.image}
-                                    alt={post.title}
-                                    loading="lazy"
-                                    decoding="async"
-                                />
-                            </div>
+                    <a href={`/blog/${post.slug}`} class="blog-card">
+                        <div class="blog-thumb">
+                            <img
+                                src={post.image}
+                                alt={post.title}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                        </div>
 
-                            <div class="blog-content">
-                                <div class="blog-meta">
-                                    <span class="blog-date">
-                                        {formatDate(post.date)}
-                                    </span>
-                                </div>
-                                <h3 class="blog-item-title">{post.title}</h3>
-                                <p class="blog-item-desc">{post.excerpt}</p>
+                        <div class="blog-content">
+                            <span class="blog-date">
+                                {formatDate(post.date)}
+                            </span>
+
+                            <h3 class="blog-title-sm">{post.title}</h3>
+
+                            <p class="blog-excerpt">{post.excerpt}</p>
+
+                            <div class="blog-footer">
                                 <span class="blog-more">Read Article →</span>
                             </div>
-                        </a>
-                    </article>
+                        </div>
+                    </a>
                 ))
             }
         </div>
 
         {
             page.lastPage > 1 && (
-                <nav class="blog-pagination" aria-label="Pagination">
+                <nav class="pagination" aria-label="Pagination">
                     {page.url.prev ? (
                         <a href={page.url.prev} class="btn-pill">
                             ← Previous
@@ -90,7 +88,7 @@ const formatDate = (isoString: string) => {
                     )}
 
                     <span class="page-meta">
-                        Page {page.currentPage} of {page.lastPage}
+                        Page {page.currentPage} / {page.lastPage}
                     </span>
 
                     {page.url.next ? (
@@ -103,161 +101,206 @@ const formatDate = (isoString: string) => {
                 </nav>
             )
         }
-    </main>
+    </div>
 </Site>
 
 <style>
-    /* Styles remain exactly the same, removed unused .badge-lang */
-    .blog-container {
-        max-width: var(--container);
+    /* =========================================
+       SHARED LISTING LAYOUT
+    ========================================= */
+
+    .listing-container {
+        max-width: var(--container-width);
         margin: 0 auto;
-        padding: 24px 20px 64px;
+        padding: 60px 24px 80px;
     }
-    .blog-header {
+
+    .listing-header {
         text-align: center;
-        margin-bottom: 48px;
-        padding-top: 20px;
+        margin-bottom: 60px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
     }
-    .blog-title {
-        font-size: var(--fs-display);
+
+    .page-title {
+        font-size: var(--text-display);
+        margin-bottom: 16px;
         letter-spacing: -0.02em;
-        margin-bottom: 8px;
+        line-height: 1.1;
     }
-    .blog-subtitle {
-        font-size: var(--fs-body-lg);
-        color: var(--muted);
-        max-width: 600px;
-        margin: 0 auto;
+
+    .page-subtitle {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        line-height: 1.5;
     }
+
+    /* =========================================
+       GRID
+    ========================================= */
+
     .blog-grid {
         display: grid;
-        grid-template-columns: 1fr;
-        gap: 24px;
+        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        gap: 32px;
+        margin-bottom: 60px;
     }
-    @media (min-width: 800px) {
-        .blog-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
+
+    /* =========================================
+       CARD
+    ========================================= */
+
     .blog-card {
-        background: var(--card);
-        border: 1px solid var(--ring);
-        border-radius: 20px;
-        overflow: hidden;
-        transition:
-            transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1),
-            box-shadow 0.3s ease,
-            border-color 0.3s ease;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-    }
-    .blog-card:hover {
-        transform: translateY(-4px);
-        box-shadow: var(--elev-2);
-        border-color: color-mix(in oklch, var(--accent), transparent 70%);
-    }
-    .blog-link {
-        text-decoration: none;
-        color: inherit;
         display: flex;
         flex-direction: column;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
         height: 100%;
     }
-    @media (min-width: 500px) {
-        .blog-link {
-            flex-direction: row;
-        }
+
+    .blog-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+        border-color: color-mix(in srgb, var(--primary), transparent 70%);
     }
-    .blog-thumb-frame {
+
+    /* =========================================
+       IMAGE
+    ========================================= */
+
+    .blog-thumb {
         position: relative;
+        aspect-ratio: 16 / 9;
         overflow: hidden;
-        background: color-mix(in oklch, var(--bg1), grey 5%);
-        aspect-ratio: 16/9;
+        border-bottom: 1px solid var(--border);
+        background: var(--bg-main);
     }
-    @media (min-width: 500px) {
-        .blog-thumb-frame {
-            width: 150px;
-            flex-shrink: 0;
-            aspect-ratio: auto;
-            border-right: 1px solid
-                color-mix(in oklch, var(--ring), transparent 50%);
-        }
-    }
-    .blog-thumb-frame img {
+
+    .blog-thumb img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
     }
-    .blog-card:hover .blog-thumb-frame img {
+
+    .blog-card:hover .blog-thumb img {
         transform: scale(1.05);
     }
+
+    /* =========================================
+       CONTENT
+    ========================================= */
+
     .blog-content {
-        padding: 20px;
+        padding: 24px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        flex: 1;
+        flex-grow: 1;
     }
-    .blog-meta {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+
+    .blog-date {
+        font-size: 0.85rem;
+        color: var(--text-muted);
         margin-bottom: 8px;
-        font-size: var(--fs-caption);
-        color: var(--muted);
-        font-weight: var(--fw-medium);
     }
-    .blog-item-title {
-        font-size: clamp(1.15rem, 1.5vw, 1.3rem);
-        margin: 0 0 8px;
-        line-height: 1.25;
-        color: var(--fg);
+
+    .blog-title-sm {
+        font-size: 1.25rem;
+        font-weight: var(--fw-bold);
+        margin-bottom: 8px;
+        line-height: 1.2;
+        letter-spacing: -0.01em;
     }
-    .blog-item-desc {
-        font-size: var(--fs-body-sm);
-        color: var(--muted);
-        line-height: 1.5;
-        margin: 0 0 16px;
+
+    .blog-excerpt {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        margin-bottom: 20px;
         display: -webkit-box;
-        -webkit-line-clamp: 2;
+        -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
+        flex-grow: 1;
     }
-    .blog-more {
-        font-size: var(--fs-caption);
-        font-weight: var(--fw-bold);
-        color: var(--accent);
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
+
+    .blog-footer {
         margin-top: auto;
     }
-    .blog-pagination {
-        margin-top: 48px;
+
+    .blog-more {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--primary);
+        transition: transform 0.2s ease;
+    }
+
+    .blog-card:hover .blog-more {
+        transform: translateX(4px);
+    }
+
+    /* =========================================
+       PAGINATION
+    ========================================= */
+
+    .pagination {
+        margin-top: 60px;
         display: flex;
         align-items: center;
         justify-content: center;
-        gap: 16px;
+        gap: 20px;
     }
+
     .page-meta {
-        font-size: var(--fs-caption);
-        color: var(--muted);
+        font-size: 0.9rem;
+        color: var(--text-muted);
     }
+
     .btn-pill {
-        padding: 8px 16px;
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
         border-radius: 999px;
-        font-size: var(--fs-body-sm);
+        font-size: 0.95rem;
         text-decoration: none;
-        color: var(--fg);
-        border: 1px solid var(--ring);
-        transition: all 0.2s;
+        color: var(--text-main);
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        transition: all 0.2s ease;
     }
+
     .btn-pill:not(.disabled):hover {
-        background: var(--card);
-        border-color: var(--accent);
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--bg-sub);
     }
+
     .btn-pill.disabled {
         opacity: 0.4;
         cursor: default;
-        border-color: transparent;
+        background: transparent;
+    }
+
+    /* =========================================
+       MOBILE
+    ========================================= */
+
+    @media (max-width: 600px) {
+        .listing-container {
+            padding: 40px 20px 60px;
+        }
+
+        .blog-grid {
+            grid-template-columns: 1fr;
+        }
     }
 </style>
