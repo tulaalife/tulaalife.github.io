@@ -6,7 +6,7 @@ import StoreButtons from "../StoreButtons.astro";
 
 <section id="hero" class="hero-section">
     <div class="container hero-grid">
-        <div class="hero-content">
+        <div class="hero-content" id="download-content">
             <div class="badge">✨ 100% Free. Private. Offline.</div>
             <h1 class="hero-title">
                 Expert Yoga Therapy. <br />
@@ -143,6 +143,12 @@ import StoreButtons from "../StoreButtons.astro";
 
 <style>
     /* ... (Keep existing Layout Styles) ... */
+
+    /* 👇 NEW: Ensures correct scroll position offset for sticky header */
+    #download-content {
+        scroll-margin-top: 100px;
+    }
+
     .hero-section {
         padding-top: 140px;
         padding-bottom: 80px;
@@ -185,31 +191,24 @@ import StoreButtons from "../StoreButtons.astro";
         justify-content: flex-start;
         width: 100%;
     }
-    /* Make the gradient pop a bit more */
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-
-        /* 👇 ADD THESE LINES */
-        padding-bottom: 0.2em; /* Adds space for the 'g' */
-        margin-bottom: -0.2em; /* Pulls the layout back up so it doesn't look gappy */
-        display: inline-block; /* Essential for padding to work on text spans */
-        line-height: 1.2; /* Ensure line height isn't too tight */
+        padding-bottom: 0.2em;
+        margin-bottom: -0.2em;
+        display: inline-block;
+        line-height: 1.2;
     }
 
-    /* Make the trust pill look more authoritative */
     .trust-pill {
         margin-top: 32px;
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        font-size: 0.95rem; /* Slightly larger */
-        color: var(--text-main); /* Darker text for readability */
-        background: rgba(
-            var(--primary-rgb),
-            0.1
-        ); /* Subtle tint of primary color */
+        font-size: 0.95rem;
+        color: var(--text-main);
+        background: rgba(var(--primary-rgb), 0.1);
         padding: 10px 20px;
         border-radius: 99px;
         border: 1px solid rgba(0, 0, 0, 0.05);
@@ -221,31 +220,26 @@ import StoreButtons from "../StoreButtons.astro";
         height: 8px;
         background-color: #22c55e;
         border-radius: 50%;
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2); /* Pulse effect ring */
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
     }
 
-    /* --- UPDATED VISUAL STYLES --- */
+    /* --- VISUAL STYLES --- */
 
     .phone-frame-wrapper {
         position: relative;
         width: 280px;
         margin: 0 auto;
         z-index: 2;
-
         aspect-ratio: 540 / 1174;
-
         background-color: #000;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
-
         border-radius: 36px;
         border: 10px solid #1a1a1a;
-
         overflow: hidden;
     }
 
-    /* Subtle Shimmer: Darker gradient for premium feel */
     .phone-frame-wrapper.skeleton-loader::before {
         content: "";
         position: absolute;
@@ -253,7 +247,6 @@ import StoreButtons from "../StoreButtons.astro";
         left: 0;
         width: 100%;
         height: 100%;
-        /* Much more subtle gradient */
         background: linear-gradient(
             90deg,
             rgba(255, 255, 255, 0) 0%,
@@ -261,7 +254,7 @@ import StoreButtons from "../StoreButtons.astro";
             rgba(255, 255, 255, 0) 100%
         );
         transform: translateX(-100%);
-        animation: shimmer 2s infinite; /* Slower animation */
+        animation: shimmer 2s infinite;
         z-index: 5;
         pointer-events: none;
     }
@@ -275,18 +268,12 @@ import StoreButtons from "../StoreButtons.astro";
     .app-video {
         position: absolute;
         inset: 0;
-
         width: 100%;
         height: 100%;
-
         object-fit: cover;
-
-        /* 👇 IMPORTANT FIX */
-        border-radius: 26px; /* 36 - 10 */
-
+        border-radius: 26px;
         opacity: 0;
         transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-
         z-index: 10;
     }
 
