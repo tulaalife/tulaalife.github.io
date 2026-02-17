@@ -51,8 +51,9 @@ const socialImage = ogImage.startsWith("http")
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={socialImage} />
 
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+        <link rel="icon" type="image/webp" href="/assets/icons/logo.webp" />
+
+        <link rel="apple-touch-icon" href="/assets/icons/logo.webp" />
 
         <ClientRouter />
 
@@ -216,6 +217,21 @@ const socialImage = ogImage.startsWith("http")
                     color 0.3s ease;
                 /* Anti-aliasing for that crisp look */
                 -webkit-font-smoothing: antialiased;
+
+                /* 👇 NEW: PREVENT TEXT SELECTION & TAP HIGHLIGHT */
+                -webkit-user-select: none; /* Safari/Chrome */
+                -moz-user-select: none; /* Firefox */
+                -ms-user-select: none; /* IE/Edge */
+                user-select: none; /* Standard */
+                -webkit-tap-highlight-color: transparent; /* Removes blue flash on mobile tap */
+            }
+
+            /* Re-enable selection for inputs so people can type if needed */
+            input,
+            textarea,
+            [contenteditable] {
+                -webkit-user-select: text;
+                user-select: text;
             }
 
             img,
@@ -223,6 +239,9 @@ const socialImage = ogImage.startsWith("http")
                 max-width: 100%;
                 height: auto;
                 display: block;
+                /* Prevent dragging images */
+                -webkit-user-drag: none;
+                user-select: none;
             }
 
             h1,
