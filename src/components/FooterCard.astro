@@ -1,263 +1,119 @@
 ---
-// FooterCard.astro — Compact footer version
-export interface Props {
+import StoreButtons from "./StoreButtons.astro";
+
+interface Props {
     headline?: string;
     subline?: string;
-    iosHref?: string;
-    androidHref?: string;
-    iosIconSrc?: string;
-    androidIconSrc?: string;
 }
 
 const {
-    // CHANGED: Active voice "Start Your Journey"
-    headline = "Start Your Holistic Health Journey",
-    // CHANGED: Simplified "all-in-one" messaging
-    subline = "Everything you need for mind and body balance: Yoga, journaling, and health tracking in one secure, ad-free space.",
-    iosHref = "https://apps.apple.com/in/app/tulaa/id6748626498",
-    androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
-    iosIconSrc = "/assets/icons/appstore.svg",
-    androidIconSrc = "/assets/icons/playstore.svg",
+    headline = "Start Your Journey.",
+    subline = "Expert yoga, daily tracking, and mindfulness. One app, completely free.",
 } = Astro.props;
 
-// CHANGED: Organized specifically for feature-scanning
-const chips = [
-    "Yoga, Meditation & Journaling",
-    "Cycle & Water Tracker",
-    "Gentle Habit Reminders",
+const highlights = [
+    "100% Free & Offline",
+    "No Account Needed",
+    "Privacy First",
 ];
 ---
 
-<section class="dl" aria-label="Download Tulaa">
-    <div class="dl__copy">
-        <h2 class="dl__title typ-h1">
-            {headline}
-        </h2>
-        <p class="dl__sub typ-body-sm">{subline}</p>
+<section class="footer-card">
+    <div class="content">
+        <h2 class="title">{headline}</h2>
+        <p class="sub">{subline}</p>
 
-        <ul class="dl__chips" aria-label="App highlights">
-            {chips.map((chip) => <li>{chip}</li>)}
+        <ul class="highlights">
+            {highlights.map((item) => <li>{item}</li>)}
         </ul>
-    </div>
 
-    <div class="dl__buttons" role="group" aria-label="Store links">
-        <a
-            class="store-btn btn--ios"
-            href={iosHref}
-            target="_blank"
-            rel="noopener"
-            aria-label="Download on the App Store"
-        >
-            <img
-                class="store-btn__icon"
-                src={iosIconSrc}
-                alt=""
-                width="24"
-                height="24"
-                aria-hidden="true"
-            />
-            <span class="store-btn__text">
-                <small>Download on</small>
-                <strong>App Store</strong>
-            </span>
-        </a>
-
-        <a
-            class="store-btn btn--android"
-            href={androidHref}
-            target="_blank"
-            rel="noopener"
-            aria-label="Get it on Google Play"
-        >
-            <img
-                class="store-btn__icon"
-                src={androidIconSrc}
-                alt=""
-                width="24"
-                height="24"
-                aria-hidden="true"
-            />
-            <span class="store-btn__text">
-                <small>Get it on</small>
-                <strong>Google Play</strong>
-            </span>
-        </a>
+        <div class="actions">
+            <StoreButtons centered={true} />
+        </div>
     </div>
 </section>
 
 <style>
-    .dl {
-        /* FOOTER VARIABLES */
-        --r: 24px;
-        --padY: 28px;
-        --padX: 20px;
-        --btn-h: 52px;
-        --btn-r: 12px;
+    .footer-card {
+        --card-padding: clamp(3rem, 5vw, 4rem) 1.5rem;
 
         position: relative;
-        display: grid;
-        place-items: center;
-        text-align: center;
-        gap: 16px;
-        padding: var(--padY) var(--padX);
-        border-radius: var(--r);
-        box-sizing: border-box;
-
         width: 100%;
-        max-width: 100%;
-        margin-inline: auto;
-
-        background:
-            radial-gradient(
-                140% 180% at 50% 0%,
-                color-mix(in oklch, var(--accent-2), transparent 88%),
-                transparent 70%
-            ),
-            linear-gradient(
-                180deg,
-                color-mix(in oklch, var(--card), transparent 12%),
-                color-mix(in oklch, var(--card), transparent 28%)
-            );
-        border: 1px solid color-mix(in oklch, var(--ring), transparent 20%);
-        box-shadow:
-            0 18px 40px rgba(15, 18, 23, 0.1),
-            0 0 0 1px rgba(255, 255, 255, 0.18);
-        isolation: isolate;
-        overflow: hidden;
-    }
-
-    @supports (backdrop-filter: blur(10px)) {
-        .dl {
-            backdrop-filter: blur(18px) saturate(1.25);
-            -webkit-backdrop-filter: blur(18px) saturate(1.25);
-        }
-    }
-
-    .dl__copy {
-        max-width: 640px;
-        margin-inline: auto;
-    }
-
-    .dl__title {
-        margin: 0 0 2px;
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: var(--card-padding);
+        border-radius: 32px;
         text-align: center;
+        overflow: hidden;
+
+        /* Vibrant, Modern Gradient */
+        background: linear-gradient(
+            135deg,
+            var(--primary),
+            color-mix(in srgb, var(--primary), black 20%)
+        );
+        color: white;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
     }
 
-    .dl__sub {
-        margin: 0;
-        font-size: var(--fs-body);
-        opacity: 0.96;
+    /* Dark mode depth adjustment */
+    :global([data-theme="dark"]) .footer-card {
+        background: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--primary), black 10%),
+            color-mix(in srgb, var(--primary), black 50%)
+        );
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
     }
 
-    .dl__chips {
+    .content {
+        position: relative;
+        z-index: 2;
+        max-width: 580px;
+        margin: 0 auto;
+    }
+
+    .title {
+        font-size: clamp(2rem, 4vw, 2.8rem);
+        font-weight: var(--fw-bold);
+        margin-bottom: 16px;
+        color: white;
+        line-height: 1.1;
+        letter-spacing: -0.02em;
+    }
+
+    .sub {
+        font-size: 1.15rem;
+        margin-bottom: 32px;
+        color: rgba(255, 255, 255, 0.95);
+        line-height: 1.5;
+        font-weight: 400;
+    }
+
+    .highlights {
         display: flex;
-        gap: 8px;
-        justify-content: center;
         flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
         list-style: none;
         padding: 0;
-        margin: 14px 0 4px;
+        margin: 0 0 40px;
     }
 
-    .dl__chips li {
-        padding: 7px 12px;
-        border-radius: 999px;
-        font-size: var(--fs-caption);
-        font-weight: var(--fw-medium);
-        color: var(--fg);
-        background: linear-gradient(
-            180deg,
-            color-mix(in oklch, var(--card), white 10%),
-            color-mix(in oklch, var(--card), transparent 4%)
-        );
-        border: 1px solid color-mix(in oklch, var(--accent), transparent 88%);
-        box-shadow:
-            inset 0 1px 0 rgba(255, 255, 255, 0.6),
-            0 4px 10px rgba(15, 18, 23, 0.06);
+    .highlights li {
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 8px 16px;
+        border-radius: 99px;
+        /* Glassmorphism Pill */
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    .dl__buttons {
+    .actions {
         display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
         justify-content: center;
-        margin-top: 10px;
-    }
-
-    .store-btn {
-        height: var(--btn-h);
-        border-radius: var(--btn-r);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 8px;
-        padding: 0 14px;
-        text-decoration: none;
-        white-space: nowrap;
-        font-family: var(--font-sans);
-        background: linear-gradient(180deg, #121314, #0f0f10 60%);
-        color: #fff;
-        border: 1px solid color-mix(in oklch, #ffffff, transparent 82%);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
-        transition:
-            transform 0.14s ease,
-            box-shadow 0.14s ease,
-            background 0.14s ease;
-    }
-
-    .store-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
-    }
-
-    .store-btn:active {
-        transform: translateY(0);
-    }
-
-    .store-btn__icon {
-        width: 22px;
-        height: 22px;
-        object-fit: contain;
-        flex: 0 0 auto;
-    }
-
-    .store-btn__text {
-        display: flex;
-        flex-direction: column;
-        line-height: 1.05;
-        text-align: left;
-    }
-
-    .store-btn__text small {
-        font-size: var(--fs-caption);
-        letter-spacing: 0.02em;
-        opacity: 0.9;
-    }
-
-    .store-btn__text strong {
-        font-size: var(--fs-body-sm);
-        font-weight: var(--fw-semibold);
-        letter-spacing: 0.01em;
-    }
-
-    @media (max-width: 420px) {
-        .dl__buttons {
-            gap: 10px;
-        }
     }
 </style>
-
-<script is:inline>
-    (() => {
-        const ua = navigator.userAgent || "";
-        const isiOS =
-            /iPhone|iPad|iPod/.test(ua) ||
-            (/Macintosh/.test(ua) && "ontouchend" in document);
-        const isAndroid = /Android/.test(ua);
-
-        document.querySelectorAll(".dl").forEach((el) => {
-            if (isAndroid) el.classList.add("is-android");
-            else if (isiOS) el.classList.add("is-ios");
-        });
-    })();
-</script>
