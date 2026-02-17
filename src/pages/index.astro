@@ -6,7 +6,6 @@ import YogaFeatures from "../components/landing/YogaFeatures.astro";
 import WellnessTools from "../components/landing/WellnessTools.astro";
 import MindAndMood from "../components/landing/MindAndMood.astro";
 import PrivacyTrust from "../components/landing/PrivacyTrust.astro";
-import DownloadCTA from "../components/landing/DownloadCTA.astro";
 
 // Metadata
 const title = "Tulaa — Your Private Sanctuary for Holistic Wellness";
@@ -14,12 +13,11 @@ const description =
   "Free, offline, expert-led yoga and wellness tools. No login required. No tracking. Just you and your practice.";
 ---
 
-<Layout title={title} description={description} hideFooter={true}>
+<Layout title={title} description={description}>
   <StickyNav />
   <Hero />
   <YogaFeatures />
   <WellnessTools />
   <MindAndMood />
   <PrivacyTrust />
-  <DownloadCTA />
 </Layout>
