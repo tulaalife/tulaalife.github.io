@@ -1,53 +1,85 @@
 ---
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
 
+// 2. Dictionary for Yoga Features content
+const ui = {
+    en: {
+        imgAlt: "Tulaa Yoga Plans Interface",
+        titleTop: "Yoga for Every Body,",
+        titleBottom: "At Every Stage.",
+        bodyText:
+            "From pregnancy to your golden years, Tulaa adapts to you. Our research-backed plans are designed for real bodies, real pain, and real life.",
+
+        f1Title: "For the Office Worker",
+        f1Desc: 'Instant relief for "Tech Neck," Eye Strain, and Lower Back pain from long sitting hours.',
+
+        f2Title: "For Seniors & Beginners",
+        f2Desc: "Gentle Chair Yoga, Arthritis care, and Balance improvement routines that are safe and effective.",
+
+        f3Title: "For Chronic Conditions",
+        f3Desc: "Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.",
+    },
+    hi: {
+        imgAlt: "तुला योग योजना इंटरफ़ेस",
+        titleTop: "हर शरीर के लिए योग,",
+        titleBottom: "हर अवस्था में।",
+        bodyText:
+            "गर्भावस्था से लेकर आपके सुनहरे वर्षों तक, तुला आपके अनुकूल हो जाता है। हमारी शोध-समर्थित योजनाएं वास्तविक शरीरों, वास्तविक दर्द और वास्तविक जीवन के लिए डिज़ाइन की गई हैं।",
+
+        f1Title: "ऑफ़िस वर्कर्स के लिए",
+        f1Desc: "लंबे समय तक बैठने के कारण होने वाले 'टेक नेक', आंखों के तनाव और पीठ के निचले हिस्से के दर्द से तुरंत राहत।",
+
+        f2Title: "बुजुर्गों और शुरुआती लोगों के लिए",
+        f2Desc: "सौम्य चेयर योगा, गठिया की देखभाल, और संतुलन सुधारने वाले रूटीन जो सुरक्षित और प्रभावी हैं।",
+
+        f3Title: "दीर्घकालिक बीमारियों के लिए",
+        f3Desc: "पीसीओएस, मधुमेह (डायबिटीज), थायराइड और रक्तचाप (ब्लड प्रेशर) के लिए वैज्ञानिक प्रबंधन।",
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
 <section class="section section-yoga">
     <div class="container grid-layout reverse-mobile">
         <div class="visual-col">
-            <img
-                src="/images/yoga-plans-collage.webp"
-                alt="Tulaa Yoga Plans Interface"
-            />
+            <img src="/images/yoga-plans-collage.webp" alt={t.imgAlt} />
         </div>
         <div class="text-col">
-    <h2 class="section-title">
-        Yoga for Every Body, <br />
-        <span class="text-gradient">At Every Stage.</span>
-    </h2>
-    <p class="body-text">
-        From pregnancy to your golden years, Tulaa adapts to you. 
-        Our research-backed plans are designed for real bodies, real pain, and real life.
-    </p>
+            <h2 class="section-title">
+                {t.titleTop}
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
+            </h2>
+            <p class="body-text">
+                {t.bodyText}
+            </p>
 
-    <div class="feature-list">
-        <div class="feature-item">
-            <span class="check">✓</span>
-            <div>
-                <strong>For the Office Worker</strong>
-                <p>
-                    Instant relief for "Tech Neck," Eye Strain, and Lower Back pain from long sitting hours.
-                </p>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <span class="check">✓</span>
+                    <div>
+                        <strong>{t.f1Title}</strong>
+                        <p>{t.f1Desc}</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="check">✓</span>
+                    <div>
+                        <strong>{t.f2Title}</strong>
+                        <p>{t.f2Desc}</p>
+                    </div>
+                </div>
+                <div class="feature-item">
+                    <span class="check">✓</span>
+                    <div>
+                        <strong>{t.f3Title}</strong>
+                        <p>{t.f3Desc}</p>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="feature-item">
-            <span class="check">✓</span>
-            <div>
-                <strong>For Seniors & Beginners</strong>
-                <p>
-                    Gentle Chair Yoga, Arthritis care, and Balance improvement routines that are safe and effective.
-                </p>
-            </div>
-        </div>
-        <div class="feature-item">
-            <span class="check">✓</span>
-            <div>
-                <strong>For Chronic Conditions</strong>
-                <p>Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.</p>
-            </div>
-        </div>
-    </div>
-</div>
     </div>
 </section>
 
@@ -63,7 +95,7 @@
     }
     .feature-img {
         width: 100%;
-        max-width: 100%
+        max-width: 100%; /* Fixed missing semicolon here */
         height: auto;
         border-radius: var(--radius-lg);
     }

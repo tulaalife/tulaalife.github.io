@@ -1,64 +1,124 @@
+---
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
+
+// 2. Dictionary for Wellness Tools content
+const ui = {
+    en: {
+        badge: "All-in-One Wellness",
+        titleTop: "Replace 5 Apps",
+        titleBottom: "With One.",
+        body: "Simplify your digital wellness. Tulaa brings your essential health tools into one secure, offline-first ecosystem. <strong>No data mining. No subscriptions.</strong>",
+
+        c1Title: "Cycle Tracker",
+        c1Desc: "Predict periods & symptoms.",
+
+        c2Title: "Rhythm",
+        c2Desc: "Build healthy habit streaks.",
+
+        c3Title: "Hydration",
+        c3Desc: "Monitor daily water intake.",
+
+        c4Title: "Fasting",
+        c4Desc: "Track fasting time windows.",
+
+        c5Title: "Health Tip",
+        c5Desc: "Get research-backed tips.",
+
+        c6Title: "Therapy Blog",
+        c6Desc: "Learn expert care routines.",
+
+        imgAlt: "Tulaa App Interface showing Cycle, Water, and Habit trackers",
+    },
+    hi: {
+        badge: "संपूर्ण कल्याण",
+        titleTop: "5 ऐप्स को बदलें",
+        titleBottom: "सिर्फ एक से।",
+        body: "अपने डिजिटल वेलनेस को सरल बनाएं। तुला आपके आवश्यक स्वास्थ्य उपकरणों को एक सुरक्षित, ऑफ़लाइन-प्रथम इकोसिस्टम में लाता है। <strong>कोई डेटा माइनिंग नहीं। कोई सब्सक्रिप्शन नहीं।</strong>",
+
+        c1Title: "मासिक चक्र", // Cycle
+        c1Desc: "पीरियड्स और लक्षणों का अनुमान लगाएं।",
+
+        c2Title: "रिदम", // Rhythm
+        c2Desc: "स्वस्थ आदतों की स्ट्रीक बनाएं।",
+
+        c3Title: "हाइड्रेशन", // Hydration
+        c3Desc: "रोजाना पानी पीने की निगरानी करें।",
+
+        c4Title: "उपवास", // Fasting
+        c4Desc: "उपवास के समय को ट्रैक करें।",
+
+        c5Title: "स्वास्थ्य टिप", // Health Tip
+        c5Desc: "शोध-आधारित सुझाव प्राप्त करें।",
+
+        c6Title: "थेरेपी ब्लॉग", // Therapy Blog
+        c6Desc: "विशेषज्ञ देखभाल रूटीन सीखें।",
+
+        imgAlt: "तुला ऐप इंटरफ़ेस जिसमें साइकिल, पानी और आदत ट्रैकर दिखाए गए हैं",
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+---
+
 <section class="section section-tools bg-subtle">
     <div class="container grid-layout">
         <div class="text-col">
-            <div class="badge-small">All-in-One Wellness</div>
+            <div class="badge-small">{t.badge}</div>
             <h2 class="section-title">
-                Replace 5 Apps <br />
-                <span class="text-gradient">With One.</span>
+                {t.titleTop}
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
             </h2>
-            <p class="body-text">
-                Simplify your digital wellness. Tulaa brings your essential
-                health tools into one secure, offline-first ecosystem.
-                <strong>No data mining. No subscriptions.</strong>
-            </p>
+            <p class="body-text" set:html={t.body} />
 
             <div class="tools-grid">
                 <div class="tool-card">
                     <div class="card-header">
                         <span class="emoji">🌸</span>
-                        <strong>Cycle Tracker</strong>
+                        <strong>{t.c1Title}</strong>
                     </div>
-                    <p>Predict periods & symptoms.</p>
+                    <p>{t.c1Desc}</p>
                 </div>
 
                 <div class="tool-card">
                     <div class="card-header">
                         <span class="emoji">⚡️</span>
-                        <strong>Rhythm</strong>
+                        <strong>{t.c2Title}</strong>
                     </div>
-                    <p>Build healthy habit streaks.</p>
+                    <p>{t.c2Desc}</p>
                 </div>
 
                 <div class="tool-card">
                     <div class="card-header">
                         <span class="emoji">💧</span>
-                        <strong>Hydration</strong>
+                        <strong>{t.c3Title}</strong>
                     </div>
-                    <p>Monitor daily water intake.</p>
+                    <p>{t.c3Desc}</p>
                 </div>
 
                 <div class="tool-card">
                     <div class="card-header">
                         <span class="emoji">⏳</span>
-                        <strong>Fasting</strong>
+                        <strong>{t.c4Title}</strong>
                     </div>
-                    <p>Track fasting time windows.</p>
+                    <p>{t.c4Desc}</p>
                 </div>
 
                 <div class="tool-card">
                     <div class="card-header">
                         <span class="emoji">💡</span>
-                        <strong>Health Tip</strong>
+                        <strong>{t.c5Title}</strong>
                     </div>
-                    <p>Get research-backed tips.</p>
+                    <p>{t.c5Desc}</p>
                 </div>
 
                 <div class="tool-card">
                     <div class="card-header">
                         <span class="emoji">📚</span>
-                        <strong>Therapy Blog</strong>
+                        <strong>{t.c6Title}</strong>
                     </div>
-                    <p>Learn expert care routines.</p>
+                    <p>{t.c6Desc}</p>
                 </div>
             </div>
         </div>
@@ -66,7 +126,7 @@
         <div class="visual-col">
             <img
                 src="/images/trackers-collage.webp"
-                alt="Tulaa App Interface showing Cycle, Water, and Habit trackers"
+                alt={t.imgAlt}
                 class="feature-img shadow-lg"
                 loading="lazy"
             />
@@ -186,11 +246,6 @@
             gap: 40px;
             text-align: center;
         }
-
-        /* Reorder: Visual first, or Text first? 
-           Usually "Text First" is better for SEO/Reading, 
-           but "Visual First" is better for engagement. 
-           Let's keep Text First here as the headline is strong. */
 
         .text-col {
             display: flex;

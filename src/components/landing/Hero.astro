@@ -1,5 +1,34 @@
 ---
 import StoreButtons from "../StoreButtons.astro";
+
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
+
+// 2. Dictionary for Hero content
+const ui = {
+    en: {
+        badge: "✨ 100% Free. Private. Offline.",
+        titleTop: "Expert Yoga Therapy.",
+        titleBottom: "No Ads. No Login.",
+        author: "<strong>By Latika Bissa</strong>",
+        cred1: "🏅 Gold Medalist, M.Sc Yoga Therapy",
+        cred2: "🧘‍♀️ 10+ Years of Clinical Experience",
+        subtitle:
+            "Specialized plans for <strong>Back Pain, PCOS, Thyroid, and Prenatal care.</strong> Designed to help you heal, without tracking your data.",
+    },
+    hi: {
+        badge: "✨ 100% मुफ़्त. निजी. ऑफ़लाइन.",
+        titleTop: "विशेषज्ञ योग थेरेपी।",
+        titleBottom: "कोई विज्ञापन नहीं। कोई लॉगिन नहीं।",
+        author: "<strong>लतिका बिस्सा द्वारा</strong>",
+        cred1: "🏅 स्वर्ण पदक विजेता, एम.एससी योग थेरेपी",
+        cred2: "🧘‍♀️ 10+ वर्षों का क्लिनिकल अनुभव",
+        subtitle:
+            "<strong>कमर दर्द, पीसीओएस, थायराइड और प्रसवपूर्व देखभाल</strong> के लिए विशेष योजनाएं। आपके डेटा को ट्रैक किए बिना, आपको स्वस्थ करने में मदद करने के लिए डिज़ाइन किया गया।",
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
 <link rel="preload" as="image" href="/poster.webp" />
@@ -7,32 +36,28 @@ import StoreButtons from "../StoreButtons.astro";
 <section id="hero" class="hero-section">
     <div class="container hero-grid">
         <div class="hero-content" id="download-content">
-            <div class="badge">✨ 100% Free. Private. Offline.</div>
+            <div class="badge">{t.badge}</div>
             <h1 class="hero-title">
-                Expert Yoga Therapy. <br />
-                <span class="text-gradient">No Ads. No Login.</span>
+                {t.titleTop}
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
             </h1>
 
             <div
                 style="background: var(--bg-sub); padding: 12px 16px; border-radius: 12px; margin-bottom: 24px; display: inline-block; border: 1px solid var(--border);"
             >
                 <p style="margin: 0; font-size: 0.95rem; line-height: 1.4;">
-                    <strong>By Latika Bissa</strong><br /><span
-                        style="opacity: 0.8; font-size: 0.9rem;"
-                        >🏅 Gold Medalist, M.Sc Yoga Therapy</span
+                    <Fragment set:html={t.author} /><br />
+                    <span style="opacity: 0.8; font-size: 0.9rem;"
+                        >{t.cred1}</span
                     ><br />
                     <span style="opacity: 0.8; font-size: 0.9rem;"
-                        >🧘‍♀️ 10+ Years of Clinical Experience</span
+                        >{t.cred2}</span
                     >
                 </p>
             </div>
 
-            <p class="hero-sub" style="margin-top: 0;">
-                Specialized plans for <strong
-                    >Back Pain, PCOS, Thyroid, and Prenatal care.</strong
-                >
-                Designed to help you heal, without tracking your data.
-            </p>
+            <p class="hero-sub" style="margin-top: 0;" set:html={t.subtitle} />
 
             <div class="cta-wrapper">
                 <StoreButtons centered={false} />
@@ -146,7 +171,6 @@ import StoreButtons from "../StoreButtons.astro";
 <style>
     /* ... (Keep existing Layout Styles) ... */
 
-    /* 👇 NEW: Ensures correct scroll position offset for sticky header */
     #download-content {
         scroll-margin-top: 100px;
     }
@@ -285,10 +309,7 @@ import StoreButtons from "../StoreButtons.astro";
 
     /* Fix for Dark Mode Device Frame */
     :global([data-theme="dark"]) .phone-frame-wrapper {
-        /* Make border lighter (Space Gray) so it's visible against dark bg */
         border-color: #333333;
-
-        /* Add a subtle white outline (rim light) to separate it from the background */
         box-shadow:
             0 0 0 1px rgba(255, 255, 255, 0.1),
             0 20px 50px -10px rgba(0, 0, 0, 0.5);

@@ -1,24 +1,39 @@
 ---
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
 
+// 2. Dictionary for Mind & Mood content
+const ui = {
+    en: {
+        titleTop: "Calm Your Mind.",
+        titleBottom: "Understand Your Emotions.",
+        body: "From traditional chanting to anxiety relief. Log your moods to spot patterns and journal your thoughts in a private, safe space.",
+        imgAlt: "Meditation and Journaling Interface",
+    },
+    hi: {
+        titleTop: "अपने मन को शांत करें।",
+        titleBottom: "अपनी भावनाओं को समझें।",
+        body: "पारंपरिक मंत्रोच्चार से लेकर चिंता से राहत तक। पैटर्न पहचानने के लिए अपने मूड को लॉग करें और एक निजी, सुरक्षित स्थान पर अपने विचारों को जर्नल करें।",
+        imgAlt: "ध्यान और जर्नलिंग इंटरफ़ेस",
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
 <section class="section section-mind">
     <div class="container center-text">
         <h2 class="section-title">
-            Calm Your Mind. <br />Understand Your Emotions.
+            {t.titleTop}
+            <br />{t.titleBottom}
         </h2>
         <p class="body-text max-w-md">
-            From traditional chanting to anxiety relief. Log your moods to spot
-            patterns and journal your thoughts in a private, safe space.
+            {t.body}
         </p>
     </div>
 
     <div class="container wide-visual">
-        <img
-            src="/images/mind-mood.webp"
-            alt="Meditation and Journaling Interface"
-            class="feature-img"
-        />
+        <img src="/images/mind-mood.webp" alt={t.imgAlt} class="feature-img" />
     </div>
 </section>
 

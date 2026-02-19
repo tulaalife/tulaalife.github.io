@@ -1,15 +1,29 @@
+---
+// src/components/landing/StickyNav.astro
+
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
+
+// 2. Simple dictionary for UI text
+const ui = {
+    en: { download: "Download App" },
+    hi: { download: "ऐप डाउनलोड करें" },
+};
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+---
+
 <nav id="sticky-nav" class="sticky-nav">
     <div class="container sticky-inner">
         <div class="sticky-logo">
             <img
-                src="assets/icons/logo.webp"
+                src="/assets/icons/logo.webp"
                 alt="Tulaa"
                 width="32"
                 height="32"
             />
             <span class="font-bold">Tulaa</span>
         </div>
-        <a href="#download-content" class="btn-sm">Download App</a>
+        <a href="#download-content" class="btn-sm">{t.download}</a>
     </div>
 </nav>
 
@@ -60,22 +74,25 @@
 </style>
 
 <script>
-    const nav = document.getElementById("sticky-nav");
-    const hero = document.getElementById("hero");
+    // Astro page transitions require re-attaching listeners on navigation
+    document.addEventListener("astro:page-load", () => {
+        const nav = document.getElementById("sticky-nav");
+        const hero = document.getElementById("hero");
 
-    if (nav && hero) {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (!entry.isIntersecting) {
-                        nav.classList.add("visible");
-                    } else {
-                        nav.classList.remove("visible");
-                    }
-                });
-            },
-            { threshold: 0.1 },
-        );
-        observer.observe(hero);
-    }
+        if (nav && hero) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (!entry.isIntersecting) {
+                            nav.classList.add("visible");
+                        } else {
+                            nav.classList.remove("visible");
+                        }
+                    });
+                },
+                { threshold: 0.1 },
+            );
+            observer.observe(hero);
+        }
+    });
 </script>

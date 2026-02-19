@@ -1,16 +1,53 @@
 ---
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
 
+// 2. Dictionary for Privacy & Trust content
+const ui = {
+    en: {
+        title: "100% Private. Truly Yours.",
+        descTop:
+            "Wellness shouldn't come with hidden costs or tracking pixels.",
+        descBottom: "Tulaa is designed to be your safe, personal sanctuary.",
+        card1Title: "Privacy First",
+        card1Desc:
+            "No account needed. Your data is stored locally on your device. Export or delete it anytime.",
+        card2Title: "Free & Offline",
+        card2Desc:
+            "No ads, no tracking, no subscriptions. Works perfectly without internet access.",
+        card3Title: "Make it Yours",
+        card3Desc:
+            "Choose from 30+ themes, fonts, and backgrounds. Set your own daily wellbeing goals.",
+    },
+    hi: {
+        title: "100% निजी। पूर्णतः आपका।",
+        descTop:
+            "कल्याण छिपे हुए खर्चों या ट्रैकिंग पिक्सल के साथ नहीं आना चाहिए।",
+        descBottom:
+            "तुला को आपका सुरक्षित, व्यक्तिगत अभयारण्य बनने के लिए डिज़ाइन किया गया है।",
+        card1Title: "गोपनीयता सबसे पहले",
+        card1Desc:
+            "किसी खाते की आवश्यकता नहीं है। आपका डेटा आपके डिवाइस पर ही सुरक्षित रहता है। इसे कभी भी एक्सपोर्ट या डिलीट करें।",
+        card2Title: "मुफ़्त और ऑफ़लाइन",
+        card2Desc:
+            "कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं, कोई सब्सक्रिप्शन नहीं। इंटरनेट के बिना भी पूरी तरह काम करता है।",
+        card3Title: "इसे अपना बनाएं",
+        card3Desc:
+            "30+ थीम, फ़ॉन्ट और बैकग्राउंड में से चुनें। अपने रोज़ाना के स्वास्थ्य लक्ष्य खुद तय करें।",
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
 <section class="section section-privacy">
     <div class="container">
         <div class="header-content">
-            <h2 class="section-title">100% Private. Truly Yours.</h2>
+            <h2 class="section-title">{t.title}</h2>
             <p class="body-text">
-                Wellness shouldn't come with hidden costs or tracking pixels. <br
-                    class="hidden-mobile"
-                />
-                Tulaa is designed to be your safe, personal sanctuary.
+                {t.descTop}
+                <br class="hidden-mobile" />
+                {t.descBottom}
             </p>
         </div>
 
@@ -19,33 +56,24 @@
                 <div class="icon-wrapper">
                     <span class="icon">🔒</span>
                 </div>
-                <h3>Privacy First</h3>
-                <p>
-                    No account needed. Your data is stored locally on your
-                    device. Export or delete it anytime.
-                </p>
+                <h3>{t.card1Title}</h3>
+                <p>{t.card1Desc}</p>
             </div>
 
             <div class="feature-card">
                 <div class="icon-wrapper">
                     <span class="icon">⚡</span>
                 </div>
-                <h3>Free & Offline</h3>
-                <p>
-                    No ads, no tracking, no subscriptions. Works perfectly
-                    without internet access.
-                </p>
+                <h3>{t.card2Title}</h3>
+                <p>{t.card2Desc}</p>
             </div>
 
             <div class="feature-card">
                 <div class="icon-wrapper">
                     <span class="icon">🎨</span>
                 </div>
-                <h3>Make it Yours</h3>
-                <p>
-                    Choose from 30+ themes, fonts, and backgrounds. Set your own
-                    daily wellbeing goals.
-                </p>
+                <h3>{t.card3Title}</h3>
+                <p>{t.card3Desc}</p>
             </div>
         </div>
     </div>

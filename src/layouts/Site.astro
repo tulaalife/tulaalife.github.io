@@ -13,20 +13,60 @@ interface Props {
 const {
     title,
     description = "Your private sanctuary for holistic wellness. Yoga, meditation, and tracking—offline and free.",
+    // Note: Pass the BASE path here (e.g., "/yoga"). The script will handle adding "/hi" automatically.
     canonicalPath = "/",
-    ogImage = "https://images.tulaa.life/logo.webp", // Ensure this exists or update
+    ogImage = "https://images.tulaa.life/logo.webp",
     hideFooter = false,
 } = Astro.props;
 
 const site = "https://tulaalife.com";
-const url = new URL(canonicalPath, site).toString();
+
+// 1. Get current language from Astro
+const currentLang = Astro.currentLocale || "en";
+const currentPath = Astro.url.pathname;
+
+// 2. Compute absolute URLs for SEO Hreflang tags
+const basePath = canonicalPath.startsWith("/")
+    ? canonicalPath
+    : `/${canonicalPath}`;
+const enUrl = new URL(basePath, site).toString();
+const hiUrl = new URL(
+    basePath === "/" ? "/hi" : `/hi${basePath}`,
+    site,
+).toString();
+
+// The canonical URL for the *currently viewed* page
+const currentUrl = currentLang === "hi" ? hiUrl : enUrl;
+
 const socialImage = ogImage.startsWith("http")
     ? ogImage
     : new URL(ogImage, site).toString();
+
+// 3. Simple UI dictionary for the layout text
+const ui = {
+    en: { privacy: "Privacy", terms: "Terms", contact: "Contact" },
+    hi: { privacy: "गोपनीयता", terms: "शर्तें", contact: "संपर्क" },
+};
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+
+// 4. Helper function to correct internal links
+const getLink = (path: string) => {
+    if (currentLang === "en") return path;
+    return path === "/" ? "/hi" : `/hi${path}`;
+};
+
+// 5. Calculate target URL for the language toggle
+let targetUrl = "/";
+if (currentLang === "en") {
+    targetUrl = currentPath === "/" ? "/hi" : `/hi${currentPath}`;
+} else {
+    targetUrl = currentPath.replace(/^\/hi\/?/, "/") || "/";
+}
+targetUrl = targetUrl.replace(/\/\//g, "/");
 ---
 
 <!doctype html>
-<html lang="en" data-theme="light">
+<html lang={currentLang} data-theme="light">
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -36,12 +76,17 @@ const socialImage = ogImage.startsWith("http")
         <title>{title}</title>
 
         <meta name="description" content={description} />
-        <link rel="canonical" href={url} />
+
+        <link rel="canonical" href={currentUrl} />
         <meta name="robots" content="index,follow" />
+
+        <link rel="alternate" hreflang="en" href={enUrl} />
+        <link rel="alternate" hreflang="hi" href={hiUrl} />
+        <link rel="alternate" hreflang="x-default" href={enUrl} />
 
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Tulaa" />
-        <meta property="og:url" content={url} />
+        <meta property="og:url" content={currentUrl} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={socialImage} />
@@ -52,7 +97,6 @@ const socialImage = ogImage.startsWith("http")
         <meta name="twitter:image" content={socialImage} />
 
         <link rel="icon" type="image/webp" href="/assets/icons/logo.webp" />
-
         <link rel="apple-touch-icon" href="/assets/icons/logo.webp" />
 
         <ClientRouter />
@@ -62,7 +106,6 @@ const socialImage = ogImage.startsWith("http")
                 const root = document.documentElement;
                 const metaColor = document.getElementById("theme-color-meta");
 
-                // Define precise background colors for browser chrome (address bar)
                 const bgColors = {
                     light: "#ffffff",
                     dark: "#18181b",
@@ -76,7 +119,6 @@ const socialImage = ogImage.startsWith("http")
                 }
 
                 function init() {
-                    // Check local storage or fallback to system preference
                     const saved = localStorage.getItem("tulaa-theme");
                     const theme = saved || getSystemTheme();
 
@@ -89,7 +131,6 @@ const socialImage = ogImage.startsWith("http")
                 init();
                 document.addEventListener("astro:page-load", init);
 
-                // Global Toggle Function
                 window.toggleTheme = function () {
                     const current =
                         root.dataset.theme === "dark" ? "dark" : "light";
@@ -123,9 +164,7 @@ const socialImage = ogImage.startsWith("http")
         </style>
 
         <style is:global>
-            /* =========================================
-               RESET & BASE
-               ========================================= */
+            /* (Your existing CSS remains untouched here) */
             *,
             *::before,
             *::after {
@@ -138,74 +177,48 @@ const socialImage = ogImage.startsWith("http")
                 width: 100%;
                 overflow-x: hidden;
             }
-
-            /* =========================================
-               DESIGN SYSTEM (Streamlined)
-               ========================================= */
             :root {
-                /* Layout */
-                --container-width: 1120px; /* Wider for better screenshot grids */
+                --container-width: 1120px;
                 --header-height: 64px;
                 --radius-lg: 24px;
                 --radius-md: 16px;
                 --radius-sm: 8px;
-
-                /* Typography */
                 --font-sans:
                     "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
                 --fw-regular: 400;
                 --fw-medium: 500;
                 --fw-semibold: 600;
-                --fw-bold: 750; /* Slightly bolder for headers */
-
-                /* Font Sizes (Fluid) */
-                --text-display: clamp(2.5rem, 5vw, 3.75rem); /* Big Hero Text */
+                --fw-bold: 750;
+                --text-display: clamp(2.5rem, 5vw, 3.75rem);
                 --text-h1: clamp(2rem, 3.5vw, 2.5rem);
                 --text-h2: clamp(1.5rem, 2.5vw, 2rem);
                 --text-h3: 1.25rem;
-                --text-body: 1.05rem; /* Slightly larger for readability */
+                --text-body: 1.05rem;
                 --text-sm: 0.9rem;
             }
-
             .page-content {
                 padding-top: var(--header-height);
             }
-
-            /* --- LIGHT THEME (Apple / Zen Style) --- */
             :root[data-theme="light"] {
-                --bg-main: oklch(100% 0 0); /* Pure White */
-                --bg-sub: oklch(
-                    97% 0 0
-                ); /* Very light grey for cards/sections */
-
-                --text-main: oklch(20% 0 0); /* Soft Black */
-                --text-muted: oklch(50% 0 0); /* Grey */
-
-                --primary: oklch(62% 0.14 145); /* Tulaa Sage Green */
-                --primary-fg: oklch(98% 0 0); /* Text on primary button */
-
-                --border: oklch(92% 0 0); /* Subtle borders */
+                --bg-main: oklch(100% 0 0);
+                --bg-sub: oklch(97% 0 0);
+                --text-main: oklch(20% 0 0);
+                --text-muted: oklch(50% 0 0);
+                --primary: oklch(62% 0.14 145);
+                --primary-fg: oklch(98% 0 0);
+                --border: oklch(92% 0 0);
                 --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             }
-
-            /* --- DARK THEME (OLED / Night) --- */
             :root[data-theme="dark"] {
-                --bg-main: oklch(15% 0.01 145); /* Deep Charcoal/Green tint */
+                --bg-main: oklch(15% 0.01 145);
                 --bg-sub: oklch(18% 0.01 145);
-
-                --text-main: oklch(96% 0 0); /* White */
+                --text-main: oklch(96% 0 0);
                 --text-muted: oklch(65% 0 0);
-
-                --primary: oklch(70% 0.12 145); /* Lighter Sage for dark mode */
+                --primary: oklch(70% 0.12 145);
                 --primary-fg: oklch(15% 0.02 145);
-
                 --border: oklch(25% 0 0);
                 --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             }
-
-            /* =========================================
-               GLOBAL STYLES
-               ========================================= */
             body {
                 font-family: var(--font-sans);
                 font-size: var(--text-body);
@@ -215,35 +228,27 @@ const socialImage = ogImage.startsWith("http")
                 transition:
                     background-color 0.3s ease,
                     color 0.3s ease;
-                /* Anti-aliasing for that crisp look */
                 -webkit-font-smoothing: antialiased;
-
-                /* 👇 NEW: PREVENT TEXT SELECTION & TAP HIGHLIGHT */
-                -webkit-user-select: none; /* Safari/Chrome */
-                -moz-user-select: none; /* Firefox */
-                -ms-user-select: none; /* IE/Edge */
-                user-select: none; /* Standard */
-                -webkit-tap-highlight-color: transparent; /* Removes blue flash on mobile tap */
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-tap-highlight-color: transparent;
             }
-
-            /* Re-enable selection for inputs so people can type if needed */
             input,
             textarea,
             [contenteditable] {
                 -webkit-user-select: text;
                 user-select: text;
             }
-
             img,
             video {
                 max-width: 100%;
                 height: auto;
                 display: block;
-                /* Prevent dragging images */
                 -webkit-user-drag: none;
                 user-select: none;
             }
-
             h1,
             h2,
             h3,
@@ -252,22 +257,17 @@ const socialImage = ogImage.startsWith("http")
                 font-weight: var(--fw-bold);
                 line-height: 1.15;
                 color: var(--text-main);
-                letter-spacing: -0.025em; /* Tight tracking for modern feel */
+                letter-spacing: -0.025em;
             }
-
             a {
                 color: inherit;
                 text-decoration: none;
             }
-
-            /* Utility Classes */
             .container {
                 max-width: var(--container-width);
                 margin: 0 auto;
                 padding: 0 24px;
             }
-
-            /* Header Styles */
             header {
                 position: fixed;
                 top: 0;
@@ -275,20 +275,17 @@ const socialImage = ogImage.startsWith("http")
                 right: 0;
                 height: var(--header-height);
                 z-index: 50;
-                /* Glassmorphism */
                 background: color-mix(in srgb, var(--bg-main), transparent 15%);
                 backdrop-filter: blur(12px);
                 border-bottom: 1px solid
                     color-mix(in srgb, var(--border), transparent 50%);
             }
-
             header .inner {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 height: 100%;
             }
-
             .logo {
                 display: flex;
                 align-items: center;
@@ -303,6 +300,32 @@ const socialImage = ogImage.startsWith("http")
                 border-radius: 8px;
             }
 
+            /* NEW: Container for header buttons */
+            .header-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .lang-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 4px 10px;
+                font-size: 0.8rem;
+                font-weight: 600;
+                color: var(--text-main);
+                background: none;
+                border: 1px solid var(--border);
+                border-radius: 99px;
+                text-decoration: none;
+                transition: background 0.2s;
+            }
+
+            .lang-toggle:hover {
+                background: var(--bg-sub);
+            }
+
             .theme-toggle {
                 background: none;
                 border: none;
@@ -315,8 +338,6 @@ const socialImage = ogImage.startsWith("http")
             .theme-toggle:hover {
                 background: var(--bg-sub);
             }
-
-            /* Footer */
             footer {
                 margin-top: 80px;
                 padding-bottom: 40px;
@@ -340,7 +361,7 @@ const socialImage = ogImage.startsWith("http")
     <body>
         <header>
             <div class="container inner">
-                <a href="/" class="logo">
+                <a href={getLink("/")} class="logo">
                     <img
                         src="https://images.tulaa.life/logo.webp"
                         alt="Tulaa Logo"
@@ -348,26 +369,38 @@ const socialImage = ogImage.startsWith("http")
                     <span>Tulaa</span>
                 </a>
 
-                <button
-                    id="themeBtn"
-                    class="theme-toggle"
-                    aria-label="Toggle Theme"
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        ><circle cx="12" cy="12" r="5"></circle><path
-                            d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
-                        ></path></svg
+                <div class="header-actions">
+                    <a
+                        href={targetUrl}
+                        class="lang-toggle"
+                        aria-label="Change Language"
                     >
-                </button>
+                        <span style="font-size: 1rem; margin-top:-2px;">🌐</span
+                        >
+                        {currentLang === "en" ? "हिंदी" : "EN"}
+                    </a>
+
+                    <button
+                        id="themeBtn"
+                        class="theme-toggle"
+                        aria-label="Toggle Theme"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="20"
+                            height="20"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            ><circle cx="12" cy="12" r="5"></circle><path
+                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                            ></path></svg
+                        >
+                    </button>
+                </div>
             </div>
         </header>
 
@@ -381,9 +414,11 @@ const socialImage = ogImage.startsWith("http")
                     <div class="container">
                         <FooterCard />
                         <div class="legal">
-                            <a href="/legal/privacy">Privacy</a>
-                            <a href="/legal/terms">Terms</a>
-                            <a href="mailto:contact@tulaalife.com">Contact</a>
+                            <a href={getLink("/legal/privacy")}>{t.privacy}</a>
+                            <a href={getLink("/legal/terms")}>{t.terms}</a>
+                            <a href="mailto:contact@tulaalife.com">
+                                {t.contact}
+                            </a>
                         </div>
                         <p style="font-size: 0.8rem; margin-top: 20px; opacity: 0.6;">
                             © {new Date().getFullYear()} Tulaalife Wellness
@@ -395,14 +430,12 @@ const socialImage = ogImage.startsWith("http")
         }
 
         <script>
-            // 1. Tell TypeScript about our custom function
             declare global {
                 interface Window {
                     toggleTheme: () => void;
                 }
             }
 
-            // 2. Your event listener code
             document.addEventListener("astro:page-load", () => {
                 const btn = document.getElementById("themeBtn");
                 if (btn) {
