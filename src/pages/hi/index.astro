@@ -1,0 +1,24 @@
+---
+// Note the adjusted import paths (../..)
+import Layout from "../../layouts/Site.astro";
+import StickyNav from "../../components/landing/StickyNav.astro";
+import Hero from "../../components/landing/Hero.astro";
+import YogaFeatures from "../../components/landing/YogaFeatures.astro";
+import WellnessTools from "../../components/landing/WellnessTools.astro";
+import MindAndMood from "../../components/landing/MindAndMood.astro";
+import PrivacyTrust from "../../components/landing/PrivacyTrust.astro";
+
+// Translated Metadata
+const title = "Tulaa - संपूर्ण स्वास्थ्य और एक्सपर्ट योग थेरेपी";
+const description =
+    "फ्री, ऑफलाइन और एक्सपर्ट-गाइडेड योग। किसी लॉगिन या ट्रैकिंग की ज़रूरत नहीं। 100% प्राइवेट वेलनेस टूल्स।";
+---
+
+<Layout title={title} description={description} canonicalPath="/">
+    <StickyNav />
+    <Hero />
+    <YogaFeatures />
+    <WellnessTools />
+    <MindAndMood />
+    <PrivacyTrust />
+</Layout>

@@ -1,4 +1,29 @@
 ---
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
+
+// 2. Dynamic Dictionary
+const ui = {
+    en: {
+        iosSmall: "Download on",
+        iosStrong: "App Store",
+        androidSmall: "Get it on",
+        androidStrong: "Google Play",
+        ariaIos: "Download on the App Store",
+        ariaAndroid: "Get it on Google Play",
+    },
+    hi: {
+        iosSmall: "डाउनलोड करें",
+        iosStrong: "App Store",
+        androidSmall: "डाउनलोड करें",
+        androidStrong: "Google Play",
+        ariaIos: "ऐप स्टोर से डाउनलोड करें",
+        ariaAndroid: "गूगल प्ले से प्राप्त करें",
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+
 interface Props {
     centered?: boolean;
     inverted?: boolean;
@@ -9,7 +34,6 @@ interface Props {
 const {
     centered = false,
     inverted = false,
-    // 👇 Paste your actual links inside the quotes below
     iosHref = "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
 } = Astro.props;
@@ -24,7 +48,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         class:list={["store-btn", { inverted }]}
         target="_blank"
         rel="noopener"
-        aria-label="Download on the App Store"
+        aria-label={t.ariaIos}
     >
         <img
             src={iosIconSrc}
@@ -35,8 +59,8 @@ const androidIconSrc = "/assets/icons/playstore.svg";
             aria-hidden="true"
         />
         <span class="store-btn__text">
-            <small>Download on</small>
-            <strong>App Store</strong>
+            <small>{t.iosSmall}</small>
+            <strong>{t.iosStrong}</strong>
         </span>
     </a>
 
@@ -45,7 +69,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         class:list={["store-btn", { inverted }]}
         target="_blank"
         rel="noopener"
-        aria-label="Get it on Google Play"
+        aria-label={t.ariaAndroid}
     >
         <img
             src={androidIconSrc}
@@ -56,8 +80,8 @@ const androidIconSrc = "/assets/icons/playstore.svg";
             aria-hidden="true"
         />
         <span class="store-btn__text">
-            <small>Get it on</small>
-            <strong>Google Play</strong>
+            <small>{t.androidSmall}</small>
+            <strong>{t.androidStrong}</strong>
         </span>
     </a>
 </div>

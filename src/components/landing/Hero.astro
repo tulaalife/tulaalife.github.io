@@ -1,38 +1,75 @@
 ---
 import StoreButtons from "../StoreButtons.astro";
+
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
+
+// 2. Dictionary for Hero content
+const ui = {
+    en: {
+        badge: "✨ 100% Free. Private. Offline.",
+        titleTop: "Expert Yoga Therapy.",
+        titleBottom: "No Ads. No Login.",
+        author: "<strong>By Latika Bissa</strong>",
+        cred1: "🏅 Gold Medalist, M.Sc Yoga Therapy",
+        cred2: "🧘‍♀️ 10+ Years of Clinical Experience",
+        subtitle:
+            "Specialized plans for <strong>Back Pain, PCOS, Thyroid, and Prenatal care.</strong> Designed to help you heal, without tracking your data.",
+    },
+    hi: {
+        badge: "✨ 100% फ्री • प्राइवेट • ऑफलाइन",
+        titleTop: "एक्सपर्ट योग थेरेपी",
+        titleBottom: "कोई विज्ञापन नहीं। कोई लॉगिन नहीं।",
+        author: "<strong>योग विशेषज्ञ लतिका द्वारा</strong>",
+        cred1: "🏅 गोल्ड मेडलिस्ट, M.Sc योग थेरेपी",
+        cred2: "🧘‍♀️ 10+ वर्षों का क्लिनिकल अनुभव",
+        subtitle:
+            "<strong>पीठ दर्द, PCOS, थायरॉइड और गर्भावस्था देखभाल</strong> के लिए विशेष योग प्लान। उपचार में सहायक, पूरी गोपनीयता के साथ।",
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+
+// 3. Define the localized file paths
+// Using the optimized Hindi files you just generated
+const posterSrc = currentLang === "hi" ? "/poster-hindi.webp" : "/poster.webp";
+const videoWebm =
+    currentLang === "hi"
+        ? "/website-app-demo-hindi.webm"
+        : "/website-app-demo.webm";
+const videoMp4 =
+    currentLang === "hi"
+        ? "/website-app-demo-hindi.mp4"
+        : "/website-app-demo.mp4";
 ---
 
-<link rel="preload" as="image" href="/poster.webp" />
+<link rel="preload" as="image" href={posterSrc} />
 
 <section id="hero" class="hero-section">
     <div class="container hero-grid">
         <div class="hero-content" id="download-content">
-            <div class="badge">✨ 100% Free. Private. Offline.</div>
+            <div class="badge">{t.badge}</div>
             <h1 class="hero-title">
-                Expert Yoga Therapy. <br />
-                <span class="text-gradient">No Ads. No Login.</span>
+                {t.titleTop}
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
             </h1>
 
             <div
                 style="background: var(--bg-sub); padding: 12px 16px; border-radius: 12px; margin-bottom: 24px; display: inline-block; border: 1px solid var(--border);"
             >
                 <p style="margin: 0; font-size: 0.95rem; line-height: 1.4;">
-                    <strong>By Latika Bissa</strong><br /><span
-                        style="opacity: 0.8; font-size: 0.9rem;"
-                        >🏅 Gold Medalist, M.Sc Yoga Therapy</span
+                    <Fragment set:html={t.author} /><br />
+                    <span style="opacity: 0.8; font-size: 0.9rem;"
+                        >{t.cred1}</span
                     ><br />
                     <span style="opacity: 0.8; font-size: 0.9rem;"
-                        >🧘‍♀️ 10+ Years of Clinical Experience</span
+                        >{t.cred2}</span
                     >
                 </p>
             </div>
 
-            <p class="hero-sub" style="margin-top: 0;">
-                Specialized plans for <strong
-                    >Back Pain, PCOS, Thyroid, and Prenatal care.</strong
-                >
-                Designed to help you heal, without tracking your data.
-            </p>
+            <p class="hero-sub" style="margin-top: 0;" set:html={t.subtitle} />
 
             <div class="cta-wrapper">
                 <StoreButtons centered={false} />
@@ -40,7 +77,13 @@ import StoreButtons from "../StoreButtons.astro";
         </div>
 
         <div class="hero-visual">
-            <div class="phone-frame-wrapper skeleton-loader" id="phoneWrapper">
+            <div
+                class="phone-frame-wrapper skeleton-loader"
+                id="phoneWrapper"
+                data-poster={posterSrc}
+                data-webm={videoWebm}
+                data-mp4={videoMp4}
+            >
                 <video
                     id="heroVideo"
                     class="app-video"
@@ -57,15 +100,21 @@ import StoreButtons from "../StoreButtons.astro";
 </section>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    // 👇 NEW: Changed from DOMContentLoaded to astro:page-load
+    document.addEventListener("astro:page-load", () => {
         const wrapper = document.getElementById("phoneWrapper");
         const video = document.getElementById("heroVideo") as HTMLVideoElement;
 
         if (!wrapper || !video) return;
 
-        // --- PART 1: Poster Loading ---
+        // 👇 NEW: Clean up previous state if navigating via language toggle
+        video.innerHTML = "";
+        video.classList.remove("is-playing");
+
+        // --- PART 1: Poster Loading (Dynamic) ---
+        const posterSrc = wrapper.getAttribute("data-poster") || "/poster.webp";
         const img = new Image();
-        img.src = "/poster.webp";
+        img.src = posterSrc;
 
         const showPoster = () => {
             wrapper.classList.remove("skeleton-loader");
@@ -77,10 +126,11 @@ import StoreButtons from "../StoreButtons.astro";
             showPoster();
         } else {
             img.onload = showPoster;
+            // Optional: fallback timeout if image hangs
             setTimeout(showPoster, 3000);
         }
 
-        // --- PART 2: Video Loading ---
+        // --- PART 2: Video Loading (Dynamic) ---
         interface NetworkInformation {
             saveData?: boolean;
             effectiveType?: "slow-2g" | "2g" | "3g" | "4g";
@@ -100,22 +150,24 @@ import StoreButtons from "../StoreButtons.astro";
             (connection.saveData ||
                 ["slow-2g", "2g"].includes(connection.effectiveType || ""));
 
-        if (isSlow) {
-            console.log("Very slow connection detected. Keeping poster.");
-            return;
-        }
+        if (isSlow) return;
 
         const initVideo = () => {
+            const webmSrc = wrapper.getAttribute("data-webm");
+            const mp4Src = wrapper.getAttribute("data-mp4");
+
             const sources = [
-                { src: "/website-app-demo.webm", type: "video/webm" },
-                { src: "/website-app-demo.mp4", type: "video/mp4" },
+                { src: webmSrc, type: "video/webm" },
+                { src: mp4Src, type: "video/mp4" },
             ];
 
             sources.forEach((s) => {
-                const source = document.createElement("source");
-                source.src = s.src;
-                source.type = s.type;
-                video.appendChild(source);
+                if (s.src) {
+                    const source = document.createElement("source");
+                    source.src = s.src;
+                    source.type = s.type;
+                    video.appendChild(source);
+                }
             });
 
             video.addEventListener(
@@ -123,9 +175,7 @@ import StoreButtons from "../StoreButtons.astro";
                 () => {
                     video
                         .play()
-                        .then(() => {
-                            video.classList.add("is-playing");
-                        })
+                        .then(() => video.classList.add("is-playing"))
                         .catch((e) => console.error("Autoplay blocked", e));
                 },
                 { once: true },
@@ -144,13 +194,10 @@ import StoreButtons from "../StoreButtons.astro";
 </script>
 
 <style>
-    /* ... (Keep existing Layout Styles) ... */
-
-    /* 👇 NEW: Ensures correct scroll position offset for sticky header */
+    /* ... (Your existing CSS remains unchanged) ... */
     #download-content {
         scroll-margin-top: 100px;
     }
-
     .hero-section {
         padding-top: 140px;
         padding-bottom: 80px;
@@ -202,30 +249,6 @@ import StoreButtons from "../StoreButtons.astro";
         display: inline-block;
         line-height: 1.2;
     }
-
-    .trust-pill {
-        margin-top: 32px;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.95rem;
-        color: var(--text-main);
-        background: rgba(var(--primary-rgb), 0.1);
-        padding: 10px 20px;
-        border-radius: 99px;
-        border: 1px solid rgba(0, 0, 0, 0.05);
-        font-weight: 500;
-    }
-
-    .dot {
-        width: 8px;
-        height: 8px;
-        background-color: #22c55e;
-        border-radius: 50%;
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-    }
-
-    /* --- VISUAL STYLES --- */
 
     .phone-frame-wrapper {
         position: relative;
@@ -285,10 +308,7 @@ import StoreButtons from "../StoreButtons.astro";
 
     /* Fix for Dark Mode Device Frame */
     :global([data-theme="dark"]) .phone-frame-wrapper {
-        /* Make border lighter (Space Gray) so it's visible against dark bg */
         border-color: #333333;
-
-        /* Add a subtle white outline (rim light) to separate it from the background */
         box-shadow:
             0 0 0 1px rgba(255, 255, 255, 0.1),
             0 20px 50px -10px rgba(0, 0, 0, 0.5);

@@ -1,6 +1,6 @@
 ---
+import Site from "../../../layouts/Site.astro";
 import { marked } from "marked";
-import Site from "../../layouts/Site.astro";
 
 // 1. Get current language
 const currentLang = Astro.currentLocale || "en";
@@ -8,15 +8,15 @@ const currentLang = Astro.currentLocale || "en";
 // 2. Dynamic Dictionary
 const ui = {
     en: {
-        title: "Tulaa — Terms of Use",
-        desc: "Tulaa Terms of Use — privacy-first, optional anonymous analytics and crash reporting, no ads.",
-        privacyLink: "Privacy Policy",
+        title: "Tulaa — Privacy Policy",
+        desc: "Tulaa Privacy Policy — local-only logs, optional anonymous analytics with PostHog, no PII.",
+        termsLink: "Terms of Use",
         help: "Need help?",
     },
     hi: {
-        title: "तुला — उपयोग की शर्तें",
-        desc: "तुला उपयोग की शर्तें — गोपनीयता-प्रथम, वैकल्पिक अनाम एनालिटिक्स और क्रैश रिपोर्टिंग, कोई विज्ञापन नहीं।",
-        privacyLink: "गोपनीयता नीति",
+        title: "तुला — गोपनीयता नीति",
+        desc: "तुला गोपनीयता नीति — केवल स्थानीय लॉग, पोस्टहॉग के साथ वैकल्पिक अनाम एनालिटिक्स, कोई व्यक्तिगत डेटा नहीं।",
+        termsLink: "उपयोग की शर्तें",
         help: "मदद चाहिए?",
     },
 };
@@ -26,7 +26,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 const getLink = (path: string) => (currentLang === "en" ? path : `/hi${path}`);
 
 // 3. Fetch from Cloudflare R2
-const r2Url = `https://legal.tulaalife.com/terms_${currentLang}.md`;
+const r2Url = `https://legal.tulaalife.com/privacy_${currentLang}.md`;
 let rawMarkdown = "";
 
 try {
@@ -36,38 +36,36 @@ try {
     } else {
         console.error(`Failed to fetch ${r2Url}: ${response.statusText}`);
         rawMarkdown =
-            "### Error\nCould not load the terms of use at this time.";
+            "### Error\nCould not load the privacy policy at this time.";
     }
 } catch (e) {
     console.error(`Error fetching ${r2Url}`, e);
-    rawMarkdown = "### Error\nCould not load the terms of use at this time.";
+    rawMarkdown = "### Error\nCould not load the privacy policy at this time.";
 }
 
-// 4. Process the markdown
 const contentHtml = await marked.parse(rawMarkdown);
 ---
 
 <Site
     title={t.title}
     description={t.desc}
-    canonicalPath="/legal/terms"
+    canonicalPath="/legal/privacy"
     hideFooter={true}
 >
     <main class="legal-wrap">
         <div class="markdown-body" set:html={contentHtml} />
 
         <p class="legal-meta">
-            {t.help}
+            <a href={getLink("/legal/terms")}>{t.termsLink}</a> · {t.help}
             <a href="mailto:contact@tulaalife.com">contact@tulaalife.com</a>
-            · <a href={getLink("/legal/privacy")}>{t.privacyLink}</a>
         </p>
 
         <script type="application/ld+json" is:inline>
             {
                 "@context": "https://schema.org",
                 "@type": "WebPage",
-                "name": "Tulaa — Terms of Use",
-                "url": "https://tulaalife.com/legal/terms",
+                "name": "Tulaa — Privacy Policy",
+                "url": "https://tulaalife.com/legal/privacy",
                 "datePublished": "2025-09-16"
             }
         </script>
