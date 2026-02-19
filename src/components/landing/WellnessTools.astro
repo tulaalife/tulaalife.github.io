@@ -6,6 +6,7 @@ const currentLang = Astro.currentLocale || "en";
 const ui = {
     en: {
         badge: "All-in-One Wellness",
+        img: "/images/trackers-collage.webp",
         titleTop: "Replace 5 Apps",
         titleBottom: "With One.",
         body: "Simplify your digital wellness. Tulaa brings your essential health tools into one secure, offline-first ecosystem. <strong>No data mining. No subscriptions.</strong>",
@@ -32,6 +33,7 @@ const ui = {
     },
     hi: {
         badge: "संपूर्ण कल्याण",
+        img: "/images/trackers-collage-hi.webp",
         titleTop: "5 ऐप्स को बदलें",
         titleBottom: "सिर्फ एक से।",
         body: "अपने डिजिटल वेलनेस को सरल बनाएं। तुला आपके आवश्यक स्वास्थ्य उपकरणों को एक सुरक्षित, ऑफ़लाइन-प्रथम इकोसिस्टम में लाता है। <strong>कोई डेटा माइनिंग नहीं। कोई सब्सक्रिप्शन नहीं।</strong>",
@@ -125,7 +127,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
         <div class="visual-col">
             <img
-                src="/images/trackers-collage.webp"
+                src={t.img}
                 alt={t.imgAlt}
                 class="feature-img shadow-lg"
                 loading="lazy"

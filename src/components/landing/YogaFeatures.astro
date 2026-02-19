@@ -5,6 +5,7 @@ const currentLang = Astro.currentLocale || "en";
 // 2. Dictionary for Yoga Features content
 const ui = {
     en: {
+        img: "/images/yoga-plans-collage.webp",
         imgAlt: "Tulaa Yoga Plans Interface",
         titleTop: "Yoga for Every Body,",
         titleBottom: "At Every Stage.",
@@ -21,6 +22,7 @@ const ui = {
         f3Desc: "Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.",
     },
     hi: {
+        img: "/images/yoga-plans-collage-hi.webp",
         imgAlt: "तुला योग योजना इंटरफ़ेस",
         titleTop: "हर शरीर के लिए योग,",
         titleBottom: "हर अवस्था में।",
@@ -44,7 +46,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 <section class="section section-yoga">
     <div class="container grid-layout reverse-mobile">
         <div class="visual-col">
-            <img src="/images/yoga-plans-collage.webp" alt={t.imgAlt} />
+            <img src={t.img} alt={t.imgAlt} />
         </div>
         <div class="text-col">
             <h2 class="section-title">
