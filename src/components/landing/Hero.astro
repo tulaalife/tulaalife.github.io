@@ -29,9 +29,21 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+
+// 3. Define the localized file paths
+// Using the optimized Hindi files you just generated
+const posterSrc = currentLang === "hi" ? "/poster-hindi.webp" : "/poster.webp";
+const videoWebm =
+    currentLang === "hi"
+        ? "/website-app-demo-hindi.webm"
+        : "/website-app-demo.webm";
+const videoMp4 =
+    currentLang === "hi"
+        ? "/website-app-demo-hindi.mp4"
+        : "/website-app-demo.mp4";
 ---
 
-<link rel="preload" as="image" href="/poster.webp" />
+<link rel="preload" as="image" href={posterSrc} />
 
 <section id="hero" class="hero-section">
     <div class="container hero-grid">
@@ -65,7 +77,13 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         </div>
 
         <div class="hero-visual">
-            <div class="phone-frame-wrapper skeleton-loader" id="phoneWrapper">
+            <div
+                class="phone-frame-wrapper skeleton-loader"
+                id="phoneWrapper"
+                data-poster={posterSrc}
+                data-webm={videoWebm}
+                data-mp4={videoMp4}
+            >
                 <video
                     id="heroVideo"
                     class="app-video"
@@ -82,15 +100,21 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 </section>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
+    // 👇 NEW: Changed from DOMContentLoaded to astro:page-load
+    document.addEventListener("astro:page-load", () => {
         const wrapper = document.getElementById("phoneWrapper");
         const video = document.getElementById("heroVideo") as HTMLVideoElement;
 
         if (!wrapper || !video) return;
 
-        // --- PART 1: Poster Loading ---
+        // 👇 NEW: Clean up previous state if navigating via language toggle
+        video.innerHTML = "";
+        video.classList.remove("is-playing");
+
+        // --- PART 1: Poster Loading (Dynamic) ---
+        const posterSrc = wrapper.getAttribute("data-poster") || "/poster.webp";
         const img = new Image();
-        img.src = "/poster.webp";
+        img.src = posterSrc;
 
         const showPoster = () => {
             wrapper.classList.remove("skeleton-loader");
@@ -102,10 +126,11 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             showPoster();
         } else {
             img.onload = showPoster;
+            // Optional: fallback timeout if image hangs
             setTimeout(showPoster, 3000);
         }
 
-        // --- PART 2: Video Loading ---
+        // --- PART 2: Video Loading (Dynamic) ---
         interface NetworkInformation {
             saveData?: boolean;
             effectiveType?: "slow-2g" | "2g" | "3g" | "4g";
@@ -125,22 +150,24 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             (connection.saveData ||
                 ["slow-2g", "2g"].includes(connection.effectiveType || ""));
 
-        if (isSlow) {
-            console.log("Very slow connection detected. Keeping poster.");
-            return;
-        }
+        if (isSlow) return;
 
         const initVideo = () => {
+            const webmSrc = wrapper.getAttribute("data-webm");
+            const mp4Src = wrapper.getAttribute("data-mp4");
+
             const sources = [
-                { src: "/website-app-demo.webm", type: "video/webm" },
-                { src: "/website-app-demo.mp4", type: "video/mp4" },
+                { src: webmSrc, type: "video/webm" },
+                { src: mp4Src, type: "video/mp4" },
             ];
 
             sources.forEach((s) => {
-                const source = document.createElement("source");
-                source.src = s.src;
-                source.type = s.type;
-                video.appendChild(source);
+                if (s.src) {
+                    const source = document.createElement("source");
+                    source.src = s.src;
+                    source.type = s.type;
+                    video.appendChild(source);
+                }
             });
 
             video.addEventListener(
@@ -148,9 +175,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                 () => {
                     video
                         .play()
-                        .then(() => {
-                            video.classList.add("is-playing");
-                        })
+                        .then(() => video.classList.add("is-playing"))
                         .catch((e) => console.error("Autoplay blocked", e));
                 },
                 { once: true },
@@ -169,12 +194,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 </script>
 
 <style>
-    /* ... (Keep existing Layout Styles) ... */
-
+    /* ... (Your existing CSS remains unchanged) ... */
     #download-content {
         scroll-margin-top: 100px;
     }
-
     .hero-section {
         padding-top: 140px;
         padding-bottom: 80px;
@@ -226,30 +249,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: inline-block;
         line-height: 1.2;
     }
-
-    .trust-pill {
-        margin-top: 32px;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        font-size: 0.95rem;
-        color: var(--text-main);
-        background: rgba(var(--primary-rgb), 0.1);
-        padding: 10px 20px;
-        border-radius: 99px;
-        border: 1px solid rgba(0, 0, 0, 0.05);
-        font-weight: 500;
-    }
-
-    .dot {
-        width: 8px;
-        height: 8px;
-        background-color: #22c55e;
-        border-radius: 50%;
-        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
-    }
-
-    /* --- VISUAL STYLES --- */
 
     .phone-frame-wrapper {
         position: relative;
