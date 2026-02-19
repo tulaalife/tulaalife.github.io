@@ -2,6 +2,10 @@
 import Site from "../../layouts/Site.astro";
 import { marked } from "marked";
 
+// Import the local markdown files as raw text strings
+import privacyEn from "../../data/legal/privacy_en.md?raw";
+import privacyHi from "../../data/legal/privacy_hi.md?raw";
+
 // 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
@@ -25,24 +29,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 // Helper to keep links in the correct language
 const getLink = (path: string) => (currentLang === "en" ? path : `/hi${path}`);
 
-// 3. Fetch from Cloudflare R2
-const r2Url = `https://legal.tulaalife.com/privacy_${currentLang}.md`;
-let rawMarkdown = "";
-
-try {
-    const response = await fetch(r2Url);
-    if (response.ok) {
-        rawMarkdown = await response.text();
-    } else {
-        console.error(`Failed to fetch ${r2Url}: ${response.statusText}`);
-        rawMarkdown =
-            "### Error\nCould not load the privacy policy at this time.";
-    }
-} catch (e) {
-    console.error(`Error fetching ${r2Url}`, e);
-    rawMarkdown = "### Error\nCould not load the privacy policy at this time.";
-}
-
+// 3. Use the local markdown based on the current language
+const rawMarkdown = currentLang === "hi" ? privacyHi : privacyEn;
 const contentHtml = await marked.parse(rawMarkdown);
 ---
 
