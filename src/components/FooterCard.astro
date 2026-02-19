@@ -1,21 +1,44 @@
 ---
 import StoreButtons from "./StoreButtons.astro";
 
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
+
+// 2. Dynamic Dictionary
+const ui = {
+    en: {
+        headline: "Start Your Journey.",
+        subline:
+            "Expert yoga, daily tracking, and mindfulness. One app, completely free.",
+        highlights: [
+            "100% Free & Offline",
+            "No Account Needed",
+            "Privacy First",
+        ],
+    },
+    hi: {
+        headline: "अपनी योग यात्रा शुरू करें।",
+        subline:
+            "विशेषज्ञ योग, दैनिक ट्रैकिंग और माइंडफुलनेस। एक ऐप, पूरी तरह से मुफ़्त।",
+        highlights: [
+            "100% मुफ़्त और ऑफ़लाइन",
+            "खाते की आवश्यकता नहीं",
+            "गोपनीयता सबसे पहले",
+        ],
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+
 interface Props {
     headline?: string;
     subline?: string;
 }
 
-const {
-    headline = "Start Your Journey.",
-    subline = "Expert yoga, daily tracking, and mindfulness. One app, completely free.",
-} = Astro.props;
+// 3. Fallback to the translated dictionary if no props are explicitly passed
+const { headline = t.headline, subline = t.subline } = Astro.props;
 
-const highlights = [
-    "100% Free & Offline",
-    "No Account Needed",
-    "Privacy First",
-];
+const highlights = t.highlights;
 ---
 
 <section class="footer-card-container">
