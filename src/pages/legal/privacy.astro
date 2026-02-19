@@ -1,47 +1,62 @@
 ---
 import Site from "../../layouts/Site.astro";
-import { marked } from "marked"; // Run 'npm install marked' if missing
+import { marked } from "marked";
 
-// Import the local MD file directly using Vite's '?raw' suffix.
-// NOTE: You must manually download 'privacy_en.md' from R2 and save it as 'src/data/privacy.md'
-import privacyMd from "../../data/privacy.md?raw";
+// 1. Get current language
+const currentLang = Astro.currentLocale || "en";
 
-const title = "Tulaa — Privacy Policy";
-const description =
-    "Tulaa Privacy Policy — local-only logs, optional anonymous analytics with PostHog, no PII.";
+// 2. Dynamic Dictionary
+const ui = {
+    en: {
+        title: "Tulaa — Privacy Policy",
+        desc: "Tulaa Privacy Policy — local-only logs, optional anonymous analytics with PostHog, no PII.",
+        termsLink: "Terms of Use",
+        help: "Need help?",
+    },
+    hi: {
+        title: "तुला — गोपनीयता नीति",
+        desc: "तुला गोपनीयता नीति — केवल स्थानीय लॉग, पोस्टहॉग के साथ वैकल्पिक अनाम एनालिटिक्स, कोई व्यक्तिगत डेटा नहीं।",
+        termsLink: "उपयोग की शर्तें",
+        help: "मदद चाहिए?",
+    },
+};
+const t = ui[currentLang as keyof typeof ui] || ui.en;
 
-// Processing the imported markdown
-// 1. Remove the first line (# Title) because we render a custom H1 with Logo below.
-const rawMarkdown = privacyMd.replace(/^# .+\n/, "");
+// Helper to keep links in the correct language
+const getLink = (path: string) => (currentLang === "en" ? path : `/hi${path}`);
 
-// 2. Parse Markdown to HTML
+// 3. Fetch from Cloudflare R2
+const r2Url = `https://legal.tulaalife.com/privacy_${currentLang}.md`;
+let rawMarkdown = "";
+
+try {
+    const response = await fetch(r2Url);
+    if (response.ok) {
+        rawMarkdown = await response.text();
+    } else {
+        console.error(`Failed to fetch ${r2Url}: ${response.statusText}`);
+        rawMarkdown =
+            "### Error\nCould not load the privacy policy at this time.";
+    }
+} catch (e) {
+    console.error(`Error fetching ${r2Url}`, e);
+    rawMarkdown = "### Error\nCould not load the privacy policy at this time.";
+}
+
 const contentHtml = await marked.parse(rawMarkdown);
 ---
 
 <Site
-    title={title}
-    description={description}
+    title={t.title}
+    description={t.desc}
     canonicalPath="/legal/privacy"
     hideFooter={true}
 >
     <main class="legal-wrap">
-        <!-- Custom Header with Logo (Kept from original) -->
-        <h1 class="legal-title">
-            <img
-                src="https://images.tulaa.life/logo.webp"
-                alt="Tulaa logo"
-                width="48"
-                height="48"
-                class="legal-logo"
-            />
-            Tulaa — Privacy Policy
-        </h1>
-
-        <!-- Content from Local MD File -->
         <div class="markdown-body" set:html={contentHtml} />
 
         <p class="legal-meta">
-            <a href="/legal/terms">Terms of Use</a> · Need help?
+            <a href={getLink("/legal/terms")}>{t.termsLink}</a> · {t.help}
             <a href="mailto:contact@tulaalife.com">contact@tulaalife.com</a>
         </p>
 
@@ -58,15 +73,13 @@ const contentHtml = await marked.parse(rawMarkdown);
 </Site>
 
 <style is:global>
-    /* Use is:global or :global() to style the injected HTML content */
-
+    /* ... (Keep all your existing CSS styles exactly as they are) ... */
     .legal-wrap {
         max-width: 940px;
         margin: 0 auto;
         padding: 24px;
         font-family: var(--font-sans);
     }
-
     .legal-title {
         display: flex;
         align-items: center;
@@ -75,12 +88,10 @@ const contentHtml = await marked.parse(rawMarkdown);
         font-size: 1.9rem;
         font-weight: 750;
     }
-
     .legal-logo {
         vertical-align: middle;
         border-radius: 8px;
     }
-
     .legal-meta {
         color: var(--muted);
         font-size: 0.9rem;
@@ -88,9 +99,6 @@ const contentHtml = await marked.parse(rawMarkdown);
         border-top: 1px solid var(--ring);
         padding-top: 20px;
     }
-
-    /* --- Markdown Styles --- */
-
     .markdown-body h2 {
         margin-top: 28px;
         margin-bottom: 12px;
@@ -98,7 +106,6 @@ const contentHtml = await marked.parse(rawMarkdown);
         font-weight: 700;
         color: var(--foreground);
     }
-
     .markdown-body p,
     .markdown-body ul,
     .markdown-body li {
@@ -107,35 +114,27 @@ const contentHtml = await marked.parse(rawMarkdown);
         margin-bottom: 12px;
         color: var(--foreground);
     }
-
     .markdown-body ul {
         padding-left: 24px;
     }
-
     .markdown-body li {
         margin-bottom: 6px;
     }
-
     .markdown-body strong {
         font-weight: 600;
     }
-
-    /* Convert Markdown Blockquotes (>) into your "Legal Box" style */
     .markdown-body blockquote {
         background: var(--card);
         border: 1px solid var(--ring);
         padding: 16px 18px;
         border-radius: 14px;
         margin: 18px 0;
-        /* Reset default blockquote margins */
         margin-inline-start: 0;
         margin-inline-end: 0;
     }
-
     .markdown-body blockquote p {
-        margin-bottom: 0; /* Remove bottom margin inside box */
+        margin-bottom: 0;
     }
-
     .markdown-body a {
         color: var(--primary);
         text-decoration: underline;
