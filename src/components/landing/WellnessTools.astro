@@ -6,26 +6,22 @@ const currentLang = Astro.currentLocale || "en";
 const ui = {
     en: {
         badge: "All-in-One Wellness",
-        img: "/images/trackers-collage.webp",
+        // Base filename to build responsive paths
+        baseImg: "trackers-collage",
         titleTop: "Replace 5 Apps",
         titleBottom: "With One.",
         body: "Simplify your digital wellness. Tulaa brings your essential health tools into one secure, offline-first ecosystem. <strong>No data mining. No subscriptions.</strong>",
 
         c1Title: "Cycle Tracker",
         c1Desc: "Predict periods & symptoms.",
-
         c2Title: "Rhythm",
         c2Desc: "Build healthy habit streaks.",
-
         c3Title: "Hydration",
         c3Desc: "Monitor daily water intake.",
-
         c4Title: "Fasting",
         c4Desc: "Track fasting time windows.",
-
         c5Title: "Health Tip",
         c5Desc: "Get research-backed tips.",
-
         c6Title: "Therapy Blog",
         c6Desc: "Learn expert care routines.",
 
@@ -33,27 +29,22 @@ const ui = {
     },
     hi: {
         badge: "एक ही ऐप में पूरी सेहत",
-        img: "/images/trackers-collage-hi.webp",
+        baseImg: "trackers-collage-hi",
         titleTop: "5 अलग ऐप्स की जगह",
         titleBottom: "अब सिर्फ एक।",
         body: "अपने डिजिटल वेलनेस को सरल बनाएं। Tulaa आपके ज़रूरी स्वास्थ्य टूल्स को एक सुरक्षित, ऑफलाइन-फर्स्ट ऐप में लाता है। <strong>कोई डेटा माइनिंग नहीं। कोई सब्सक्रिप्शन नहीं।</strong>",
 
-        c1Title: "पीरियड ट्रैकर", // Cycle
+        c1Title: "पीरियड ट्रैकर",
         c1Desc: "पीरियड्स और लक्षणों का सही अनुमान।",
-
-        c2Title: "रिदम", // Rhythm
+        c2Title: "रिदम",
         c2Desc: "स्वस्थ आदतों की निरंतरता बनाएं।",
-
-        c3Title: "हाइड्रेशन", // Hydration
+        c3Title: "हाइड्रेशन",
         c3Desc: "पानी पीने की मात्रा पर नज़र रखें।",
-
-        c4Title: "फास्टिंग", // Fasting
+        c4Title: "फास्टिंग",
         c4Desc: "उपवास के समय को ट्रैक करें।",
-
-        c5Title: "हेल्थ टिप", // Health Tip
+        c5Title: "हेल्थ टिप",
         c5Desc: "रिसर्च आधारित सुझाव पाएं।",
-
-        c6Title: "थेरेपी ब्लॉग", // Therapy Blog
+        c6Title: "थेरेपी ब्लॉग",
         c6Desc: "विशेषज्ञ देखभाल ब्लॉग",
 
         imgAlt: "तुला ऐप इंटरफेस जिसमें पीरियड, पानी और आदत ट्रैकर दिखाए गए हैं",
@@ -61,6 +52,10 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+
+// 3. Define optimized paths
+const mobileImg = `/images/mobile/${t.baseImg}.webp`;
+const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 ---
 
 <section class="section section-tools bg-subtle">
@@ -77,7 +72,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             <div class="tools-grid">
                 <div class="tool-card">
                     <div class="card-header">
-                        <span class="emoji">🌸</span>
+                        <span class="emoji" aria-hidden="true">🌸</span>
                         <strong>{t.c1Title}</strong>
                     </div>
                     <p>{t.c1Desc}</p>
@@ -85,7 +80,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
                 <div class="tool-card">
                     <div class="card-header">
-                        <span class="emoji">⚡️</span>
+                        <span class="emoji" aria-hidden="true">⚡️</span>
                         <strong>{t.c2Title}</strong>
                     </div>
                     <p>{t.c2Desc}</p>
@@ -93,7 +88,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
                 <div class="tool-card">
                     <div class="card-header">
-                        <span class="emoji">💧</span>
+                        <span class="emoji" aria-hidden="true">💧</span>
                         <strong>{t.c3Title}</strong>
                     </div>
                     <p>{t.c3Desc}</p>
@@ -101,7 +96,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
                 <div class="tool-card">
                     <div class="card-header">
-                        <span class="emoji">⏳</span>
+                        <span class="emoji" aria-hidden="true">⏳</span>
                         <strong>{t.c4Title}</strong>
                     </div>
                     <p>{t.c4Desc}</p>
@@ -109,7 +104,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
                 <div class="tool-card">
                     <div class="card-header">
-                        <span class="emoji">💡</span>
+                        <span class="emoji" aria-hidden="true">💡</span>
                         <strong>{t.c5Title}</strong>
                     </div>
                     <p>{t.c5Desc}</p>
@@ -117,7 +112,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
                 <div class="tool-card">
                     <div class="card-header">
-                        <span class="emoji">📚</span>
+                        <span class="emoji" aria-hidden="true">📚</span>
                         <strong>{t.c6Title}</strong>
                     </div>
                     <p>{t.c6Desc}</p>
@@ -126,12 +121,18 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         </div>
 
         <div class="visual-col">
-            <img
-                src={t.img}
-                alt={t.imgAlt}
-                class="feature-img shadow-lg"
-                loading="lazy"
-            />
+            <picture>
+                <source srcset={mobileImg} media="(max-width: 767px)" />
+                <img
+                    src={desktopImg}
+                    alt={t.imgAlt}
+                    class="feature-img"
+                    width="550"
+                    height="450"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </picture>
         </div>
     </div>
 </section>
@@ -196,6 +197,25 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: flex;
         flex-direction: column;
         justify-content: center;
+    }
+
+    .feature-img {
+        width: 100%;
+        height: auto;
+        /* Ensure the entire image is visible without being cut */
+        object-fit: contain;
+
+        /* Remove rectangular constraints */
+        border-radius: 0;
+        aspect-ratio: auto;
+
+        /* Applies shadow only to the phone shapes, not the square box */
+        filter: drop-shadow(0 15px 25px rgba(0, 0, 0, 0.15));
+    }
+
+    /* Disable the old shadow class if it's still being applied elsewhere */
+    .shadow-lg {
+        box-shadow: none !important;
     }
 
     .card-header {

@@ -18,6 +18,8 @@ const ui = {
         card3Title: "Make it Yours",
         card3Desc:
             "Choose from 30+ themes, fonts, and backgrounds. Set your own daily wellbeing goals.",
+        // Base filename for any image you might want to add here
+        baseImg: "trackers-collage",
     },
     hi: {
         title: "100% प्राइवेट। आपकी अपनी।",
@@ -33,10 +35,15 @@ const ui = {
         card3Title: "इसे अपना बनाएं",
         card3Desc:
             "30+ थीम्स, फ़ॉन्ट्स और बैकग्राउंड्स में से चुनें। अपने दैनिक सेहत लक्ष्य को खुद तय करें।",
+        baseImg: "trackers-collage-hi",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+
+// 3. Define responsive paths (consistent with your new folder structure)
+const mobileImg = `/images/mobile/${t.baseImg}.webp`;
+const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 ---
 
 <section class="section section-privacy">
@@ -53,7 +60,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         <div class="features-grid">
             <div class="feature-card">
                 <div class="icon-wrapper">
-                    <span class="icon">🔒</span>
+                    <span class="icon" aria-hidden="true">🔒</span>
                 </div>
                 <h3>{t.card1Title}</h3>
                 <p>{t.card1Desc}</p>
@@ -61,7 +68,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
             <div class="feature-card">
                 <div class="icon-wrapper">
-                    <span class="icon">⚡</span>
+                    <span class="icon" aria-hidden="true">⚡</span>
                 </div>
                 <h3>{t.card2Title}</h3>
                 <p>{t.card2Desc}</p>
@@ -69,7 +76,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
             <div class="feature-card">
                 <div class="icon-wrapper">
-                    <span class="icon">🎨</span>
+                    <span class="icon" aria-hidden="true">🎨</span>
                 </div>
                 <h3>{t.card3Title}</h3>
                 <p>{t.card3Desc}</p>
@@ -83,7 +90,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         padding: 100px 0;
     }
 
-    /* Header Styling */
     .header-content {
         text-align: center;
         max-width: 700px;
@@ -102,7 +108,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         line-height: 1.6;
     }
 
-    /* Grid Layout */
     .features-grid {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
@@ -110,9 +115,13 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         text-align: center;
     }
 
-    /* Card Styling */
     .feature-card {
         padding: 24px;
+        transition: transform 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-5px);
     }
 
     .icon-wrapper {
@@ -147,13 +156,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         margin: 0;
     }
 
-    /* Responsive Design */
     @media (max-width: 768px) {
         .section {
             padding: 64px 0;
         }
         .features-grid {
-            grid-template-columns: 1fr; /* Stack vertically */
+            grid-template-columns: 1fr;
             gap: 16px;
         }
 
