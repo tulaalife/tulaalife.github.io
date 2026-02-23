@@ -46,9 +46,8 @@ const contentHtml = await marked.parse(rawMarkdown);
         <div class="markdown-body" set:html={contentHtml} />
 
         <p class="legal-meta">
-            {t.help}
+            <a href={getLink("/legal/privacy")}>{t.privacyLink}</a> · {t.help}
             <a href="mailto:contact@tulaalife.com">contact@tulaalife.com</a>
-            · <a href={getLink("/legal/privacy")}>{t.privacyLink}</a>
         </p>
 
         <script type="application/ld+json" is:inline>
