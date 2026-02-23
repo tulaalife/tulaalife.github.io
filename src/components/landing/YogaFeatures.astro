@@ -5,7 +5,8 @@ const currentLang = Astro.currentLocale || "en";
 // 2. Dictionary for Yoga Features content
 const ui = {
     en: {
-        img: "/images/yoga-plans-collage.webp",
+        // Base filename to build responsive paths
+        baseImg: "yoga-plans-collage",
         imgAlt: "Tulaa Yoga Plans Interface",
         titleTop: "Yoga for Every Body,",
         titleBottom: "At Every Stage.",
@@ -22,7 +23,7 @@ const ui = {
         f3Desc: "Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.",
     },
     hi: {
-        img: "/images/yoga-plans-collage-hi.webp",
+        baseImg: "yoga-plans-collage-hi",
         imgAlt: "योग प्लान इंटरफेस",
         titleTop: "हर शरीर के लिए योग,",
         titleBottom: "जीवन के हर पड़ाव पर।",
@@ -41,12 +42,27 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+
+// 3. Define optimized responsive paths
+const mobileImg = `/images/mobile/${t.baseImg}.webp`;
+const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 ---
 
 <section class="section section-yoga">
     <div class="container grid-layout reverse-mobile">
         <div class="visual-col">
-            <img src={t.img} alt={t.imgAlt} />
+            <picture>
+                <source srcset={mobileImg} media="(max-width: 767px)" />
+                <img
+                    src={desktopImg}
+                    alt={t.imgAlt}
+                    class="feature-img shadow-lg"
+                    width="600"
+                    height="495"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </picture>
         </div>
         <div class="text-col">
             <h2 class="section-title">
@@ -60,21 +76,21 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
             <div class="feature-list">
                 <div class="feature-item">
-                    <span class="check">✓</span>
+                    <span class="check" aria-hidden="true">✓</span>
                     <div>
                         <strong>{t.f1Title}</strong>
                         <p>{t.f1Desc}</p>
                     </div>
                 </div>
                 <div class="feature-item">
-                    <span class="check">✓</span>
+                    <span class="check" aria-hidden="true">✓</span>
                     <div>
                         <strong>{t.f2Title}</strong>
                         <p>{t.f2Desc}</p>
                     </div>
                 </div>
                 <div class="feature-item">
-                    <span class="check">✓</span>
+                    <span class="check" aria-hidden="true">✓</span>
                     <div>
                         <strong>{t.f3Title}</strong>
                         <p>{t.f3Desc}</p>
@@ -97,12 +113,15 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
     .feature-img {
         width: 100%;
-        max-width: 100%; /* Fixed missing semicolon here */
         height: auto;
-        border-radius: var(--radius-lg);
+        /* Ensure the image doesn't stretch or clip unnaturally */
+        object-fit: contain;
+        filter: drop-shadow(
+            0 20px 30px rgba(0, 0, 0, 0.1)
+        ); /* Use drop-shadow instead of box-shadow */
     }
     .shadow-lg {
-        box-shadow: var(--shadow);
+        box-shadow: none !important;
     }
 
     .section-title {

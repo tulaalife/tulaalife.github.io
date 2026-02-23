@@ -8,14 +8,15 @@ const ui = {
         titleTop: "Calm Your Mind.",
         titleBottom: "Understand Your Emotions.",
         body: "From traditional chanting to anxiety relief. Log your moods to spot patterns and journal your thoughts in a private, safe space.",
-        img: "/images/mind-mood.webp",
+        // Point to the base filename without the path
+        baseImg: "mind-mood",
         imgAlt: "Meditation and Journaling Interface",
     },
     hi: {
         titleTop: "अपने मन को शांत करें।",
         titleBottom: "अपनी भावनाओं को समझें।",
         body: "पारंपरिक मंत्रोच्चार से लेकर चिंता से राहत तक। पैटर्न पहचानने के लिए अपना मूड लॉग करें और एक सुरक्षित, निजी स्थान पर अपने विचार लिखें।",
-        img: "/images/mind-mood-hi.webp",
+        baseImg: "mind-mood-hi",
         imgAlt: "ध्यान और जर्नलिंग इंटरफ़ेस",
     },
 };
@@ -35,7 +36,21 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     </div>
 
     <div class="container wide-visual">
-        <img src={t.img} alt={t.imgAlt} class="feature-img" />
+        <picture>
+            <source
+                srcset={`/images/mobile/${t.baseImg}.webp`}
+                media="(max-width: 767px)"
+            />
+            <img
+                src={`/images/desktop/${t.baseImg}.webp`}
+                alt={t.imgAlt}
+                class="feature-img"
+                width="600"
+                height="495"
+                loading="eager"
+                fetchpriority="high"
+            />
+        </picture>
     </div>
 </section>
 

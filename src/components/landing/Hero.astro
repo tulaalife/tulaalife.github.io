@@ -15,6 +15,7 @@ const ui = {
         cred2: "🧘‍♀️ 10+ Years of Clinical Experience",
         subtitle:
             "Specialized plans for <strong>Back Pain, PCOS, Thyroid, and Prenatal care.</strong> Designed to help you heal, without tracking your data.",
+        basePoster: "poster",
     },
     hi: {
         badge: "✨ 100% फ्री • प्राइवेट • ऑफलाइन",
@@ -25,14 +26,17 @@ const ui = {
         cred2: "🧘‍♀️ 10+ वर्षों का क्लिनिकल अनुभव",
         subtitle:
             "<strong>पीठ दर्द, PCOS, थायरॉइड और गर्भावस्था देखभाल</strong> के लिए विशेष योग प्लान। उपचार में सहायक, पूरी गोपनीयता के साथ।",
+        basePoster: "poster-hindi",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 
-// 3. Define the localized file paths
-// Using the optimized Hindi files you just generated
-const posterSrc = currentLang === "hi" ? "/poster-hindi.webp" : "/poster.webp";
+// 3. Define the optimized paths for posters
+const mobilePoster = `/images/mobile/${t.basePoster}.webp`;
+const desktopPoster = `/images/desktop/${t.basePoster}.webp`;
+
+// 4. Video paths (Assuming you generated optimized versions)
 const videoWebm =
     currentLang === "hi"
         ? "/website-app-demo-hindi.webm"
@@ -43,7 +47,20 @@ const videoMp4 =
         : "/website-app-demo.mp4";
 ---
 
-<link rel="preload" as="image" href={posterSrc} />
+<link
+    rel="preload"
+    as="image"
+    href={mobilePoster}
+    media="(max-width: 767px)"
+    fetchpriority="high"
+/>
+<link
+    rel="preload"
+    as="image"
+    href={desktopPoster}
+    media="(min-width: 768px)"
+    fetchpriority="high"
+/>
 
 <section id="hero" class="hero-section">
     <div class="container hero-grid">
@@ -55,21 +72,15 @@ const videoMp4 =
                 <span class="text-gradient">{t.titleBottom}</span>
             </h1>
 
-            <div
-                style="background: var(--bg-sub); padding: 12px 16px; border-radius: 12px; margin-bottom: 24px; display: inline-block; border: 1px solid var(--border);"
-            >
-                <p style="margin: 0; font-size: 0.95rem; line-height: 1.4;">
+            <div class="author-card">
+                <p>
                     <Fragment set:html={t.author} /><br />
-                    <span style="opacity: 0.8; font-size: 0.9rem;"
-                        >{t.cred1}</span
-                    ><br />
-                    <span style="opacity: 0.8; font-size: 0.9rem;"
-                        >{t.cred2}</span
-                    >
+                    <span class="cred">{t.cred1}</span>
+                    <span class="cred">{t.cred2}</span>
                 </p>
             </div>
 
-            <p class="hero-sub" style="margin-top: 0;" set:html={t.subtitle} />
+            <p class="hero-sub" set:html={t.subtitle} />
 
             <div class="cta-wrapper">
                 <StoreButtons centered={false} />
@@ -80,7 +91,8 @@ const videoMp4 =
             <div
                 class="phone-frame-wrapper skeleton-loader"
                 id="phoneWrapper"
-                data-poster={posterSrc}
+                data-mobile-poster={mobilePoster}
+                data-desktop-poster={desktopPoster}
                 data-webm={videoWebm}
                 data-mp4={videoMp4}
             >
@@ -100,75 +112,62 @@ const videoMp4 =
 </section>
 
 <script>
-    // 👇 NEW: Changed from DOMContentLoaded to astro:page-load
     document.addEventListener("astro:page-load", () => {
         const wrapper = document.getElementById("phoneWrapper");
         const video = document.getElementById("heroVideo") as HTMLVideoElement;
 
         if (!wrapper || !video) return;
 
-        // 👇 NEW: Clean up previous state if navigating via language toggle
+        // Reset state for language toggling
         video.innerHTML = "";
         video.classList.remove("is-playing");
 
-        // --- PART 1: Poster Loading (Dynamic) ---
-        const posterSrc = wrapper.getAttribute("data-poster") || "/poster.webp";
-        const img = new Image();
-        img.src = posterSrc;
+        // --- PART 1: Responsive Poster Loading ---
+        const isMobile = window.innerWidth <= 767;
+        const posterSrc = isMobile
+            ? wrapper.getAttribute("data-mobile-poster")
+            : wrapper.getAttribute("data-desktop-poster");
 
-        const showPoster = () => {
-            wrapper.classList.remove("skeleton-loader");
-            wrapper.style.backgroundImage = `url('${img.src}')`;
-            wrapper.classList.add("has-poster");
-        };
-
-        if (img.complete) {
-            showPoster();
-        } else {
-            img.onload = showPoster;
-            // Optional: fallback timeout if image hangs
-            setTimeout(showPoster, 3000);
+        if (posterSrc) {
+            const img = new Image();
+            img.src = posterSrc;
+            const showPoster = () => {
+                wrapper.classList.remove("skeleton-loader");
+                wrapper.style.backgroundImage = `url('${posterSrc}')`;
+                wrapper.classList.add("has-poster");
+            };
+            if (img.complete) showPoster();
+            else img.onload = showPoster;
         }
 
-        // --- PART 2: Video Loading (Dynamic) ---
-        interface NetworkInformation {
-            saveData?: boolean;
-            effectiveType?: "slow-2g" | "2g" | "3g" | "4g";
-        }
-        interface ExtendedNavigator extends Navigator {
-            connection?: NetworkInformation;
-            mozConnection?: NetworkInformation;
-            webkitConnection?: NetworkInformation;
-        }
-
-        const nav = navigator as ExtendedNavigator;
+        // --- PART 2: Intelligent Video Loading ---
+        const nav = navigator as any;
         const connection =
             nav.connection || nav.mozConnection || nav.webkitConnection;
-
         const isSlow =
             connection &&
             (connection.saveData ||
                 ["slow-2g", "2g"].includes(connection.effectiveType || ""));
 
+        // Don't load video on slow connections to save user data
         if (isSlow) return;
 
         const initVideo = () => {
             const webmSrc = wrapper.getAttribute("data-webm");
             const mp4Src = wrapper.getAttribute("data-mp4");
 
-            const sources = [
-                { src: webmSrc, type: "video/webm" },
-                { src: mp4Src, type: "video/mp4" },
-            ];
-
-            sources.forEach((s) => {
-                if (s.src) {
-                    const source = document.createElement("source");
-                    source.src = s.src;
-                    source.type = s.type;
-                    video.appendChild(source);
-                }
-            });
+            if (webmSrc) {
+                const s = document.createElement("source");
+                s.src = webmSrc;
+                s.type = "video/webm";
+                video.appendChild(s);
+            }
+            if (mp4Src) {
+                const s = document.createElement("source");
+                s.src = mp4Src;
+                s.type = "video/mp4";
+                video.appendChild(s);
+            }
 
             video.addEventListener(
                 "canplay",
@@ -176,14 +175,14 @@ const videoMp4 =
                     video
                         .play()
                         .then(() => video.classList.add("is-playing"))
-                        .catch((e) => console.error("Autoplay blocked", e));
+                        .catch(() => {});
                 },
                 { once: true },
             );
-
             video.load();
         };
 
+        // Use Idle Callback to avoid blocking main thread
         if ("requestIdleCallback" in window) {
             // @ts-ignore
             requestIdleCallback(initVideo);
@@ -194,7 +193,6 @@ const videoMp4 =
 </script>
 
 <style>
-    /* ... (Your existing CSS remains unchanged) ... */
     #download-content {
         scroll-margin-top: 100px;
     }
@@ -229,6 +227,26 @@ const videoMp4 =
         line-height: 1.1;
         margin-bottom: 24px;
     }
+    .author-card {
+        background: var(--bg-sub);
+        padding: 12px 16px;
+        border-radius: 12px;
+        margin-bottom: 24px;
+        display: inline-block;
+        border: 1px solid var(--border);
+        text-align: left;
+    }
+    .author-card p {
+        margin: 0;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+    .cred {
+        opacity: 0.8;
+        font-size: 0.9rem;
+        display: block;
+    }
+
     .hero-sub {
         font-size: 1.2rem;
         color: var(--text-muted);
@@ -256,7 +274,7 @@ const videoMp4 =
         margin: 0 auto;
         z-index: 2;
         aspect-ratio: 540 / 1174;
-        background-color: #000;
+        background-color: #0d0d0d;
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -265,6 +283,7 @@ const videoMp4 =
         overflow: hidden;
     }
 
+    /* Skeleton shimmer for visual stability */
     .phone-frame-wrapper.skeleton-loader::before {
         content: "";
         position: absolute;
@@ -304,14 +323,6 @@ const videoMp4 =
 
     .app-video.is-playing {
         opacity: 1;
-    }
-
-    /* Fix for Dark Mode Device Frame */
-    :global([data-theme="dark"]) .phone-frame-wrapper {
-        border-color: #333333;
-        box-shadow:
-            0 0 0 1px rgba(255, 255, 255, 0.1),
-            0 20px 50px -10px rgba(0, 0, 0, 0.5);
     }
 
     .glow-blob {
