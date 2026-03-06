@@ -8,6 +8,7 @@ interface Props {
     canonicalPath?: string;
     ogImage?: string;
     hideFooter?: boolean;
+    hasTranslation?: boolean;
 }
 
 const {
@@ -17,6 +18,7 @@ const {
     canonicalPath = "/",
     ogImage = "https://images.tulaa.life/logo.webp",
     hideFooter = false,
+    hasTranslation = true,
 } = Astro.props;
 
 const site = "https://tulaalife.com";
@@ -80,9 +82,15 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
         <link rel="canonical" href={currentUrl} />
         <meta name="robots" content="index,follow" />
 
-        <link rel="alternate" hreflang="en" href={enUrl} />
-        <link rel="alternate" hreflang="hi" href={hiUrl} />
-        <link rel="alternate" hreflang="x-default" href={enUrl} />
+        {
+            hasTranslation && (
+                <>
+                    <link rel="alternate" hreflang="en" href={enUrl} />
+                    <link rel="alternate" hreflang="hi" href={hiUrl} />
+                    <link rel="alternate" hreflang="x-default" href={enUrl} />
+                </>
+            )
+        }
 
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Tulaa" />
@@ -370,15 +378,20 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
                 </a>
 
                 <div class="header-actions">
-                    <a
-                        href={targetUrl}
-                        class="lang-toggle"
-                        aria-label="Change Language"
-                    >
-                        <span style="font-size: 1rem; margin-top:-2px;">🌐</span
-                        >
-                        {currentLang === "en" ? "हिंदी" : "EN"}
-                    </a>
+                    {
+                        hasTranslation && (
+                            <a
+                                href={targetUrl}
+                                class="lang-toggle"
+                                aria-label="Change Language"
+                            >
+                                <span style="font-size: 1rem; margin-top:-2px;">
+                                    🌐
+                                </span>
+                                {currentLang === "en" ? "हिंदी" : "EN"}
+                            </a>
+                        )
+                    }
 
                     <button
                         id="themeBtn"
