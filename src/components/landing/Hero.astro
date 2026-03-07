@@ -36,7 +36,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 const mobilePoster = `/images/mobile/${t.basePoster}.webp`;
 const desktopPoster = `/images/desktop/${t.basePoster}.webp`;
 
-// 4. Video paths (Assuming you generated optimized versions)
+// 4. Video paths
 const videoWebm =
     currentLang === "hi"
         ? "/website-app-demo-hindi.webm"
@@ -46,21 +46,6 @@ const videoMp4 =
         ? "/website-app-demo-hindi.mp4"
         : "/website-app-demo.mp4";
 ---
-
-<link
-    rel="preload"
-    as="image"
-    href={mobilePoster}
-    media="(max-width: 767px)"
-    fetchpriority="high"
-/>
-<link
-    rel="preload"
-    as="image"
-    href={desktopPoster}
-    media="(min-width: 768px)"
-    fetchpriority="high"
-/>
 
 <section id="hero" class="hero-section">
     <div class="container hero-grid">
@@ -89,13 +74,22 @@ const videoMp4 =
 
         <div class="hero-visual">
             <div
-                class="phone-frame-wrapper skeleton-loader"
+                class="phone-frame-wrapper"
                 id="phoneWrapper"
-                data-mobile-poster={mobilePoster}
-                data-desktop-poster={desktopPoster}
                 data-webm={videoWebm}
                 data-mp4={videoMp4}
             >
+                <picture>
+                    <source media="(min-width: 768px)" srcset={desktopPoster} />
+                    <img
+                        src={mobilePoster}
+                        alt="Tulaa App Preview"
+                        class="poster-img"
+                        fetchpriority="high"
+                        decoding="sync"
+                    />
+                </picture>
+
                 <video
                     id="heroVideo"
                     class="app-video"
@@ -122,25 +116,7 @@ const videoMp4 =
         video.innerHTML = "";
         video.classList.remove("is-playing");
 
-        // --- PART 1: Responsive Poster Loading ---
-        const isMobile = window.innerWidth <= 767;
-        const posterSrc = isMobile
-            ? wrapper.getAttribute("data-mobile-poster")
-            : wrapper.getAttribute("data-desktop-poster");
-
-        if (posterSrc) {
-            const img = new Image();
-            img.src = posterSrc;
-            const showPoster = () => {
-                wrapper.classList.remove("skeleton-loader");
-                wrapper.style.backgroundImage = `url('${posterSrc}')`;
-                wrapper.classList.add("has-poster");
-            };
-            if (img.complete) showPoster();
-            else img.onload = showPoster;
-        }
-
-        // --- PART 2: Intelligent Video Loading ---
+        // --- Intelligent Video Loading ---
         const nav = navigator as any;
         const connection =
             nav.connection || nav.mozConnection || nav.webkitConnection;
@@ -275,38 +251,19 @@ const videoMp4 =
         z-index: 2;
         aspect-ratio: 540 / 1174;
         background-color: #0d0d0d;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
         border-radius: 36px;
         border: 10px solid #1a1a1a;
         overflow: hidden;
     }
 
-    /* Skeleton shimmer for visual stability */
-    .phone-frame-wrapper.skeleton-loader::before {
-        content: "";
+    /* NEW: Poster image styles */
+    .poster-img {
         position: absolute;
-        top: 0;
-        left: 0;
+        inset: 0;
         width: 100%;
         height: 100%;
-        background: linear-gradient(
-            90deg,
-            rgba(255, 255, 255, 0) 0%,
-            rgba(255, 255, 255, 0.03) 50%,
-            rgba(255, 255, 255, 0) 100%
-        );
-        transform: translateX(-100%);
-        animation: shimmer 2s infinite;
+        object-fit: cover;
         z-index: 5;
-        pointer-events: none;
-    }
-
-    @keyframes shimmer {
-        100% {
-            transform: translateX(100%);
-        }
     }
 
     .app-video {
