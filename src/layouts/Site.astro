@@ -450,7 +450,10 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
                         <div class="legal">
                             <a href={getLink("/legal/privacy")}>{t.privacy}</a>
                             <a href={getLink("/legal/terms")}>{t.terms}</a>
-                            <a href="mailto:contact@tulaalife.com">
+                            <a
+                                href="mailto:contact@tulaalife.com"
+                                data-astro-reload
+                            >
                                 {t.contact}
                             </a>
                         </div>
