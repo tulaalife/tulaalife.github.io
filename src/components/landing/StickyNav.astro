@@ -1,15 +1,16 @@
 ---
-// src/components/landing/StickyNav.astro
-
-// 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Simple dictionary for UI text
 const ui = {
     en: { download: "Download App" },
     hi: { download: "ऐप डाउनलोड करें" },
 };
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+
+// Store URLs
+const IOS_URL =
+    "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498";
+const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
 ---
 
 <nav id="sticky-nav" class="sticky-nav">
@@ -23,7 +24,14 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             />
             <span class="font-bold">Tulaa</span>
         </div>
-        <a href="#download-content" class="btn-sm">{t.download}</a>
+        <button
+            id="nav-download-btn"
+            class="btn-sm"
+            data-ios={IOS_URL}
+            data-android={ANDROID_URL}
+        >
+            {t.download}
+        </button>
     </div>
 </nav>
 
@@ -33,18 +41,23 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         top: -80px;
         left: 0;
         right: 0;
-        background: rgba(255, 255, 255, 0.9);
+        background: rgba(255, 255, 255, 0.8);
         backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--border);
+        -webkit-backdrop-filter: blur(12px);
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
         z-index: 99;
-        transition: top 0.3s ease;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
+
     :global([data-theme="dark"]) .sticky-nav {
-        background: rgba(20, 20, 20, 0.9);
+        background: rgba(20, 20, 20, 0.8);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
+
     .sticky-nav.visible {
-        top: 0;
+        transform: translateY(80px);
     }
+
     .sticky-inner {
         height: 64px;
         display: flex;
@@ -61,38 +74,60 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     .btn-sm {
         background: var(--primary);
         color: #ffffff;
-        padding: 8px 16px;
+        padding: 10px 20px;
         border-radius: 99px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        transition: transform 0.2s;
-        text-decoration: none;
+        font-size: 0.85rem;
+        font-weight: 600;
+        border: none;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+        transition: all 0.2s ease;
     }
+
     .btn-sm:hover {
-        transform: scale(1.05);
+        transform: translateY(-1px);
+        filter: brightness(1.1);
+        box-shadow: 0 6px 16px rgba(var(--primary-rgb), 0.3);
     }
 </style>
 
 <script>
-    // Astro page transitions require re-attaching listeners on navigation
     document.addEventListener("astro:page-load", () => {
         const nav = document.getElementById("sticky-nav");
         const hero = document.getElementById("hero");
+        const btn = document.getElementById("nav-download-btn");
 
+        // 1. Visibility Logic
         if (nav && hero) {
             const observer = new IntersectionObserver(
                 (entries) => {
                     entries.forEach((entry) => {
-                        if (!entry.isIntersecting) {
-                            nav.classList.add("visible");
-                        } else {
-                            nav.classList.remove("visible");
-                        }
+                        nav.classList.toggle("visible", !entry.isIntersecting);
                     });
                 },
                 { threshold: 0.1 },
             );
             observer.observe(hero);
         }
+
+        // 2. Smart Click Logic
+        btn?.addEventListener("click", () => {
+            const ua = navigator.userAgent.toLowerCase();
+            const isMobile = /iphone|ipad|ipod|android/.test(ua);
+
+            if (isMobile) {
+                const iosUrl = btn.getAttribute("data-ios");
+                const androidUrl = btn.getAttribute("data-android");
+
+                if (/iphone|ipad|ipod/.test(ua) && iosUrl) {
+                    window.location.href = iosUrl;
+                } else if (/android/.test(ua) && androidUrl) {
+                    window.location.href = androidUrl;
+                }
+            } else {
+                // Desktop: Smooth scroll to top
+                window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+        });
     });
 </script>

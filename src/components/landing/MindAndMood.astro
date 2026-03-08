@@ -8,7 +8,6 @@ const ui = {
         titleTop: "Calm Your Mind.",
         titleBottom: "Understand Your Emotions.",
         body: "From traditional chanting to anxiety relief. Log your moods to spot patterns and journal your thoughts in a private, safe space.",
-        // Point to the base filename without the path
         baseImg: "mind-mood",
         imgAlt: "Meditation and Journaling Interface",
     },
@@ -22,13 +21,15 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+const isHindi = currentLang === "hi";
 ---
 
 <section class="section section-mind">
     <div class="container center-text">
-        <h2 class="section-title">
+        <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
             {t.titleTop}
-            <br />{t.titleBottom}
+            <br />
+            <span class="text-gradient">{t.titleBottom}</span>
         </h2>
         <p class="body-text max-w-md">
             {t.body}
@@ -36,57 +37,152 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     </div>
 
     <div class="container wide-visual">
-        <picture>
-            <source
-                srcset={`/images/mobile/${t.baseImg}.webp`}
-                media="(max-width: 767px)"
-            />
-            <img
-                src={`/images/desktop/${t.baseImg}.webp`}
-                alt={t.imgAlt}
-                class="feature-img"
-                width="600"
-                height="495"
-                loading="eager"
-                fetchpriority="high"
-            />
-        </picture>
+        <div class="floating-visual-wrapper">
+            <picture>
+                <source
+                    srcset={`/images/mobile/${t.baseImg}.webp`}
+                    media="(max-width: 767px)"
+                />
+                <img
+                    src={`/images/desktop/${t.baseImg}.webp`}
+                    alt={t.imgAlt}
+                    class="feature-img"
+                    width="600"
+                    height="495"
+                    loading="eager"
+                    fetchpriority="high"
+                />
+            </picture>
+            <div class="glow-orb"></div>
+        </div>
     </div>
 </section>
 
 <style>
     .section {
         padding: 100px 0;
+        background-color: var(--bg-main);
+        overflow: hidden;
     }
+
     .center-text {
         text-align: center;
         margin-bottom: 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
+
+    /* Consistent Typography Logic */
     .section-title {
-        font-size: var(--text-h1);
+        font-size: clamp(2.6rem, 4vw, 3.5rem);
+        line-height: 1.2;
+        font-weight: 800;
         margin-bottom: 24px;
+        letter-spacing: -0.02em;
+        color: var(--text-main);
     }
+
+    .section-title.is-hindi {
+        line-height: 1.4;
+        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, var(--primary), #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+
     .body-text {
-        font-size: var(--text-body);
+        font-size: 1.15rem;
+        line-height: 1.6;
         color: var(--text-muted);
+        max-width: 520px;
     }
-    .max-w-md {
-        max-width: 400px;
-        margin-left: auto;
-        margin-right: auto;
-    }
+
+    /* Premium Floating Visual Wrapper */
     .wide-visual {
-        max-width: 600px;
+        max-width: 800px;
         margin: 0 auto;
+        position: relative;
     }
+
+    .floating-visual-wrapper {
+        position: relative;
+        padding: 0; /* Remove padding to remove "background" feel */
+        border-radius: 0; /* Remove radius to remove "background" feel */
+        border: none; /* Remove border completely */
+        box-shadow: none; /* Remove wrapper shadow */
+        backdrop-filter: none; /* Remove blur */
+        z-index: 1;
+        transition: transform 0.3s ease;
+    }
+
+    /* Apply subtle movement on hover to the entire wrapper */
+    .floating-visual-wrapper:hover {
+        transform: translateY(-8px);
+    }
+
     .feature-img {
         width: 100%;
         height: auto;
-        border-radius: var(--radius-lg);
+        /* Drop shadow only for the UI elements inside the image, creating depth */
+        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+        position: relative;
+        z-index: 2;
+        transition: filter 0.3s ease;
     }
+
+    /* Increase drop shadow intensity on hover for premium effect */
+    .floating-visual-wrapper:hover .feature-img {
+        filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25));
+    }
+
+    /* Dynamic Suspended Glow Orb */
+    .glow-orb {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 140%; /* Make orb larger to act as soft suspension field */
+        height: 140%;
+        background: radial-gradient(
+            circle,
+            color-mix(in srgb, var(--primary), transparent 88%) 0%,
+            color-mix(in srgb, var(--primary), transparent 98%) 40%,
+            transparent 70%
+        );
+        z-index: -1; /* Orb is suspended directly behind the visual */
+        pointer-events: none;
+        transition: transform 0.5s ease;
+    }
+
+    /* Subtle rotation on hover creates dynamic life in the orb */
+    .floating-visual-wrapper:hover .glow-orb {
+        transform: translate(-50%, -50%) rotate(5deg);
+    }
+
     @media (max-width: 768px) {
         .section {
             padding: 64px 0;
+        }
+        .center-text {
+            margin-bottom: 40px;
+        }
+        .section-title {
+            font-size: 2.2rem;
+        }
+        .section-title.is-hindi {
+            font-size: 1.9rem;
+        }
+        /* Mobile: Remove hovering effects for cleaner tap interaction */
+        .floating-visual-wrapper:hover {
+            transform: none;
+        }
+        .floating-visual-wrapper:hover .feature-img {
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
         }
     }
 </style>

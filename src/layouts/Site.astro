@@ -113,11 +113,7 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
             (() => {
                 const root = document.documentElement;
                 const metaColor = document.getElementById("theme-color-meta");
-
-                const bgColors = {
-                    light: "#ffffff",
-                    dark: "#18181b",
-                };
+                const bgColors = { light: "#ffffff", dark: "#18181b" };
 
                 function getSystemTheme() {
                     return window.matchMedia("(prefers-color-scheme: dark)")
@@ -126,30 +122,55 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
                         : "light";
                 }
 
-                function init() {
-                    const saved = localStorage.getItem("tulaa-theme");
-                    const theme = saved || getSystemTheme();
-
+                function setTheme(theme) {
                     root.dataset.theme = theme;
                     root.style.colorScheme = theme;
                     if (metaColor)
                         metaColor.setAttribute("content", bgColors[theme]);
                 }
 
+                function init() {
+                    // 1. Handle Language Redirect (Only on first visit to home page)
+                    const hasBeenRedirected = localStorage.getItem(
+                        "tulaa-lang-detected",
+                    );
+                    const isHomePage =
+                        window.location.pathname === "/" ||
+                        window.location.pathname === "";
+
+                    if (!hasBeenRedirected && isHomePage) {
+                        const userLang =
+                            navigator.language || navigator.userLanguage;
+                        if (userLang.startsWith("hi")) {
+                            localStorage.setItem("tulaa-lang-detected", "true");
+                            window.location.href = "/hi";
+                            return; // Stop execution here as we are redirecting
+                        }
+                        localStorage.setItem("tulaa-lang-detected", "true");
+                    }
+
+                    // 2. Handle Theme
+                    const savedTheme = localStorage.getItem("tulaa-theme");
+                    setTheme(savedTheme || getSystemTheme());
+                }
+
+                // Listen for system theme changes in real-time
+                window
+                    .matchMedia("(prefers-color-scheme: dark)")
+                    .addEventListener("change", (e) => {
+                        if (!localStorage.getItem("tulaa-theme")) {
+                            setTheme(e.matches ? "dark" : "light");
+                        }
+                    });
+
                 init();
                 document.addEventListener("astro:page-load", init);
 
                 window.toggleTheme = function () {
-                    const current =
-                        root.dataset.theme === "dark" ? "dark" : "light";
-                    const next = current === "dark" ? "light" : "dark";
-
-                    root.dataset.theme = next;
-                    root.style.colorScheme = next;
+                    const next =
+                        root.dataset.theme === "dark" ? "light" : "dark";
+                    setTheme(next);
                     localStorage.setItem("tulaa-theme", next);
-
-                    if (metaColor)
-                        metaColor.setAttribute("content", bgColors[next]);
                 };
             })();
         </script>

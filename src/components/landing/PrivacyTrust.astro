@@ -5,51 +5,73 @@ const currentLang = Astro.currentLocale || "en";
 // 2. Dictionary for Privacy & Trust content
 const ui = {
     en: {
-        title: "100% Private. Truly Yours.",
+        titleTop: "100% Private.",
+        titleBottom: "Truly Yours.",
         descTop:
             "Wellness shouldn't come with hidden costs or tracking pixels.",
         descBottom: "Tulaa is designed to be your safe, personal sanctuary.",
-        card1Title: "Privacy First",
-        card1Desc:
-            "No account needed. Your data is stored locally on your device. Export or delete it anytime.",
-        card2Title: "Free & Offline",
-        card2Desc:
-            "No ads, no tracking, no subscriptions. Works perfectly without internet access.",
-        card3Title: "Make it Yours",
-        card3Desc:
-            "Choose from 30+ themes, fonts, and backgrounds. Set your own daily wellbeing goals.",
-        // Base filename for any image you might want to add here
-        baseImg: "trackers-collage",
+        features: [
+            {
+                title: "Privacy First",
+                desc: "No account needed. Your data is stored locally. Export or delete it anytime.",
+                icon: "🔒",
+                color: "rgba(99, 102, 241, 0.15)",
+            },
+            {
+                title: "Free & Offline",
+                desc: "No ads, no tracking, no subscriptions. Works perfectly without internet access.",
+                icon: "⚡",
+                color: "rgba(34, 197, 94, 0.15)",
+            },
+            {
+                title: "Make it Yours",
+                desc: "Choose from 30+ themes and fonts. Set your own daily wellbeing goals.",
+                icon: "🎨",
+                color: "rgba(236, 72, 153, 0.15)",
+            },
+        ],
     },
     hi: {
-        title: "100% प्राइवेट। आपकी अपनी।",
+        titleTop: "100% प्राइवेट।",
+        titleBottom: "आपकी अपनी।",
         descTop:
             "सेहत की देखभाल—बिना किसी गुप्त कीमत या प्राइवेसी से समझौते के।",
         descBottom: "Tulaa आपकी अपनी सुरक्षित और निजी जगह है।",
-        card1Title: "प्राइवेसी सबसे पहले",
-        card1Desc:
-            "किसी अकाउंट की ज़रूरत नहीं। आपका डेटा आपके डिवाइस पर रहता है। जब चाहें एक्सपोर्ट या डिलीट करें।",
-        card2Title: "फ्री और ऑफलाइन",
-        card2Desc:
-            "कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं, कोई सब्सक्रिप्शन नहीं। बिना इंटरनेट के भी बेहतरीन काम करता है।",
-        card3Title: "इसे अपना बनाएं",
-        card3Desc:
-            "30+ थीम्स, फ़ॉन्ट्स और बैकग्राउंड्स में से चुनें। अपने दैनिक सेहत लक्ष्य को खुद तय करें।",
-        baseImg: "trackers-collage-hi",
+        features: [
+            {
+                title: "प्राइवेसी सबसे पहले",
+                desc: "किसी अकाउंट की ज़रूरत नहीं। आपका डेटा आपके डिवाइस पर रहता है।",
+                icon: "🔒",
+                color: "rgba(99, 102, 241, 0.15)",
+            },
+            {
+                title: "फ्री और ऑफलाइन",
+                desc: "कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं। बिना इंटरनेट के भी बेहतरीन काम करता है।",
+                icon: "⚡",
+                color: "rgba(34, 197, 94, 0.15)",
+            },
+            {
+                title: "इसे अपना बनाएं",
+                desc: "30+ थीम्स और फ़ॉन्ट्स में से चुनें। अपने दैनिक सेहत लक्ष्य खुद तय करें।",
+                icon: "🎨",
+                color: "rgba(236, 72, 153, 0.15)",
+            },
+        ],
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-
-// 3. Define responsive paths (consistent with your new folder structure)
-const mobileImg = `/images/mobile/${t.baseImg}.webp`;
-const desktopImg = `/images/desktop/${t.baseImg}.webp`;
+const isHindi = currentLang === "hi";
 ---
 
 <section class="section section-privacy">
     <div class="container">
         <div class="header-content">
-            <h2 class="section-title">{t.title}</h2>
+            <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
+                <span class="title-main">{t.titleTop}</span>
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
+            </h2>
             <p class="body-text">
                 {t.descTop}
                 <br class="hidden-mobile" />
@@ -58,29 +80,22 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         </div>
 
         <div class="features-grid">
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <span class="icon" aria-hidden="true">🔒</span>
-                </div>
-                <h3>{t.card1Title}</h3>
-                <p>{t.card1Desc}</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <span class="icon" aria-hidden="true">⚡</span>
-                </div>
-                <h3>{t.card2Title}</h3>
-                <p>{t.card2Desc}</p>
-            </div>
-
-            <div class="feature-card">
-                <div class="icon-wrapper">
-                    <span class="icon" aria-hidden="true">🎨</span>
-                </div>
-                <h3>{t.card3Title}</h3>
-                <p>{t.card3Desc}</p>
-            </div>
+            {
+                t.features.map((feature) => (
+                    <div
+                        class="privacy-card"
+                        style={`--card-accent: ${feature.color}`}
+                    >
+                        <div class="card-content">
+                            <h3 class="card-title">{feature.title}</h3>
+                            <p class="card-desc">{feature.desc}</p>
+                        </div>
+                        <span class="bg-icon" aria-hidden="true">
+                            {feature.icon}
+                        </span>
+                    </div>
+                ))
+            }
         </div>
     </div>
 </section>
@@ -88,83 +103,152 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 <style>
     .section {
         padding: 100px 0;
+        background-color: var(--bg-main);
     }
 
     .header-content {
         text-align: center;
-        max-width: 700px;
-        margin: 0 auto 60px;
+        max-width: 800px;
+        margin: 0 auto 64px;
     }
 
+    /* --- TYPOGRAPHY --- */
     .section-title {
-        font-size: var(--text-h1);
+        font-size: clamp(2.6rem, 4vw, 3.5rem);
+        line-height: 1.15;
+        font-weight: 800;
         margin-bottom: 24px;
-        line-height: 1.1;
+        letter-spacing: -0.02em;
     }
 
-    .body-text {
-        font-size: var(--text-body);
-        color: var(--text-muted);
-        line-height: 1.6;
-    }
-
-    .features-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 40px;
-        text-align: center;
-    }
-
-    .feature-card {
-        padding: 24px;
-        transition: transform 0.3s ease;
-    }
-
-    .feature-card:hover {
-        transform: translateY(-5px);
-    }
-
-    .icon-wrapper {
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    .icon {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 56px;
-        height: 56px;
-        font-size: 1.8rem;
-        background: var(--bg-sub);
-        border-radius: 16px;
-        color: var(--primary);
-    }
-
-    .feature-card h3 {
-        font-size: 1.25rem;
-        font-weight: var(--fw-bold);
-        margin-bottom: 12px;
+    .title-main {
         color: var(--text-main);
     }
 
-    .feature-card p {
+    .section-title.is-hindi {
+        line-height: 1.4;
+        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, var(--primary), #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        padding-bottom: 4px;
+    }
+
+    .body-text {
+        font-size: 1.15rem;
+        line-height: 1.6;
+        color: var(--text-muted);
+    }
+
+    /* --- PREMIUM PRIVACY CARDS --- */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 24px;
+    }
+
+    .privacy-card {
+        position: relative;
+        overflow: hidden;
+        padding: 40px 32px;
+        border-radius: 32px;
+        background: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--bg-main), white 5%) 0%,
+            var(--card-accent) 100%
+        );
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(10px);
+        transition:
+            transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+            box-shadow 0.3s ease;
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        z-index: 1;
+    }
+
+    :root[data-theme="dark"] .privacy-card {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            var(--card-accent) 100%
+        );
+    }
+
+    .privacy-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .card-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* Subtle Card Hierarchy */
+    .card-title {
+        font-size: 1.35rem;
+        font-weight: 800; /* Extra bold for distinction */
+        margin-bottom: 12px;
+        color: var(--text-main);
+        letter-spacing: -0.01em;
+    }
+
+    .card-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
-        line-height: 1.5;
+        opacity: 0.85; /* Lowered opacity for hierarchy */
+        line-height: 1.6;
         margin: 0;
+        font-weight: 400;
+    }
+
+    /* --- BACKGROUND ICON EFFECT --- */
+    .bg-icon {
+        position: absolute;
+        bottom: -20px;
+        right: -10px;
+        font-size: 6.5rem;
+        opacity: 0.06;
+        transform: rotate(-15deg);
+        filter: blur(1px);
+        pointer-events: none;
+        transition:
+            transform 0.5s ease,
+            opacity 0.5s ease;
+    }
+
+    .privacy-card:hover .bg-icon {
+        transform: rotate(0deg) scale(1.1);
+        opacity: 0.12;
+    }
+
+    @media (max-width: 992px) {
+        .features-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        .privacy-card {
+            padding: 32px;
+        }
     }
 
     @media (max-width: 768px) {
         .section {
             padding: 64px 0;
         }
-        .features-grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
+        .section-title {
+            font-size: 2.2rem;
         }
-
+        .section-title.is-hindi {
+            font-size: 1.9rem;
+        }
         .hidden-mobile {
             display: none;
         }
