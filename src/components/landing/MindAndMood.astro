@@ -37,7 +37,7 @@ const isHindi = currentLang === "hi";
     </div>
 
     <div class="container wide-visual">
-        <div class="glass-visual-wrapper">
+        <div class="floating-visual-wrapper">
             <picture>
                 <source
                     srcset={`/images/mobile/${t.baseImg}.webp`}
@@ -102,61 +102,66 @@ const isHindi = currentLang === "hi";
         max-width: 520px;
     }
 
-    /* Premium Visual Wrapper */
+    /* Premium Floating Visual Wrapper */
     .wide-visual {
         max-width: 800px;
         margin: 0 auto;
         position: relative;
     }
 
-    .glass-visual-wrapper {
+    .floating-visual-wrapper {
         position: relative;
-        padding: 20px;
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--bg-main), white 2%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 50%) 100%
-        );
-        border-radius: 40px;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        backdrop-filter: blur(10px);
+        padding: 0; /* Remove padding to remove "background" feel */
+        border-radius: 0; /* Remove radius to remove "background" feel */
+        border: none; /* Remove border completely */
+        box-shadow: none; /* Remove wrapper shadow */
+        backdrop-filter: none; /* Remove blur */
         z-index: 1;
+        transition: transform 0.3s ease;
     }
 
-    :root[data-theme="dark"] .glass-visual-wrapper {
-        background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.03) 0%,
-            rgba(255, 255, 255, 0.01) 100%
-        );
+    /* Apply subtle movement on hover to the entire wrapper */
+    .floating-visual-wrapper:hover {
+        transform: translateY(-8px);
     }
 
     .feature-img {
         width: 100%;
         height: auto;
-        border-radius: 24px;
-        /* Drop shadow only for the UI elements inside the image */
+        /* Drop shadow only for the UI elements inside the image, creating depth */
         filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
         position: relative;
         z-index: 2;
+        transition: filter 0.3s ease;
     }
 
-    /* Background Aesthetic Orb */
+    /* Increase drop shadow intensity on hover for premium effect */
+    .floating-visual-wrapper:hover .feature-img {
+        filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.25));
+    }
+
+    /* Dynamic Suspended Glow Orb */
     .glow-orb {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 120%;
-        height: 120%;
+        width: 140%; /* Make orb larger to act as soft suspension field */
+        height: 140%;
         background: radial-gradient(
             circle,
-            color-mix(in srgb, var(--primary), transparent 85%) 0%,
+            color-mix(in srgb, var(--primary), transparent 88%) 0%,
+            color-mix(in srgb, var(--primary), transparent 98%) 40%,
             transparent 70%
         );
-        z-index: -1;
+        z-index: -1; /* Orb is suspended directly behind the visual */
         pointer-events: none;
+        transition: transform 0.5s ease;
+    }
+
+    /* Subtle rotation on hover creates dynamic life in the orb */
+    .floating-visual-wrapper:hover .glow-orb {
+        transform: translate(-50%, -50%) rotate(5deg);
     }
 
     @media (max-width: 768px) {
@@ -172,9 +177,12 @@ const isHindi = currentLang === "hi";
         .section-title.is-hindi {
             font-size: 1.9rem;
         }
-        .glass-visual-wrapper {
-            padding: 12px;
-            border-radius: 32px;
+        /* Mobile: Remove hovering effects for cleaner tap interaction */
+        .floating-visual-wrapper:hover {
+            transform: none;
+        }
+        .floating-visual-wrapper:hover .feature-img {
+            filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
         }
     }
 </style>

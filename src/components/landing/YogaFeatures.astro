@@ -31,7 +31,7 @@ const ui = {
                 title: "For Chronic Conditions",
                 desc: "Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.",
                 icon: "🔬",
-                iconColor: "rgba(236, 72, 153, 0.15)",
+                color: "rgba(236, 72, 153, 0.15)",
             },
         ],
     },
@@ -94,7 +94,8 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 
         <div class="text-col">
             <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
-                {t.titleTop}<br />
+                <span class="title-main">{t.titleTop}</span>
+                <br />
                 <span class="text-gradient">{t.titleBottom}</span>
             </h2>
             <p class="body-text">{t.bodyText}</p>
@@ -107,8 +108,10 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
                             style={`--card-accent: ${feature.color}`}
                         >
                             <div class="card-content">
-                                <strong>{feature.title}</strong>
-                                <p>{feature.desc}</p>
+                                <strong class="card-title">
+                                    {feature.title}
+                                </strong>
+                                <p class="card-desc">{feature.desc}</p>
                             </div>
                             <span class="bg-icon" aria-hidden="true">
                                 {feature.icon}
@@ -133,12 +136,17 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         align-items: center;
     }
 
+    /* --- TYPOGRAPHY --- */
     .section-title {
         font-size: clamp(2.6rem, 4vw, 3.5rem);
-        line-height: 1.2;
+        line-height: 1.15;
         font-weight: 800;
         margin-bottom: 24px;
         letter-spacing: -0.02em;
+    }
+
+    .title-main {
+        color: var(--text-main);
     }
 
     .section-title.is-hindi {
@@ -151,6 +159,7 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         display: inline-block;
+        padding-bottom: 4px;
     }
 
     .body-text {
@@ -161,6 +170,7 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         max-width: 520px;
     }
 
+    /* --- FEATURE CARDS --- */
     .feature-list {
         display: flex;
         flex-direction: column;
@@ -168,7 +178,6 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         width: 100%;
     }
 
-    /* CARD STYLING - Reactive to Theme Variables */
     .feature-card {
         position: relative;
         overflow: hidden;
@@ -208,19 +217,23 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         padding-right: 60px;
     }
 
-    .feature-card strong {
+    /* Subtle Card Hierarchy */
+    .card-title {
         display: block;
         font-size: 1.1rem;
-        font-weight: 700;
+        font-weight: 800; /* Increased weight for title */
         color: var(--text-main);
         margin-bottom: 4px;
+        letter-spacing: -0.01em;
     }
 
-    .feature-card p {
+    .card-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
+        opacity: 0.85; /* Lowered opacity for description */
         margin: 0;
         line-height: 1.5;
+        font-weight: 400;
     }
 
     .bg-icon {
@@ -242,6 +255,7 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         opacity: 0.2;
     }
 
+    /* --- VISUALS --- */
     .feature-img {
         width: 100%;
         height: auto;
