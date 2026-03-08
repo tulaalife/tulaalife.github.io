@@ -7,17 +7,13 @@ const currentLang = Astro.currentLocale || "en";
 // 2. Dynamic Dictionary
 const ui = {
     en: {
-        headline: "Start Your Journey.",
+        headline: "Start Your Journey",
         subline:
             "Expert yoga, daily tracking, and mindfulness. One app, completely free.",
-        highlights: [
-            "100% Free & Offline",
-            "No Account Needed",
-            "Privacy First",
-        ],
+        highlights: ["100% Free", "No Account Needed", "Privacy First"],
     },
     hi: {
-        headline: "अपनी योग यात्रा शुरू करें।",
+        headline: "अपनी योग यात्रा शुरू करें",
         subline:
             "एक्सपर्ट योग, ध्यान और रोज़ की सेहत ट्रैकिंग। एक ही ऐप में, पूरी तरह से फ्री।",
         highlights: [
@@ -35,15 +31,13 @@ interface Props {
     subline?: string;
 }
 
-// 3. Fallback to the translated dictionary if no props are explicitly passed
 const { headline = t.headline, subline = t.subline } = Astro.props;
-
 const highlights = t.highlights;
 ---
 
 <section class="footer-card-container">
     <div class="footer-card">
-        <div class="mesh-gradient"></div>
+        <div class="glass-bg"></div>
         <div class="glow-orb"></div>
 
         <div class="content">
@@ -51,10 +45,19 @@ const highlights = t.highlights;
             <p class="sub">{subline}</p>
 
             <ul class="highlights">
-                {highlights.map((item) => <li>{item}</li>)}
+                {
+                    highlights.map((item) => (
+                        <li>
+                            <span class="dot" />
+                            {item}
+                        </li>
+                    ))
+                }
             </ul>
 
-            <StoreButtons centered={true} />
+            <div class="button-container">
+                <StoreButtons centered={true} />
+            </div>
         </div>
     </div>
 </section>
@@ -64,152 +67,139 @@ const highlights = t.highlights;
         width: 100%;
         display: flex;
         justify-content: center;
-        /* Reduced margin slightly */
-        margin: 0.5rem 0;
     }
 
     .footer-card {
-        --card-bg-light: color-mix(in oklch, var(--primary), black 15%);
-        --card-bg-dark: color-mix(in oklch, var(--primary), black 40%);
-
         position: relative;
         width: 100%;
         max-width: var(--container-width);
-        /* SIGNIFICANTLY REDUCED PADDING */
-        padding: 2.5rem 2rem;
-        border-radius: 32px; /* Slightly tighter radius for compact look */
+        border-radius: 40px; /* Matching Mind & Mood section */
         text-align: center;
         overflow: hidden;
         isolation: isolate;
 
+        /* Glassmorphism base */
         background: linear-gradient(
-            145deg,
-            var(--card-bg-light),
-            var(--primary)
+            135deg,
+            color-mix(in srgb, var(--bg-main), white 2%) 0%,
+            color-mix(in srgb, var(--bg-sub), transparent 50%) 100%
         );
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        box-shadow:
-            0 20px 40px -12px rgba(0, 0, 0, 0.25),
-            inset 0 1px 1px rgba(255, 255, 255, 0.2);
-
-        color: white;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        backdrop-filter: blur(20px);
     }
 
     :global([data-theme="dark"]) .footer-card {
-        background: linear-gradient(160deg, var(--card-bg-dark), #09090b);
-        border-color: rgba(255, 255, 255, 0.05);
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.03) 0%,
+            rgba(255, 255, 255, 0.01) 100%
+        );
     }
 
-    /* Decorative Depth */
-    .mesh-gradient {
-        position: absolute;
-        inset: 0;
-        background-image:
-            radial-gradient(
-                at 0% 0%,
-                rgba(255, 255, 255, 0.12) 0px,
-                transparent 50%
-            ),
-            radial-gradient(
-                at 100% 100%,
-                rgba(0, 0, 0, 0.15) 0px,
-                transparent 50%
-            );
-        z-index: -1;
-    }
-
+    /* Moving from solid to floating glow */
     .glow-orb {
         position: absolute;
-        top: -20%;
-        right: -10%;
-        width: 300px;
-        height: 300px;
-        background: var(--primary);
-        filter: blur(80px);
-        opacity: 0.25;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 120%;
+        height: 120%;
+        background: radial-gradient(
+            circle,
+            color-mix(in srgb, var(--primary), transparent 85%) 0%,
+            transparent 70%
+        );
         z-index: -1;
+        pointer-events: none;
     }
 
     .content {
         position: relative;
         z-index: 2;
-        max-width: 600px;
+        max-width: 650px;
         margin: 0 auto;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
     }
 
     .title {
-        /* Reduced font size for compactness */
-        font-size: clamp(1.75rem, 5vw, 2.5rem);
+        font-size: clamp(2rem, 5vw, 3.2rem);
         font-weight: 800;
-        margin-bottom: 0.75rem;
+        margin-bottom: 1rem;
         line-height: 1.1;
         letter-spacing: -0.03em;
-        color: #fff;
+        color: var(--text-main);
+        /* Premium contrast */
     }
 
     .sub {
-        font-size: clamp(0.95rem, 2vw, 1.05rem);
-        /* Reduced bottom margin */
-        margin-bottom: 1.75rem;
-        color: rgba(255, 255, 255, 0.9);
-        line-height: 1.5;
-        max-width: 480px; /* Constrain width to prevent long lines */
+        font-size: 1.15rem;
+        margin-bottom: 2.5rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
-    /* Glass Chips */
+    /* Refined Glass Chips */
     .highlights {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 8px; /* Tighter gap */
+        gap: 12px;
         list-style: none;
         padding: 0;
-        margin: 0 0 2rem; /* Reduced bottom margin */
+        margin: 0 0 3rem;
     }
 
     .highlights li {
-        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 0.95rem;
         font-weight: 700;
         letter-spacing: 0.05em;
         text-transform: uppercase;
-        /* Smaller padding inside pills */
-        padding: 6px 14px;
+        padding: 8px 18px;
         border-radius: 99px;
-        background: rgba(255, 255, 255, 0.12);
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        color: white;
+        background: var(--bg-main);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+        transition: transform 0.2s ease;
     }
 
-    /* Mobile Fixes */
+    .highlights li:hover {
+        transform: scale(1.05);
+        border-color: var(--primary);
+    }
+
+    .dot {
+        width: 6px;
+        height: 6px;
+        background: var(--primary);
+        border-radius: 50%;
+        box-shadow: 0 0 8px var(--primary);
+    }
+
+    .button-container {
+        /* Adds a subtle lift to buttons */
+        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+    }
+
+    /* Mobile Refinement */
     @media (max-width: 768px) {
         .footer-card {
-            /* Compact mobile padding */
-            padding: 2rem 1.25rem;
-            border-radius: 24px;
+            padding: 3.5rem 1.5rem;
+            border-radius: 32px;
         }
 
         .title {
-            margin-bottom: 0.5rem;
-        }
-
-        .sub {
-            margin-bottom: 1.5rem;
-        }
-
-        /* REMOVED: flex-direction: column on highlights.
-           Keeping them row/wrap saves significant vertical space on mobile.
-        */
-        .highlights {
-            max-width: 100%;
+            font-size: 2.2rem;
         }
 
         .highlights li {
-            /* Allow pills to shrink slightly if needed */
-            padding: 6px 12px;
+            padding: 6px 14px;
             font-size: 0.65rem;
         }
     }
