@@ -19,18 +19,19 @@ const ui = {
     hi: {
         badge: "✨ 100% फ्री • प्राइवेट • ऑफलाइन",
         titleTop: "विशेषज्ञ योग थेरेपी",
-        titleBottom: "से खुद को सुधारें",
-        highlight: "कोई विज्ञापन नहीं। कोई लॉगिन नहीं।",
+        titleBottom: "अब आपके हाथ में।",
+        highlight: "बिना विज्ञापन। बिना लॉगिन।",
         author: "<strong>लतिका बिस्सा द्वारा</strong>",
         cred1: "🏅 गोल्ड मेडलिस्ट, M.Sc योग थेरेपी",
         cred2: "🧘‍♀️ 10+ वर्षों का अनुभव",
         subtitle:
-            "<strong>पीठ दर्द, PCOS, थायरॉइड और गर्भावस्था</strong> के लिए विशेष प्लान। आपका हेल्थ डेटा आपके डिवाइस पर सुरक्षित रहता है।",
+            "<strong>कमर दर्द, PCOS और थायरॉइड</strong> के लिए विशेष योगाभ्यास। आपकी गोपनीयता हमारी प्राथमिकता है।", // More concise
         basePoster: "poster-hindi",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+const isHindi = currentLang === "hi";
 
 const mobilePoster = `/images/mobile/${t.basePoster}.webp`;
 const desktopPoster = `/images/desktop/${t.basePoster}.webp`;
@@ -50,8 +51,12 @@ const videoMp4 =
         <div class="hero-content">
             <div class="badge">{t.badge}</div>
 
-            <h1 class="hero-title">
+            <h1
+                class={`hero-title ${isHindi ? "is-hindi" : ""}`}
+                lang={currentLang}
+            >
                 {t.titleTop}
+                <br />
                 {t.titleBottom}
                 <br />
                 <span class="text-gradient">{t.highlight}</span>
@@ -70,7 +75,7 @@ const videoMp4 =
             <p class="hero-sub" set:html={t.subtitle} />
 
             <div class="cta-wrapper">
-                <StoreButtons centered={false} />
+                <StoreButtons centered={true} />
             </div>
         </div>
 
@@ -165,37 +170,46 @@ const videoMp4 =
 
 <style>
     .hero-section {
-        padding: 140px 0 100px;
+        padding: 120px 0 80px;
         min-height: 85vh;
         display: flex;
         align-items: center;
     }
     .hero-grid {
         display: grid;
-        grid-template-columns: 1.1fr 0.9fr;
-        gap: 80px;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 60px;
         align-items: center;
     }
 
     .badge {
         display: inline-flex;
-        padding: 8px 16px;
+        padding: 6px 14px;
         border-radius: 100px;
         background: var(--bg-sub);
         color: var(--primary);
         font-weight: 600;
         font-size: 0.85rem;
-        letter-spacing: 0.02em;
-        margin-bottom: 28px;
+        margin-bottom: 24px;
         border: 1px solid var(--border);
     }
 
     .hero-title {
-        font-size: clamp(2.8rem, 4.5vw, 3.8rem);
-        line-height: 1.15;
+        font-size: clamp(2.6rem, 4vw, 3.5rem);
+        line-height: 1.2;
         font-weight: 800;
-        margin-bottom: 32px;
+        margin-bottom: 28px;
         letter-spacing: -0.02em;
+    }
+
+    /* Handling Hindi Specific Clipping & Spacing */
+    .hero-title.is-hindi {
+        line-height: 1.4; /* Extra space for top/bottom Hindi strokes */
+        font-size: clamp(
+            2.2rem,
+            3.8vw,
+            3.2rem
+        ); /* Slightly smaller to prevent width overflow */
     }
 
     .text-gradient {
@@ -203,21 +217,21 @@ const videoMp4 =
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         display: inline-block;
+        padding-bottom: 4px; /* Fix for lower stroke clipping in Hindi */
     }
 
     .author-card {
-        margin-bottom: 32px;
-        padding-left: 4px;
+        margin-bottom: 28px;
     }
     .author-info {
         border-left: 3px solid var(--primary);
         padding: 4px 0 4px 16px;
     }
     .creds-list {
-        margin-top: 6px;
+        margin-top: 4px;
         display: flex;
         flex-direction: column;
-        gap: 2px;
+        gap: 1px;
     }
     .cred {
         font-size: 0.9rem;
@@ -225,23 +239,23 @@ const videoMp4 =
     }
 
     .hero-sub {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         line-height: 1.6;
         color: var(--text-muted);
         margin-bottom: 40px;
-        max-width: 540px;
+        max-width: 500px;
     }
 
     .phone-frame-wrapper {
         position: relative;
-        width: 300px;
+        width: 280px;
         margin: 0 auto;
         aspect-ratio: 540 / 1174;
         background-color: #000;
         border-radius: 44px;
         border: 12px solid #1a1a1a;
         overflow: hidden;
-        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4);
     }
 
     .video-loader {
@@ -302,17 +316,19 @@ const videoMp4 =
 
     @media (max-width: 768px) {
         .hero-section {
-            padding-top: 60px;
+            padding-top: 40px;
         }
         .hero-grid {
             display: flex;
             flex-direction: column;
             text-align: center;
-            gap: 40px;
+            gap: 32px;
         }
         .hero-title {
-            font-size: 2.4rem;
-            margin-bottom: 20px;
+            font-size: 2.2rem;
+        }
+        .hero-title.is-hindi {
+            font-size: 1.9rem;
         }
         .author-info {
             border-left: none;
@@ -324,10 +340,9 @@ const videoMp4 =
             margin-bottom: 30px;
         }
         .phone-frame-wrapper {
-            width: 260px;
+            width: 250px;
         }
 
-        /* Reordering for mobile flow */
         .badge {
             order: 1;
         }
