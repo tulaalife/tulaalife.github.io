@@ -13,7 +13,9 @@ const ui = {
         cred1: "🏅 Gold Medalist, M.Sc Yoga Therapy",
         cred2: "🧘‍♀️ 10+ Years of Experience",
         subtitle:
-            "Specialized recovery plans for <strong>Back Pain, PCOS, Thyroid, and Prenatal care.</strong> Your health data stays on your device—where it belongs.",
+            "Specialized recovery Yoga plans for <strong>Back Pain, PCOS, Thyroid, and Prenatal care.</strong> Your health data stays on your device—where it belongs.",
+        ctaLead: "Download the free yoga app",
+        socialProof: "Join 5,000+ users healing naturally",
         basePoster: "poster",
     },
     hi: {
@@ -25,7 +27,9 @@ const ui = {
         cred1: "🏅 गोल्ड मेडलिस्ट, M.Sc योग थेरेपी",
         cred2: "🧘‍♀️ 10+ वर्षों का अनुभव",
         subtitle:
-            "<strong>कमर दर्द, PCOS और थायरॉइड</strong> के लिए विशेष योगाभ्यास। आपकी गोपनीयता हमारी प्राथमिकता है।", // More concise
+            "<strong>कमर दर्द, PCOS और थायरॉइड</strong> के लिए विशेष योगाभ्यास। आपकी गोपनीयता हमारी प्राथमिकता है।",
+        ctaLead: "फ्री योग ऐप डाउनलोड करें",
+        socialProof: "प्राकृतिक उपचार के लिए हजारों का भरोसा",
         basePoster: "poster-hindi",
     },
 };
@@ -75,7 +79,9 @@ const videoMp4 =
             <p class="hero-sub" set:html={t.subtitle} />
 
             <div class="cta-wrapper">
-                <StoreButtons centered={true} />
+                <p class="cta-lead">{t.ctaLead}</p>
+                <StoreButtons centered={false} class="hero-buttons" />
+                <p class="social-proof">{t.socialProof}</p>
             </div>
         </div>
 
@@ -170,7 +176,7 @@ const videoMp4 =
 
 <style>
     .hero-section {
-        padding: 120px 0 80px;
+        padding: 100px 0 80px;
         min-height: 85vh;
         display: flex;
         align-items: center;
@@ -202,14 +208,9 @@ const videoMp4 =
         letter-spacing: -0.02em;
     }
 
-    /* Handling Hindi Specific Clipping & Spacing */
     .hero-title.is-hindi {
-        line-height: 1.4; /* Extra space for top/bottom Hindi strokes */
-        font-size: clamp(
-            2.2rem,
-            3.8vw,
-            3.2rem
-        ); /* Slightly smaller to prevent width overflow */
+        line-height: 1.4;
+        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
     }
 
     .text-gradient {
@@ -217,11 +218,11 @@ const videoMp4 =
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         display: inline-block;
-        padding-bottom: 4px; /* Fix for lower stroke clipping in Hindi */
+        padding-bottom: 4px;
     }
 
     .author-card {
-        margin-bottom: 28px;
+        margin-bottom: 24px;
     }
     .author-info {
         border-left: 3px solid var(--primary);
@@ -242,8 +243,29 @@ const videoMp4 =
         font-size: 1.15rem;
         line-height: 1.6;
         color: var(--text-muted);
-        margin-bottom: 40px;
+        margin-bottom: 32px;
         max-width: 500px;
+    }
+
+    /* CTA Section Styling */
+    .cta-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .cta-lead {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: var(--text-main);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .social-proof {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        font-style: italic;
     }
 
     .phone-frame-wrapper {
@@ -322,10 +344,11 @@ const videoMp4 =
             display: flex;
             flex-direction: column;
             text-align: center;
-            gap: 32px;
+            gap: 24px;
         }
         .hero-title {
             font-size: 2.2rem;
+            margin-bottom: 20px;
         }
         .hero-title.is-hindi {
             font-size: 1.9rem;
@@ -337,12 +360,14 @@ const videoMp4 =
         .hero-sub {
             font-size: 1.05rem;
             padding: 0 10px;
-            margin-bottom: 30px;
+            margin-bottom: 40px; /* Space before the final CTA */
         }
         .phone-frame-wrapper {
-            width: 250px;
+            width: 240px;
+            margin-bottom: 20px; /* Space between phone and author/sub */
         }
 
+        /* Order logic to keep visual prominent but content readable */
         .badge {
             order: 1;
         }
@@ -351,7 +376,8 @@ const videoMp4 =
         }
         .hero-visual {
             order: 3;
-        }
+            margin: 20px 0;
+        } /* Spacing around phone frame */
         .author-card {
             order: 4;
         }
@@ -360,6 +386,13 @@ const videoMp4 =
         }
         .cta-wrapper {
             order: 6;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        /* Conditional Centering via CSS for StoreButtons */
+        :global(.hero-buttons) {
+            justify-content: center !important;
         }
     }
 </style>
