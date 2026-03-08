@@ -144,6 +144,7 @@ const videoMp4 =
 
 <script>
     document.addEventListener("astro:page-load", () => {
+        // --- Social Proof Rotation ---
         const proofs = document.querySelectorAll(".social-proof-item");
         let currentProof = 0;
 
@@ -155,6 +156,7 @@ const videoMp4 =
             }, 3000);
         }
 
+        // --- Video Logic ---
         const wrapper = document.getElementById("phoneWrapper");
         const video = document.getElementById("heroVideo") as HTMLVideoElement;
         const loader = document.getElementById("videoLoader");
@@ -166,13 +168,19 @@ const videoMp4 =
             const webmSrc = wrapper.getAttribute("data-webm");
             const mp4Src = wrapper.getAttribute("data-mp4");
 
-            if (webmSrc) {
+            if (
+                webmSrc &&
+                video.querySelectorAll('source[type="video/webm"]').length === 0
+            ) {
                 const s = document.createElement("source");
                 s.src = webmSrc;
                 s.type = "video/webm";
                 video.appendChild(s);
             }
-            if (mp4Src) {
+            if (
+                mp4Src &&
+                video.querySelectorAll('source[type="video/mp4"]').length === 0
+            ) {
                 const s = document.createElement("source");
                 s.src = mp4Src;
                 s.type = "video/mp4";
@@ -198,6 +206,16 @@ const videoMp4 =
                 if (loader) loader.style.display = "none";
             });
         };
+
+        // NEW: Handle Visibility Change (Locking/Unlocking phone)
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                // If video exists and was paused by system, try playing again
+                video.play().catch(() => {
+                    /* Silent fail if user hasn't interacted yet */
+                });
+            }
+        });
 
         if ("requestIdleCallback" in window) {
             (window as any).requestIdleCallback(initVideo);
