@@ -4,35 +4,31 @@ import StoreButtons from "./StoreButtons.astro";
 // 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dynamic Dictionary
+// 2. Dynamic Dictionary - Punchier, High-Conversion Copy
 const ui = {
     en: {
-        headline: "Start Your Journey",
+        titleTop: "Ready to",
+        titleBottom: "Transform Your Life?",
         subline:
-            "Expert yoga, daily tracking, and mindfulness. One app, completely free.",
-        highlights: ["100% Free", "No Account Needed", "Privacy First"],
+            "Get expert yoga therapy and daily wellness tracking. <strong>100% Free, Private, and Offline.</strong> No accounts, no tracking.",
     },
     hi: {
-        headline: "अपनी योग यात्रा शुरू करें",
+        titleTop: "क्या आप तैयार हैं",
+        titleBottom: "बदलाव के लिए?",
         subline:
-            "एक्सपर्ट योग, ध्यान और रोज़ की सेहत ट्रैकिंग। एक ही ऐप में, पूरी तरह से फ्री।",
-        highlights: [
-            "100% फ्री",
-            "अकाउंट की ज़रूरत नहीं",
-            "प्राइवेसी सबसे पहले",
-        ],
+            "एक्सपर्ट योग थेरेपी और डेली सेहत ट्रैकिंग। <strong>100% फ्री, सुरक्षित और ऑफलाइन।</strong> बिना किसी अकाउंट या ट्रैकिंग के।",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+const isHindi = currentLang === "hi";
 
 interface Props {
     headline?: string;
     subline?: string;
 }
 
-const { headline = t.headline, subline = t.subline } = Astro.props;
-const highlights = t.highlights;
+const { subline = t.subline } = Astro.props;
 ---
 
 <section class="footer-card-container">
@@ -41,19 +37,13 @@ const highlights = t.highlights;
         <div class="glow-orb"></div>
 
         <div class="content">
-            <h2 class="title">{headline}</h2>
-            <p class="sub">{subline}</p>
+            <h2 class={`title ${isHindi ? "is-hindi" : ""}`}>
+                <span class="title-main">{t.titleTop}</span>
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
+            </h2>
 
-            <ul class="highlights">
-                {
-                    highlights.map((item) => (
-                        <li>
-                            <span class="dot" />
-                            {item}
-                        </li>
-                    ))
-                }
-            </ul>
+            <p class="sub" set:html={subline} />
 
             <div class="button-container">
                 <StoreButtons centered={true} />
@@ -73,7 +63,7 @@ const highlights = t.highlights;
         position: relative;
         width: 100%;
         max-width: var(--container-width);
-        border-radius: 40px; /* Matching Mind & Mood section */
+        border-radius: 40px;
         text-align: center;
         overflow: hidden;
         isolation: isolate;
@@ -97,17 +87,16 @@ const highlights = t.highlights;
         );
     }
 
-    /* Moving from solid to floating glow */
     .glow-orb {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 120%;
-        height: 120%;
+        width: 130%;
+        height: 130%;
         background: radial-gradient(
             circle,
-            color-mix(in srgb, var(--primary), transparent 85%) 0%,
+            color-mix(in srgb, var(--primary), transparent 88%) 0%,
             transparent 70%
         );
         z-index: -1;
@@ -117,90 +106,71 @@ const highlights = t.highlights;
     .content {
         position: relative;
         z-index: 2;
-        max-width: 650px;
+        max-width: 700px;
         margin: 0 auto;
     }
 
     .title {
-        font-size: clamp(2rem, 5vw, 3.2rem);
+        font-size: clamp(2.4rem, 6vw, 3.8rem);
         font-weight: 800;
-        margin-bottom: 1rem;
+        margin-bottom: 1.5rem;
         line-height: 1.1;
         letter-spacing: -0.03em;
+    }
+
+    .title-main {
         color: var(--text-main);
-        /* Premium contrast */
+    }
+
+    .title.is-hindi {
+        line-height: 1.4;
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, var(--primary), #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+        padding-bottom: 4px;
     }
 
     .sub {
-        font-size: 1.15rem;
-        margin-bottom: 2.5rem;
+        font-size: 1.2rem;
+        margin-bottom: 3rem;
         color: var(--text-muted);
         line-height: 1.6;
-        max-width: 500px;
+        max-width: 540px;
         margin-left: auto;
         margin-right: auto;
     }
 
-    /* Refined Glass Chips */
-    .highlights {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 12px;
-        list-style: none;
-        padding: 0;
-        margin: 0 0 3rem;
-    }
-
-    .highlights li {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.95rem;
-        font-weight: 700;
-        letter-spacing: 0.05em;
-        text-transform: uppercase;
-        padding: 8px 18px;
-        border-radius: 99px;
-        background: var(--bg-main);
-        border: 1px solid var(--border);
+    .sub :global(strong) {
         color: var(--text-main);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        transition: transform 0.2s ease;
-    }
-
-    .highlights li:hover {
-        transform: scale(1.05);
-        border-color: var(--primary);
-    }
-
-    .dot {
-        width: 6px;
-        height: 6px;
-        background: var(--primary);
-        border-radius: 50%;
-        box-shadow: 0 0 8px var(--primary);
+        font-weight: 700;
     }
 
     .button-container {
-        /* Adds a subtle lift to buttons */
-        filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.1));
+        filter: drop-shadow(0 15px 30px rgba(0, 0, 0, 0.15));
+        transition: transform 0.3s ease;
     }
 
-    /* Mobile Refinement */
+    .button-container:hover {
+        transform: translateY(-4px);
+    }
+
     @media (max-width: 768px) {
         .footer-card {
-            padding: 3.5rem 1.5rem;
+            padding: 4rem 1.5rem;
             border-radius: 32px;
         }
 
         .title {
-            font-size: 2.2rem;
+            font-size: 2.5rem;
         }
 
-        .highlights li {
-            padding: 6px 14px;
-            font-size: 0.65rem;
+        .sub {
+            font-size: 1.05rem;
+            margin-bottom: 2.5rem;
         }
     }
 </style>
