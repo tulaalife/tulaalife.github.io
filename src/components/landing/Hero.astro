@@ -297,7 +297,8 @@ const videoMp4 =
     }
 
     .proof-slider {
-        height: 1.2rem;
+        /* Increased height to accommodate Hindi ascenders/descenders */
+        height: 1.8rem;
         position: relative;
         overflow: hidden;
     }
@@ -313,6 +314,8 @@ const videoMp4 =
         opacity: 0;
         transform: translateY(10px);
         transition: all 0.5s ease;
+        /* Added line-height to prevent clipping of Hindi characters */
+        line-height: 1.6;
     }
 
     .social-proof-item.active {
@@ -323,6 +326,8 @@ const videoMp4 =
     .hero-visual {
         display: flex;
         justify-content: flex-end;
+        /* Added margin to increase distance from content/slider */
+        margin-top: 40px;
     }
 
     .phone-frame-wrapper {
@@ -372,7 +377,7 @@ const videoMp4 =
 
     @media (max-width: 768px) {
         .hero-section {
-            padding-top: 100px;
+            padding-top: 60px;
         }
         .hero-grid {
             display: flex;
@@ -391,7 +396,7 @@ const videoMp4 =
             margin: 0 auto 24px;
         }
         .author-info {
-            border-left: none; /* Removed vertical line on mobile */
+            border-left: none;
             padding: 0;
         }
         .cta-wrapper {
@@ -406,6 +411,8 @@ const videoMp4 =
         }
         .hero-visual {
             justify-content: center;
+            /* Increased margin for mobile spacing */
+            margin-top: 40px;
         }
         :global(.hero-buttons) {
             justify-content: center !important;
