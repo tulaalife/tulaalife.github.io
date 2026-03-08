@@ -5,22 +5,35 @@ const currentLang = Astro.currentLocale || "en";
 // 2. Dictionary for Yoga Features content
 const ui = {
     en: {
-        // Base filename to build responsive paths
         baseImg: "yoga-plans-collage",
         imgAlt: "Tulaa Yoga Plans Interface",
         titleTop: "Yoga for Every Body,",
         titleBottom: "At Every Stage.",
         bodyText:
             "From pregnancy to your golden years, Tulaa adapts to you. Our research-backed plans are designed for real bodies, real pain, and real life.",
-
-        f1Title: "For the Office Worker",
-        f1Desc: 'Instant relief for "Tech Neck," Eye Strain, and Lower Back pain from long sitting hours.',
-
-        f2Title: "For Seniors & Beginners",
-        f2Desc: "Gentle Chair Yoga, Arthritis care, and Balance improvement routines that are safe and effective.",
-
-        f3Title: "For Chronic Conditions",
-        f3Desc: "Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.",
+        features: [
+            {
+                id: "office",
+                title: "For the Office Worker",
+                desc: 'Instant relief for "Tech Neck," Eye Strain, and Lower Back pain.',
+                icon: "💻",
+                color: "rgba(99, 102, 241, 0.15)",
+            },
+            {
+                id: "seniors",
+                title: "For Seniors & Beginners",
+                desc: "Gentle Chair Yoga, Arthritis care, and Balance improvement routines.",
+                icon: "🪑",
+                color: "rgba(34, 197, 94, 0.15)",
+            },
+            {
+                id: "chronic",
+                title: "For Chronic Conditions",
+                desc: "Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.",
+                icon: "🔬",
+                iconColor: "rgba(236, 72, 153, 0.15)",
+            },
+        ],
     },
     hi: {
         baseImg: "yoga-plans-collage-hi",
@@ -28,22 +41,36 @@ const ui = {
         titleTop: "हर शरीर के लिए योग,",
         titleBottom: "जीवन के हर पड़ाव पर।",
         bodyText:
-            "प्रेग्नेंसी से लेकर वरिष्ठ आयु तक, Tulaa आपकी ज़रूरतों के अनुसार ढलता है। हमारे रिसर्च-आधारित प्लान असली शरीर, असली दर्द और असली जीवन के लिए डिज़ाइन किए गए हैं।",
-
-        f1Title: "ऑफ़िस वर्कर्स के लिए",
-        f1Desc: "लंबे समय तक बैठने से होने वाले 'टेक नेक' (Tech Neck), आंखों के तनाव और कमर दर्द से तुरंत राहत।",
-
-        f2Title: "बुजुर्गों और शुरुआती लोगों के लिए",
-        f2Desc: "चेयर योगा, गठिया (Arthritis) की देखभाल और संतुलन सुधारने के लिए सुरक्षित और प्रभावशाली रूटीन।",
-
-        f3Title: "दीर्घकालिक रोगों के लिए",
-        f3Desc: "PCOS, डायबिटीज, थायराइड और ब्लड प्रेशर के लिए वैज्ञानिक योग सहायता।",
+            "प्रेग्नेंसी से लेकर वरिष्ठ आयु तक, Tulaa आपकी ज़रूरतों के अनुसार ढलता है। हमारे रिसर्च-आधारित प्लान असली शरीर और असली दर्द के लिए हैं।",
+        features: [
+            {
+                id: "office",
+                title: "ऑफ़िस वर्कर्स के लिए",
+                desc: "'टेक नेक', आंखों के तनाव और कमर दर्द से तुरंत राहत।",
+                icon: "💻",
+                color: "rgba(99, 102, 241, 0.15)",
+            },
+            {
+                id: "seniors",
+                title: "बुजुर्गों के लिए",
+                desc: "चेयर योगा, गठिया (Arthritis) की देखभाल और सुरक्षित रूटीन।",
+                icon: "🪑",
+                color: "rgba(34, 197, 94, 0.15)",
+            },
+            {
+                id: "chronic",
+                title: "दीर्घकालिक रोगों के लिए",
+                desc: "PCOS, डायबिटीज और थायराइड के लिए वैज्ञानिक योग सहायता।",
+                icon: "🔬",
+                color: "rgba(236, 72, 153, 0.15)",
+            },
+        ],
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+const isHindi = currentLang === "hi";
 
-// 3. Define optimized responsive paths
 const mobileImg = `/images/mobile/${t.baseImg}.webp`;
 const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 ---
@@ -56,7 +83,7 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
                 <img
                     src={desktopImg}
                     alt={t.imgAlt}
-                    class="feature-img shadow-lg"
+                    class="feature-img"
                     width="600"
                     height="495"
                     loading="lazy"
@@ -64,38 +91,31 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
                 />
             </picture>
         </div>
+
         <div class="text-col">
-            <h2 class="section-title">
-                {t.titleTop}
-                <br />
+            <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
+                {t.titleTop}<br />
                 <span class="text-gradient">{t.titleBottom}</span>
             </h2>
-            <p class="body-text">
-                {t.bodyText}
-            </p>
+            <p class="body-text">{t.bodyText}</p>
 
             <div class="feature-list">
-                <div class="feature-item">
-                    <span class="check" aria-hidden="true">✓</span>
-                    <div>
-                        <strong>{t.f1Title}</strong>
-                        <p>{t.f1Desc}</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <span class="check" aria-hidden="true">✓</span>
-                    <div>
-                        <strong>{t.f2Title}</strong>
-                        <p>{t.f2Desc}</p>
-                    </div>
-                </div>
-                <div class="feature-item">
-                    <span class="check" aria-hidden="true">✓</span>
-                    <div>
-                        <strong>{t.f3Title}</strong>
-                        <p>{t.f3Desc}</p>
-                    </div>
-                </div>
+                {
+                    t.features.map((feature) => (
+                        <div
+                            class="feature-card"
+                            style={`--card-accent: ${feature.color}`}
+                        >
+                            <div class="card-content">
+                                <strong>{feature.title}</strong>
+                                <p>{feature.desc}</p>
+                            </div>
+                            <span class="bg-icon" aria-hidden="true">
+                                {feature.icon}
+                            </span>
+                        </div>
+                    ))
+                }
             </div>
         </div>
     </div>
@@ -104,6 +124,7 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 <style>
     .section {
         padding: 100px 0;
+        overflow: hidden;
     }
     .grid-layout {
         display: grid;
@@ -111,50 +132,127 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         gap: 80px;
         align-items: center;
     }
-    .feature-img {
-        width: 100%;
-        height: auto;
-        /* Ensure the image doesn't stretch or clip unnaturally */
-        object-fit: contain;
-        filter: drop-shadow(
-            0 20px 30px rgba(0, 0, 0, 0.1)
-        ); /* Use drop-shadow instead of box-shadow */
-    }
-    .shadow-lg {
-        box-shadow: none !important;
-    }
 
     .section-title {
-        font-size: var(--text-h1);
+        font-size: clamp(2.6rem, 4vw, 3.5rem);
+        line-height: 1.2;
+        font-weight: 800;
         margin-bottom: 24px;
+        letter-spacing: -0.02em;
     }
+
+    .section-title.is-hindi {
+        line-height: 1.4;
+        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
+    }
+
+    .text-gradient {
+        background: linear-gradient(135deg, var(--primary), #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+
     .body-text {
-        font-size: var(--text-body);
+        font-size: 1.15rem;
+        line-height: 1.6;
         color: var(--text-muted);
         margin-bottom: 32px;
+        max-width: 520px;
     }
 
     .feature-list {
         display: flex;
         flex-direction: column;
-        gap: 24px;
-    }
-    .feature-item {
-        display: flex;
         gap: 16px;
-        align-items: flex-start;
+        width: 100%;
     }
-    .check {
-        color: var(--primary);
-        font-weight: bold;
-        font-size: 1.2rem;
-        margin-top: -2px;
+
+    /* CARD STYLING - Reactive to Theme Variables */
+    .feature-card {
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(
+            135deg,
+            color-mix(in srgb, var(--bg-main), white 5%) 0%,
+            var(--card-accent) 100%
+        );
+        backdrop-filter: blur(10px);
+        padding: 24px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow);
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        display: flex;
+        align-items: center;
+        z-index: 1;
+    }
+
+    :root[data-theme="dark"] .feature-card {
+        background: linear-gradient(
+            135deg,
+            rgba(255, 255, 255, 0.05) 0%,
+            var(--card-accent) 100%
+        );
+    }
+
+    .feature-card:hover {
+        transform: translateX(8px);
+    }
+
+    .card-content {
+        position: relative;
+        z-index: 2;
+        padding-right: 60px;
+    }
+
+    .feature-card strong {
+        display: block;
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin-bottom: 4px;
+    }
+
+    .feature-card p {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        margin: 0;
+        line-height: 1.5;
+    }
+
+    .bg-icon {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%) rotate(10deg);
+        font-size: 3.5rem;
+        opacity: 0.12;
+        filter: blur(0.5px);
+        pointer-events: none;
+        transition:
+            transform 0.4s ease,
+            opacity 0.4s ease;
+    }
+
+    .feature-card:hover .bg-icon {
+        transform: translateY(-50%) rotate(0deg) scale(1.1);
+        opacity: 0.2;
+    }
+
+    .feature-img {
+        width: 100%;
+        height: auto;
+        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
+    }
+
+    :root[data-theme="dark"] .feature-img {
+        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
     }
 
     @media (max-width: 768px) {
-        .section {
-            padding: 64px 0;
-        }
         .grid-layout {
             grid-template-columns: 1fr;
             text-align: center;
@@ -164,18 +262,19 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
             display: flex;
             flex-direction: column-reverse;
         }
-        .feature-item {
-            justify-content: flex-start;
-            text-align: left;
-        }
         .text-col {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         .feature-list {
-            width: 100%;
             text-align: left;
+        }
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        .section-title {
+            font-size: 2.2rem;
         }
     }
 </style>
