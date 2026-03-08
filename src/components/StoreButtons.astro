@@ -29,6 +29,7 @@ interface Props {
     inverted?: boolean;
     iosHref?: string;
     androidHref?: string;
+    class?: string;
 }
 
 const {
@@ -36,13 +37,14 @@ const {
     inverted = false,
     iosHref = "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
+    class: className,
 } = Astro.props;
 
 const iosIconSrc = "/assets/icons/appstore.svg";
 const androidIconSrc = "/assets/icons/playstore.svg";
 ---
 
-<div class:list={["store-buttons", { centered }]}>
+<div class:list={["store-buttons", { centered }, className]}>
     <a
         href={iosHref}
         class:list={["store-btn", { inverted }]}
