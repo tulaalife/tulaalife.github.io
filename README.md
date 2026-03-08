@@ -13,6 +13,6 @@ Tulaa brings together:
 Everything is designed to work **offline**, respect your **privacy**,  
 and support your personal journey toward gentle, consistent wellbeing.
 
-Learn more at 👉 [https://tulaalife.com](https://tulaalife.com)
+Learn more at 👉 [tulaa.app](https://tulaalife.com)
 
 © 2026 TULAALIFE WELLNESS PRIVATE LIMITED. All rights reserved.

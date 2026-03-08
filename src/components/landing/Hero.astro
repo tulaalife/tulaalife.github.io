@@ -14,8 +14,16 @@ const ui = {
         cred2: "🧘‍♀️ 10+ Years of Experience",
         subtitle:
             "Specialized recovery Yoga plans for <strong>Back Pain, PCOS, Thyroid, and Prenatal care.</strong> Your health data stays on your device—where it belongs.",
-        ctaLead: "Download the free yoga app",
-        socialProof: "Join 5,000+ users healing naturally",
+        ctaLead: "Download the Free Yoga App",
+        socialProofs: [
+            "Join 5,000+ users healing naturally",
+            "Rated 5 stars on Play Store & App Store",
+            "Yoga plans for 30+ health needs",
+            "100% Private: No account needed",
+            "Completely Free: No hidden costs",
+            "Mediate, track, and find balance",
+            "Sleep better and relax deeply",
+        ],
         basePoster: "poster",
     },
     hi: {
@@ -29,7 +37,15 @@ const ui = {
         subtitle:
             "<strong>कमर दर्द, PCOS और थायरॉइड</strong> के लिए विशेष योगाभ्यास। आपकी गोपनीयता हमारी प्राथमिकता है।",
         ctaLead: "फ्री योग ऐप डाउनलोड करें",
-        socialProof: "प्राकृतिक उपचार के लिए हजारों का भरोसा",
+        socialProofs: [
+            "5,000+ लोगों का भरोसेमंद साथी",
+            "Play Store पर 5-स्टार रेटिंग",
+            "30+ बीमारियों के लिए खास योग प्लान",
+            "100% प्राइवेट: लॉगिन की ज़रूरत नहीं",
+            "पूरी तरह फ्री: कोई गुप्त शुल्क नहीं",
+            "ध्यान लगाएं और संतुलन पाएं",
+            "बेहतर नींद और गहरी शांति",
+        ],
         basePoster: "poster-hindi",
     },
 };
@@ -59,10 +75,8 @@ const videoMp4 =
                 class={`hero-title ${isHindi ? "is-hindi" : ""}`}
                 lang={currentLang}
             >
-                {t.titleTop}
-                <br />
-                {t.titleBottom}
-                <br />
+                {t.titleTop}<br />
+                {t.titleBottom}<br />
                 <span class="text-gradient">{t.highlight}</span>
             </h1>
 
@@ -81,7 +95,18 @@ const videoMp4 =
             <div class="cta-wrapper">
                 <p class="cta-lead">{t.ctaLead}</p>
                 <StoreButtons centered={false} class="hero-buttons" />
-                <p class="social-proof">{t.socialProof}</p>
+
+                <div class="proof-slider">
+                    {
+                        t.socialProofs.map((proof, index) => (
+                            <p
+                                class={`social-proof-item ${index === 0 ? "active" : ""}`}
+                            >
+                                {proof}
+                            </p>
+                        ))
+                    }
+                </div>
             </div>
         </div>
 
@@ -102,10 +127,8 @@ const videoMp4 =
                         id="posterImg"
                         fetchpriority="high"
                         loading="eager"
-                        decoding="sync"
                     />
                 </picture>
-
                 <video
                     id="heroVideo"
                     class="app-video"
@@ -121,6 +144,17 @@ const videoMp4 =
 
 <script>
     document.addEventListener("astro:page-load", () => {
+        const proofs = document.querySelectorAll(".social-proof-item");
+        let currentProof = 0;
+
+        if (proofs.length > 0) {
+            setInterval(() => {
+                proofs[currentProof].classList.remove("active");
+                currentProof = (currentProof + 1) % proofs.length;
+                proofs[currentProof].classList.add("active");
+            }, 3000);
+        }
+
         const wrapper = document.getElementById("phoneWrapper");
         const video = document.getElementById("heroVideo") as HTMLVideoElement;
         const loader = document.getElementById("videoLoader");
@@ -128,7 +162,6 @@ const videoMp4 =
 
         if (!wrapper || !video) return;
 
-        video.innerHTML = "";
         const initVideo = () => {
             const webmSrc = wrapper.getAttribute("data-webm");
             const mp4Src = wrapper.getAttribute("data-mp4");
@@ -176,16 +209,22 @@ const videoMp4 =
 
 <style>
     .hero-section {
-        padding: 100px 0 80px;
-        min-height: 85vh;
+        padding: 140px 0 100px;
+        min-height: 80vh;
         display: flex;
         align-items: center;
     }
+
     .hero-grid {
         display: grid;
-        grid-template-columns: 1.15fr 0.85fr;
+        grid-template-columns: 1fr 1fr;
         gap: 60px;
         align-items: center;
+        width: 100%;
+    }
+
+    .hero-content {
+        z-index: 2;
     }
 
     .badge {
@@ -210,103 +249,91 @@ const videoMp4 =
 
     .hero-title.is-hindi {
         line-height: 1.4;
-        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
     }
 
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-        display: inline-block;
-        padding-bottom: 4px;
     }
 
     .author-card {
         margin-bottom: 24px;
+        display: inline-block;
     }
+
     .author-info {
         border-left: 3px solid var(--primary);
         padding: 4px 0 4px 16px;
     }
-    .creds-list {
-        margin-top: 4px;
-        display: flex;
-        flex-direction: column;
-        gap: 1px;
-    }
+
     .cred {
         font-size: 0.9rem;
         color: var(--text-muted);
+        display: block;
     }
 
     .hero-sub {
         font-size: 1.15rem;
         line-height: 1.6;
         color: var(--text-muted);
-        margin-bottom: 32px;
-        max-width: 500px;
+        margin-bottom: 40px;
+        max-width: 580px;
     }
 
-    /* CTA Section Styling */
     .cta-wrapper {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 16px;
     }
 
     .cta-lead {
-        font-weight: 600;
-        font-size: 0.9rem;
+        font-weight: 750;
+        font-size: 1rem;
         color: var(--text-main);
         text-transform: uppercase;
         letter-spacing: 0.05em;
+        margin: 0;
     }
 
-    .social-proof {
-        font-size: 0.85rem;
+    .proof-slider {
+        height: 1.2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .social-proof-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        margin: 0;
+        font-size: 0.9rem;
         color: var(--text-muted);
         font-style: italic;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: all 0.5s ease;
+    }
+
+    .social-proof-item.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .hero-visual {
+        display: flex;
+        justify-content: flex-end;
     }
 
     .phone-frame-wrapper {
         position: relative;
         width: 280px;
-        margin: 0 auto;
         aspect-ratio: 540 / 1174;
         background-color: #000;
         border-radius: 44px;
         border: 12px solid #1a1a1a;
         overflow: hidden;
         box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4);
-    }
-
-    .video-loader {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 40px;
-        height: 40px;
-        border: 3px solid rgba(255, 255, 255, 0.05);
-        border-top-color: var(--primary);
-        border-radius: 50%;
-        z-index: 6;
-        animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-        to {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
-
-    .poster-img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: 5;
     }
 
     .app-video {
@@ -324,73 +351,62 @@ const videoMp4 =
         opacity: 1;
     }
 
-    .glow-blob {
+    .video-loader {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 150%;
-        height: 100%;
-        background: radial-gradient(circle, var(--primary) 0%, transparent 70%);
-        opacity: 0.1;
-        z-index: -1;
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.05);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
     }
 
     @media (max-width: 768px) {
         .hero-section {
-            padding-top: 40px;
+            padding-top: 100px;
         }
         .hero-grid {
             display: flex;
             flex-direction: column;
             text-align: center;
-            gap: 24px;
+            gap: 32px;
         }
-        .hero-title {
-            font-size: 2.2rem;
-            margin-bottom: 20px;
-        }
-        .hero-title.is-hindi {
-            font-size: 1.9rem;
+        .author-card {
+            background: color-mix(in srgb, var(--bg-sub), transparent 40%);
+            backdrop-filter: blur(8px);
+            padding: 16px 24px;
+            border-radius: 20px;
+            border: 1px solid var(--border);
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 24px;
         }
         .author-info {
-            border-left: none;
+            border-left: none; /* Removed vertical line on mobile */
             padding: 0;
         }
-        .hero-sub {
-            font-size: 1.05rem;
-            padding: 0 10px;
-            margin-bottom: 40px; /* Space before the final CTA */
+        .cta-wrapper {
+            align-items: center;
         }
-        .phone-frame-wrapper {
-            width: 240px;
-            margin-bottom: 20px; /* Space between phone and author/sub */
+        .proof-slider {
+            width: 100%;
         }
-
-        /* Order logic to keep visual prominent but content readable */
-        .badge {
-            order: 1;
-        }
-        .hero-title {
-            order: 2;
+        .social-proof-item {
+            width: 100%;
+            text-align: center;
         }
         .hero-visual {
-            order: 3;
-            margin: 20px 0;
-        } /* Spacing around phone frame */
-        .author-card {
-            order: 4;
+            justify-content: center;
         }
-        .hero-sub {
-            order: 5;
-        }
-        .cta-wrapper {
-            order: 6;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        /* Conditional Centering via CSS for StoreButtons */
         :global(.hero-buttons) {
             justify-content: center !important;
         }
