@@ -231,18 +231,21 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
             :root[data-theme="light"] {
                 --bg-main: oklch(100% 0 0);
                 --bg-sub: oklch(97% 0 0);
-                --text-main: oklch(20% 0 0);
-                --text-muted: oklch(50% 0 0);
+                --text-main: oklch(20% 0 0); /* Ratio ~15:1 (Pass) */
+                /* Darkened from 50% to 42% to pass 4.5:1 ratio against white */
+                --text-muted: oklch(42% 0 0);
                 --primary: oklch(62% 0.14 145);
                 --primary-fg: oklch(98% 0 0);
                 --border: oklch(92% 0 0);
                 --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             }
+
             :root[data-theme="dark"] {
                 --bg-main: oklch(15% 0.01 145);
                 --bg-sub: oklch(18% 0.01 145);
                 --text-main: oklch(96% 0 0);
-                --text-muted: oklch(65% 0 0);
+                /* Brightened from 65% to 75% for better contrast against dark zinc/green background */
+                --text-muted: oklch(75% 0 0);
                 --primary: oklch(70% 0.12 145);
                 --primary-fg: oklch(15% 0.02 145);
                 --border: oklch(25% 0 0);
@@ -336,6 +339,11 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
                 gap: 8px;
             }
 
+            .lang-icon {
+                font-size: 1rem;
+                line-height: 1;
+            }
+
             .lang-toggle {
                 display: inline-flex;
                 align-items: center;
@@ -406,9 +414,7 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
                                 class="lang-toggle"
                                 aria-label="Change Language"
                             >
-                                <span style="font-size: 1rem; margin-top:-2px;">
-                                    🌐
-                                </span>
+                                <span class="lang-icon">🌐</span>
                                 {currentLang === "en" ? "हिंदी" : "EN"}
                             </a>
                         )
@@ -457,7 +463,7 @@ targetUrl = targetUrl.replace(/\/\//g, "/");
                                 {t.contact}
                             </a>
                         </div>
-                        <p style="font-size: 0.8rem; margin-top: 20px; opacity: 0.6;">
+                        <p style="font-size: 0.8rem; margin-top: 20px; color: var(--text-muted);">
                             © {new Date().getFullYear()} Tulaalife Wellness
                             Private Limited
                         </p>
