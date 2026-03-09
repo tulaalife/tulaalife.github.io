@@ -11,9 +11,11 @@ const ui = {
         subtitle:
             "Specialized yoga for 30+ health needs, including <strong>Back Pain, PCOS, Thyroid, and Sciatica.</strong> Your health data stays 100% private on your device.",
         ctaLead: "Download the free app",
-        author: "<strong>By Latika Bissa</strong>",
-        cred1: "🏅 Gold Medalist, M.Sc Yoga Therapy",
-        cred2: "🧘‍♀️ 10+ Years of Experience",
+        author: "Latika Bissa",
+        authorLabel: "Yoga Therapist",
+        authorTrust: "⭐ 5-Star Rated • 5,000+ Happy Students",
+        cred1: "🧘‍♀️ 10+ Years of Experience",
+        cred2: "🏅 Gold Medalist, M.Sc Yoga Therapy",
         socialProofs: [
             "Join 5,000+ users healing naturally",
             "Rated 5 stars on Play Store & App Store",
@@ -32,9 +34,11 @@ const ui = {
         subtitle:
             "30+ बीमारियों के लिए खास योग, जैसे <strong>कमर दर्द, PCOS, थायरॉइड और साइटिका।</strong> आपका हेल्थ डेटा आपके ही फोन में 100% सुरक्षित रहता है।",
         ctaLead: "फ्री ऐप डाउनलोड करें",
-        author: "<strong>लतिका बिस्सा द्वारा</strong>",
-        cred1: "🏅 गोल्ड मेडलिस्ट, M.Sc योग थेरेपी",
-        cred2: "🧘‍♀️ 10+ वर्षों का अनुभव",
+        author: "लतिका बिस्सा",
+        authorLabel: "योग चिकित्सक",
+        authorTrust: "⭐ 5-स्टार रेटिंग • 5,000+ संतुष्ट विद्यार्थी",
+        cred1: "🧘‍♀️ 10+ वर्षों का अनुभव",
+        cred2: "🏅 गोल्ड Medalist, M.Sc योग थेरेपी",
         socialProofs: [
             "5,000+ लोगों का भरोसेमंद साथी",
             "Play Store पर 5-स्टार रेटिंग",
@@ -129,15 +133,34 @@ const videoMp4 =
     </div>
 
     <div class="container author-section">
-        <div class="author-card">
-            <div class="author-info">
-                <Fragment set:html={t.author} />
-                <div class="creds-list">
-                    <span class="cred">{t.cred1}</span>
-                    <span class="cred">{t.cred2}</span>
+        <a
+            href="https://yogawithlatika.com"
+            target="_blank"
+            class="author-link"
+            aria-label="Visit Latika Bissa's website"
+        >
+            <div class="author-card">
+                <div class="author-content">
+                    <div class="author-header">
+                        <div class="author-meta">
+                            <span class="author-label">{t.authorLabel}</span>
+                            <h3 class="author-name">
+                                <strong>{t.author}</strong>
+                            </h3>
+                        </div>
+                        <div class="author-trust text-gradient-alt">
+                            {t.authorTrust}
+                        </div>
+                    </div>
+
+                    <div class="creds-list">
+                        <span class="cred">{t.cred1}</span>
+                        <span class="divider"></span>
+                        <span class="cred">{t.cred2}</span>
+                    </div>
                 </div>
             </div>
-        </div>
+        </a>
     </div>
 </section>
 
@@ -221,6 +244,7 @@ const videoMp4 =
 </script>
 
 <style>
+    /* --- RESTORED TOP UI STYLES --- */
     .hero-section {
         padding: 120px 0 60px;
         min-height: 85vh;
@@ -365,50 +389,6 @@ const videoMp4 =
         animation: spin 0.8s linear infinite;
     }
 
-    /* --- New Author Section Layout --- */
-    .author-section {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-    }
-
-    .author-card {
-        background: color-mix(in srgb, var(--bg-sub), transparent 40%);
-        backdrop-filter: blur(8px);
-        padding: 20px 32px;
-        border-radius: 20px;
-        border: 1px solid var(--border);
-        display: inline-block;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
-    }
-
-    .author-info {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        gap: 8px;
-    }
-
-    .creds-list {
-        display: flex;
-        gap: 16px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .cred {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        display: block;
-    }
-
-    @keyframes spin {
-        to {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
-
     @media (max-width: 768px) {
         .hero-section {
             padding-top: 100px;
@@ -434,17 +414,153 @@ const videoMp4 =
         .hero-visual {
             justify-content: center;
         }
-        .author-card {
-            width: 100%;
-            max-width: 400px;
-            padding: 16px 20px;
-        }
-        .creds-list {
-            flex-direction: column;
-            gap: 4px;
-        }
         :global(.hero-buttons) {
             justify-content: center !important;
+        }
+    }
+
+    /* --- Author Card Styles (ONLY this area changed) --- */
+    .author-section {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        margin-top: 2rem;
+    }
+
+    .author-link {
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        max-width: 650px;
+    }
+
+    .author-card {
+        position: relative;
+        background: linear-gradient(
+            110deg,
+            color-mix(in srgb, var(--bg-sub), transparent 20%) 0%,
+            color-mix(in srgb, var(--bg-sub), transparent 50%) 100%
+        );
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 24px 40px;
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .author-link:hover .author-card {
+        border-color: var(--primary);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        background: linear-gradient(
+            110deg,
+            color-mix(in srgb, var(--bg-sub), transparent 5%) 0%,
+            color-mix(in srgb, var(--bg-sub), transparent 30%) 100%
+        );
+    }
+
+    .author-content {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        text-align: left;
+    }
+
+    .author-header {
+        display: flex;
+        flex-direction: column; /* Trust is on a new line always */
+        align-items: flex-start;
+        width: 100%;
+        gap: 4px;
+        margin-bottom: 12px;
+    }
+
+    .author-meta {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .author-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--primary);
+        font-weight: 700;
+        margin-bottom: 2px;
+    }
+
+    .author-name {
+        font-size: 1.3rem;
+        color: var(--text-main);
+        margin: 0;
+        font-weight: 400;
+    }
+
+    /* Gradient is applied, pill background removed */
+    .author-trust {
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin-top: 2px;
+        /* Ensure the element takes up enough width for the gradient to display properly */
+        display: block;
+        width: 100%;
+    }
+
+    .text-gradient-alt {
+        background: linear-gradient(135deg, var(--primary), #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .creds-list {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .cred {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+    }
+
+    .divider {
+        width: 1px;
+        height: 14px;
+        background: var(--border);
+    }
+
+    @keyframes spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    @media (max-width: 768px) {
+        /* Responsive Author Card tweaks (top-level UI CSS is separate) */
+        .author-card {
+            padding: 24px;
+            border-radius: 20px;
+        }
+
+        .creds-list {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 6px;
+        }
+
+        .divider {
+            display: none;
+        }
+
+        .author-name {
+            font-size: 1.15rem;
+        }
+
+        .author-trust {
+            font-size: 0.85rem;
         }
     }
 </style>
