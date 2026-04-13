@@ -1,0 +1,74 @@
+---
+const { href, labelEn, labelHi, class: className } = Astro.props;
+
+const currentLang = Astro.currentLocale || "en";
+const label = currentLang === "hi" ? labelHi : labelEn;
+
+// Helper to handle localized links
+const getLink = (path: string) => {
+    if (currentLang === "en") return path;
+    return path === "/" ? "/hi" : `/hi${path}`;
+};
+---
+
+<a href={getLink(href)} class={`cta-link ${className || ""}`}>
+    <span class="cta-text">{label}</span>
+    <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+    >
+        <line x1="5" y1="12" x2="19" y2="12"></line>
+        <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+</a>
+
+<style>
+    .cta-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        margin-top: 32px;
+        padding: 12px 24px;
+        background: var(--primary);
+        color: var(--primary-fg);
+        border-radius: 99px;
+        font-weight: 700;
+        font-size: 1.05rem;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        box-shadow: 0 4px 15px
+            color-mix(in srgb, var(--primary), transparent 70%);
+    }
+
+    .cta-link:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0 8px 25px
+            color-mix(in srgb, var(--primary), transparent 60%);
+    }
+
+    .cta-link svg {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.3s ease;
+    }
+
+    .cta-link:hover svg {
+        transform: translateX(5px);
+    }
+
+    /* Support for Hindi font rendering */
+    :global([lang="hi"]) .cta-text {
+        line-height: 1.2;
+        padding-bottom: 2px;
+    }
+
+    @media (max-width: 768px) {
+        .cta-link {
+            margin-top: 24px;
+            width: fit-content;
+        }
+    }
+</style>

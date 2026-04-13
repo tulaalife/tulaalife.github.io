@@ -1,8 +1,8 @@
 ---
-// 1. Get current language
+import SectionCTA from "../SectionCTA.astro";
+
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dictionary for Yoga Features content
 const ui = {
     en: {
         baseImg: "yoga-plans-collage",
@@ -76,7 +76,47 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 ---
 
 <section class="section section-yoga">
-    <div class="container grid-layout reverse-mobile">
+    <div class="container grid-layout">
+        <div class="text-col">
+            <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
+                <span class="title-main">{t.titleTop}</span>
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
+            </h2>
+            <p class="body-text">{t.bodyText}</p>
+
+            <div class="feature-list-wrapper">
+                <div class="feature-list">
+                    {
+                        t.features.map((feature) => (
+                            <div
+                                class="feature-card"
+                                style={`--card-accent: ${feature.color}`}
+                            >
+                                <div class="card-content">
+                                    <strong class="card-title">
+                                        {feature.title}
+                                    </strong>
+                                    <p class="card-desc">{feature.desc}</p>
+                                </div>
+                                <span class="bg-icon" aria-hidden="true">
+                                    {feature.icon}
+                                </span>
+                            </div>
+                        ))
+                    }
+                </div>
+
+                <div class="desktop-cta">
+                    <SectionCTA
+                        href="/yoga"
+                        labelEn="Explore All Yoga Plans"
+                        labelHi="सभी योग प्लान देखें"
+                    />
+                </div>
+            </div>
+        </div>
+
         <div class="visual-col">
             <picture>
                 <source srcset={mobileImg} media="(max-width: 767px)" />
@@ -92,34 +132,12 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
             </picture>
         </div>
 
-        <div class="text-col">
-            <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
-                <span class="title-main">{t.titleTop}</span>
-                <br />
-                <span class="text-gradient">{t.titleBottom}</span>
-            </h2>
-            <p class="body-text">{t.bodyText}</p>
-
-            <div class="feature-list">
-                {
-                    t.features.map((feature) => (
-                        <div
-                            class="feature-card"
-                            style={`--card-accent: ${feature.color}`}
-                        >
-                            <div class="card-content">
-                                <strong class="card-title">
-                                    {feature.title}
-                                </strong>
-                                <p class="card-desc">{feature.desc}</p>
-                            </div>
-                            <span class="bg-icon" aria-hidden="true">
-                                {feature.icon}
-                            </span>
-                        </div>
-                    ))
-                }
-            </div>
+        <div class="mobile-cta">
+            <SectionCTA
+                href="/yoga"
+                labelEn="Explore All Yoga Plans"
+                labelHi="सभी योग प्लान देखें"
+            />
         </div>
     </div>
 </section>
@@ -134,6 +152,10 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         grid-template-columns: 1fr 1fr;
         gap: 80px;
         align-items: center;
+    }
+
+    .mobile-cta {
+        display: none;
     }
 
     /* --- TYPOGRAPHY --- */
@@ -217,20 +239,18 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         padding-right: 60px;
     }
 
-    /* Subtle Card Hierarchy */
     .card-title {
         display: block;
         font-size: 1.1rem;
-        font-weight: 800; /* Increased weight for title */
+        font-weight: 800;
         color: var(--text-main);
         margin-bottom: 4px;
-        letter-spacing: -0.01em;
     }
 
     .card-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
-        opacity: 0.85; /* Lowered opacity for description */
+        opacity: 0.85;
         margin: 0;
         line-height: 1.5;
         font-weight: 400;
@@ -243,16 +263,7 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         transform: translateY(-50%) rotate(10deg);
         font-size: 3.5rem;
         opacity: 0.12;
-        filter: blur(0.5px);
         pointer-events: none;
-        transition:
-            transform 0.4s ease,
-            opacity 0.4s ease;
-    }
-
-    .feature-card:hover .bg-icon {
-        transform: translateY(-50%) rotate(0deg) scale(1.1);
-        opacity: 0.2;
     }
 
     /* --- VISUALS --- */
@@ -262,33 +273,50 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
     }
 
-    :root[data-theme="dark"] .feature-img {
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
-    }
-
     @media (max-width: 768px) {
         .grid-layout {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: 40px;
-        }
-        .reverse-mobile {
-            display: flex;
-            flex-direction: column-reverse;
-        }
-        .text-col {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            text-align: center;
+            gap: 32px;
         }
+
+        /* Order logic: Title/Body(1) -> Image(2) -> Features(3) -> CTA(4) */
+        .text-col {
+            display: contents; /* Allows children to participate in flex layout */
+        }
+
+        .section-title {
+            order: 1;
+            margin-bottom: 12px;
+        }
+        .body-text {
+            order: 1;
+            margin-bottom: 24px;
+        }
+
+        .visual-col {
+            order: 2;
+            margin-bottom: 10px;
+        }
+
+        .feature-list-wrapper {
+            order: 3;
+            width: 100%;
+        }
+
         .feature-list {
             text-align: left;
         }
-        .feature-card:hover {
-            transform: translateY(-5px);
+
+        .mobile-cta {
+            order: 4;
+            display: block;
+            margin-top: 8px;
         }
-        .section-title {
-            font-size: 2.2rem;
+
+        .desktop-cta {
+            display: none;
         }
     }
 </style>

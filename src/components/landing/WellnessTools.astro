@@ -1,4 +1,6 @@
 ---
+import SectionCTA from "../SectionCTA.astro";
+
 // 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
@@ -132,23 +134,33 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 
             <p class="body-text" set:html={t.body} />
 
-            <div class="tools-grid">
-                {
-                    t.tools.map((tool) => (
-                        <div
-                            class="tool-card"
-                            style={`--card-accent: ${tool.color}`}
-                        >
-                            <div class="card-content">
-                                <strong>{tool.title}</strong>
-                                <p>{tool.desc}</p>
+            <div class="tools-grid-wrapper">
+                <div class="tools-grid">
+                    {
+                        t.tools.map((tool) => (
+                            <div
+                                class="tool-card"
+                                style={`--card-accent: ${tool.color}`}
+                            >
+                                <div class="card-content">
+                                    <strong>{tool.title}</strong>
+                                    <p>{tool.desc}</p>
+                                </div>
+                                <span class="bg-icon" aria-hidden="true">
+                                    {tool.icon}
+                                </span>
                             </div>
-                            <span class="bg-icon" aria-hidden="true">
-                                {tool.icon}
-                            </span>
-                        </div>
-                    ))
-                }
+                        ))
+                    }
+                </div>
+
+                <div class="desktop-cta">
+                    <SectionCTA
+                        href="/blog"
+                        labelEn="Read Wellness Blogs"
+                        labelHi="वेलनेस ब्लॉग पढ़ें"
+                    />
+                </div>
             </div>
         </div>
 
@@ -166,6 +178,14 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
                 />
             </picture>
         </div>
+
+        <div class="mobile-cta">
+            <SectionCTA
+                href="/blog"
+                labelEn="Read Wellness Blogs"
+                labelHi="वेलनेस ब्लॉग पढ़ें"
+            />
+        </div>
     </div>
 </section>
 
@@ -179,6 +199,10 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         grid-template-columns: 1fr 1fr;
         gap: 80px;
         align-items: center;
+    }
+
+    .mobile-cta {
+        display: none;
     }
 
     .badge-small {
@@ -231,7 +255,6 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
     .tool-card {
         position: relative;
         overflow: hidden;
-        /* Dynamic glass background using theme variables */
         background: linear-gradient(
             135deg,
             color-mix(in srgb, var(--bg-main), white 5%) 0%,
@@ -251,7 +274,6 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         z-index: 1;
     }
 
-    /* Refined background for dark mode to ensure icon/text separation */
     :root[data-theme="dark"] .tool-card {
         background: linear-gradient(
             135deg,
@@ -260,15 +282,6 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         );
     }
 
-    .tool-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
-    }
-
-    .card-content {
-        position: relative;
-        z-index: 2;
-    }
     .tool-card strong {
         display: block;
         font-size: 1rem;
@@ -276,12 +289,12 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         color: var(--text-main);
         margin-bottom: 4px;
     }
+
     .tool-card p {
         font-size: 0.8rem;
         color: var(--text-muted);
         margin: 0;
         line-height: 1.4;
-        max-width: 90%;
     }
 
     .bg-icon {
@@ -293,21 +306,12 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         transform: rotate(-15deg);
         filter: grayscale(0.2) blur(0.5px);
         pointer-events: none;
-        transition: opacity 0.3s ease;
-    }
-
-    .tool-card:hover .bg-icon {
-        opacity: 0.2;
     }
 
     .feature-img {
         width: 100%;
         height: auto;
         filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
-    }
-
-    :root[data-theme="dark"] .feature-img {
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.4));
     }
 
     @media (max-width: 1024px) {
@@ -318,23 +322,54 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 
     @media (max-width: 768px) {
         .grid-layout {
-            grid-template-columns: 1fr;
+            display: flex;
+            flex-direction: column;
             text-align: center;
-            gap: 48px;
+            gap: 32px;
         }
-        .body-text {
-            margin-left: auto;
-            margin-right: auto;
+
+        .text-col {
+            display: contents;
         }
-        .tools-grid {
-            grid-template-columns: repeat(2, 1fr);
-            text-align: left;
+
+        .badge-small {
+            order: 1;
+            margin: 0 auto 16px auto;
         }
         .section-title {
-            font-size: 2.2rem;
+            order: 1;
+            margin-bottom: 12px;
         }
-        .section-title.is-hindi {
-            font-size: 1.9rem;
+        .body-text {
+            order: 1;
+            margin-bottom: 24px;
+        }
+
+        .visual-col {
+            order: 2;
+            margin-bottom: 8px;
+        }
+
+        .tools-grid-wrapper {
+            order: 3;
+            width: 100%;
+        }
+        .tools-grid {
+            text-align: left;
+        }
+
+        .mobile-cta {
+            order: 4;
+            display: block;
+            margin-top: 8px;
+        }
+
+        .desktop-cta {
+            display: none;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
         }
     }
 </style>
