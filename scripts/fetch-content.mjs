@@ -130,7 +130,7 @@ async function loadPlans() {
 async function loadAudios() {
     const { data, error } = await sb
         .from(TABLES.audios)
-        .select('slug, language, title, subtitle, description, image_url, updated_at, translation_group_id, deeplink')
+        .select('slug, language, title, subtitle, description, image_url, updated_at, translation_group_id')
         .not('slug', 'is', null)
         .not('image_url', 'is', null)
         .order('title', { ascending: true });
@@ -139,15 +139,17 @@ async function loadAudios() {
 
     return (data ?? []).map((r) => {
         const lang = r.language || 'en';
+        const slug = toAbs(r.slug);
         return {
-            slug: toAbs(r.slug),
+            slug: slug,
             language: lang,
-            translation_group_id: r.translation_group_id, // Essential for linking
+            translation_group_id: r.translation_group_id,
             title: toAbs(r.title),
             subtitle: toAbs(r.subtitle),
             description: toAbs(r.description),
             image: ensureHttps(toAbs(r.image_url)),
-            deeplink: `tulaa://audio/${toAbs(r.slug)}`,
+            // 2. Generate the deeplink here in code
+            deeplink: `tulaa://audio/${slug}`,
         };
     }).filter(a => a.slug && a.image);
 }
