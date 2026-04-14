@@ -20,16 +20,6 @@ const N_TIPS = 10; // homepage slice size
 const { PREVIEW_VISIBILITIES = 'public' } = process.env;
 const ALLOWED_VIS = PREVIEW_VISIBILITIES.split(',').map(s => s.trim()).filter(Boolean);
 
-// ---- Helpers
-const teaser = (s, max = 160) => {
-    if (!s) return '';
-    const t = String(s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    if (t.length <= max) return t;
-    const cut = t.slice(0, max + 1);
-    const idx = cut.lastIndexOf(' ');
-    return (idx > 0 ? cut.slice(0, idx) : cut.slice(0, max)).trim() + '…';
-};
-
 const toAbs = (s) => (s ?? '').toString().trim();
 const ensureHttps = (u) => (u && /^https?:\/\//i.test(u) ? u : '');
 
@@ -108,7 +98,7 @@ async function loadPlans() {
             language: 'en',
             title: toAbs(r.title),
             subtitle: toAbs(r.subtitle),
-            teaser: teaser(r.description),
+            description: toAbs(r.description),
             benefits: formatBenefits(r.insights),
             image: baseImage,
             deeplink: `tulaa://en/yoga/${baseSlug}`,
@@ -125,7 +115,7 @@ async function loadPlans() {
                     language: tr.lang,
                     title: toAbs(tr.title),
                     subtitle: toAbs(tr.subtitle),
-                    teaser: teaser(tr.description),
+                    description: toAbs(tr.description),
                     benefits: formatBenefits(tr.insights),
                     image: baseImage, // Fallback to base image
                     deeplink: `tulaa://${tr.lang}/yoga/${baseSlug}`,
@@ -154,8 +144,8 @@ async function loadAudios() {
             language: lang,
             translation_group_id: r.translation_group_id, // Essential for linking
             title: toAbs(r.title),
-            subtitle: teaser(r.subtitle),
-            teaser: teaser(r.description),
+            subtitle: toAbs(r.subtitle),
+            description: toAbs(r.description),
             image: ensureHttps(toAbs(r.image_url)),
             // Use DB deeplink if available, fallback to slug-based
             deeplink: r.deeplink || `tulaa://audio/${toAbs(r.slug)}`,

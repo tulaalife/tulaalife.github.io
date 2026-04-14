@@ -61,7 +61,7 @@ const readingTime = Math.ceil(
     contentHtml.replace(/<[^>]*>/g, "").split(" ").length / 200,
 );
 
-const primaryLink = post.cta?.link || "https://tulaa.life/app";
+const primaryLink = "https://tulaa.app";
 const primaryLabel = post.cta?.text || t.appLabel;
 ---
 
@@ -116,8 +116,8 @@ const primaryLabel = post.cta?.text || t.appLabel;
                 </div>
 
                 <div class="author-info">
-                    <span class="author-label">{t.writtenBy}</span>
-                    <div class="author-main">
+                    <div class="author-header">
+                        <!-- <span class="author-label">{t.writtenBy}</span> -->
                         <h3 class="author-name">{author.name}</h3>
                     </div>
 
@@ -130,7 +130,21 @@ const primaryLabel = post.cta?.text || t.appLabel;
                         class="author-link"
                     >
                         {author.websiteDisplay}
-                        <span class="arrow">↗</span>
+                        <svg
+                            class="arrow"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5"
+                                stroke="currentColor"
+                                stroke-width="1.2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"></path>
+                        </svg>
                     </a>
                 </div>
             </div>
@@ -270,51 +284,48 @@ const primaryLabel = post.cta?.text || t.appLabel;
         font-weight: bold;
     }
 
+    /* ✨ Premium Author Section */
     .author-bio {
-        margin-top: 40px;
-        padding: 20px;
+        margin-top: 56px;
+        padding: 16px 20px; /* Reduced vertical padding */
+        display: flex;
+        gap: 20px;
+        align-items: center;
         background: var(--bg-sub);
-        border-radius: var(--radius-md);
         border: 1px solid var(--border);
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.04);
+        border-radius: 12px; /* Slightly tighter radius for a modern look */
+        position: relative;
+        overflow: hidden;
     }
 
-    /* Container */
-    .author-bio {
-        margin-top: 48px;
-        padding: 20px 22px;
-        display: flex;
-        gap: 16px;
-        align-items: center;
-
+    /* Add a subtle highlight flare for a "premium" feel */
+    .author-bio::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
         background: linear-gradient(
-            180deg,
-            var(--bg-sub),
-            rgba(255, 255, 255, 0.02)
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
         );
-
-        border: 1px solid var(--border);
-        border-radius: 16px;
-
-        transition: all 0.25s ease;
     }
 
-    .author-bio:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
-    }
-
-    /* Avatar */
     .author-avatar-wrap {
-        width: 64px;
-        height: 64px;
+        width: 56px; /* Slightly smaller to feel more integrated */
+        height: 56px;
+        flex-shrink: 0;
         border-radius: 50%;
         padding: 2px;
-
-        background: linear-gradient(135deg, var(--primary), transparent);
+        background: linear-gradient(
+            135deg,
+            var(--primary) 0%,
+            transparent 100%
+        );
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
 
     .author-avatar-wrap img {
@@ -322,84 +333,83 @@ const primaryLabel = post.cta?.text || t.appLabel;
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
+        background: var(--bg);
     }
 
-    /* Info */
     .author-info {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 2px; /* Tight vertical spacing */
     }
 
-    /* Label */
-    .author-label {
-        font-size: 0.7rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        color: var(--text-muted);
-    }
-
-    /* Name + badge row */
-    .author-main {
+    .author-header {
         display: flex;
-        align-items: center;
+        align-items: baseline;
         gap: 8px;
     }
 
-    /* Name */
-    .author-name {
-        font-size: 1.1rem;
+    .author-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
         font-weight: 600;
+    }
+
+    .author-name {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-main);
+    }
+
+    .author-creds {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.4;
         margin: 0;
     }
 
-    /* Badge */
-    .author-badge {
-        font-size: 0.65rem;
-        padding: 2px 8px;
-        border-radius: 999px;
-        background: rgba(0, 128, 255, 0.1);
-        color: var(--primary);
-        font-weight: 500;
-    }
-
-    /* Creds */
-    .author-creds {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        line-height: 1.4;
-    }
-
-    /* Link */
     .author-link {
         margin-top: 4px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
         font-weight: 500;
         color: var(--primary);
+        text-decoration: none;
         display: inline-flex;
         align-items: center;
-        gap: 4px;
+        gap: 3px;
+        opacity: 0.85;
+        transition: opacity 0.2s ease;
+    }
+
+    .author-link:hover {
+        opacity: 1;
+        text-decoration: underline;
+        text-underline-offset: 2px;
     }
 
     .author-link .arrow {
-        font-size: 0.8rem;
         transition: transform 0.2s ease;
     }
 
     .author-link:hover .arrow {
-        transform: translateX(2px);
+        transform: translate(1px, -1px);
     }
 
-    /* Mobile */
-    @media (max-width: 500px) {
+    /* Mobile: Keep it compact instead of stacking if possible */
+    @media (max-width: 480px) {
         .author-bio {
-            flex-direction: column;
-            text-align: center;
-            padding: 20px;
+            gap: 12px;
+            padding: 12px;
         }
-
-        .author-main {
-            justify-content: center;
+        .author-header {
+            flex-direction: column;
+            gap: 0;
+        }
+        .author-avatar-wrap {
+            width: 48px;
+            height: 48px;
         }
     }
 

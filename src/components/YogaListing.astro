@@ -5,7 +5,7 @@ import type { Page } from "astro";
 interface Plan {
     slug: string;
     title: string;
-    teaser: string;
+    description: string;
     image: string;
     language?: string;
 }
@@ -51,7 +51,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
                         <div class="card-content">
                             <h3 class="card-title">{p.title}</h3>
-                            <p class="card-desc">{p.teaser}</p>
+                            <p class="card-desc">{p.description}</p>
 
                             <div class="card-footer">
                                 <span class="view-link">{labels.view}</span>

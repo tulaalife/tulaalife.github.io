@@ -24,7 +24,7 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
 <Site
     title={`${plan.title} · Yoga Plan · Tulaa`}
-    description={plan.teaser ||
+    description={plan.description ||
         plan.subtitle ||
         "Gentle preview of this Tulaa yoga plan."}
     canonicalPath={canonicalPath}
@@ -74,7 +74,11 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
             <!-- Body -->
             <div class="plan-body">
-                {plan.teaser && <p class="plan-lead">{plan.teaser}</p>}
+                {
+                    plan.description && (
+                        <p class="plan-lead">{plan.description}</p>
+                    )
+                }
 
                 {
                     plan.benefits && (

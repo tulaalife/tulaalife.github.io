@@ -38,7 +38,7 @@ const canonical = `/audio/${audio.slug}`;
 
 <Site
     title={`${audio.title} · Tulaa`}
-    description={audio.teaser || "Gentle audio preview from Tulaa."}
+    description={audio.description || "Gentle audio preview from Tulaa."}
     canonicalPath={canonical}
     ogImage={audio.image}
     hasTranslation={false}
@@ -88,14 +88,18 @@ const canonical = `/audio/${audio.slug}`;
             </div>
 
             <div class="audio-body">
-                {audio.teaser && <p class="audio-lead">{audio.teaser}</p>}
+                {
+                    audio.description && (
+                        <p class="audio-lead">{audio.description}</p>
+                    )
+                }
             </div>
 
             <footer class="audio-footer">
                 <div class="app-prompt">🎧 {t.listen}</div>
                 <div class="button-group">
                     <CTAButton
-                        href={audio.deeplink}
+                        href="https://tulaa.app"
                         label={t.btnApp}
                         variant="solid"
                         size="md"
