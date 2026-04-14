@@ -1,0 +1,105 @@
+---
+import Site from "../layouts/Site.astro";
+import faqData from "../data/faq.json";
+
+interface Props {
+    lang: "en" | "hi";
+    title: string;
+    canonicalPath: string;
+}
+
+const { lang, title, canonicalPath } = Astro.props;
+const faqs = faqData[lang] || faqData.en;
+---
+
+<Site
+    title={`${title} · Tulaa`}
+    canonicalPath={canonicalPath}
+    hasTranslation={true}
+>
+    <div class="faq-container">
+        <div class="faq-header">
+            <h1 class="page-title">{title}</h1>
+        </div>
+
+        <div class="faq-list">
+            {
+                faqs.map((item, index) => (
+                    <details class="faq-item">
+                        <summary class="faq-question">
+                            {item.question}
+                            <span class="icon">↓</span>
+                        </summary>
+                        <div class="faq-answer">
+                            <p>{item.answer}</p>
+                        </div>
+                    </details>
+                ))
+            }
+        </div>
+    </div>
+</Site>
+
+<style>
+    .faq-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 80px 24px;
+    }
+    .faq-header {
+        text-align: center;
+        margin-bottom: 48px;
+    }
+    .page-title {
+        font-size: var(--text-h1);
+        letter-spacing: -0.03em;
+    }
+
+    .faq-list {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .faq-item {
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+    .faq-question {
+        padding: 24px;
+        font-weight: 700;
+        cursor: pointer;
+        list-style: none;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 1.1rem;
+    }
+
+    .faq-question::-webkit-details-marker {
+        display: none;
+    }
+
+    .faq-answer {
+        padding: 0 24px 24px;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
+
+    .icon {
+        transition: transform 0.3s ease;
+        color: var(--primary);
+    }
+    .faq-item[open] .icon {
+        transform: rotate(180deg);
+    }
+
+    .faq-item[open] {
+        border-color: var(--primary);
+        background: var(--bg-main);
+    }
+</style>

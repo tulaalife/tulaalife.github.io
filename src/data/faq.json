@@ -1,0 +1,22 @@
+{
+    "en": [
+        {
+            "question": "Does Tulaa track my health data?",
+            "answer": "No. Your data is stored locally on your device. We have no servers to receive your personal health logs, ensuring 100% privacy."
+        },
+        {
+            "question": "Is the app really free to use?",
+            "answer": "Yes. All core features including yoga plans, meditation sessions, and wellness trackers are free and available offline."
+        }
+    ],
+    "hi": [
+        {
+            "question": "क्या Tulaa मेरा हेल्थ डेटा ट्रैक करता है?",
+            "answer": "नहीं। आपका डेटा केवल आपके डिवाइस पर स्टोर होता है। हमारे पास आपके पर्सनल हेल्थ लॉग प्राप्त करने के लिए कोई सर्वर नहीं है।"
+        },
+        {
+            "question": "क्या ऐप इस्तेमाल करने के लिए वाकई फ्री है?",
+            "answer": "हाँ। योगा प्लान, मेडिटेशन और वेलनेस ट्रैकर्स सहित सभी मुख्य फीचर्स फ्री हैं और ऑफलाइन भी काम करते हैं।"
+        }
+    ]
+}
