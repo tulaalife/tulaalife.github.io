@@ -8,10 +8,20 @@ export default defineConfig({
         defaultLocale: 'en',
         locales: ['en', 'hi'],
         routing: {
-            // Keeps English pages at the root (tulaalife.com/yoga) 
-            // and places Hindi pages under the /hi/ path (tulaalife.com/hi/yoga)
+            // Correct: English at root, Hindi at /hi/
             prefixDefaultLocale: false,
         }
     },
-    integrations: [sitemap()],
+    integrations: [
+        sitemap({
+            // i18n mapping inside sitemap is CRITICAL for Yoga page linking
+            i18n: {
+                defaultLocale: 'en',
+                locales: {
+                    en: 'en-US',
+                    hi: 'hi-IN',
+                },
+            },
+        })
+    ],
 });
