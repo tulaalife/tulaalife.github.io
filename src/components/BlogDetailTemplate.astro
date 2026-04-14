@@ -1,0 +1,294 @@
+---
+import Site from "../layouts/Site.astro";
+import CTAButton from "./CTAButton.astro";
+import { blogPosts } from "../data/generated";
+import type { BlogPost } from "../data/types";
+import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+
+interface Props {
+    post: BlogPost;
+    lang: "en" | "hi";
+}
+
+const { post, lang } = Astro.props;
+
+const canonical =
+    lang === "hi" ? `/hi/blog/${post.slug}` : `/blog/${post.slug}`;
+
+// 2. Localization Dictionary
+const labels = {
+    en: {
+        back: "Back to Blog",
+        writtenBy: "Written by",
+        prompt: "Read full articles in the Tulaa app.",
+        browse: "Browse Blog",
+        appLabel: "Open in App",
+    },
+    hi: {
+        back: "ब्लॉग पर वापस जाएं",
+        writtenBy: "लेखक",
+        prompt: "Tulaa ऐप में पूरे लेख पढ़ें।",
+        browse: "ब्लॉग ब्राउज़ करें",
+        appLabel: "ऐप में देखें",
+    },
+};
+const t = labels[lang];
+
+// 3. Author Data (Static)
+const author = {
+    name: "Latika",
+    title:
+        lang === "hi"
+            ? "योग थेरेपिस्ट · 10+ वर्षों का अनुभव"
+            : "Yoga Therapist · 10+ years experience",
+    image: "https://api.tulaa.life/storage/v1/object/public/images/latika_profile.jpg",
+    websiteUrl: "https://yogawithlatika.com",
+    websiteDisplay: "yogawithlatika.com",
+};
+
+// 4. Content Rendering logic
+const renderContent = (ops: any[]) => {
+    if (!ops || !Array.isArray(ops)) return "";
+    const converter = new QuillDeltaToHtmlConverter(ops, {
+        paragraphTag: "p",
+        inlineStyles: true,
+        encodeHtml: false,
+    });
+    return converter.convert();
+};
+
+const contentAny = post.content as any;
+const ops = Array.isArray(contentAny) ? contentAny : contentAny?.ops || [];
+const contentHtml = renderContent(ops);
+
+// 5. CTA Logic
+const primaryLink = post.cta?.link || "https://tulaa.life/app";
+const primaryLabel = post.cta?.text || t.appLabel;
+---
+
+<Site
+    title={post.metaTitle || post.title}
+    description={post.metaDescription || post.excerpt}
+    canonicalPath={canonical}
+    ogImage={post.image}
+    hasTranslation={false}
+>
+    <div class="content-shell">
+        <article class="article-card">
+            <nav class="article-nav">
+                <a
+                    href={lang === "hi" ? "/hi/blog" : "/blog"}
+                    class="back-link"
+                >
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        ><path d="m15 18-6-6 6-6"></path></svg
+                    >
+                    {t.back}
+                </a>
+            </nav>
+
+            <header class="article-header">
+                <h1 class="article-title">{post.title}</h1>
+                {post.excerpt && <p class="article-subtitle">{post.excerpt}</p>}
+            </header>
+
+            <div class="image-frame">
+                <img
+                    src={post.image}
+                    alt={post.title}
+                    width="1200"
+                    height="630"
+                    loading="eager"
+                />
+            </div>
+
+            <div class="article-body">
+                <div class="rich-text" set:html={contentHtml} />
+            </div>
+
+            <div class="author-bio">
+                <div class="author-avatar">
+                    <img src={author.image} alt={author.name} loading="lazy" />
+                </div>
+                <div class="author-info">
+                    <span class="author-label">{t.writtenBy}</span>
+                    <h3 class="author-name">{author.name}</h3>
+                    <p class="author-creds">{author.title}</p>
+                    <a
+                        href={author.websiteUrl}
+                        target="_blank"
+                        rel="noopener"
+                        class="author-link">{author.websiteDisplay} ↗</a
+                    >
+                </div>
+            </div>
+
+            <footer class="article-footer">
+                <div class="app-prompt">
+                    <span class="prompt-icon">📱</span>
+                    <p>{t.prompt}</p>
+                </div>
+                <div class="button-group">
+                    <CTAButton
+                        href={primaryLink}
+                        label={primaryLabel}
+                        variant="solid"
+                        size="md"
+                    />
+                    <CTAButton
+                        href={lang === "hi" ? "/hi/blog" : "/blog"}
+                        label={t.browse}
+                        variant="soft"
+                        size="md"
+                    />
+                </div>
+            </footer>
+        </article>
+    </div>
+</Site>
+
+<style>
+    .content-shell {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 0 16px 64px;
+    }
+    .article-card {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+    .article-nav {
+        padding-top: 16px;
+    }
+    .back-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        transition: color 0.2s;
+    }
+    .back-link:hover {
+        color: var(--primary);
+    }
+    .article-header {
+        text-align: center;
+        max-width: 720px;
+        margin: 0 auto;
+    }
+    .article-title {
+        font-size: clamp(2rem, 5vw, 2.8rem);
+        line-height: 1.15;
+        letter-spacing: -0.02em;
+        margin-bottom: 16px;
+    }
+    .article-subtitle {
+        font-size: 1.25rem;
+        line-height: 1.5;
+        color: var(--text-muted);
+    }
+    .image-frame {
+        width: 100%;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+    }
+    .image-frame img {
+        width: 100%;
+        height: auto;
+        display: block;
+    }
+    .article-body {
+        max-width: 68ch;
+        margin: 0 auto;
+        font-size: 1.125rem;
+        line-height: 1.8;
+        color: var(--text-main);
+    }
+    .rich-text :global(p) {
+        margin-bottom: 1.5em;
+    }
+    .rich-text :global(a) {
+        color: var(--primary);
+        text-decoration: underline;
+    }
+    .author-bio {
+        max-width: 68ch;
+        margin: 24px auto 0;
+        padding: 24px;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        display: flex;
+        align-items: center;
+        gap: 20px;
+    }
+    .author-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 2px solid var(--bg-main);
+    }
+    .author-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .author-label {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+    }
+    .author-name {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+    .author-link {
+        color: var(--primary);
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
+    .article-footer {
+        margin-top: 24px;
+        padding-top: 40px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+    }
+    .app-prompt {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        background: var(--bg-sub);
+        padding: 8px 16px;
+        border-radius: 99px;
+        border: 1px solid var(--border);
+    }
+    .button-group {
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    @media (max-width: 500px) {
+        .author-bio {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>

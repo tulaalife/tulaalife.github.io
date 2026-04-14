@@ -1,0 +1,16 @@
+---
+import { blogPosts } from "../../../data/generated";
+import BlogDetailTemplate from "../../../components/BlogDetailTemplate.astro";
+
+export async function getStaticPaths() {
+    return blogPosts
+        .filter((p) => p.language === "hi")
+        .map((post) => ({
+            params: { slug: post.slug },
+            props: { post },
+        }));
+}
+const { post } = Astro.props;
+---
+
+<BlogDetailTemplate post={post} lang="hi" />
