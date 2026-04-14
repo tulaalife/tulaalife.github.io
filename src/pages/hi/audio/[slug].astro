@@ -1,0 +1,19 @@
+---
+import { guidedAudios } from "../../../data/generated";
+import AudioPageTemplate from "../../../components/AudioPageTemplate.astro";
+
+export async function getStaticPaths() {
+    // Only generate for Hindi
+    return guidedAudios
+        .filter((a) => a.language === "hi")
+        .map((a) => ({
+            // Ensure slug matches what is in the data
+            params: { slug: a.slug },
+            props: { audio: a },
+        }));
+}
+
+const { audio } = Astro.props;
+---
+
+<AudioPageTemplate audio={audio} lang="hi" />
