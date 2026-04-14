@@ -147,8 +147,7 @@ async function loadAudios() {
             subtitle: toAbs(r.subtitle),
             description: toAbs(r.description),
             image: ensureHttps(toAbs(r.image_url)),
-            // Use DB deeplink if available, fallback to slug-based
-            deeplink: r.deeplink || `tulaa://audio/${toAbs(r.slug)}`,
+            deeplink: `tulaa://audio/${toAbs(r.slug)}`,
         };
     }).filter(a => a.slug && a.image);
 }
