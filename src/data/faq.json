@@ -1,22 +1,62 @@
 {
     "en": [
         {
-            "question": "Does Tulaa track my health data?",
-            "answer": "No. Your data is stored locally on your device. We have no servers to receive your personal health logs, ensuring 100% privacy."
+            "question": "Who designs the yoga plans in Tulaa?",
+            "answer": "All yoga sequences are curated by expert Latika Bissa (M.A. & B.A. in Yoga) with over 10 years of experience. Her plans are research-backed and have been used by students globally to manage real-world health conditions."
         },
         {
-            "question": "Is the app really free to use?",
-            "answer": "Yes. All core features including yoga plans, meditation sessions, and wellness trackers are free and available offline."
+            "question": "Is Tulaa really 100% private?",
+            "answer": "Yes. Tulaa requires no login or sign-up. We do not use tracking pixels or cloud servers to store your health data. Everything stays locally on your device, and you have full control to export or delete it at any time."
+        },
+        {
+            "question": "Can I use the app without an internet connection?",
+            "answer": "Absolutely. Tulaa is designed as an offline-first app. Once downloaded, all yoga plans, guided meditations, and wellness tools work perfectly without any data or Wi-Fi."
+        },
+        {
+            "question": "I have a back injury or medical condition. Is it safe to practice?",
+            "answer": "While our plans for back pain, thyroid, and knee strength are designed by experts for therapeutic relief, we strongly recommend consulting your doctor before starting any new physical routine if you have a pre-existing medical condition or acute injury."
+        },
+        {
+            "question": "Does Tulaa offer prenatal and postnatal yoga?",
+            "answer": "Yes, we have specialized expert-guided plans for both prenatal and postnatal care. These sequences focus on gentle movement and strength, but should be practiced mindfully and with your healthcare provider's approval."
+        },
+        {
+            "question": "What is 'Rhythms' in the app?",
+            "answer": "Rhythms is our pressure-free habit builder. Instead of chasing aggressive 'streaks,' Rhythms helps you set gentle daily reminders for things like breathwork, hydration, journaling, or movement to help you find your natural balance."
+        },
+        {
+            "question": "Can I customize the look of the app?",
+            "answer": "Yes! Tulaa is designed to be your personal sanctuary. You can choose from over 30+ soothing themes, various fonts, and backgrounds to make the space reflect your personal mood."
         }
     ],
     "hi": [
         {
-            "question": "क्या Tulaa मेरा हेल्थ डेटा ट्रैक करता है?",
-            "answer": "नहीं। आपका डेटा केवल आपके डिवाइस पर स्टोर होता है। हमारे पास आपके पर्सनल हेल्थ लॉग प्राप्त करने के लिए कोई सर्वर नहीं है।"
+            "question": "Tulaa में योग प्लान कौन तैयार करता है?",
+            "answer": "सभी योग क्रम विशेषज्ञ लतिका बिस्सा (योग में M.A. और B.A.) द्वारा तैयार किए गए हैं, जिन्हें 10 से अधिक वर्षों का अनुभव है। उनके प्लान रिसर्च-आधारित हैं और दुनिया भर के छात्रों द्वारा स्वास्थ्य स्थितियों को मैनेज करने के लिए उपयोग किए जाते हैं।"
         },
         {
-            "question": "क्या ऐप इस्तेमाल करने के लिए वाकई फ्री है?",
-            "answer": "हाँ। योगा प्लान, मेडिटेशन और वेलनेस ट्रैकर्स सहित सभी मुख्य फीचर्स फ्री हैं और ऑफलाइन भी काम करते हैं।"
+            "question": "क्या Tulaa वाकई 100% प्राइवेट है?",
+            "answer": "हाँ। Tulaa को किसी लॉगिन या साइन-अप की आवश्यकता नहीं है। हम आपके हेल्थ डेटा को स्टोर करने के लिए किसी ट्रैकिंग पिक्सेल या क्लाउड सर्वर का उपयोग नहीं करते हैं। सब कुछ आपके डिवाइस पर रहता है, और आपके पास इसे किसी भी समय डिलीट करने का पूरा कंट्रोल है।"
+        },
+        {
+            "question": "क्या मैं इंटरनेट के बिना ऐप का उपयोग कर सकता हूँ?",
+            "answer": "बिल्कुल। Tulaa को एक 'ऑफलाइन-फर्स्ट' ऐप के रूप में डिज़ाइन किया गया है। एक बार डाउनलोड होने के बाद, सभी योग प्लान, मेडिटेशन और वेलनेस टूल्स बिना डेटा या वाई-फाई के बेहतरीन काम करते हैं।"
+        },
+        {
+            "question": "मुझे पीठ में चोट या कोई मेडिकल समस्या है। क्या अभ्यास करना सुरक्षित है?",
+            "answer": "हालांकि पीठ दर्द, थायराइड और घुटने की मजबूती के हमारे प्लान विशेषज्ञों द्वारा राहत के लिए बनाए गए हैं, फिर भी यदि आपको पहले से कोई मेडिकल समस्या या गंभीर चोट है, तो हम किसी भी नए फिजिकल रूटीन को शुरू करने से पहले अपने डॉक्टर से सलाह लेने की दृढ़ता से सिफारिश करते हैं।"
+        },
+        {
+            "question": "क्या Tulaa प्रसव पूर्व (Prenatal) और प्रसवोत्तर (Postnatal) योग प्रदान करता है?",
+            "answer": "हाँ, हमारे पास प्रसव पूर्व और प्रसवोत्तर देखभाल दोनों के लिए विशेष विशेषज्ञ-निर्देशित प्लान हैं। ये क्रम कोमल मूवमेंट और ताकत पर ध्यान केंद्रित करते हैं, लेकिन इनका अभ्यास सावधानी से और अपने डॉक्टर की मंजूरी के साथ किया जाना चाहिए।"
+        },
+        {
+            "question": "ऐप में 'रिदम' (Rhythms) क्या है?",
+            "answer": "रिदम हमारा दबाव-मुक्त आदत बनाने वाला टूल है। आक्रामक 'स्ट्रेक्स' के पीछे भागने के बजाय, रिदम आपको ब्रीथवर्क, पानी पीने, जर्नलिंग या मूवमेंट जैसी चीज़ों के लिए कोमल दैनिक रिमाइंडर सेट करने में मदद करता है।"
+        },
+        {
+            "question": "क्या मैं ऐप के लुक को कस्टमाइज़ कर सकता हूँ?",
+            "answer": "हाँ! Tulaa को आपका निजी स्थान बनाने के लिए डिज़ाइन किया गया है। आप 30+ सुखद थीम्स, विभिन्न फ़ॉन्ट्स और बैकग्राउंड में से चुन सकते हैं ताकि यह ऐप आपके मूड को दर्शा सके।"
         }
     ]
 }

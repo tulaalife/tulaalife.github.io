@@ -10,6 +10,19 @@ interface Props {
 
 const { lang, title, canonicalPath } = Astro.props;
 const faqs = faqData[lang] || faqData.en;
+
+const disclaimer = {
+    en: {
+        title: "Medical Disclaimer",
+        text: "Tulaa is for wellness and education only. It is not a substitute for professional medical advice, diagnosis, or treatment. Consult your doctor before starting any new routine.",
+    },
+    hi: {
+        title: "मेडिकल डिस्क्लेमर",
+        text: "Tulaa केवल वेलनेस और शिक्षा के लिए है। यह मेडिकल सलाह या उपचार का विकल्प नहीं है। कोई भी नया रूटीन शुरू करने से पहले अपने डॉक्टर से सलाह लें।",
+    },
+};
+
+const d = disclaimer[lang] || disclaimer.en;
 ---
 
 <Site
@@ -24,7 +37,7 @@ const faqs = faqData[lang] || faqData.en;
 
         <div class="faq-list">
             {
-                faqs.map((item, index) => (
+                faqs.map((item) => (
                     <details class="faq-item">
                         <summary class="faq-question">
                             {item.question}
@@ -37,6 +50,29 @@ const faqs = faqData[lang] || faqData.en;
                 ))
             }
         </div>
+
+        <footer class="medical-disclaimer">
+            <div class="disclaimer-badge">
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    ><path d="m12 14 4-4"></path><path d="m16 14-4-4"
+                    ></path><path d="m8 14 4-4"></path><path d="m12 14-4-4"
+                    ></path><rect width="20" height="14" x="2" y="6" rx="2"
+                    ></rect><path d="M6 6V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"
+                    ></path></svg
+                >
+                {d.title}
+            </div>
+            <p class="disclaimer-text">{d.text}</p>
+        </footer>
     </div>
 </Site>
 
@@ -44,15 +80,16 @@ const faqs = faqData[lang] || faqData.en;
     .faq-container {
         max-width: 800px;
         margin: 0 auto;
-        padding: 80px 24px;
+        padding: 80px 24px 120px; /* Extra bottom padding */
     }
     .faq-header {
         text-align: center;
-        margin-bottom: 48px;
+        margin-bottom: 56px;
     }
     .page-title {
         font-size: var(--text-h1);
         letter-spacing: -0.03em;
+        font-weight: 800;
     }
 
     .faq-list {
@@ -64,13 +101,13 @@ const faqs = faqData[lang] || faqData.en;
     .faq-item {
         background: var(--bg-sub);
         border: 1px solid var(--border);
-        border-radius: 16px;
+        border-radius: 20px;
         overflow: hidden;
-        transition: all 0.3s ease;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .faq-question {
-        padding: 24px;
+        padding: 24px 28px;
         font-weight: 700;
         cursor: pointer;
         list-style: none;
@@ -78,6 +115,7 @@ const faqs = faqData[lang] || faqData.en;
         justify-content: space-between;
         align-items: center;
         font-size: 1.1rem;
+        color: var(--text-main);
     }
 
     .faq-question::-webkit-details-marker {
@@ -85,21 +123,67 @@ const faqs = faqData[lang] || faqData.en;
     }
 
     .faq-answer {
-        padding: 0 24px 24px;
+        padding: 0 28px 28px;
         color: var(--text-muted);
-        line-height: 1.6;
+        line-height: 1.7;
+        font-size: 1.05rem;
     }
 
     .icon {
-        transition: transform 0.3s ease;
+        transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         color: var(--primary);
+        font-weight: bold;
     }
     .faq-item[open] .icon {
         transform: rotate(180deg);
     }
 
     .faq-item[open] {
-        border-color: var(--primary);
+        border-color: color-mix(in srgb, var(--primary), transparent 60%);
         background: var(--bg-main);
+        box-shadow: var(--shadow);
+    }
+
+    /* --- DISCLAIMER STYLES --- */
+    .medical-disclaimer {
+        margin-top: 80px;
+        padding: 32px;
+        background: var(--bg-sub);
+        border-radius: 24px;
+        border: 1px dashed var(--border);
+        text-align: center;
+    }
+
+    .disclaimer-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        background: color-mix(in srgb, var(--primary), transparent 90%);
+        color: var(--primary);
+        font-size: 0.75rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-radius: 99px;
+        margin-bottom: 16px;
+    }
+
+    .disclaimer-text {
+        font-size: 0.9rem;
+        line-height: 1.6;
+        color: var(--text-muted);
+        max-width: 680px;
+        margin: 0 auto;
+    }
+
+    @media (max-width: 768px) {
+        .faq-container {
+            padding: 48px 20px 80px;
+        }
+        .medical-disclaimer {
+            padding: 24px 16px;
+            margin-top: 60px;
+        }
     }
 </style>
