@@ -1,0 +1,166 @@
+---
+// src/components/AudioListing.astro
+import Site from "../layouts/Site.astro";
+
+interface Props {
+    title: string;
+    description: string;
+    displayAudios: any[];
+    lang: "en" | "hi";
+}
+
+const { title, description, displayAudios, lang } = Astro.props;
+const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
+---
+
+<Site
+    title={`${title} · Tulaa`}
+    description={description}
+    canonicalPath="/audio"
+    hasTranslation={true}
+>
+    <div class="listing-container">
+        <div class="listing-header">
+            <h1 class="page-title">{title}</h1>
+            <p class="page-subtitle">{description}</p>
+        </div>
+
+        <div class="audio-grid">
+            {
+                displayAudios.map((a) => (
+                    <a
+                        href={`${baseHref}/${a.slug}`}
+                        class="audio-card"
+                        aria-label={`Listen to ${a.title}`}
+                    >
+                        <div class="audio-cover">
+                            <img
+                                src={a.image}
+                                alt={a.title}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <div class="play-overlay">
+                                <div class="play-button">▶</div>
+                            </div>
+                        </div>
+                        <div class="audio-content">
+                            <h3 class="audio-title">{a.title}</h3>
+                            <p class="audio-desc">{a.description}</p>
+                        </div>
+                    </a>
+                ))
+            }
+        </div>
+    </div>
+</Site>
+
+<style>
+    /* Paste ALL the CSS from your English index.astro here */
+    .listing-container {
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 60px 24px 80px;
+        min-height: 60vh;
+    }
+    .listing-header {
+        text-align: center;
+        margin-bottom: 60px;
+        max-width: 800px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .page-title {
+        font-size: var(--text-display);
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+    }
+    .page-subtitle {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        line-height: 1.5;
+    }
+    .audio-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 32px;
+    }
+    .audio-card {
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
+        height: 100%;
+    }
+    .audio-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+    }
+    .audio-cover {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+    }
+    .audio-cover img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    .play-overlay {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.25);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    .audio-card:hover .play-overlay {
+        opacity: 1;
+    }
+    .play-button {
+        width: 54px;
+        height: 54px;
+        background: white;
+        color: black;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .audio-content {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+    .audio-title {
+        font-size: 1.25rem;
+        font-weight: var(--fw-bold);
+        margin-bottom: 8px;
+    }
+    .audio-desc {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+    @media (max-width: 600px) {
+        .audio-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>

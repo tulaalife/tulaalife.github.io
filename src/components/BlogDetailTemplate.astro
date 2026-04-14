@@ -1,0 +1,452 @@
+---
+import Site from "../layouts/Site.astro";
+import CTAButton from "./CTAButton.astro";
+import { blogPosts } from "../data/generated";
+import type { BlogPost } from "../data/types";
+import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
+
+interface Props {
+    post: BlogPost;
+    lang: "en" | "hi";
+}
+
+const { post, lang } = Astro.props;
+
+const canonical =
+    lang === "hi" ? `/hi/blog/${post.slug}` : `/blog/${post.slug}`;
+
+const labels = {
+    en: {
+        back: "Back to Blog",
+        writtenBy: "Written by",
+        browse: "Browse Blog",
+        appLabel: "Open in App",
+    },
+    hi: {
+        back: "ब्लॉग पर वापस जाएं",
+        writtenBy: "लेखक",
+        browse: "ब्लॉग ब्राउज़ करें",
+        appLabel: "ऐप में देखें",
+    },
+};
+const t = labels[lang];
+
+const author = {
+    name: "Latika",
+    title:
+        lang === "hi"
+            ? "योग थेरेपिस्ट · 10+ वर्षों का अनुभव"
+            : "Yoga Therapist · 10+ years experience",
+    image: "https://api.tulaa.life/storage/v1/object/public/images/latika_profile.jpg",
+    websiteUrl: "https://yogawithlatika.com",
+    websiteDisplay: "yogawithlatika.com",
+};
+
+const renderContent = (ops: any[]) => {
+    if (!ops || !Array.isArray(ops)) return "";
+    const converter = new QuillDeltaToHtmlConverter(ops, {
+        paragraphTag: "p",
+        inlineStyles: true,
+        encodeHtml: false,
+    });
+    return converter.convert();
+};
+
+const contentAny = post.content as any;
+const ops = Array.isArray(contentAny) ? contentAny : contentAny?.ops || [];
+const contentHtml = renderContent(ops);
+
+// 👉 Reading time
+const readingTime = Math.ceil(
+    contentHtml.replace(/<[^>]*>/g, "").split(" ").length / 200,
+);
+
+const primaryLink = "https://tulaa.app";
+const primaryLabel = post.cta?.text || t.appLabel;
+---
+
+<Site
+    title={post.metaTitle || post.title}
+    description={post.metaDescription || post.excerpt}
+    canonicalPath={canonical}
+    ogImage={post.image}
+    hasTranslation={false}
+>
+    <!-- 🔥 Reading Progress -->
+    <div class="reading-progress"></div>
+
+    <div class="content-shell">
+        <article class="article-card">
+            <nav class="article-nav">
+                <a
+                    href={lang === "hi" ? "/hi/blog" : "/blog"}
+                    class="back-link"
+                >
+                    ← {t.back}
+                </a>
+            </nav>
+
+            <div class="image-frame">
+                <img
+                    src={post.image}
+                    alt={post.title}
+                    width="1200"
+                    height="630"
+                    loading="eager"
+                />
+            </div>
+
+            <div class="article-header">
+                <h1 class="article-title">{post.title}</h1>
+
+                {post.excerpt && <p class="article-subtitle">{post.excerpt}</p>}
+
+                <div class="meta-row">
+                    <span class="reading-time">{readingTime} min read</span>
+                </div>
+            </div>
+
+            <div class="article-body">
+                <div class="rich-text" set:html={contentHtml} />
+            </div>
+
+            <div class="author-bio">
+                <div class="author-avatar-wrap">
+                    <img src={author.image} alt={author.name} loading="lazy" />
+                </div>
+
+                <div class="author-info">
+                    <div class="author-header">
+                        <!-- <span class="author-label">{t.writtenBy}</span> -->
+                        <h3 class="author-name">{author.name}</h3>
+                    </div>
+
+                    <p class="author-creds">{author.title}</p>
+
+                    <a
+                        href={author.websiteUrl}
+                        target="_blank"
+                        rel="noopener"
+                        class="author-link"
+                    >
+                        {author.websiteDisplay}
+                        <svg
+                            class="arrow"
+                            width="12"
+                            height="12"
+                            viewBox="0 0 12 12"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                        >
+                            <path
+                                d="M3.5 8.5L8.5 3.5M8.5 3.5H4.5M8.5 3.5V7.5"
+                                stroke="currentColor"
+                                stroke-width="1.2"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+
+            <footer class="article-footer">
+                <div class="button-group">
+                    <CTAButton
+                        href={primaryLink}
+                        label={primaryLabel}
+                        variant="solid"
+                        size="md"
+                    />
+                    <CTAButton
+                        href={lang === "hi" ? "/hi/blog" : "/blog"}
+                        label={t.browse}
+                        variant="soft"
+                        size="md"
+                    />
+                </div>
+            </footer>
+        </article>
+    </div>
+
+    <!-- 🔥 Reading Progress Script -->
+    <script>
+        document.addEventListener("scroll", () => {
+            const scrollTop = document.documentElement.scrollTop;
+            const height =
+                document.documentElement.scrollHeight -
+                document.documentElement.clientHeight;
+            const progress = (scrollTop / height) * 100;
+
+            // Assert the type as HTMLElement here 👇
+            const el = document.querySelector(
+                ".reading-progress",
+            ) as HTMLElement;
+
+            if (el) {
+                el.style.width = progress + "%";
+            }
+        });
+    </script>
+</Site>
+
+<style>
+    .content-shell {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 0 16px 64px;
+    }
+
+    .article-card {
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
+    }
+
+    .article-nav {
+        padding-top: 16px;
+    }
+
+    .back-link {
+        font-size: 0.9rem;
+        color: var(--text-muted);
+    }
+
+    .image-frame {
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        margin-bottom: 8px;
+    }
+
+    .article-header {
+        text-align: center;
+    }
+
+    .article-title {
+        font-size: clamp(2rem, 5vw, 2.6rem);
+        line-height: 1.2;
+        margin-bottom: 12px;
+    }
+
+    .article-subtitle {
+        font-size: 1.15rem;
+        color: var(--text-muted);
+        line-height: 1.6;
+    }
+
+    .meta-row {
+        margin-top: 10px;
+        font-size: 0.85rem;
+        color: var(--text-muted);
+    }
+
+    .article-body {
+        max-width: 62ch;
+        margin: 0 auto;
+        font-size: 1.125rem;
+        line-height: 1.9;
+        letter-spacing: 0.01em;
+    }
+
+    /* ✨ Rich Text Styling */
+    .rich-text :global(p) {
+        margin-bottom: 1.6em;
+    }
+
+    .rich-text :global(h2) {
+        font-size: 1.6rem;
+        margin: 2.2em 0 0.8em;
+        font-weight: 600;
+    }
+
+    .rich-text :global(h3) {
+        font-size: 1.3rem;
+        margin: 1.8em 0 0.6em;
+    }
+
+    .rich-text :global(ul),
+    .rich-text :global(ol) {
+        margin: 1.5em 0;
+        padding-left: 1.2em;
+    }
+
+    .rich-text :global(li) {
+        margin-bottom: 0.6em;
+        line-height: 1.8;
+    }
+
+    .rich-text :global(a) {
+        color: var(--primary);
+        text-decoration: underline;
+        text-underline-offset: 3px;
+        font-weight: 500;
+    }
+
+    /* ✨ Drop cap */
+    .rich-text :global(p:first-of-type::first-letter) {
+        font-size: 2.8rem;
+        float: left;
+        line-height: 1;
+        padding-right: 6px;
+        font-weight: bold;
+    }
+
+    /* ✨ Premium Author Section */
+    .author-bio {
+        margin-top: 56px;
+        padding: 16px 20px; /* Reduced vertical padding */
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: 12px; /* Slightly tighter radius for a modern look */
+        position: relative;
+        overflow: hidden;
+    }
+
+    /* Add a subtle highlight flare for a "premium" feel */
+    .author-bio::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 255, 255, 0.1),
+            transparent
+        );
+    }
+
+    .author-avatar-wrap {
+        width: 56px; /* Slightly smaller to feel more integrated */
+        height: 56px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        padding: 2px;
+        background: linear-gradient(
+            135deg,
+            var(--primary) 0%,
+            transparent 100%
+        );
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .author-avatar-wrap img {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        object-fit: cover;
+        background: var(--bg);
+    }
+
+    .author-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2px; /* Tight vertical spacing */
+    }
+
+    .author-header {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+    }
+
+    .author-label {
+        font-size: 0.65rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        font-weight: 600;
+    }
+
+    .author-name {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--text-main);
+    }
+
+    .author-creds {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+        margin: 0;
+    }
+
+    .author-link {
+        margin-top: 4px;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--primary);
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 3px;
+        opacity: 0.85;
+        transition: opacity 0.2s ease;
+    }
+
+    .author-link:hover {
+        opacity: 1;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    .author-link .arrow {
+        transition: transform 0.2s ease;
+    }
+
+    .author-link:hover .arrow {
+        transform: translate(1px, -1px);
+    }
+
+    /* Mobile: Keep it compact instead of stacking if possible */
+    @media (max-width: 480px) {
+        .author-bio {
+            gap: 12px;
+            padding: 12px;
+        }
+        .author-header {
+            flex-direction: column;
+            gap: 0;
+        }
+        .author-avatar-wrap {
+            width: 48px;
+            height: 48px;
+        }
+    }
+
+    .app-prompt {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        font-size: 0.9rem;
+        color: var(--text-muted);
+        background: var(--bg-sub);
+        padding: 8px 14px;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    /* 🔥 Reading progress */
+    .reading-progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 3px;
+        width: 0%;
+        background: var(--primary);
+        z-index: 999;
+    }
+</style>

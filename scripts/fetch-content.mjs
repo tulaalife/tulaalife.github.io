@@ -20,16 +20,6 @@ const N_TIPS = 10; // homepage slice size
 const { PREVIEW_VISIBILITIES = 'public' } = process.env;
 const ALLOWED_VIS = PREVIEW_VISIBILITIES.split(',').map(s => s.trim()).filter(Boolean);
 
-// ---- Helpers
-const teaser = (s, max = 160) => {
-    if (!s) return '';
-    const t = String(s).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
-    if (t.length <= max) return t;
-    const cut = t.slice(0, max + 1);
-    const idx = cut.lastIndexOf(' ');
-    return (idx > 0 ? cut.slice(0, idx) : cut.slice(0, max)).trim() + '…';
-};
-
 const toAbs = (s) => (s ?? '').toString().trim();
 const ensureHttps = (u) => (u && /^https?:\/\//i.test(u) ? u : '');
 
@@ -108,7 +98,7 @@ async function loadPlans() {
             language: 'en',
             title: toAbs(r.title),
             subtitle: toAbs(r.subtitle),
-            teaser: teaser(r.description),
+            description: toAbs(r.description),
             benefits: formatBenefits(r.insights),
             image: baseImage,
             deeplink: `tulaa://en/yoga/${baseSlug}`,
@@ -125,7 +115,7 @@ async function loadPlans() {
                     language: tr.lang,
                     title: toAbs(tr.title),
                     subtitle: toAbs(tr.subtitle),
-                    teaser: teaser(tr.description),
+                    description: toAbs(tr.description),
                     benefits: formatBenefits(tr.insights),
                     image: baseImage, // Fallback to base image
                     deeplink: `tulaa://${tr.lang}/yoga/${baseSlug}`,
@@ -140,7 +130,7 @@ async function loadPlans() {
 async function loadAudios() {
     const { data, error } = await sb
         .from(TABLES.audios)
-        .select('slug, language, title, subtitle, description, image_url, updated_at')
+        .select('slug, language, title, subtitle, description, image_url, updated_at, translation_group_id, deeplink')
         .not('slug', 'is', null)
         .not('image_url', 'is', null)
         .order('title', { ascending: true });
@@ -152,11 +142,13 @@ async function loadAudios() {
         return {
             slug: toAbs(r.slug),
             language: lang,
+            translation_group_id: r.translation_group_id, // Essential for linking
             title: toAbs(r.title),
-            subtitle: teaser(r.subtitle),
-            teaser: teaser(r.description),
+            subtitle: toAbs(r.subtitle),
+            description: toAbs(r.description),
             image: ensureHttps(toAbs(r.image_url)),
-            deeplink: `tulaa://audio/${toAbs(r.slug)}`,
+            // Use DB deeplink if available, fallback to slug-based
+            deeplink: r.deeplink || `tulaa://audio/${toAbs(r.slug)}`,
         };
     }).filter(a => a.slug && a.image);
 }
@@ -185,32 +177,45 @@ async function loadPosts() {
     const { data, error } = await sb
         .from(TABLES.posts)
         .select(`
-            slug, title, excerpt, cover_image_url, 
-            status, published_at, language, 
-            seo_title, seo_description, 
-            content, goal_ids, suitable_time_of_day,
-            cta_link, cta_text
+            slug, 
+            title, 
+            excerpt, 
+            cover_image_url, 
+            status, 
+            published_at, 
+            language, 
+            translation_group_id,
+            seo_title, 
+            seo_description, 
+            content, 
+            goal_ids, 
+            suitable_time_of_day,
+            cta_link, 
+            cta_text
         `)
-        .eq('status', 'published')
+        .eq('status', 'published') // Only fetch live content
         .not('slug', 'is', null)
         .order('published_at', { ascending: false });
 
     if (error) throw error;
 
     return (data ?? []).map((r) => {
+        // Fallback logic for SEO metadata
         const metaTitle = r.seo_title || r.title;
         const metaDesc = r.seo_description || r.excerpt || '';
 
         return {
             slug: toAbs(r.slug),
             language: r.language || 'en',
+            translation_group_id: r.translation_group_id,
             title: toAbs(r.title),
             excerpt: toAbs(r.excerpt),
             image: ensureHttps(toAbs(r.cover_image_url)),
             date: r.published_at,
             metaTitle: toAbs(metaTitle),
             metaDescription: toAbs(metaDesc),
-            content: r.content,
+            content: r.content, // Returns the full JSONB (Quill Delta/Block format)
+            // Only provide CTA object if both link and text exist
             cta: (r.cta_link && r.cta_text) ? { link: r.cta_link, text: r.cta_text } : null,
             goals: r.goal_ids || [],
             timeOfDay: r.suitable_time_of_day || [],

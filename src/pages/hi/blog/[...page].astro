@@ -1,0 +1,23 @@
+---
+import BlogListing from "../../../components/BlogListing.astro";
+import { blogPosts } from "../../../data/generated";
+import type { GetStaticPaths } from "astro";
+
+export const getStaticPaths = (async ({ paginate }) => {
+    const hindiPosts = blogPosts
+        .filter((p) => p.language === "hi")
+        .sort(
+            (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        );
+    return paginate(hindiPosts, { pageSize: 12 });
+}) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+
+<BlogListing
+    page={page}
+    lang="hi"
+    title="वेलनेस ब्लॉग"
+    description="योग, नींद और सचेत जीवन पर विशेषज्ञों के विचार।"
+/>

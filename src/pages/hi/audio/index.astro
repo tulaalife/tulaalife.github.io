@@ -1,0 +1,13 @@
+---
+import AudioListing from "../../../components/AudioListing.astro";
+import { guidedAudios } from "../../../data/generated";
+
+const displayAudios = guidedAudios.filter((a) => a.language === "hi");
+---
+
+<AudioListing
+    title="गाइडेड ऑडियो"
+    description="शांति और आराम के लिए कोमल आवाज-निर्देशित सत्र।"
+    displayAudios={displayAudios}
+    lang="hi"
+/>

@@ -5,7 +5,7 @@ export interface YogaPlanPreview {
     language: string;
     title: string;
     subtitle: string;
-    teaser: string;
+    description: string;
     benefits: string;
     image: string;
     deeplink: string;
@@ -14,9 +14,10 @@ export interface YogaPlanPreview {
 export interface GuidedAudioPreview {
     slug: string;
     language: string;
+    translation_group_id: string;
     title: string;
     subtitle: string;
-    teaser: string;
+    description: string;
     image: string;
     deeplink: string;    // tulaa://audio/{slug}
     locale?: Locale;
@@ -36,6 +37,7 @@ export interface TipPreview {
 export interface BlogPost {
     slug: string;
     language: string;
+    translation_group_id: string;
     title: string;
     excerpt: string;
     image: string;
