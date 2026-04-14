@@ -176,8 +176,15 @@ const primaryLabel = post.cta?.text || t.appLabel;
                 document.documentElement.scrollHeight -
                 document.documentElement.clientHeight;
             const progress = (scrollTop / height) * 100;
-            const el = document.querySelector(".reading-progress");
-            if (el) el.style.width = progress + "%";
+
+            // Assert the type as HTMLElement here 👇
+            const el = document.querySelector(
+                ".reading-progress",
+            ) as HTMLElement;
+
+            if (el) {
+                el.style.width = progress + "%";
+            }
         });
     </script>
 </Site>
