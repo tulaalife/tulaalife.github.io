@@ -60,12 +60,22 @@ const getLink = (path: string) => {
 
 // 5. Calculate target URL for the language toggle
 let targetUrl = "/";
+
+// Standardize the path by removing trailing slashes for consistent regex matching
+const cleanPath = currentPath.replace(/\/$/, "") || "/";
+
 if (currentLang === "en") {
-    targetUrl = currentPath === "/" ? "/hi" : `/hi${currentPath}`;
+    // If we are in English, we might be at /yoga OR /en/yoga
+    // We strip /en/ if it exists, then prepend /hi
+    const pathWithoutEn = cleanPath.replace(/^\/en(\/|$)/, "/");
+    targetUrl = pathWithoutEn === "/" ? "/hi" : `/hi${pathWithoutEn}`;
 } else {
-    targetUrl = currentPath.replace(/^\/hi\/?/, "/") || "/";
+    // If we are in Hindi, we strip /hi/ and default to root if it becomes empty
+    targetUrl = cleanPath.replace(/^\/hi(\/|$)/, "/") || "/";
 }
-targetUrl = targetUrl.replace(/\/\//g, "/");
+
+// Final safety check to ensure we never have double slashes
+targetUrl = targetUrl.replace(/\/+/g, "/");
 ---
 
 <!doctype html>
