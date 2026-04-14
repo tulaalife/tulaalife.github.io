@@ -21,11 +21,9 @@ const { plan, canonicalPath, lang, labels, backLink, browseLink } = Astro.props;
 const translations = {
     en: {
         benefitsLabel: "Key Benefits",
-        appNote: "Available exclusively in the Tulaa App",
     },
     hi: {
         benefitsLabel: "मुख्य लाभ",
-        appNote: "विशेष रूप से Tulaa ऐप में उपलब्ध",
     },
 };
 
@@ -118,8 +116,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
             <!-- Footer -->
             <footer class="plan-footer">
-                <p class="app-note">Available exclusively in the Tulaa App</p>
-
                 <div class="button-group">
                     <CTAButton
                         href="https://apps.apple.com/app/id6748626498"
@@ -289,20 +285,11 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
        FOOTER / CTA
     ================================= */
     .plan-footer {
-        margin-top: 32px;
-        padding-top: 32px;
-        border-top: 1px solid var(--border);
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 20px;
         text-align: center;
-    }
-
-    .app-note {
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        opacity: 0.9;
     }
 
     .button-group {
