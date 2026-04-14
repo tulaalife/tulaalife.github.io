@@ -18,6 +18,28 @@ interface Props {
 
 const { plan, canonicalPath, lang, labels, backLink, browseLink } = Astro.props;
 
+const translations = {
+    en: {
+        benefitsLabel: "✦ Key Benefits",
+        appNote: "Available exclusively in the Tulaa App",
+    },
+    hi: {
+        benefitsLabel: "✦ मुख्य लाभ",
+        appNote: "विशेष रूप से Tulaa ऐप में उपलब्ध",
+    },
+};
+
+const t = translations[lang as keyof typeof translations] || translations.en;
+
+// Convert benefits string into an array
+// This assumes benefits are separated by commas or new lines
+const benefitsList = plan.benefits
+    ? plan.benefits
+          .split(/[,\n]/)
+          .map((b) => b.trim())
+          .filter(Boolean)
+    : [];
+
 const finalBackLink = backLink || `/${lang}/yoga`;
 const finalBrowseLink = browseLink || `/${lang}/yoga`;
 ---
@@ -81,10 +103,14 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                 }
 
                 {
-                    plan.benefits && (
+                    benefitsList.length > 0 && (
                         <div class="benefits-module">
-                            <h3 class="benefits-label">✦ Key Benefits</h3>
-                            <p class="benefits-text">{plan.benefits}</p>
+                            <h3 class="benefits-label">{t.benefitsLabel}</h3>
+                            <ul class="benefits-list">
+                                {benefitsList.map((benefit) => (
+                                    <li>{benefit}</li>
+                                ))}
+                            </ul>
                         </div>
                     )
                 }
@@ -215,8 +241,8 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
     }
 
     /* ================================
-       BENEFITS
-    ================================= */
+   BENEFITS
+================================= */
     .benefits-module {
         background: var(--bg-sub);
         border: 1px solid var(--border);
@@ -230,13 +256,32 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         letter-spacing: 0.08em;
         color: var(--primary);
         font-weight: var(--fw-semibold);
-        margin-bottom: 10px;
+        margin-bottom: 16px; /* Increased margin */
     }
 
-    .benefits-text {
+    .benefits-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 12px; /* This creates the separate row spacing */
+    }
+
+    .benefits-list li {
         font-size: 1rem;
-        line-height: 1.7;
+        line-height: 1.5;
         color: var(--text-main);
+        display: flex;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    /* Optional: add a small dot or checkmark prefix */
+    .benefits-list li::before {
+        content: "•";
+        color: var(--primary);
+        font-weight: bold;
     }
 
     /* ================================
