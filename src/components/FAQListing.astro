@@ -23,6 +23,19 @@ const disclaimer = {
 };
 
 const d = disclaimer[lang] || disclaimer.en;
+
+const motivation = {
+    en: {
+        title: "Our Motivation",
+        text: "Tulaa was born from a simple belief: <strong>Wellness shouldn't come at the cost of your privacy.</strong> We built this as a 100% offline sanctuary to bridge the gap between ancient yoga therapy and modern digital freedom. No accounts, no tracking—just authentic healing.",
+    },
+    hi: {
+        title: "हमारी प्रेरणा",
+        text: "तुला (Tulaa) की शुरुआत एक सरल विश्वास के साथ हुई थी: <strong>वेलनेस के लिए आपकी प्राइवेसी से समझौता नहीं होना चाहिए।</strong> हमने इसे प्राचीन योग थेरेपी और आधुनिक डिजिटल स्वतंत्रता के बीच एक सेतु (bridge) के रूप में बनाया है। कोई अकाउंट नहीं, कोई ट्रैकिंग नहीं—बस शुद्ध स्वास्थ्य और शांति।",
+    },
+};
+
+const m = motivation[lang] || motivation.en;
 ---
 
 <Site
@@ -33,6 +46,14 @@ const d = disclaimer[lang] || disclaimer.en;
     <div class="faq-container">
         <div class="faq-header">
             <h1 class="page-title">{title}</h1>
+        </div>
+
+        <div class="faq-philosophy">
+            <span class="philosophy-badge"
+                >{lang === "hi" ? "हमारा विजन" : "OUR VISION"}</span
+            >
+            <h2>{m.title}</h2>
+            <p set:html={m.text} />
         </div>
 
         <div class="faq-list">
@@ -77,6 +98,37 @@ const d = disclaimer[lang] || disclaimer.en;
 </Site>
 
 <style>
+    /* Premium Motivation Styles */
+    .faq-philosophy {
+        text-align: center;
+        max-width: 650px;
+        margin: 0 auto 80px;
+        padding: 0 24px;
+    }
+
+    .philosophy-badge {
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.1em;
+        color: var(--primary);
+        opacity: 0.8;
+        display: block;
+        margin-bottom: 12px;
+    }
+
+    .faq-philosophy h2 {
+        font-size: 2rem;
+        letter-spacing: -0.02em;
+        margin-bottom: 20px;
+        color: var(--text-main);
+    }
+
+    .faq-philosophy p {
+        font-size: 1.15rem;
+        line-height: 1.8;
+        color: var(--text-muted);
+        font-weight: 450;
+    }
     .faq-container {
         max-width: 800px;
         margin: 0 auto;
@@ -100,15 +152,17 @@ const d = disclaimer[lang] || disclaimer.en;
 
     .faq-item {
         background: var(--bg-sub);
-        border: 1px solid var(--border);
+        border: 1px solid var(--border-light); /* Make border softer */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03); /* Add subtle depth */
         border-radius: 20px;
         overflow: hidden;
+        margin-bottom: 12px;
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     .faq-question {
         padding: 24px 28px;
-        font-weight: 700;
+        font-size: 1.05rem;
         cursor: pointer;
         list-style: none;
         display: flex;
@@ -142,6 +196,7 @@ const d = disclaimer[lang] || disclaimer.en;
         border-color: color-mix(in srgb, var(--primary), transparent 60%);
         background: var(--bg-main);
         box-shadow: var(--shadow);
+        transform: translateY(-2px); /* Lift effect */
     }
 
     /* --- DISCLAIMER STYLES --- */
