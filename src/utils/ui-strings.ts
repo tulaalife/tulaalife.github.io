@@ -17,7 +17,7 @@ export const YOGA_UI = {
         // Marketing Section
         heroTitleTop: "Yoga for Every Body,",
         heroTitleBottom: "At Every Stage.",
-        heroBody: "From pregnancy to your golden years, Tulaa adapts to you. Our research-backed plans are designed for real bodies, real pain, and real life.",
+        heroBody: "Scientifically designed yoga for every age & every need.",
         heroImg: "yoga-plans-collage",
         heroImgAlt: "Tulaa Yoga Plans Interface",
         ctaLabel: "Explore All Yoga Plans",
@@ -68,7 +68,7 @@ export const YOGA_UI = {
         // Marketing Section
         heroTitleTop: "हर शरीर के लिए योग,",
         heroTitleBottom: "जीवन के हर पड़ाव पर।",
-        heroBody: "प्रेग्नेंसी से लेकर वरिष्ठ आयु तक, Tulaa आपकी ज़रूरतों के अनुसार ढलता है। हमारे रिसर्च-आधारित प्लान असली शरीर और असली दर्द के लिए हैं।",
+        heroBody: "हर उम्र और ज़रूरत के लिए विज्ञान-आधारित योग।",
         heroImg: "yoga-plans-collage-hi",
         heroImgAlt: "योग प्लान इंटरफेस",
         ctaLabel: "सभी योग प्लान देखें",
