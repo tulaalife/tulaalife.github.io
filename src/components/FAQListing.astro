@@ -11,19 +11,6 @@ interface Props {
 const { lang, title, canonicalPath } = Astro.props;
 const faqs = faqData[lang] || faqData.en;
 
-const disclaimer = {
-    en: {
-        title: "Medical Disclaimer",
-        text: "Tulaa is for wellness and education only. It is not a substitute for professional medical advice, diagnosis, or treatment. Consult your doctor before starting any new routine.",
-    },
-    hi: {
-        title: "मेडिकल डिस्क्लेमर",
-        text: "Tulaa केवल वेलनेस और शिक्षा के लिए है। यह मेडिकल सलाह या उपचार का विकल्प नहीं है। कोई भी नया रूटीन शुरू करने से पहले अपने डॉक्टर से सलाह लें।",
-    },
-};
-
-const d = disclaimer[lang] || disclaimer.en;
-
 const motivation = {
     en: {
         badge: "OUR VISION",
@@ -108,7 +95,7 @@ const m = motivation[lang] || motivation.en;
 
 <style>
     .faq-container {
-        max-width: 680px;
+        max-width: 880px;
         margin: 0 auto;
         padding: 80px 24px 120px;
     }
@@ -216,32 +203,7 @@ const m = motivation[lang] || motivation.en;
         line-height: 1.6;
     }
 
-    /* --- Footer --- */
-    .medical-disclaimer {
-        margin-top: 40px;
-        padding: 24px;
-        text-align: center;
-        opacity: 0.8;
-    }
-
-    .disclaimer-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: var(--text-muted);
-        margin-bottom: 8px;
-    }
-
-    .disclaimer-text {
-        font-size: 0.85rem;
-        color: var(--text-muted);
-        max-width: 500px;
-        margin: 0 auto;
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 600px) {
         .vision-section {
             padding: 24px;
         }
