@@ -26,7 +26,7 @@ interface Props {
         metaPage: string;
         filterLabel: string;
         filterAll: string;
-        filterOffice: string;
+        filterGeneral: string;
         filterSeniors: string;
         filterMedical: string;
     };
@@ -38,7 +38,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
  */
 const availableFilters = [
     { id: "all", label: labels.filterAll, emoji: "✨" },
-    { id: "office", label: labels.filterOffice, emoji: "💻" },
+    { id: "general", label: labels.filterGeneral, emoji: "💻" },
     { id: "seniors", label: labels.filterSeniors, emoji: "🪑" },
     { id: "medical", label: labels.filterMedical, emoji: "🔬" },
 ];
@@ -60,7 +60,7 @@ const availableFilters = [
                                 <button
                                     class="filter-btn"
                                     data-category={g.id}
-                                    onclick={`setFilter('${g.id}')`}
+                                    onclick={`setSort('${g.id}')`}
                                 >
                                     <span class="btn-emoji">{g.emoji}</span>
                                     {g.label}
@@ -141,62 +141,58 @@ const availableFilters = [
 
 <script is:inline>
     const CATEGORY_MAP = {
-        office: ["pain_relief", "stress_relief", "fitness_posture"],
+        general: ["pain_relief", "stress_relief", "fitness_posture"],
         seniors: ["pain_relief", "seniors"],
         medical: ["yoga_therapy", "womens_health"],
     };
 
-    function setFilter(catId, updateUrl = true) {
-        const cards = document.querySelectorAll(".plan-card");
+    function setSort(catId, updateUrl = true) {
+        const grid = document.getElementById("plans-grid");
+        const cards = Array.from(document.querySelectorAll(".plan-card"));
         const buttons = document.querySelectorAll(".filter-btn");
-        const pagination = document.getElementById("listing-pagination");
-        const noResults = document.getElementById("no-results");
+        const targetGoals = CATEGORY_MAP[catId] || [];
 
-        let visibleCount = 0;
-
-        // Toggle Button Active Class
+        // 1. Update Button UI
         buttons.forEach((btn) => {
             btn.classList.toggle(
                 "active",
-                btn.getAttribute("data-category") === catId,
+                btn.getAttribute("data-category") === (catId || "all"),
             );
         });
 
-        // Filter Logic
+        if (!catId || catId === "all") {
+            // Optional: You could restore original order here if needed
+            return;
+        }
+
+        // 2. Sorting Logic: Move matches to the top
+        // We iterate backwards and use prepend to maintain relative order of matches
+        const matches = [];
+        const nonMatches = [];
+
         cards.forEach((card) => {
-            if (catId === "all") {
-                card.style.display = "flex";
-                visibleCount++;
+            const itemGoals = (card.getAttribute("data-goals") || "").split(
+                ",",
+            );
+            const isMatch = targetGoals.some((goal) =>
+                itemGoals.includes(goal),
+            );
+
+            if (isMatch) {
+                matches.push(card);
+                card.classList.add("highlight-match"); // Optional: add a subtle border or glow
             } else {
-                const itemGoals = (card.getAttribute("data-goals") || "").split(
-                    ",",
-                );
-                const targetGoals = CATEGORY_MAP[catId] || [];
-
-                // Matches if the plan contains ANY of the goals in the lifestyle bucket
-                const isMatch = targetGoals.some((goal) =>
-                    itemGoals.includes(goal),
-                );
-
-                if (isMatch) {
-                    card.style.display = "flex";
-                    visibleCount++;
-                } else {
-                    card.style.display = "none";
-                }
+                nonMatches.push(card);
+                card.classList.remove("highlight-match");
             }
         });
 
-        // Hide pagination when filtering locally
-        if (pagination) {
-            pagination.style.display = catId === "all" ? "flex" : "none";
-        }
+        // Clear and Re-append in sorted order
+        grid.innerHTML = "";
+        matches.forEach((card) => grid.appendChild(card));
+        nonMatches.forEach((card) => grid.appendChild(card));
 
-        if (noResults) {
-            noResults.style.display = visibleCount === 0 ? "block" : "none";
-        }
-
-        // URL Sync
+        // 3. URL Sync
         if (updateUrl) {
             const url = new URL(window.location);
             if (catId === "all") {
@@ -212,7 +208,9 @@ const availableFilters = [
     window.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
         const goal = params.get("goal");
-        setFilter(goal || "all", false);
+        if (goal) {
+            setSort(goal, false);
+        }
     });
 </script>
 
@@ -332,6 +330,11 @@ const availableFilters = [
             transform 0.3s ease,
             box-shadow 0.3s ease;
         height: 100%;
+    }
+
+    .plan-card.highlight-match {
+        border-color: var(--primary);
+        background: color-mix(in srgb, var(--primary), transparent 95%);
     }
 
     .plan-card:hover {

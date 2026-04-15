@@ -7,7 +7,7 @@ export const YOGA_UI = {
         filterLabel: "Browse by Lifestyle:",
         filterAll: "All Plans",
         // Broad Categories
-        filterOffice: "Office & Students",
+        filterGeneral: "General Wellness",
         filterSeniors: "Seniors & Beginners",
         filterMedical: "Medical Conditions",
 
@@ -22,7 +22,7 @@ export const YOGA_UI = {
         filterLabel: "लाइफस्टाइल के अनुसार चुनें:",
         filterAll: "सभी प्लान",
         // Broad Categories
-        filterOffice: "ऑफ़िस और छात्र",
+        filterGeneral: "स्वस्थ जीवन",
         filterSeniors: "बुजुर्ग और शुरुआती",
         filterMedical: "मेडिकल स्थितियां",
 
@@ -39,7 +39,7 @@ export type SupportedLang = keyof typeof YOGA_UI;
  * Mapping broader categories to underlying goal_ids
  */
 export const CATEGORY_MAP = {
-    office: ['pain_relief', 'stress_relief', 'fitness_posture'],
+    general: ['pain_relief', 'stress_relief', 'fitness_posture'],
     seniors: ['pain_relief', 'seniors'],
     medical: ['yoga_therapy', 'womens_health'] // Added womens_health here as it fits medical management
 };

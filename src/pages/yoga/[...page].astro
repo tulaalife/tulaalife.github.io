@@ -13,6 +13,32 @@ const { page } = Astro.props;
 const lang = "en";
 const labels = YOGA_UI.en;
 
+// --- NEW SORTING LOGIC ---
+// Get the goal from the URL (e.g., ?goal=medical)
+const url = new URL(Astro.request.url);
+const currentGoal = url.searchParams.get("goal");
+
+const CATEGORY_MAP: Record<string, string[]> = {
+    general: ["pain_relief", "stress_relief", "fitness_posture"],
+    seniors: ["pain_relief", "seniors"],
+    medical: ["yoga_therapy", "womens_health"],
+};
+
+if (currentGoal && CATEGORY_MAP[currentGoal]) {
+    const targetGoals = CATEGORY_MAP[currentGoal];
+
+    // Sort the existing page data so matches are at the top
+    page.data.sort((a, b) => {
+        const aMatch = targetGoals.some((g) => a.goals?.includes(g));
+        const bMatch = targetGoals.some((g) => b.goals?.includes(g));
+
+        if (aMatch && !bMatch) return -1;
+        if (!aMatch && bMatch) return 1;
+        return 0;
+    });
+}
+// -------------------------
+
 const pageTitle = `${labels.title} · ${labels.metaPage} ${page.currentPage}`;
 const canonical =
     page.currentPage === 1 ? `/yoga` : `/yoga/${page.currentPage}`;
