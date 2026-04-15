@@ -403,6 +403,43 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 justify-content: center;
                 font-size: var(--text-sm);
             }
+            .contact-btn {
+                background: none;
+                border: none;
+                font: inherit;
+                color: var(--text-muted);
+                cursor: pointer;
+                transition: color 0.2s ease;
+            }
+
+            .contact-btn:hover {
+                color: var(--text-main);
+                text-decoration: underline;
+            }
+
+            /* 🌿 Toast */
+            .copy-toast {
+                position: fixed;
+                bottom: 24px;
+                left: 50%;
+                transform: translateX(-50%) translateY(20px);
+                background: color-mix(in srgb, var(--bg-sub), transparent 10%);
+                color: var(--text-main);
+                padding: 10px 16px;
+                border-radius: 999px;
+                font-size: 0.85rem;
+                border: 1px solid var(--border);
+                box-shadow: var(--shadow);
+                opacity: 0;
+                pointer-events: none;
+                transition: all 0.3s ease;
+                backdrop-filter: blur(10px);
+            }
+
+            .copy-toast.show {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
         </style>
     </head>
 
@@ -467,12 +504,9 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                         <div class="legal">
                             <a href={getLink("/legal/privacy")}>{t.privacy}</a>
                             <a href={getLink("/legal/terms")}>{t.terms}</a>
-                            <a
-                                href="mailto:contact@tulaalife.com"
-                                data-astro-reload
-                            >
+                            <button class="contact-btn" id="contactBtn">
                                 {t.contact}
-                            </a>
+                            </button>
                         </div>
                         <p style="font-size: 0.8rem; margin-top: 20px; color: var(--text-muted);">
                             © {new Date().getFullYear()} Tulaalife Wellness
@@ -487,13 +521,58 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             declare global {
                 interface Window {
                     toggleTheme: () => void;
+                    copyEmail: () => void;
                 }
             }
 
+            // 🌿 Copy email function (global safe)
+            window.copyEmail = async function () {
+                const email = "contact@tulaalife.com";
+
+                try {
+                    await navigator.clipboard.writeText(email);
+                } catch (e) {
+                    console.error("Clipboard copy failed", e);
+                    return;
+                }
+
+                const toastId = "copyToast";
+                let toast = document.getElementById(toastId);
+
+                const isHindi = document.documentElement.lang === "hi";
+
+                const message = isHindi
+                    ? "ईमेल कॉपी हो गया 💛 आप हमें कभी भी लिख सकते हैं"
+                    : "Email copied 💛 You can write to us anytime";
+
+                if (!toast) {
+                    toast = document.createElement("div");
+                    toast.id = toastId;
+                    toast.className = "copy-toast";
+                    document.body.appendChild(toast);
+                }
+
+                if (toast.classList.contains("show")) return;
+
+                toast.innerText = message;
+                toast.classList.add("show");
+
+                setTimeout(() => {
+                    toast.classList.remove("show");
+                }, 2200);
+            };
+
             document.addEventListener("astro:page-load", () => {
+                // 🌙 Theme toggle
                 const btn = document.getElementById("themeBtn");
                 if (btn) {
                     btn.addEventListener("click", () => window.toggleTheme());
+                }
+
+                // 📩 Contact button
+                const contactBtn = document.getElementById("contactBtn");
+                if (contactBtn) {
+                    contactBtn.addEventListener("click", window.copyEmail);
                 }
             });
         </script>
