@@ -1,6 +1,7 @@
 ---
 import Site from "../layouts/Site.astro";
 import type { Page } from "astro";
+import { CATEGORY_MAP } from "../utils/ui-strings";
 
 interface Plan {
     slug: string;
@@ -8,6 +9,7 @@ interface Plan {
     description: string;
     image: string;
     language?: string;
+    goals: string[];
 }
 
 interface Props {
@@ -36,10 +38,14 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
             <p class="page-subtitle">{labels.description}</p>
         </div>
 
-        <div class="plans-grid">
+        <div class="plans-grid" id="plans-grid">
             {
                 page.data.map((p) => (
-                    <a href={`/${lang}/yoga/${p.slug}`} class="plan-card">
+                    <a
+                        href={`/${lang}/yoga/${p.slug}`}
+                        class="plan-card"
+                        data-goals={p.goals?.join(",")}
+                    >
                         <div class="card-image">
                             <img
                                 src={p.image}
@@ -65,7 +71,11 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
         {
             page.lastPage > 1 && (
-                <nav class="pagination" aria-label="Pagination">
+                <nav
+                    class="pagination"
+                    id="listing-pagination"
+                    aria-label="Pagination"
+                >
                     {page.url.prev ? (
                         <a href={page.url.prev} class="btn-pill">
                             ← {labels.prev}
@@ -91,26 +101,79 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     </main>
 </Site>
 
-<style>
-    /* =========================================
-       LISTING LAYOUT
-       ========================================= */
+<script is:inline define:vars={{ CATEGORY_MAP }}>
+    function applyImplicitSort() {
+        const params = new URLSearchParams(window.location.search);
+        const catId = params.get("goal");
 
+        if (!catId) {
+            return;
+        }
+
+        if (!CATEGORY_MAP[catId]) {
+            return;
+        }
+
+        const grid = document.getElementById("plans-grid");
+        const cards = Array.from(document.querySelectorAll(".plan-card"));
+
+        if (cards.length === 0) {
+            return;
+        }
+
+        const targetGoals = CATEGORY_MAP[catId];
+        const matches = [];
+        const nonMatches = [];
+
+        cards.forEach((card) => {
+            const itemGoals = (card.getAttribute("data-goals") || "").split(
+                ",",
+            );
+            const isMatch = targetGoals.some((goal) =>
+                itemGoals.includes(goal),
+            );
+
+            if (isMatch) {
+                matches.push(card);
+                card.classList.add("highlight-match");
+            } else {
+                nonMatches.push(card);
+            }
+        });
+
+        if (matches.length > 0) {
+            grid.innerHTML = "";
+            matches.forEach((card) => grid.appendChild(card));
+            nonMatches.forEach((card) => grid.appendChild(card));
+        }
+    }
+
+    applyImplicitSort();
+
+    // Attempt 2: DOMContentLoaded
+    window.addEventListener("DOMContentLoaded", () => {
+        applyImplicitSort();
+    });
+
+    // Attempt 3: View Transitions (If you use Astro View Transitions)
+    document.addEventListener("astro:page-load", () => {
+        applyImplicitSort();
+    });
+</script>
+
+<style>
     .listing-container {
         max-width: var(--container-width);
         margin: 0 auto;
         padding: 60px 24px 80px;
     }
 
-    /* Header Styles */
     .listing-header {
         text-align: center;
-        margin-bottom: 60px;
+        margin-bottom: 60px; /* Increased margin since filter buttons are gone */
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
-        /* Ensure it behaves like a normal block */
-        position: relative;
     }
 
     .page-title {
@@ -126,16 +189,11 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         line-height: 1.5;
     }
 
-    /* Grid System */
     .plans-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 32px;
     }
-
-    /* =========================================
-       PLAN CARD
-       ========================================= */
 
     .plan-card {
         display: flex;
@@ -148,39 +206,36 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         color: inherit;
         transition:
             transform 0.3s ease,
-            box-shadow 0.3s ease,
-            border-color 0.3s;
+            box-shadow 0.3s ease;
         height: 100%;
+    }
+
+    /* Subtle highlight for prioritized plans */
+    .plan-card.highlight-match {
+        border-color: var(--primary);
+        background: color-mix(in srgb, var(--primary), transparent 97%);
     }
 
     .plan-card:hover {
         transform: translateY(-4px);
         box-shadow: var(--shadow);
-        border-color: color-mix(in srgb, var(--primary), transparent 70%);
+        border-color: var(--primary);
     }
 
-    /* Image - Fixed 4:3 Aspect Ratio */
     .card-image {
         position: relative;
-        width: 100%;
         aspect-ratio: 4/3;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
-        background: var(--bg-main);
     }
 
     .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transition: transform 0.5s ease;
     }
 
-    .plan-card:hover .card-image img {
-        transform: scale(1.06);
-    }
-
-    /* Content Area */
     .card-content {
         padding: 24px;
         display: flex;
@@ -190,10 +245,8 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
     .card-title {
         font-size: 1.35rem;
-        font-weight: var(--fw-bold);
+        font-weight: 700;
         margin-bottom: 10px;
-        line-height: 1.2;
-        letter-spacing: -0.01em;
     }
 
     .card-desc {
@@ -201,32 +254,16 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         color: var(--text-muted);
         line-height: 1.6;
         margin-bottom: 24px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
         flex-grow: 1;
     }
 
-    /* Footer / Link */
     .card-footer {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 0.95rem;
         font-weight: 600;
         color: var(--primary);
-        margin-top: auto;
     }
-
-    .plan-card:hover .icon {
-        transform: translateX(4px);
-        transition: transform 0.2s ease;
-    }
-
-    /* =========================================
-       PAGINATION
-       ========================================= */
 
     .pagination {
         margin-top: 80px;
@@ -236,48 +273,23 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         gap: 20px;
     }
 
-    .page-meta {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        font-variant-numeric: tabular-nums;
-    }
-
     .btn-pill {
-        display: inline-flex;
-        align-items: center;
         padding: 10px 24px;
         border-radius: 999px;
-        font-size: 0.95rem;
-        font-weight: 500;
+        border: 1px solid var(--border);
         text-decoration: none;
         color: var(--text-main);
-        background: var(--bg-main);
-        border: 1px solid var(--border);
-        transition: all 0.2s;
-    }
-
-    .btn-pill:not(.disabled):hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        background: var(--bg-sub);
+        font-weight: 500;
     }
 
     .btn-pill.disabled {
         opacity: 0.5;
         cursor: not-allowed;
-        background: transparent;
     }
 
-    /* Mobile Tweaks */
     @media (max-width: 600px) {
-        .listing-container {
-            padding-top: 40px;
-        }
         .plans-grid {
             grid-template-columns: 1fr;
-        }
-        .listing-header {
-            margin-bottom: 40px;
         }
     }
 </style>

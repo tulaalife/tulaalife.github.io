@@ -1,11 +1,8 @@
 ---
 import YogaListing from "../../components/YogaListing.astro";
 import { yogaPlans } from "../../data/generated";
-import type { Page, GetStaticPaths } from "astro";
-
-interface Props {
-    page: Page<(typeof yogaPlans)[number]>;
-}
+import { YOGA_UI, CATEGORY_MAP } from "../../utils/ui-strings";
+import type { GetStaticPaths } from "astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const englishPlans = yogaPlans.filter((p) => p.language === "en");
@@ -14,27 +11,38 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 const lang = "en";
+const labels = YOGA_UI.en;
 
-const t = {
-    title: "Yoga Plans",
-    description:
-        "Expert-guided sequences for every need — from pain relief to prenatal care.",
-    view: "View Plan",
-    prev: "← Previous",
-    next: "Next →",
-    metaPage: "Page",
-};
+// --- SERVER-SIDE SORTING LOGIC ---
+// Get the goal from the URL (e.g., ?goal=medical)
+const url = new URL(Astro.request.url);
+const currentGoal = url.searchParams.get("goal");
 
-const pageTitle = `${t.title} · ${t.metaPage} ${page.currentPage}`;
+if (currentGoal && CATEGORY_MAP[currentGoal]) {
+    const targetGoals = CATEGORY_MAP[currentGoal];
+
+    // Sort the existing page data so matches appear at the top of the initial HTML
+    page.data.sort((a, b) => {
+        const aMatch = targetGoals.some((g) => a.goals?.includes(g));
+        const bMatch = targetGoals.some((g) => b.goals?.includes(g));
+
+        if (aMatch && !bMatch) return -1;
+        if (!aMatch && bMatch) return 1;
+        return 0;
+    });
+}
+// ---------------------------------
+
+const pageTitle = `${labels.title} · ${labels.metaPage} ${page.currentPage}`;
 const canonical =
-    page.currentPage === 1 ? `/en/yoga` : `/en/yoga/${page.currentPage}`;
+    page.currentPage === 1 ? `/yoga` : `/yoga/${page.currentPage}`;
 ---
 
 <YogaListing
     page={page}
     title={pageTitle}
-    description={t.description}
+    description={labels.description}
     canonicalPath={canonical}
     lang={lang}
-    labels={t}
+    labels={labels}
 />

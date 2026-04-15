@@ -1,14 +1,15 @@
 ---
 import YogaListing from "../../../components/YogaListing.astro";
 import { yogaPlans } from "../../../data/generated";
-import type { Page, GetStaticPaths } from "astro";
-
-interface Props {
-    page: Page<(typeof yogaPlans)[number]>;
-}
+import {
+    YOGA_UI,
+    CATEGORY_MAP,
+    type SupportedLang,
+} from "../../../utils/ui-strings";
+import type { GetStaticPaths } from "astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
-    const languages = ["en", "hi"];
+    const languages = Object.keys(YOGA_UI);
     return languages.flatMap((lang) => {
         const langPlans = yogaPlans.filter((p) => p.language === lang);
         return paginate(langPlans, { params: { lang }, pageSize: 20 });
@@ -16,30 +17,30 @@ export const getStaticPaths = (async ({ paginate }) => {
 }) satisfies GetStaticPaths;
 
 const { page } = Astro.props;
-const { lang } = Astro.params;
+const { lang = "en" } = Astro.params;
 
-const LABELS = {
-    hi: {
-        title: "योग कार्यक्रम",
-        description:
-            "हर दिन की ज़रूरतों के लिए प्रभावी, विज्ञान-आधारित योग योजनाएँ",
-        view: "योजना देखें",
-        prev: "← पिछला",
-        next: "अगला →",
-        metaPage: "पेज",
-    },
-};
+const labels = YOGA_UI[lang as SupportedLang] || YOGA_UI.en;
 
-const t = LABELS[lang as keyof typeof LABELS] || {
-    title: "Yoga Plans",
-    description: "Effective, science-backed yoga plans for everyday needs.",
-    view: "View Plan",
-    prev: "← Previous",
-    next: "Next →",
-    metaPage: "Page",
-};
+// --- SERVER-SIDE SORTING LOGIC ---
+const url = new URL(Astro.request.url);
+const currentGoal = url.searchParams.get("goal");
 
-const pageTitle = `${t.title} · ${t.metaPage} ${page.currentPage}`;
+// Use the centralized CATEGORY_MAP for server-side initial sort
+if (currentGoal && CATEGORY_MAP[currentGoal]) {
+    const targetGoals = CATEGORY_MAP[currentGoal];
+
+    page.data.sort((a, b) => {
+        const aMatch = targetGoals.some((g) => a.goals?.includes(g));
+        const bMatch = targetGoals.some((g) => b.goals?.includes(g));
+
+        if (aMatch && !bMatch) return -1;
+        if (!aMatch && bMatch) return 1;
+        return 0;
+    });
+}
+// ---------------------------------
+
+const pageTitle = `${labels.title} · ${labels.metaPage} ${page.currentPage}`;
 const canonical =
     page.currentPage === 1
         ? `/${lang}/yoga`
@@ -49,8 +50,8 @@ const canonical =
 <YogaListing
     page={page}
     title={pageTitle}
-    description={t.description}
+    description={labels.description}
     canonicalPath={canonical}
     lang={lang}
-    labels={t}
+    labels={labels}
 />
