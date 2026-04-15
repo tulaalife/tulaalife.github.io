@@ -22,32 +22,32 @@ export const YOGA_UI = {
         heroImgAlt: "Tulaa Yoga Plans Interface",
         ctaLabel: "Explore All Yoga Plans",
         features: {
-            womens: {
-                title: "Women's Health & Wellness",
-                desc: "Specialized care for PCOS, Menstrual comfort, and all Prenatal trimesters.",
-                icon: "✨",
-                color: "rgba(236, 72, 153, 0.15)",
-                link: "/yoga?goal=womens"
-            },
             pain: {
-                title: "Therapeutic Pain Relief",
-                desc: "Fix 'Tech Neck', Sciatica, and Lower Back stiffness with targeted flows.",
-                icon: "🧘",
-                color: "rgba(99, 102, 241, 0.15)",
+                title: "Pain Management",
+                desc: "Targeted relief for Back, Neck, and Joint pain.",
+                icon: "🌿",
+                color: "rgba(79, 70, 229, 0.1)",
                 link: "/yoga?goal=general"
             },
+            womens: {
+                title: "Women’s Wellness",
+                desc: "Care for PCOS, Pregnancy, and Hormone Balance.",
+                icon: "🌸",
+                color: "rgba(219, 39, 119, 0.1)",
+                link: "/yoga?goal=womens"
+            },
             seniors: {
-                title: "Seniors & Gentle Aging",
-                desc: "Maintain independence with Chair Yoga, Arthritis care, and Balance routines.",
-                icon: "🦯",
-                color: "rgba(34, 197, 94, 0.15)",
+                title: "Seniors & Beginners",
+                desc: "Gentle routines for Mobility, Balance, and Vitality.",
+                icon: "✨",
+                color: "rgba(22, 163, 74, 0.1)",
                 link: "/yoga?goal=seniors"
             },
             medical: {
-                title: "Metabolic & Spine Care",
-                desc: "Scientific management for Diabetes, Thyroid, and Scoliosis alignment.",
-                icon: "🔬",
-                color: "rgba(20, 184, 166, 0.15)",
+                title: "Therapeutic Care",
+                desc: "Scientific support for Diabetes, High BP & Spine.",
+                icon: "🧬",
+                color: "rgba(13, 148, 136, 0.1)",
                 link: "/yoga?goal=medical"
             }
         }
@@ -73,32 +73,32 @@ export const YOGA_UI = {
         heroImgAlt: "योग प्लान इंटरफेस",
         ctaLabel: "सभी योग प्लान देखें",
         features: {
-            womens: {
-                title: "महिला स्वास्थ्य और कल्याण",
-                desc: "PCOS, मासिक धर्म में राहत और प्रेगनेंसी के सभी चरणों के लिए विशेष योग।",
-                icon: "✨",
-                color: "rgba(236, 72, 153, 0.15)",
-                link: "/hi/yoga?goal=womens"
-            },
             pain: {
-                title: "दर्द से वैज्ञानिक राहत",
-                desc: "'टेक नेक', साइटिका और कमर दर्द के लिए खास तौर पर तैयार रूटीन।",
-                icon: "🧘",
-                color: "rgba(99, 102, 241, 0.15)",
+                title: "दर्द प्रबंधन",
+                desc: "कमर, गर्दन और जोड़ों के दर्द से वैज्ञानिक राहत।",
+                icon: "🌿",
+                color: "rgba(79, 70, 229, 0.1)",
                 link: "/hi/yoga?goal=general"
             },
+            womens: {
+                title: "महिला स्वास्थ्य",
+                desc: "PCOS, प्रेगनेंसी और हार्मोनल संतुलन के लिए विशेष देखभाल।",
+                icon: "🌸",
+                color: "rgba(219, 39, 119, 0.1)",
+                link: "/hi/yoga?goal=womens"
+            },
             seniors: {
-                title: "बुजुर्गों के लिए सुरक्षित योग",
-                desc: "चेयर योगा, गठिया (Arthritis) की देखभाल और संतुलन सुधारने के लिए।",
-                icon: "🦯",
-                color: "rgba(34, 197, 94, 0.15)",
+                title: "बुजुर्ग और शुरुआती",
+                desc: "बेहतर गतिशीलता, संतुलन और ऊर्जा के लिए सुरक्षित योग।",
+                icon: "✨",
+                color: "rgba(22, 163, 74, 0.1)",
                 link: "/hi/yoga?goal=seniors"
             },
             medical: {
-                title: "मेटाबॉलिक और स्पाइन केयर",
-                desc: "डायबिटीज, थायराइड और रीढ़ की हड्डी की देखभाल के लिए वैज्ञानिक समाधान।",
-                icon: "🔬",
-                color: "rgba(20, 184, 166, 0.15)",
+                title: "थेरेप्यूटिक केयर",
+                desc: "डायबिटीज, हाई बीपी, स्पाइन हेल्थ के लिए वैज्ञानिक योग।",
+                icon: "🧬",
+                color: "rgba(13, 148, 136, 0.1)",
                 link: "/hi/yoga?goal=medical"
             }
         }
