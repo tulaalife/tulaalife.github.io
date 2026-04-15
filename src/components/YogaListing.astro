@@ -29,6 +29,7 @@ interface Props {
         filterGeneral: string;
         filterSeniors: string;
         filterMedical: string;
+        filterWomens: string;
     };
 }
 
@@ -109,7 +110,8 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     const CATEGORY_MAP = {
         general: ["pain_relief", "stress_relief", "fitness_posture"],
         seniors: ["seniors", "pain_relief"],
-        medical: ["womens_health", "yoga_therapy"],
+        medical: ["yoga_therapy"],
+        womens: ["womens_health"],
     };
 
     function setSort(catId, updateUrl = true) {

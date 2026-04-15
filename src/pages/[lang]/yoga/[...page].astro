@@ -23,8 +23,9 @@ const currentGoal = url.searchParams.get("goal");
 
 const CATEGORY_MAP: Record<string, string[]> = {
     general: ["pain_relief", "stress_relief", "fitness_posture"],
-    seniors: ["pain_relief", "seniors"],
-    medical: ["yoga_therapy", "womens_health"],
+    seniors: ["seniors", "pain_relief"],
+    medical: ["yoga_therapy"],
+    womens: ["womens_health"],
 };
 
 if (currentGoal && CATEGORY_MAP[currentGoal]) {
