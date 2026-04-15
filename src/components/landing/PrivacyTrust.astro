@@ -1,4 +1,6 @@
 ---
+import SectionCTA from "../SectionCTA.astro";
+
 // 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
@@ -96,6 +98,13 @@ const isHindi = currentLang === "hi";
                     </div>
                 ))
             }
+        </div>
+        <div style="display: flex; justify-content: center; margin-top: 48px;">
+            <SectionCTA
+                href="/faq"
+                labelEn="Frequently Asked Questions"
+                labelHi="अक्सर पूछे जाने वाले प्रश्न"
+            />
         </div>
     </div>
 </section>

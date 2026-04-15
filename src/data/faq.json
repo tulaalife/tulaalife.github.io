@@ -1,0 +1,62 @@
+{
+    "en": [
+        {
+            "question": "Who designs the yoga plans in Tulaa?",
+            "answer": "Our sequences are curated by Latika Bissa, an International Yoga Therapist and Gold Medalist with over 10 years of experience. Holding both a B.Sc. and M.Sc. in Yoga Therapy, Latika has transformed more than 5,000 lives globally. Her routines are gentle and practical, specifically designed to address everyday health challenges such as back pain, sciatica, thyroid balance, and prenatal care."
+        },
+        {
+            "question": "Is Tulaa really 100% private?",
+            "answer": "Yes. We don't ask for your email or phone number. There is no sign-up required. Your health data is stored locally on your device, not on our servers. We do not sell data to ad networks or third parties. You stay completely anonymous."
+        },
+        {
+            "question": "Which health trackers are included in the app?",
+            "answer": "Tulaa replaces 5+ apps by integrating a Cycle Tracker (period & symptom logging), Intermittent Fasting timer, Water Tracker, Mood Journal, and 'Rhythms' for habit building—all in one place."
+        },
+        {
+            "question": "Can I use Tulaa without internet?",
+            "answer": "Absolutely. Tulaa is 'Offline-First.' Once downloaded, every yoga plan, guided meditation, and tracking tool works perfectly without Wi-Fi or mobile data."
+        },
+        {
+            "question": "I have a medical condition. Is it safe to practice?",
+            "answer": "Our plans for back pain, knees, and chronic conditions are expertly designed for relief. However, if you have an acute injury or pre-existing condition, please consult your doctor before starting any new physical routine."
+        },
+        {
+            "question": "Can I customize the app's appearance?",
+            "answer": "Yes. You can choose from 30+ free themes, fonts, and backgrounds. Tulaa is designed to be your personal sanctuary, and we want the app to match your vibes."
+        },
+        {
+            "question": "Can I export my data?",
+            "answer": "Always. You have full control. You can export your health logs or delete all your data instantly from within the app settings at any time."
+        }
+    ],
+    "hi": [
+        {
+            "question": "तुला (Tulaa) के योग प्लान कौन तैयार करता है?",
+            "answer": "हमारे सभी योग अभ्यास अंतरराष्ट्रीय योग थेरेपिस्ट और गोल्ड मेडलिस्ट लतिका बिस्सा द्वारा तैयार किए जाते हैं। योग थेरेपी में B.Sc. और M.Sc. की डिग्री और 10 से अधिक वर्षों के अनुभव के साथ, लतिका ने दुनिया भर में 5,000 से अधिक लोगों के जीवन में सकारात्मक बदलाव लाया है। उनके द्वारा बनाए गए अभ्यास सरल और प्रभावी हैं, जो विशेष रूप से पीठ दर्द, साइटिका, थायराइड संतुलन और प्रसव पूर्व देखभाल जैसी रोजमर्रा की स्वास्थ्य चुनौतियों के समाधान के लिए डिज़ाइन किए गए हैं।"
+        },
+        {
+            "question": "क्या Tulaa वाकई 100% प्राइवेट है?",
+            "answer": "हाँ। हम आपका ईमेल या फोन नंबर नहीं मांगते हैं। किसी साइन-अप की आवश्यकता नहीं है। आपका हेल्थ डेटा आपके डिवाइस पर स्टोर होता है, हमारे सर्वर पर नहीं। हम विज्ञापन नेटवर्क को डेटा नहीं बेचते हैं। आप पूरी तरह से गुमनाम रहते हैं।"
+        },
+        {
+            "question": "ऐप में कौन से हेल्थ ट्रैकर्स शामिल हैं?",
+            "answer": "Tulaa 5 से अधिक ऐप्स की जगह लेता है। इसमें साइकिल ट्रैकर (पीरियड और लक्षणों के लिए), इंटरमिटेंट फास्टिंग टाइमर, वाटर ट्रैकर, मूड जर्नल और आदत बनाने के लिए 'रिदम'—सब एक ही स्थान पर हैं।"
+        },
+        {
+            "question": "क्या मैं इंटरनेट के बिना Tulaa का उपयोग कर सकता हूँ?",
+            "answer": "बिल्कुल। Tulaa 'ऑफलाइन-फर्स्ट' है। एक बार डाउनलोड होने के बाद, हर योग प्लान, मेडिटेशन और ट्रैकिंग टूल बिना वाई-फाई या मोबाइल डेटा के बेहतरीन काम करता है।"
+        },
+        {
+            "question": "मुझे कोई मेडिकल समस्या है। क्या अभ्यास करना सुरक्षित है?",
+            "answer": "पीठ दर्द, घुटनों और पुरानी स्थितियों के लिए हमारे प्लान राहत के लिए विशेषज्ञ रूप से डिज़ाइन किए गए हैं। फिर भी, यदि आपको कोई गंभीर चोट या मेडिकल समस्या है, तो कृपया कोई भी नया फिजिकल रूटीन शुरू करने से पहले अपने डॉक्टर से सलाह लें।"
+        },
+        {
+            "question": "क्या मैं ऐप के लुक को कस्टमाइज़ कर सकता हूँ?",
+            "answer": "हाँ। आप 30+ फ्री थीम्स, फ़ॉन्ट्स और बैकग्राउंड में से चुन सकते हैं। Tulaa को आपका निजी स्थान बनाने के लिए डिज़ाइन किया गया है, और हम चाहते हैं कि ऐप उतना ही शांत दिखे जितना आप महसूस करते हैं।"
+        },
+        {
+            "question": "क्या मैं अपना डेटा एक्सपोर्ट कर सकता हूँ?",
+            "answer": "हमेशा। आपके पास पूरा कंट्रोल है। आप किसी भी समय ऐप सेटिंग्स के भीतर से अपने हेल्थ लॉग एक्सपोर्ट कर सकते हैं या अपना सारा डेटा तुरंत डिलीट कर सकते हैं।"
+        }
+    ]
+}
