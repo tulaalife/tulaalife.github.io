@@ -1,11 +1,8 @@
 ---
 import YogaListing from "../../components/YogaListing.astro";
 import { yogaPlans } from "../../data/generated";
-import type { Page, GetStaticPaths } from "astro";
-
-interface Props {
-    page: Page<(typeof yogaPlans)[number]>;
-}
+import { YOGA_UI } from "../../utils/ui-strings";
+import type { GetStaticPaths } from "astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
     const englishPlans = yogaPlans.filter((p) => p.language === "en");
@@ -14,27 +11,18 @@ export const getStaticPaths = (async ({ paginate }) => {
 
 const { page } = Astro.props;
 const lang = "en";
+const labels = YOGA_UI.en;
 
-const t = {
-    title: "Yoga Plans",
-    description:
-        "Expert-guided sequences for every need — from pain relief to prenatal care.",
-    view: "View Plan",
-    prev: "← Previous",
-    next: "Next →",
-    metaPage: "Page",
-};
-
-const pageTitle = `${t.title} · ${t.metaPage} ${page.currentPage}`;
+const pageTitle = `${labels.title} · ${labels.metaPage} ${page.currentPage}`;
 const canonical =
-    page.currentPage === 1 ? `/en/yoga` : `/en/yoga/${page.currentPage}`;
+    page.currentPage === 1 ? `/yoga` : `/yoga/${page.currentPage}`;
 ---
 
 <YogaListing
     page={page}
     title={pageTitle}
-    description={t.description}
+    description={labels.description}
     canonicalPath={canonical}
     lang={lang}
-    labels={t}
+    labels={labels}
 />

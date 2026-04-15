@@ -69,11 +69,11 @@ const sb = createClient(SUPABASE_URL, SUPABASE_SERVICE_KEY, { auth: { persistSes
 // ---- Loads
 
 async function loadPlans() {
-    // 1. Fetch Plans AND their Translations
     const { data, error } = await sb
         .from(TABLES.plans)
         .select(`
             slug, title, subtitle, description, insights, image_url, visibility,
+            goal_ids, // <--- Add this
             plan_translations (
                 lang, title, subtitle, description, insights
             )
@@ -89,10 +89,10 @@ async function loadPlans() {
     (data ?? []).forEach((r) => {
         const baseSlug = toAbs(r.slug);
         const baseImage = ensureHttps(toAbs(r.image_url));
+        const goals = r.goal_ids || [];
 
         if (!baseSlug || !baseImage) return;
 
-        // 2. Add Base English Version
         results.push({
             slug: baseSlug,
             language: 'en',
@@ -102,23 +102,23 @@ async function loadPlans() {
             benefits: formatBenefits(r.insights),
             image: baseImage,
             deeplink: `tulaa://en/yoga/${baseSlug}`,
+            goals: goals,
         });
 
-        // 3. Add Translations (if any)
         if (Array.isArray(r.plan_translations)) {
             r.plan_translations.forEach((tr) => {
-                // Ensure we have minimal required fields for a valid page
                 if (!tr.title || !tr.lang) return;
 
                 results.push({
-                    slug: baseSlug, // Keeps same slug as English
+                    slug: baseSlug,
                     language: tr.lang,
                     title: toAbs(tr.title),
                     subtitle: toAbs(tr.subtitle),
                     description: toAbs(tr.description),
                     benefits: formatBenefits(tr.insights),
-                    image: baseImage, // Fallback to base image
+                    image: baseImage,
                     deeplink: `tulaa://${tr.lang}/yoga/${baseSlug}`,
+                    goals: goals,
                 });
             });
         }

@@ -18,6 +18,7 @@ const ui = {
                 desc: 'Instant relief for "Tech Neck," Eye Strain, and Lower Back pain.',
                 icon: "💻",
                 color: "rgba(99, 102, 241, 0.15)",
+                link: "/yoga?goal=office",
             },
             {
                 id: "seniors",
@@ -25,13 +26,15 @@ const ui = {
                 desc: "Gentle Chair Yoga, Arthritis care, and Balance improvement routines.",
                 icon: "🪑",
                 color: "rgba(34, 197, 94, 0.15)",
+                link: "/yoga?goal=seniors",
             },
             {
-                id: "chronic",
-                title: "For Chronic Conditions",
+                id: "medical",
+                title: "For Medical Conditions",
                 desc: "Scientific management for PCOS, Diabetes, Thyroid, and Blood Pressure.",
                 icon: "🔬",
                 color: "rgba(236, 72, 153, 0.15)",
+                link: "/yoga?goal=medical",
             },
         ],
     },
@@ -49,6 +52,7 @@ const ui = {
                 desc: "'टेक नेक', आंखों के तनाव और कमर दर्द से तुरंत राहत।",
                 icon: "💻",
                 color: "rgba(99, 102, 241, 0.15)",
+                link: "/hi/yoga?goal=office",
             },
             {
                 id: "seniors",
@@ -56,13 +60,15 @@ const ui = {
                 desc: "चेयर योगा, गठिया (Arthritis) की देखभाल और सुरक्षित रूटीन।",
                 icon: "🪑",
                 color: "rgba(34, 197, 94, 0.15)",
+                link: "/hi/yoga?goal=seniors",
             },
             {
-                id: "chronic",
-                title: "दीर्घकालिक रोगों के लिए",
+                id: "medical",
+                title: "मेडिकल स्थितियों के लिए",
                 desc: "PCOS, डायबिटीज और थायराइड के लिए वैज्ञानिक योग सहायता।",
                 icon: "🔬",
                 color: "rgba(236, 72, 153, 0.15)",
+                link: "/hi/yoga?goal=medical",
             },
         ],
     },
@@ -89,7 +95,8 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
                 <div class="feature-list">
                     {
                         t.features.map((feature) => (
-                            <div
+                            <a
+                                href={feature.link}
                                 class="feature-card"
                                 style={`--card-accent: ${feature.color}`}
                             >
@@ -102,7 +109,7 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
                                 <span class="bg-icon" aria-hidden="true">
                                     {feature.icon}
                                 </span>
-                            </div>
+                            </a>
                         ))
                     }
                 </div>
@@ -219,6 +226,8 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
         display: flex;
         align-items: center;
         z-index: 1;
+        text-decoration: none; /* Reset for <a> */
+        cursor: pointer;
     }
 
     :root[data-theme="dark"] .feature-card {
@@ -231,6 +240,7 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
 
     .feature-card:hover {
         transform: translateX(8px);
+        border-color: var(--primary);
     }
 
     .card-content {
@@ -281,9 +291,8 @@ const desktopImg = `/images/desktop/${t.baseImg}.webp`;
             gap: 32px;
         }
 
-        /* Order logic: Title/Body(1) -> Image(2) -> Features(3) -> CTA(4) */
         .text-col {
-            display: contents; /* Allows children to participate in flex layout */
+            display: contents;
         }
 
         .section-title {

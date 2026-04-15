@@ -8,6 +8,7 @@ interface Plan {
     description: string;
     image: string;
     language?: string;
+    goals: string[];
 }
 
 interface Props {
@@ -23,10 +24,24 @@ interface Props {
         prev: string;
         next: string;
         metaPage: string;
+        filterLabel: string;
+        filterAll: string;
+        filterOffice: string;
+        filterSeniors: string;
+        filterMedical: string;
     };
 }
 
 const { page, title, description, canonicalPath, lang, labels } = Astro.props;
+
+/** * These IDs match the keys in CATEGORY_MAP below
+ */
+const availableFilters = [
+    { id: "all", label: labels.filterAll, emoji: "✨" },
+    { id: "office", label: labels.filterOffice, emoji: "💻" },
+    { id: "seniors", label: labels.filterSeniors, emoji: "🪑" },
+    { id: "medical", label: labels.filterMedical, emoji: "🔬" },
+];
 ---
 
 <Site title={title} description={description} canonicalPath={canonicalPath}>
@@ -34,12 +49,37 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         <div class="listing-header">
             <h1 class="page-title">{labels.title}</h1>
             <p class="page-subtitle">{labels.description}</p>
+
+            <div class="filter-section">
+                <p class="filter-heading">{labels.filterLabel}</p>
+
+                <div class="filter-wrapper">
+                    <div class="filter-bar" id="filter-bar">
+                        {
+                            availableFilters.map((g) => (
+                                <button
+                                    class="filter-btn"
+                                    data-category={g.id}
+                                    onclick={`setFilter('${g.id}')`}
+                                >
+                                    <span class="btn-emoji">{g.emoji}</span>
+                                    {g.label}
+                                </button>
+                            ))
+                        }
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="plans-grid">
+        <div class="plans-grid" id="plans-grid">
             {
                 page.data.map((p) => (
-                    <a href={`/${lang}/yoga/${p.slug}`} class="plan-card">
+                    <a
+                        href={`/${lang}/yoga/${p.slug}`}
+                        class="plan-card"
+                        data-goals={p.goals?.join(",")}
+                    >
                         <div class="card-image">
                             <img
                                 src={p.image}
@@ -63,9 +103,17 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
             }
         </div>
 
+        <div id="no-results" class="no-results" style="display: none;">
+            <p>No plans found for this category.</p>
+        </div>
+
         {
             page.lastPage > 1 && (
-                <nav class="pagination" aria-label="Pagination">
+                <nav
+                    class="pagination"
+                    id="listing-pagination"
+                    aria-label="Pagination"
+                >
                     {page.url.prev ? (
                         <a href={page.url.prev} class="btn-pill">
                             ← {labels.prev}
@@ -91,26 +139,96 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     </main>
 </Site>
 
-<style>
-    /* =========================================
-       LISTING LAYOUT
-       ========================================= */
+<script is:inline>
+    const CATEGORY_MAP = {
+        office: ["pain_relief", "stress_relief", "fitness_posture"],
+        seniors: ["pain_relief", "seniors"],
+        medical: ["yoga_therapy", "womens_health"],
+    };
 
+    function setFilter(catId, updateUrl = true) {
+        const cards = document.querySelectorAll(".plan-card");
+        const buttons = document.querySelectorAll(".filter-btn");
+        const pagination = document.getElementById("listing-pagination");
+        const noResults = document.getElementById("no-results");
+
+        let visibleCount = 0;
+
+        // Toggle Button Active Class
+        buttons.forEach((btn) => {
+            btn.classList.toggle(
+                "active",
+                btn.getAttribute("data-category") === catId,
+            );
+        });
+
+        // Filter Logic
+        cards.forEach((card) => {
+            if (catId === "all") {
+                card.style.display = "flex";
+                visibleCount++;
+            } else {
+                const itemGoals = (card.getAttribute("data-goals") || "").split(
+                    ",",
+                );
+                const targetGoals = CATEGORY_MAP[catId] || [];
+
+                // Matches if the plan contains ANY of the goals in the lifestyle bucket
+                const isMatch = targetGoals.some((goal) =>
+                    itemGoals.includes(goal),
+                );
+
+                if (isMatch) {
+                    card.style.display = "flex";
+                    visibleCount++;
+                } else {
+                    card.style.display = "none";
+                }
+            }
+        });
+
+        // Hide pagination when filtering locally
+        if (pagination) {
+            pagination.style.display = catId === "all" ? "flex" : "none";
+        }
+
+        if (noResults) {
+            noResults.style.display = visibleCount === 0 ? "block" : "none";
+        }
+
+        // URL Sync
+        if (updateUrl) {
+            const url = new URL(window.location);
+            if (catId === "all") {
+                url.searchParams.delete("goal");
+            } else {
+                url.searchParams.set("goal", catId);
+            }
+            window.history.pushState({}, "", url);
+        }
+    }
+
+    // Initialize on Page Load
+    window.addEventListener("DOMContentLoaded", () => {
+        const params = new URLSearchParams(window.location.search);
+        const goal = params.get("goal");
+        setFilter(goal || "all", false);
+    });
+</script>
+
+<style>
     .listing-container {
         max-width: var(--container-width);
         margin: 0 auto;
         padding: 60px 24px 80px;
     }
 
-    /* Header Styles */
     .listing-header {
         text-align: center;
         margin-bottom: 60px;
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
-        /* Ensure it behaves like a normal block */
-        position: relative;
     }
 
     .page-title {
@@ -126,16 +244,80 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         line-height: 1.5;
     }
 
-    /* Grid System */
+    /* --- FILTER STYLES --- */
+    .filter-section {
+        margin-top: 40px;
+    }
+
+    .filter-heading {
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-muted);
+        margin-bottom: 12px;
+        font-weight: 600;
+    }
+
+    .filter-wrapper {
+        display: flex;
+        justify-content: center;
+        overflow-x: auto;
+        padding-bottom: 8px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .filter-wrapper::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-bar {
+        display: flex;
+        gap: 8px;
+        padding: 6px;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: 50px;
+        width: max-content;
+    }
+
+    .filter-btn {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 20px;
+        border-radius: 40px;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-emoji {
+        font-size: 1.1rem;
+    }
+
+    .filter-btn:hover {
+        color: var(--text-main);
+        background: rgba(0, 0, 0, 0.03);
+    }
+
+    .filter-btn.active {
+        background: var(--bg-main);
+        color: var(--primary);
+        box-shadow: var(--shadow-sm);
+    }
+
+    /* --- GRID & CARDS --- */
     .plans-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 32px;
     }
-
-    /* =========================================
-       PLAN CARD
-       ========================================= */
 
     .plan-card {
         display: flex;
@@ -148,8 +330,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         color: inherit;
         transition:
             transform 0.3s ease,
-            box-shadow 0.3s ease,
-            border-color 0.3s;
+            box-shadow 0.3s ease;
         height: 100%;
     }
 
@@ -159,28 +340,24 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         border-color: color-mix(in srgb, var(--primary), transparent 70%);
     }
 
-    /* Image - Fixed 4:3 Aspect Ratio */
     .card-image {
         position: relative;
-        width: 100%;
         aspect-ratio: 4/3;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
-        background: var(--bg-main);
     }
 
     .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        transition: transform 0.5s ease;
     }
 
     .plan-card:hover .card-image img {
         transform: scale(1.06);
     }
 
-    /* Content Area */
     .card-content {
         padding: 24px;
         display: flex;
@@ -190,10 +367,8 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
     .card-title {
         font-size: 1.35rem;
-        font-weight: var(--fw-bold);
+        font-weight: 700;
         margin-bottom: 10px;
-        line-height: 1.2;
-        letter-spacing: -0.01em;
     }
 
     .card-desc {
@@ -201,33 +376,24 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         color: var(--text-muted);
         line-height: 1.6;
         margin-bottom: 24px;
-        display: -webkit-box;
-        -webkit-line-clamp: 3;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
         flex-grow: 1;
     }
 
-    /* Footer / Link */
     .card-footer {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 0.95rem;
         font-weight: 600;
         color: var(--primary);
-        margin-top: auto;
     }
 
-    .plan-card:hover .icon {
-        transform: translateX(4px);
-        transition: transform 0.2s ease;
+    .no-results {
+        text-align: center;
+        padding: 60px 0;
+        color: var(--text-muted);
     }
 
-    /* =========================================
-       PAGINATION
-       ========================================= */
-
+    /* --- PAGINATION --- */
     .pagination {
         margin-top: 80px;
         display: flex;
@@ -236,48 +402,28 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         gap: 20px;
     }
 
-    .page-meta {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        font-variant-numeric: tabular-nums;
-    }
-
     .btn-pill {
-        display: inline-flex;
-        align-items: center;
         padding: 10px 24px;
         border-radius: 999px;
-        font-size: 0.95rem;
-        font-weight: 500;
+        border: 1px solid var(--border);
         text-decoration: none;
         color: var(--text-main);
-        background: var(--bg-main);
-        border: 1px solid var(--border);
-        transition: all 0.2s;
-    }
-
-    .btn-pill:not(.disabled):hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        background: var(--bg-sub);
+        font-weight: 500;
     }
 
     .btn-pill.disabled {
         opacity: 0.5;
         cursor: not-allowed;
-        background: transparent;
     }
 
-    /* Mobile Tweaks */
     @media (max-width: 600px) {
-        .listing-container {
-            padding-top: 40px;
-        }
         .plans-grid {
             grid-template-columns: 1fr;
         }
-        .listing-header {
-            margin-bottom: 40px;
+        .filter-wrapper {
+            justify-content: flex-start;
+            margin: 0 -24px;
+            padding: 0 24px 12px;
         }
     }
 </style>

@@ -9,6 +9,7 @@ export interface YogaPlanPreview {
     benefits: string;
     image: string;
     deeplink: string;
+    goals: string[];
 }
 
 export interface GuidedAudioPreview {
