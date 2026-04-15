@@ -72,8 +72,14 @@ async function loadPlans() {
     const { data, error } = await sb
         .from(TABLES.plans)
         .select(`
-            slug, title, subtitle, description, insights, image_url, visibility,
-            goal_ids, // <--- Add this
+            slug, 
+            title, 
+            subtitle, 
+            description, 
+            insights, 
+            image_url, 
+            visibility,
+            goal_ids,
             plan_translations (
                 lang, title, subtitle, description, insights
             )
