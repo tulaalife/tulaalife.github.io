@@ -25,12 +25,6 @@ interface Props {
         prev: string;
         next: string;
         metaPage: string;
-        filterLabel: string;
-        filterAll: string;
-        filterGeneral: string;
-        filterSeniors: string;
-        filterMedical: string;
-        filterWomens: string;
     };
 }
 
@@ -42,44 +36,6 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         <div class="listing-header">
             <h1 class="page-title">{labels.title}</h1>
             <p class="page-subtitle">{labels.description}</p>
-        </div>
-
-        <div class="filter-wrapper">
-            <button
-                class="filter-btn active"
-                data-category="all"
-                onclick="setSort('all')"
-            >
-                {labels.filterAll}
-            </button>
-            <button
-                class="filter-btn"
-                data-category="general"
-                onclick="setSort('general')"
-            >
-                {labels.filterGeneral}
-            </button>
-            <button
-                class="filter-btn"
-                data-category="seniors"
-                onclick="setSort('seniors')"
-            >
-                {labels.filterSeniors}
-            </button>
-            <button
-                class="filter-btn"
-                data-category="medical"
-                onclick="setSort('medical')"
-            >
-                {labels.filterMedical}
-            </button>
-            <button
-                class="filter-btn"
-                data-category="womens"
-                onclick="setSort('womens')"
-            >
-                {labels.filterWomens}
-            </button>
         </div>
 
         <div class="plans-grid" id="plans-grid">
@@ -146,25 +102,15 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 </Site>
 
 <script is:inline define:vars={{ CATEGORY_MAP }}>
-    /**
-     * Client-side sorting and UI feedback
-     * Uses the CATEGORY_MAP imported from ui-strings via Astro define:vars
-     */
-    function setSort(catId, updateUrl = true) {
+    function applyImplicitSort() {
+        const params = new URLSearchParams(window.location.search);
+        const catId = params.get("goal");
+        if (!catId || !CATEGORY_MAP[catId]) return;
+
         const grid = document.getElementById("plans-grid");
         const cards = Array.from(document.querySelectorAll(".plan-card"));
-        const buttons = document.querySelectorAll(".filter-btn");
-        const targetGoals = CATEGORY_MAP[catId] || [];
+        const targetGoals = CATEGORY_MAP[catId];
 
-        // 1. Update Button UI
-        buttons.forEach((btn) => {
-            btn.classList.toggle(
-                "active",
-                btn.getAttribute("data-category") === (catId || "all"),
-            );
-        });
-
-        // 2. Sorting Logic
         const matches = [];
         const nonMatches = [];
 
@@ -172,48 +118,29 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
             const itemGoals = (card.getAttribute("data-goals") || "").split(
                 ",",
             );
-            const isMatch =
-                catId === "all" || !catId
-                    ? false
-                    : targetGoals.some((goal) => itemGoals.includes(goal));
+            const isMatch = targetGoals.some((goal) =>
+                itemGoals.includes(goal),
+            );
 
             if (isMatch) {
                 matches.push(card);
                 card.classList.add("highlight-match");
             } else {
                 nonMatches.push(card);
-                card.classList.remove("highlight-match");
             }
         });
 
-        // Clear and Re-append in sorted order (Matches first)
-        grid.innerHTML = "";
-        matches.forEach((card) => grid.appendChild(card));
-        nonMatches.forEach((card) => grid.appendChild(card));
-
-        // 3. URL Sync
-        if (updateUrl) {
-            const url = new URL(window.location);
-            if (catId === "all" || !catId) {
-                url.searchParams.delete("goal");
-            } else {
-                url.searchParams.set("goal", catId);
-            }
-            window.history.pushState({}, "", url);
+        // Re-order DOM: Matches first, then the rest
+        if (matches.length > 0) {
+            grid.innerHTML = "";
+            matches.forEach((card) => grid.appendChild(card));
+            nonMatches.forEach((card) => grid.appendChild(card));
         }
     }
 
-    // Initialize on Page Load
-    window.addEventListener("DOMContentLoaded", () => {
-        const params = new URLSearchParams(window.location.search);
-        const goal = params.get("goal");
-        if (goal) {
-            setSort(goal, false);
-        }
-    });
-
-    // Make setSort available to the inline onclick handlers
-    window.setSort = setSort;
+    // Run immediately and also on DOMContentLoaded to ensure it catches the first paint
+    applyImplicitSort();
+    window.addEventListener("DOMContentLoaded", applyImplicitSort);
 </script>
 
 <style>
@@ -225,7 +152,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
     .listing-header {
         text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 60px; /* Increased margin since filter buttons are gone */
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
@@ -244,33 +171,6 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         line-height: 1.5;
     }
 
-    /* --- FILTERS --- */
-    .filter-wrapper {
-        display: flex;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 48px;
-    }
-
-    .filter-btn {
-        padding: 8px 20px;
-        border-radius: 99px;
-        border: 1px solid var(--border);
-        background: var(--bg-main);
-        color: var(--text-muted);
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s ease;
-    }
-
-    .filter-btn.active {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-    }
-
-    /* --- GRID & CARDS --- */
     .plans-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -292,15 +192,16 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         height: 100%;
     }
 
+    /* Subtle highlight for prioritized plans */
     .plan-card.highlight-match {
         border-color: var(--primary);
-        background: color-mix(in srgb, var(--primary), transparent 95%);
+        background: color-mix(in srgb, var(--primary), transparent 97%);
     }
 
     .plan-card:hover {
         transform: translateY(-4px);
         box-shadow: var(--shadow);
-        border-color: color-mix(in srgb, var(--primary), transparent 70%);
+        border-color: var(--primary);
     }
 
     .card-image {
@@ -315,10 +216,6 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         height: 100%;
         object-fit: cover;
         transition: transform 0.5s ease;
-    }
-
-    .plan-card:hover .card-image img {
-        transform: scale(1.06);
     }
 
     .card-content {
@@ -350,7 +247,6 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         color: var(--primary);
     }
 
-    /* --- PAGINATION --- */
     .pagination {
         margin-top: 80px;
         display: flex;
@@ -376,13 +272,6 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     @media (max-width: 600px) {
         .plans-grid {
             grid-template-columns: 1fr;
-        }
-        .filter-wrapper {
-            justify-content: flex-start;
-            margin: 0 -24px 32px;
-            padding: 0 24px 12px;
-            overflow-x: auto;
-            flex-wrap: nowrap;
         }
     }
 </style>
