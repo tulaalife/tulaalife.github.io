@@ -105,12 +105,23 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     function applyImplicitSort() {
         const params = new URLSearchParams(window.location.search);
         const catId = params.get("goal");
-        if (!catId || !CATEGORY_MAP[catId]) return;
+
+        if (!catId) {
+            return;
+        }
+
+        if (!CATEGORY_MAP[catId]) {
+            return;
+        }
 
         const grid = document.getElementById("plans-grid");
         const cards = Array.from(document.querySelectorAll(".plan-card"));
-        const targetGoals = CATEGORY_MAP[catId];
 
+        if (cards.length === 0) {
+            return;
+        }
+
+        const targetGoals = CATEGORY_MAP[catId];
         const matches = [];
         const nonMatches = [];
 
@@ -130,7 +141,6 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
             }
         });
 
-        // Re-order DOM: Matches first, then the rest
         if (matches.length > 0) {
             grid.innerHTML = "";
             matches.forEach((card) => grid.appendChild(card));
@@ -138,9 +148,17 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         }
     }
 
-    // Run immediately and also on DOMContentLoaded to ensure it catches the first paint
     applyImplicitSort();
-    window.addEventListener("DOMContentLoaded", applyImplicitSort);
+
+    // Attempt 2: DOMContentLoaded
+    window.addEventListener("DOMContentLoaded", () => {
+        applyImplicitSort();
+    });
+
+    // Attempt 3: View Transitions (If you use Astro View Transitions)
+    document.addEventListener("astro:page-load", () => {
+        applyImplicitSort();
+    });
 </script>
 
 <style>
