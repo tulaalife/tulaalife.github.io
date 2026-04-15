@@ -27,11 +27,25 @@ const d = disclaimer[lang] || disclaimer.en;
 const motivation = {
     en: {
         badge: "OUR VISION",
-        text: "Tulaa is built with a simple mission: to make <strong>high-quality, effective yoga therapy accessible to everyone</strong>. We believe wellness should never come at the cost of your privacy, which is why it is at the core of everything we do. Designed as an offline-first app, Tulaa offers a fast, smooth, and reliable experience without relying on constant internet access. It is completely free and ad-free. While we may introduce some premium content in the future, most of the app will always remain free. We will never show ads, track you, or sell your data. Tulaa is built by just two co-founders, keeping us lean, fast, and deeply focused on delivering a thoughtful, user-first experience. We would love to hear your feedback. Our users are at the heart of everything we build.",
+        mission:
+            "Tulaa is built with a simple mission: <strong>to make high-quality, effective yoga therapy accessible to everyone</strong>.",
+        values: [
+            "We believe wellness should never come at the cost of your privacy. That is why it sits at the core of everything we do.",
+            "Designed to work even without constant internet, Tulaa delivers a fast, smooth, and reliable experience. It is completely free and has no ads.",
+            "While we may introduce premium content in the future, most of the app will always remain free. We will never track you or sell your data.",
+            "Built by just two co-founders to stay focused and build with care. Your feedback is at the heart of everything we build.",
+        ],
     },
     hi: {
-        badge: "हमारा विजन",
-        text: "Tulaa एक सरल मिशन के साथ बनाया गया है: <strong>उच्च गुणवत्ता और प्रभावी योग थेरेपी को सभी तक पहुँचाना</strong>। हम मानते हैं कि वेलनेस कभी भी आपकी प्राइवेसी की कीमत पर नहीं आना चाहिए, इसलिए यह हमारी हर चीज़ के केंद्र में है। Tulaa को एक offline-first ऐप के रूप में डिज़ाइन किया गया है, जिससे आपको तेज, स्मूद और भरोसेमंद अनुभव मिलता है, बिना लगातार इंटरनेट पर निर्भर हुए। यह पूरी तरह से मुफ्त है और इसमें कोई विज्ञापन नहीं हैं। भविष्य में हम कुछ प्रीमियम कंटेंट ला सकते हैं, लेकिन ऐप का अधिकांश हिस्सा हमेशा मुफ्त रहेगा। हम कभी भी विज्ञापन नहीं दिखाएंगे, आपकी ट्रैकिंग नहीं करेंगे और आपका डेटा नहीं बेचेंगे। Tulaa को दो को-फाउंडर्स द्वारा एक लंबी अवधि के विजन के साथ बनाया जा रहा है, जिससे हम इसे सरल, टिकाऊ और यूज़र-फर्स्ट बनाए रख सकें। आपके सुझाव और फीडबैक हमारे लिए बहुत महत्वपूर्ण हैं। हमारे यूज़र्स हमेशा हमारे हर निर्णय के केंद्र में रहते हैं।",
+        badge: "हमारा उद्देश्य",
+        mission:
+            "तुला का निर्माण एक सरल उद्देश्य के साथ किया गया है: <strong>उच्च गुणवत्ता वाली और प्रभावी योग चिकित्सा को सभी के लिए सुलभ बनाना</strong>।",
+        values: [
+            "हमारा मानना है कि स्वास्थ्य और सुख-शांति कभी भी आपकी गोपनीयता की कीमत पर नहीं आनी चाहिए। इसलिए यह हमारे हर कार्य के केंद्र में है।",
+            "तुला बिना निरंतर इंटरनेट के भी तेज़ और भरोसेमंद अनुभव प्रदान करता है। यह पूरी तरह निःशुल्क है और इसमें कोई विज्ञापन नहीं हैं।",
+            "भविष्य में हम कुछ विशेष सामग्री जोड़ सकते हैं, लेकिन इसका अधिकांश भाग हमेशा निःशुल्क रहेगा। हम आपकी जानकारी कभी नहीं बेचेंगे।",
+            "तुला को केवल दो सह-संस्थापकों द्वारा बनाया गया है। आपके सुझाव हमारे लिए बहुत महत्वपूर्ण हैं और हमारे उपयोगकर्ता ही हमारे केंद्र में हैं।",
+        ],
     },
 };
 
@@ -45,9 +59,15 @@ const m = motivation[lang] || motivation.en;
 >
     <div class="faq-container">
         <div class="faq-hero">
-            <h1 class="page-title">{title}</h1>
             <span class="philosophy-badge">{m.badge}</span>
-            <p class="hero-text" set:html={m.text} />
+            <h1 class="page-title">{title}</h1>
+
+            <div class="motivation-content">
+                <p class="lead-text" set:html={m.mission} />
+                <div class="values-grid">
+                    {m.values.map((v) => <p>{v}</p>)}
+                </div>
+            </div>
         </div>
 
         <div class="faq-list">
@@ -67,7 +87,6 @@ const m = motivation[lang] || motivation.en;
                                     stroke-width="2.5"
                                     stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    class="feather feather-chevron-down"
                                 >
                                     <polyline points="6 9 12 15 18 9" />
                                 </svg>
@@ -110,45 +129,63 @@ const m = motivation[lang] || motivation.en;
 
 <style>
     .faq-container {
-        max-width: 720px; /* Narrower for better readability */
+        max-width: 680px; /* Slightly tighter for better line length */
         margin: 0 auto;
-        padding: 80px 24px 120px;
+        padding: 60px 24px 100px;
     }
 
-    /* --- Hero/Motivation Combined --- */
     .faq-hero {
         text-align: center;
-        margin-bottom: 64px;
+        margin-bottom: 56px;
     }
 
     .philosophy-badge {
-        font-size: 0.75rem;
+        font-size: 0.7rem;
         font-weight: 800;
-        letter-spacing: 0.15em;
+        letter-spacing: 0.12em;
         color: var(--primary);
-        text-transform: uppercase;
+        background: color-mix(in srgb, var(--primary), transparent 92%);
+        padding: 4px 12px;
+        border-radius: 100px;
         display: inline-block;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
     }
 
     .page-title {
-        font-size: clamp(2.5rem, 8vw, 3.5rem);
-        letter-spacing: -0.04em;
+        font-size: clamp(2.2rem, 7vw, 3rem);
+        letter-spacing: -0.03em;
         font-weight: 850;
         line-height: 1.1;
-        margin-bottom: 24px;
+        margin-bottom: 32px;
         color: var(--text-main);
     }
 
-    .hero-text {
-        font-size: 1.15rem;
-        line-height: 1.7;
+    /* --- Motivation Section Refined --- */
+    .motivation-content {
         color: var(--text-muted);
-        max-width: 600px;
-        margin: 0 auto;
+        line-height: 1.6;
     }
 
-    /* --- Modern FAQ List --- */
+    .lead-text {
+        font-size: 1.25rem;
+        color: var(--text-main);
+        line-height: 1.4;
+        margin-bottom: 24px;
+        balance: wrap; /* Modern browser support for better text balancing */
+    }
+
+    .values-grid {
+        display: grid;
+        gap: 16px;
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+
+    .values-grid p {
+        margin: 0;
+    }
+
+    /* --- FAQ List --- */
     .faq-list {
         display: flex;
         flex-direction: column;
@@ -158,27 +195,24 @@ const m = motivation[lang] || motivation.en;
     .faq-item {
         background: var(--bg-sub);
         border: 1px solid var(--border-light);
-        border-radius: 24px;
-        transition: all 0.3s ease;
+        border-radius: 20px;
+        transition: all 0.2s ease;
     }
 
     .faq-item[open] {
         background: var(--bg-main);
         border-color: var(--primary);
-        box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.1);
     }
 
     .faq-question {
-        padding: 24px 32px;
+        padding: 20px 28px;
         list-style: none;
         display: flex;
         justify-content: space-between;
         align-items: center;
         cursor: pointer;
         font-weight: 600;
-        font-size: 1.1rem;
         color: var(--text-main);
-        user-select: none;
     }
 
     .faq-question::-webkit-details-marker {
@@ -187,13 +221,10 @@ const m = motivation[lang] || motivation.en;
 
     .icon-wrapper {
         color: var(--primary);
-        transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        display: flex;
-        align-items: center;
-        justify-content: center;
         background: color-mix(in srgb, var(--primary), transparent 92%);
-        padding: 8px;
+        padding: 6px;
         border-radius: 50%;
+        display: flex;
     }
 
     .faq-item[open] .icon-wrapper {
@@ -202,60 +233,37 @@ const m = motivation[lang] || motivation.en;
         color: white;
     }
 
-    .faq-answer {
-        overflow: hidden;
-    }
-
     .answer-content {
-        padding: 0 32px 32px;
+        padding: 0 28px 24px;
         color: var(--text-muted);
-        line-height: 1.8;
-        font-size: 1.05rem;
+        font-size: 1rem;
+        line-height: 1.6;
     }
 
-    /* --- Disclaimer --- */
     .medical-disclaimer {
-        margin-top: 100px;
-        padding: 40px;
+        margin-top: 80px;
+        padding: 32px;
         background: var(--bg-sub);
-        border-radius: 32px;
-        border: 1px solid var(--border-light);
+        border-radius: 24px;
         text-align: center;
     }
 
-    .disclaimer-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 16px;
-        background: color-mix(in srgb, var(--primary), transparent 90%);
-        color: var(--primary);
-        font-size: 0.7rem;
-        font-weight: 800;
-        border-radius: 100px;
-        margin-bottom: 16px;
-    }
-
     .disclaimer-text {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: var(--text-muted);
-        max-width: 500px;
-        margin: 0 auto;
+        margin: 12px auto 0;
+        max-width: 480px;
     }
 
     @media (max-width: 768px) {
         .faq-container {
-            padding: 60px 20px;
+            padding: 40px 16px;
         }
         .page-title {
-            font-size: 2.2rem;
+            margin-bottom: 24px;
         }
-        .faq-question {
-            padding: 20px 24px;
-            font-size: 1rem;
-        }
-        .answer-content {
-            padding: 0 24px 24px;
+        .lead-text {
+            font-size: 1.15rem;
         }
     }
 </style>
