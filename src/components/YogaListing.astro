@@ -6,7 +6,7 @@ import { CATEGORY_MAP } from "../utils/ui-strings";
 interface Plan {
     slug: string;
     title: string;
-    description: string;
+    subtitle: string;
     image: string;
     language?: string;
     goals: string[];
@@ -57,7 +57,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
                         <div class="card-content">
                             <h3 class="card-title">{p.title}</h3>
-                            <p class="card-desc">{p.description}</p>
+                            <p class="card-desc">{p.subtitle}</p>
 
                             <div class="card-footer">
                                 <span class="view-link">{labels.view}</span>
@@ -252,9 +252,13 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     .card-desc {
         font-size: 1rem;
         color: var(--text-muted);
-        line-height: 1.6;
-        margin-bottom: 24px;
+        line-height: 1.2; /* Slightly tighter for shorter text */
+        margin-bottom: 16px; /* Reduced from 24px for a tighter look */
         flex-grow: 1;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
     }
 
     .card-footer {
