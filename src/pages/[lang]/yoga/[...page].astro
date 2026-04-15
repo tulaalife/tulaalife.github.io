@@ -1,7 +1,11 @@
 ---
 import YogaListing from "../../../components/YogaListing.astro";
 import { yogaPlans } from "../../../data/generated";
-import { YOGA_UI, type SupportedLang } from "../../../utils/ui-strings";
+import {
+    YOGA_UI,
+    CATEGORY_MAP,
+    type SupportedLang,
+} from "../../../utils/ui-strings";
 import type { GetStaticPaths } from "astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
@@ -21,17 +25,10 @@ const labels = YOGA_UI[lang as SupportedLang] || YOGA_UI.en;
 const url = new URL(Astro.request.url);
 const currentGoal = url.searchParams.get("goal");
 
-const CATEGORY_MAP: Record<string, string[]> = {
-    general: ["pain_relief", "stress_relief", "fitness_posture"],
-    seniors: ["seniors", "pain_relief"],
-    medical: ["yoga_therapy"],
-    womens: ["womens_health"],
-};
-
+// Use the centralized CATEGORY_MAP for server-side initial sort
 if (currentGoal && CATEGORY_MAP[currentGoal]) {
     const targetGoals = CATEGORY_MAP[currentGoal];
 
-    // Sort the page data so relevant plans appear first in the HTML
     page.data.sort((a, b) => {
         const aMatch = targetGoals.some((g) => a.goals?.includes(g));
         const bMatch = targetGoals.some((g) => b.goals?.includes(g));

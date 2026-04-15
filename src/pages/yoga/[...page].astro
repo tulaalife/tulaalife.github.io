@@ -1,7 +1,7 @@
 ---
 import YogaListing from "../../components/YogaListing.astro";
 import { yogaPlans } from "../../data/generated";
-import { YOGA_UI } from "../../utils/ui-strings";
+import { YOGA_UI, CATEGORY_MAP } from "../../utils/ui-strings";
 import type { GetStaticPaths } from "astro";
 
 export const getStaticPaths = (async ({ paginate }) => {
@@ -13,22 +13,15 @@ const { page } = Astro.props;
 const lang = "en";
 const labels = YOGA_UI.en;
 
-// --- NEW SORTING LOGIC ---
+// --- SERVER-SIDE SORTING LOGIC ---
 // Get the goal from the URL (e.g., ?goal=medical)
 const url = new URL(Astro.request.url);
 const currentGoal = url.searchParams.get("goal");
 
-const CATEGORY_MAP: Record<string, string[]> = {
-    general: ["pain_relief", "stress_relief", "fitness_posture"],
-    seniors: ["seniors", "pain_relief"],
-    medical: ["yoga_therapy"],
-    womens: ["womens_health"],
-};
-
 if (currentGoal && CATEGORY_MAP[currentGoal]) {
     const targetGoals = CATEGORY_MAP[currentGoal];
 
-    // Sort the existing page data so matches are at the top
+    // Sort the existing page data so matches appear at the top of the initial HTML
     page.data.sort((a, b) => {
         const aMatch = targetGoals.some((g) => a.goals?.includes(g));
         const bMatch = targetGoals.some((g) => b.goals?.includes(g));
@@ -38,7 +31,7 @@ if (currentGoal && CATEGORY_MAP[currentGoal]) {
         return 0;
     });
 }
-// -------------------------
+// ---------------------------------
 
 const pageTitle = `${labels.title} · ${labels.metaPage} ${page.currentPage}`;
 const canonical =

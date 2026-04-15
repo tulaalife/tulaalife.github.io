@@ -1,6 +1,7 @@
 ---
 import Site from "../layouts/Site.astro";
 import type { Page } from "astro";
+import { CATEGORY_MAP } from "../utils/ui-strings";
 
 interface Plan {
     slug: string;
@@ -41,6 +42,44 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         <div class="listing-header">
             <h1 class="page-title">{labels.title}</h1>
             <p class="page-subtitle">{labels.description}</p>
+        </div>
+
+        <div class="filter-wrapper">
+            <button
+                class="filter-btn active"
+                data-category="all"
+                onclick="setSort('all')"
+            >
+                {labels.filterAll}
+            </button>
+            <button
+                class="filter-btn"
+                data-category="general"
+                onclick="setSort('general')"
+            >
+                {labels.filterGeneral}
+            </button>
+            <button
+                class="filter-btn"
+                data-category="seniors"
+                onclick="setSort('seniors')"
+            >
+                {labels.filterSeniors}
+            </button>
+            <button
+                class="filter-btn"
+                data-category="medical"
+                onclick="setSort('medical')"
+            >
+                {labels.filterMedical}
+            </button>
+            <button
+                class="filter-btn"
+                data-category="womens"
+                onclick="setSort('womens')"
+            >
+                {labels.filterWomens}
+            </button>
         </div>
 
         <div class="plans-grid" id="plans-grid">
@@ -106,14 +145,11 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
     </main>
 </Site>
 
-<script is:inline>
-    const CATEGORY_MAP = {
-        general: ["pain_relief", "stress_relief", "fitness_posture"],
-        seniors: ["seniors", "pain_relief"],
-        medical: ["yoga_therapy"],
-        womens: ["womens_health"],
-    };
-
+<script is:inline define:vars={{ CATEGORY_MAP }}>
+    /**
+     * Client-side sorting and UI feedback
+     * Uses the CATEGORY_MAP imported from ui-strings via Astro define:vars
+     */
     function setSort(catId, updateUrl = true) {
         const grid = document.getElementById("plans-grid");
         const cards = Array.from(document.querySelectorAll(".plan-card"));
@@ -128,13 +164,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
             );
         });
 
-        if (!catId || catId === "all") {
-            // Optional: You could restore original order here if needed
-            return;
-        }
-
-        // 2. Sorting Logic: Move matches to the top
-        // We iterate backwards and use prepend to maintain relative order of matches
+        // 2. Sorting Logic
         const matches = [];
         const nonMatches = [];
 
@@ -142,20 +172,21 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
             const itemGoals = (card.getAttribute("data-goals") || "").split(
                 ",",
             );
-            const isMatch = targetGoals.some((goal) =>
-                itemGoals.includes(goal),
-            );
+            const isMatch =
+                catId === "all" || !catId
+                    ? false
+                    : targetGoals.some((goal) => itemGoals.includes(goal));
 
             if (isMatch) {
                 matches.push(card);
-                card.classList.add("highlight-match"); // Optional: add a subtle border or glow
+                card.classList.add("highlight-match");
             } else {
                 nonMatches.push(card);
                 card.classList.remove("highlight-match");
             }
         });
 
-        // Clear and Re-append in sorted order
+        // Clear and Re-append in sorted order (Matches first)
         grid.innerHTML = "";
         matches.forEach((card) => grid.appendChild(card));
         nonMatches.forEach((card) => grid.appendChild(card));
@@ -163,7 +194,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         // 3. URL Sync
         if (updateUrl) {
             const url = new URL(window.location);
-            if (catId === "all") {
+            if (catId === "all" || !catId) {
                 url.searchParams.delete("goal");
             } else {
                 url.searchParams.set("goal", catId);
@@ -180,6 +211,9 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
             setSort(goal, false);
         }
     });
+
+    // Make setSort available to the inline onclick handlers
+    window.setSort = setSort;
 </script>
 
 <style>
@@ -191,7 +225,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
     .listing-header {
         text-align: center;
-        margin-bottom: 60px;
+        margin-bottom: 40px;
         max-width: 800px;
         margin-left: auto;
         margin-right: auto;
@@ -208,6 +242,32 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         font-size: 1.15rem;
         color: var(--text-muted);
         line-height: 1.5;
+    }
+
+    /* --- FILTERS --- */
+    .filter-wrapper {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 48px;
+    }
+
+    .filter-btn {
+        padding: 8px 20px;
+        border-radius: 99px;
+        border: 1px solid var(--border);
+        background: var(--bg-main);
+        color: var(--text-muted);
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .filter-btn.active {
+        background: var(--primary);
+        color: white;
+        border-color: var(--primary);
     }
 
     /* --- GRID & CARDS --- */
@@ -290,12 +350,6 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         color: var(--primary);
     }
 
-    .no-results {
-        text-align: center;
-        padding: 60px 0;
-        color: var(--text-muted);
-    }
-
     /* --- PAGINATION --- */
     .pagination {
         margin-top: 80px;
@@ -325,8 +379,10 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         }
         .filter-wrapper {
             justify-content: flex-start;
-            margin: 0 -24px;
+            margin: 0 -24px 32px;
             padding: 0 24px 12px;
+            overflow-x: auto;
+            flex-wrap: nowrap;
         }
     }
 </style>
