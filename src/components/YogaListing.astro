@@ -33,15 +33,6 @@ interface Props {
 }
 
 const { page, title, description, canonicalPath, lang, labels } = Astro.props;
-
-/** * These IDs match the keys in CATEGORY_MAP below
- */
-const availableFilters = [
-    { id: "all", label: labels.filterAll, emoji: "✨" },
-    { id: "general", label: labels.filterGeneral, emoji: "💻" },
-    { id: "seniors", label: labels.filterSeniors, emoji: "🪑" },
-    { id: "medical", label: labels.filterMedical, emoji: "🔬" },
-];
 ---
 
 <Site title={title} description={description} canonicalPath={canonicalPath}>
@@ -49,27 +40,6 @@ const availableFilters = [
         <div class="listing-header">
             <h1 class="page-title">{labels.title}</h1>
             <p class="page-subtitle">{labels.description}</p>
-
-            <div class="filter-section">
-                <p class="filter-heading">{labels.filterLabel}</p>
-
-                <div class="filter-wrapper">
-                    <div class="filter-bar" id="filter-bar">
-                        {
-                            availableFilters.map((g) => (
-                                <button
-                                    class="filter-btn"
-                                    data-category={g.id}
-                                    onclick={`setSort('${g.id}')`}
-                                >
-                                    <span class="btn-emoji">{g.emoji}</span>
-                                    {g.label}
-                                </button>
-                            ))
-                        }
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="plans-grid" id="plans-grid">
@@ -101,10 +71,6 @@ const availableFilters = [
                     </a>
                 ))
             }
-        </div>
-
-        <div id="no-results" class="no-results" style="display: none;">
-            <p>No plans found for this category.</p>
         </div>
 
         {
@@ -142,8 +108,8 @@ const availableFilters = [
 <script is:inline>
     const CATEGORY_MAP = {
         general: ["pain_relief", "stress_relief", "fitness_posture"],
-        seniors: ["pain_relief", "seniors"],
-        medical: ["yoga_therapy", "womens_health"],
+        seniors: ["seniors", "pain_relief"],
+        medical: ["womens_health", "yoga_therapy"],
     };
 
     function setSort(catId, updateUrl = true) {
@@ -240,74 +206,6 @@ const availableFilters = [
         font-size: 1.15rem;
         color: var(--text-muted);
         line-height: 1.5;
-    }
-
-    /* --- FILTER STYLES --- */
-    .filter-section {
-        margin-top: 40px;
-    }
-
-    .filter-heading {
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        margin-bottom: 12px;
-        font-weight: 600;
-    }
-
-    .filter-wrapper {
-        display: flex;
-        justify-content: center;
-        overflow-x: auto;
-        padding-bottom: 8px;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-    }
-
-    .filter-wrapper::-webkit-scrollbar {
-        display: none;
-    }
-
-    .filter-bar {
-        display: flex;
-        gap: 8px;
-        padding: 6px;
-        background: var(--bg-sub);
-        border: 1px solid var(--border);
-        border-radius: 50px;
-        width: max-content;
-    }
-
-    .filter-btn {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 20px;
-        border-radius: 40px;
-        border: none;
-        background: transparent;
-        color: var(--text-muted);
-        font-size: 0.95rem;
-        font-weight: 600;
-        cursor: pointer;
-        white-space: nowrap;
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    .btn-emoji {
-        font-size: 1.1rem;
-    }
-
-    .filter-btn:hover {
-        color: var(--text-main);
-        background: rgba(0, 0, 0, 0.03);
-    }
-
-    .filter-btn.active {
-        background: var(--bg-main);
-        color: var(--primary);
-        box-shadow: var(--shadow-sm);
     }
 
     /* --- GRID & CARDS --- */
