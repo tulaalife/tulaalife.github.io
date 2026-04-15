@@ -1,4 +1,4 @@
-export type Locale = 'en' | 'hi'; // keep for future, we’re not setting it yet
+export type Locale = 'en' | 'hi'; // keep for future, we're not setting it yet
 
 export interface YogaPlanPreview {
     slug: string;

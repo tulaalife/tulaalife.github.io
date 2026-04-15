@@ -30,7 +30,7 @@ export const YOGA_UI = {
                 link: "/yoga?goal=general"
             },
             womens: {
-                title: "Women’s Wellness",
+                title: "Women's Wellness",
                 desc: "Care for PCOS, Pregnancy, and Hormone Balance.",
                 icon: "🌸",
                 color: "rgba(219, 39, 119, 0.1)",
