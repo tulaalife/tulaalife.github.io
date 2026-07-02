@@ -60,7 +60,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 <style>
     .author-section {
         width: 100%;
-        /* Background is inherited from global, but you could add a subtle pattern here if desired */
     }
 
     .author-link {
@@ -79,7 +78,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         );
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        padding: 32px 48px; /* Slightly increased padding for the dedicated section */
+        padding: 32px 48px;
         border-radius: 24px;
         border: 1px solid var(--border);
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
@@ -133,7 +132,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         color: var(--text-main);
         margin: 0;
         font-weight: 400;
-        letter-spacing: -0.01em;
+        letter-spacing: -0.01em; /* CLEANED: Handled cleanly via master global layout overrides for :lang(hi) */
     }
 
     .author-trust {

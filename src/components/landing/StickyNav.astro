@@ -41,18 +41,15 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
         top: -80px;
         left: 0;
         right: 0;
-        background: rgba(255, 255, 255, 0.8);
+        background: color-mix(in srgb, var(--bg-main), transparent 20%);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        border-bottom: 1px solid var(--border);
         z-index: 99;
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    :global([data-theme="dark"]) .sticky-nav {
-        background: rgba(20, 20, 20, 0.8);
-        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
+    /* CLEANED: Eliminated the redundant raw dark theme selectors since var(--bg-main) and var(--border) handle this cleanly */
 
     .sticky-nav.visible {
         transform: translateY(80px);
@@ -80,14 +77,13 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
         font-weight: 600;
         border: none;
         cursor: pointer;
-        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         transition: all 0.2s ease;
     }
 
     .btn-sm:hover {
         transform: translateY(-1px);
         filter: brightness(1.1);
-        box-shadow: 0 6px 16px rgba(var(--primary-rgb), 0.3);
     }
 </style>
 
@@ -132,7 +128,6 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 if (scrollContainer) {
                     scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
                 } else {
-                    // Fallback just in case
                     window.scrollTo({ top: 0, behavior: "smooth" });
                 }
             }

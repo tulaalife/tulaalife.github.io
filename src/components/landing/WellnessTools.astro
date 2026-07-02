@@ -95,7 +95,6 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const isHindi = currentLang === "hi";
 ---
 
 <section class="scroll-section section-tools">
@@ -197,7 +196,7 @@ const isHindi = currentLang === "hi";
 
     .tool-card {
         scroll-snap-align: start;
-        flex: 0 0 280px; /* Snap-friendly width */
+        flex: 0 0 280px;
         background: var(--bg-sub);
         padding: 24px;
         border-radius: 24px;

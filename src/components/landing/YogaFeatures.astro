@@ -5,13 +5,12 @@ import {
     CATEGORY_MAP,
     type SupportedLang,
 } from "../../utils/ui-strings";
-import { yogaPlans } from "../../data/generated"; // <-- CORRECTED IMPORT
+import { yogaPlans } from "../../data/generated";
 
 const currentLang = (Astro.currentLocale || "en") as SupportedLang;
 const t = YOGA_UI[currentLang] || YOGA_UI.en;
-const isHindi = currentLang === "hi";
 
-// CORRECTED LOGIC: Filter the static JSON array by language and grab the first 8 for the carousel
+// Filter the static JSON array by language and grab the first 8 for the carousel
 const displayPlans = yogaPlans
     .filter((p) => p.language === currentLang)
     .slice(0, 8);
@@ -181,10 +180,7 @@ const displayPlans = yogaPlans
         color: var(--text-main);
     }
 
-    .section-title.is-hindi {
-        line-height: 1.4;
-        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
-    }
+    /* CLEANED: .section-title.is-hindi has been safely pruned. Typography is scaled natively inside our layout file now. */
 
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
@@ -278,7 +274,6 @@ const displayPlans = yogaPlans
         z-index: 5;
     }
 
-    /* Adjust gradient direction for light/dark theme correctness */
     html[data-theme="light"] .carousel-wrapper::after,
     html[data-theme="dark"] .carousel-wrapper::after {
         background: linear-gradient(
@@ -294,7 +289,7 @@ const displayPlans = yogaPlans
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 0;
-        padding-bottom: 24px; /* Room for shadow */
+        padding-bottom: 24px;
         scrollbar-width: none;
     }
 

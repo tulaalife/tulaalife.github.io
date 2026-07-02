@@ -26,7 +26,6 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const isHindi = currentLang === "hi";
 
 // 3. Fetch and filter the audios for the carousel
 const displayAudios = guidedAudios
@@ -47,51 +46,69 @@ const displayAudios = guidedAudios
                     {t.body}
                 </p>
             </div>
-            
+
             <div class="desktop-cta hidden-mobile">
-                <SectionCTA href={`/${currentLang}/audio`} labelEn={t.ctaEn} labelHi={t.ctaHi} />
+                <SectionCTA
+                    href={`/${currentLang}/audio`}
+                    labelEn={t.ctaEn}
+                    labelHi={t.ctaHi}
+                />
             </div>
         </div>
 
         <!-- Horizontal Audio Carousel -->
         <div class="carousel-wrapper animate-on-scroll delay-1">
             <div class="glow-orb"></div>
-            
+
             <div class="carousel-track" id="audio-plans-track">
-                {displayAudios.map((audio) => (
-                    <a
-                        href={`/${currentLang}/audio/${audio.slug}`}
-                        class="carousel-card"
-                    >
-                        <div class="card-image">
-                            <img
-                                src={audio.image}
-                                alt={audio.title}
-                                loading="lazy"
-                                decoding="async"
-                            />
-                            <!-- A subtle play button overlay for audio cards -->
-                            <div class="play-overlay">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="play-icon">
-                                    <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
-                                </svg>
+                {
+                    displayAudios.map((audio) => (
+                        <a
+                            href={`/${currentLang}/audio/${audio.slug}`}
+                            class="carousel-card"
+                        >
+                            <div class="card-image">
+                                <img
+                                    src={audio.image}
+                                    alt={audio.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <div class="play-overlay">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        class="play-icon"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </div>
                             </div>
-                        </div>
-                        <div class="card-content">
-                            <h3 class="card-title">{audio.title}</h3>
-                            <p class="card-desc">{audio.subtitle}</p>
-                            <div class="card-footer">
-                                <span class="view-link">{t.play}</span>
-                                <span class="icon">→</span>
+                            <div class="card-content">
+                                <h3 class="card-title">{audio.title}</h3>
+                                <p class="card-desc">{audio.subtitle}</p>
+                                <div class="card-footer">
+                                    <span class="view-link">{t.play}</span>
+                                    <span class="icon">→</span>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                ))}
+                        </a>
+                    ))
+                }
             </div>
         </div>
 
         <div class="mobile-cta animate-on-scroll delay-2">
-            <SectionCTA href={`/${currentLang}/audio`} labelEn={t.ctaEn} labelHi={t.ctaHi} />
+            <SectionCTA
+                href={`/${currentLang}/audio`}
+                labelEn={t.ctaEn}
+                labelHi={t.ctaHi}
+            />
         </div>
     </div>
 </section>
@@ -124,10 +141,7 @@ const displayAudios = guidedAudios
         color: var(--text-main);
     }
 
-    .section-title.is-hindi {
-        line-height: 1.4;
-        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
-    }
+    /* CLEANED: Removed .section-title.is-hindi, letter-spacing and weight shifts are handled perfectly via master layout overrides for :lang(hi) */
 
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
@@ -150,9 +164,8 @@ const displayAudios = guidedAudios
         margin-bottom: 24px;
     }
 
-    /* Gradient fade on the right to indicate more content */
     .carousel-wrapper::after {
-        content: '';
+        content: "";
         position: absolute;
         top: 0;
         right: 0;
@@ -163,10 +176,13 @@ const displayAudios = guidedAudios
         z-index: 5;
     }
 
-    /* Flip gradient for light/dark mode correctness if needed */
     html[data-theme="light"] .carousel-wrapper::after,
     html[data-theme="dark"] .carousel-wrapper::after {
-        background: linear-gradient(to left, var(--bg-main) 0%, transparent 100%);
+        background: linear-gradient(
+            to left,
+            var(--bg-main) 0%,
+            transparent 100%
+        );
     }
 
     .carousel-track {
@@ -175,18 +191,20 @@ const displayAudios = guidedAudios
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 0;
-        padding-bottom: 24px; /* Room for shadow */
+        padding-bottom: 24px;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
         position: relative;
         z-index: 2;
     }
-    
-    .carousel-track::-webkit-scrollbar { display: none; }
+
+    .carousel-track::-webkit-scrollbar {
+        display: none;
+    }
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 320px; /* Fixed width */
+        flex: 0 0 320px;
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -195,7 +213,9 @@ const displayAudios = guidedAudios
         overflow: hidden;
         text-decoration: none;
         color: inherit;
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease;
         height: 100%;
     }
 
@@ -207,7 +227,7 @@ const displayAudios = guidedAudios
 
     .card-image {
         position: relative;
-        aspect-ratio: 16/10; /* Slightly different aspect ratio for audio to distinguish from yoga */
+        aspect-ratio: 16/10;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
         background-color: #000;
@@ -218,9 +238,11 @@ const displayAudios = guidedAudios
         height: 100%;
         object-fit: cover;
         opacity: 0.85;
-        transition: transform 0.5s ease, opacity 0.5s ease;
+        transition:
+            transform 0.5s ease,
+            opacity 0.5s ease;
     }
-    
+
     .carousel-card:hover .card-image img {
         transform: scale(1.05);
         opacity: 0.7;
@@ -248,7 +270,7 @@ const displayAudios = guidedAudios
         width: 24px;
         height: 24px;
         color: white;
-        margin-left: 2px; /* optical alignment for play triangle */
+        margin-left: 2px;
     }
 
     .carousel-card:hover .play-overlay {
@@ -292,7 +314,6 @@ const displayAudios = guidedAudios
         font-size: 0.95rem;
     }
 
-    /* --- AMBIENT GLOW --- */
     .glow-orb {
         position: absolute;
         top: 50%;
@@ -326,7 +347,7 @@ const displayAudios = guidedAudios
         }
 
         .carousel-card {
-            flex: 0 0 280px; /* Slightly narrower on mobile */
+            flex: 0 0 280px;
         }
 
         .carousel-wrapper::after {

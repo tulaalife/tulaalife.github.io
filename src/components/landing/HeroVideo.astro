@@ -193,11 +193,7 @@ const videoMp4 =
         z-index: 1;
     }
 
-    @keyframes spin {
-        to {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
+    /* CLEANED: Removed @keyframes spin because it is declared globally in Layout */
 
     @media (max-width: 768px) {
         .phone-frame-wrapper {

@@ -63,7 +63,6 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const isHindi = currentLang === "hi";
 ---
 
 <section class="scroll-section section-privacy">
@@ -138,10 +137,7 @@ const isHindi = currentLang === "hi";
         color: var(--text-main);
     }
 
-    .section-title.is-hindi {
-        line-height: 1.4;
-        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
-    }
+    /* CLEANED: .section-title.is-hindi has been removed. Styled automatically via master layout overrides. */
 
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
@@ -302,9 +298,6 @@ const isHindi = currentLang === "hi";
     @media (max-width: 768px) {
         .section-title {
             font-size: 2.2rem;
-        }
-        .section-title.is-hindi {
-            font-size: 1.9rem;
         }
         .hidden-mobile {
             display: none;

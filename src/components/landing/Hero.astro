@@ -41,17 +41,14 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const isHindi = currentLang === "hi";
 ---
 
 <section id="hero" class="scroll-section hero-section">
     <div class="container hero-content-centered">
         <div class="badge animate-on-scroll">{t.badge}</div>
 
-        <h1
-            class={`hero-title animate-on-scroll ${isHindi ? "is-hindi" : ""}`}
-            lang={currentLang}
-        >
+        <!-- CLEANED: Removed conditional is-hindi class template string -->
+        <h1 class="hero-title animate-on-scroll" lang={currentLang}>
             {t.titleTop}<br />
             <span class="text-gradient">{t.titleBottom}</span>
         </h1>
@@ -121,20 +118,11 @@ const isHindi = currentLang === "hi";
     }
 
     .hero-title {
-        font-size: clamp(
-            3rem,
-            5vw,
-            4.5rem
-        ); /* Scaled up slightly for standalone focus */
+        font-size: clamp(3rem, 5vw, 4.5rem);
         line-height: 1.15;
         font-weight: 800;
         margin-bottom: 24px;
         letter-spacing: -0.02em;
-    }
-
-    .hero-title.is-hindi {
-        line-height: 1.3;
-        font-size: clamp(2.6rem, 4.5vw, 4rem);
     }
 
     .text-gradient {
