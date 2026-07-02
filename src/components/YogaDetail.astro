@@ -1,4 +1,5 @@
 ---
+// src/components/YogaPlanDetail.astro
 import Site from "../layouts/Site.astro";
 import CTAButton from "./CTAButton.astro";
 import type { YogaPlanPreview } from "../data/types";
@@ -30,7 +31,6 @@ const translations = {
 const t = translations[lang as keyof typeof translations] || translations.en;
 
 // Convert benefits string into an array
-// This assumes benefits are separated by commas or new lines
 const benefitsList = plan.benefits
     ? plan.benefits
           .split(/\s*[,\n·]\s*/)
@@ -161,7 +161,7 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         align-items: center;
         gap: 6px;
         font-size: 0.95rem;
-        font-weight: var(--fw-medium);
+        font-weight: 500;
         color: var(--text-muted);
         transition: all 0.2s ease;
     }
@@ -210,10 +210,9 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
     .plan-title {
         font-size: clamp(2rem, 4vw, 2.75rem);
-        line-height: 1.15;
-        letter-spacing: -0.03em;
-        margin-bottom: 14px;
     }
+
+    /* CLEANED: Removed manual custom tracking/letter-spacing configs. Optimized globally now. */
 
     .plan-subtitle {
         font-size: 1.15rem;
@@ -237,8 +236,8 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
     }
 
     /* ================================
-   BENEFITS
-================================= */
+       BENEFITS
+    ================================= */
     .benefits-module {
         background: var(--bg-sub);
         border: 1px solid var(--border);
@@ -250,10 +249,8 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
     .benefits-label {
         font-size: 0.8rem;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
         color: var(--primary);
-        font-weight: var(--fw-semibold);
-        margin-bottom: 16px; /* Increased margin */
+        margin-bottom: 16px;
     }
 
     .benefits-list {
@@ -262,7 +259,7 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         margin: 0;
         display: flex;
         flex-direction: column;
-        gap: 14px; /* slightly more breathing */
+        gap: 14px;
     }
 
     .benefits-list li {

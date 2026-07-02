@@ -1,10 +1,10 @@
 ---
 import { marked } from "marked";
-import Site from "../../../layouts/Site.astro";
 
 // Import the local markdown files as raw text strings
 import termsEn from "/src/data/legal/terms_en.md?raw";
 import termsHi from "/src/data/legal/terms_hi.md?raw";
+import Site from "../../../layouts/Site.astro";
 
 // 1. Get current language
 const currentLang = Astro.currentLocale || "en";
@@ -63,68 +63,85 @@ const contentHtml = await marked.parse(rawMarkdown);
 </Site>
 
 <style is:global>
-    /* ... (Keep all your existing CSS styles exactly as they are) ... */
     .legal-wrap {
         max-width: 940px;
         margin: 0 auto;
-        padding: 24px;
-        font-family: var(--font-sans);
+        padding: 40px 24px;
+        font-family: var(--font-sans-en);
     }
+
+    :global(:lang(hi)) .legal-wrap {
+        font-family: var(--font-sans-hi);
+    }
+
     .legal-title {
         display: flex;
         align-items: center;
         gap: 8px;
         margin: 12px 0 24px;
-        font-size: 1.9rem;
-        font-weight: 750;
+        font-size: clamp(1.8rem, 4vw, 2.2rem);
     }
+
     .legal-logo {
         vertical-align: middle;
         border-radius: 8px;
     }
+
     .legal-meta {
-        color: var(--muted);
+        color: var(--text-muted);
         font-size: 0.9rem;
-        margin: 28px 0 18px;
-        border-top: 1px solid var(--ring);
+        margin: 40px 0 18px;
+        border-top: 1px solid var(--border);
         padding-top: 20px;
     }
+
     .markdown-body h2 {
-        margin-top: 28px;
+        margin-top: 32px;
         margin-bottom: 12px;
         font-size: 1.35rem;
-        font-weight: 700;
-        color: var(--foreground);
+        color: var(--text-main);
     }
+
     .markdown-body p,
     .markdown-body ul,
     .markdown-body li {
         font-size: 1rem;
         line-height: 1.6;
         margin-bottom: 12px;
-        color: var(--foreground);
+        color: var(--text-main);
     }
+
+    :global(:lang(hi)) .markdown-body p,
+    :global(:lang(hi)) .markdown-body li {
+        line-height: 1.7; /* Adds spacing for Devanagari characters */
+    }
+
     .markdown-body ul {
         padding-left: 24px;
     }
+
     .markdown-body li {
         margin-bottom: 6px;
     }
+
     .markdown-body strong {
-        font-weight: 600;
+        font-weight: 700;
     }
+
     .markdown-body blockquote {
-        background: var(--card);
-        border: 1px solid var(--ring);
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
         padding: 16px 18px;
         border-radius: 14px;
         margin: 18px 0;
         margin-inline-start: 0;
         margin-inline-end: 0;
     }
+
     .markdown-body blockquote p {
         margin-bottom: 0;
     }
+
     .markdown-body a {
         color: var(--primary);
         text-decoration: underline;

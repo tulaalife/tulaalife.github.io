@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { title, description, displayAudios, lang } = Astro.props;
-const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
+const baseHref = "/audio";
 ---
 
 <Site
@@ -19,7 +19,7 @@ const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
     canonicalPath="/audio"
     hasTranslation={true}
 >
-    <div class="listing-container">
+    <main class="listing-container">
         <div class="listing-header">
             <h1 class="page-title">{title}</h1>
             <p class="page-subtitle">{description}</p>
@@ -41,7 +41,20 @@ const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
                                 decoding="async"
                             />
                             <div class="play-overlay">
-                                <div class="play-button">▶</div>
+                                <div class="play-inner">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        class="play-icon"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </div>
                             </div>
                         </div>
                         <div class="audio-content">
@@ -52,17 +65,17 @@ const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
                 ))
             }
         </div>
-    </div>
+    </main>
 </Site>
 
 <style>
-    /* Paste ALL the CSS from your English index.astro here */
     .listing-container {
         max-width: var(--container-width);
         margin: 0 auto;
         padding: 60px 24px 80px;
         min-height: 60vh;
     }
+
     .listing-header {
         text-align: center;
         margin-bottom: 60px;
@@ -70,22 +83,23 @@ const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
         margin-left: auto;
         margin-right: auto;
     }
+
     .page-title {
-        font-size: var(--text-display);
+        font-size: clamp(2.4rem, 5vw, 3.5rem);
         margin-bottom: 16px;
-        letter-spacing: -0.02em;
-        line-height: 1.1;
     }
+
     .page-subtitle {
         font-size: 1.15rem;
         color: var(--text-muted);
-        line-height: 1.5;
     }
+
     .audio-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 32px;
     }
+
     .audio-card {
         display: flex;
         flex-direction: column;
@@ -93,71 +107,108 @@ const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
         border: 1px solid var(--border);
         border-radius: var(--radius-lg);
         overflow: hidden;
-        text-decoration: none;
-        color: inherit;
         transition:
             transform 0.3s ease,
-            box-shadow 0.3s ease;
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
         height: 100%;
     }
+
     .audio-card:hover {
-        transform: translateY(-4px);
+        transform: translateY(-5px);
+        border-color: var(--primary);
         box-shadow: var(--shadow);
     }
+
     .audio-cover {
         position: relative;
-        aspect-ratio: 1 / 1;
+        aspect-ratio: 16 / 10;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
+        background-color: #000;
     }
+
     .audio-cover img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        opacity: 0.9;
+        transition:
+            transform 0.5s ease,
+            opacity 0.5s ease;
     }
+
+    .audio-card:hover .audio-cover img {
+        transform: scale(1.04);
+        opacity: 0.75;
+    }
+
     .play-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.25);
         display: flex;
         align-items: center;
         justify-content: center;
         opacity: 0;
         transition: opacity 0.3s ease;
+        z-index: 2;
     }
+
     .audio-card:hover .play-overlay {
         opacity: 1;
     }
-    .play-button {
-        width: 54px;
-        height: 54px;
-        background: white;
-        color: black;
+
+    .play-inner {
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
+        transition:
+            transform 0.3s ease,
+            background-color 0.3s ease;
     }
+
+    .audio-card:hover .play-inner {
+        background: var(--primary);
+        border-color: var(--primary);
+        transform: scale(1.08);
+    }
+
+    .play-icon {
+        width: 22px;
+        height: 22px;
+        color: #ffffff;
+        margin-left: 2px;
+    }
+
     .audio-content {
         padding: 24px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
+
     .audio-title {
         font-size: 1.25rem;
-        font-weight: var(--fw-bold);
         margin-bottom: 8px;
+        color: var(--text-main);
     }
+
     .audio-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
-        line-height: 1.6;
         display: -webkit-box;
         -webkit-line-clamp: 3;
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
+
     @media (max-width: 600px) {
         .audio-grid {
             grid-template-columns: 1fr;

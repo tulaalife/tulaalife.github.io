@@ -30,10 +30,7 @@ const LABELS = {
 };
 
 const t = LABELS[lang];
-// Canonical always points to the English version or the base path as per your SEO strategy
 const canonical = `/audio/${audio.slug}`;
-
-// As slugs are different for hindi and english the hastranslation will always be false for audio.
 ---
 
 <Site
@@ -73,12 +70,25 @@ const canonical = `/audio/${audio.slug}`;
                         loading="eager"
                     />
                     <div class="play-overlay">
-                        <div class="play-button">▶</div>
+                        <div class="play-button">
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                class="play-icon"
+                            >
+                                <path
+                                    fill-rule="evenodd"
+                                    d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                                    clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <div class="audio-header">
+                <span class="tag-pill">{t.tag}</span>
                 <h1 class="audio-title">{audio.title}</h1>
                 {
                     audio.subtitle && (
@@ -140,7 +150,7 @@ const canonical = `/audio/${audio.slug}`;
         display: inline-flex;
         align-items: center;
         font-size: 0.95rem;
-        font-weight: var(--fw-medium);
+        font-weight: 500;
         color: var(--text-muted);
         transition: all 0.2s ease;
     }
@@ -153,7 +163,6 @@ const canonical = `/audio/${audio.slug}`;
     /* =========================
        HERO
     ========================== */
-
     .image-stage {
         display: flex;
         justify-content: center;
@@ -161,8 +170,8 @@ const canonical = `/audio/${audio.slug}`;
 
     .image-frame {
         width: 100%;
-        max-width: 600px;
-        aspect-ratio: 1 / 1;
+        max-width: 680px;
+        aspect-ratio: 16 / 10;
         border-radius: var(--radius-lg);
         overflow: hidden;
         border: 1px solid var(--border);
@@ -179,13 +188,13 @@ const canonical = `/audio/${audio.slug}`;
     }
 
     .image-frame:hover img {
-        transform: scale(1.04);
+        transform: scale(1.03);
     }
 
     .play-overlay {
         position: absolute;
         inset: 0;
-        background: rgba(0, 0, 0, 0.25);
+        background: rgba(0, 0, 0, 0.2);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -198,43 +207,54 @@ const canonical = `/audio/${audio.slug}`;
     }
 
     .play-button {
-        width: 64px;
-        height: 64px;
+        width: 56px;
+        height: 56px;
         border-radius: 50%;
-        background: white;
-        color: black;
+        background: rgba(255, 255, 255, 0.25);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
         display: flex;
         align-items: center;
         justify-content: center;
-        font-size: 22px;
-        padding-left: 4px;
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
         transform: scale(0.9);
-        transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
     .image-frame:hover .play-button {
         transform: scale(1);
     }
 
+    .play-button:hover {
+        background: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .play-icon {
+        width: 24px;
+        height: 24px;
+        color: white;
+        margin-left: 2px;
+    }
+
     /* =========================
        HEADER
     ========================== */
-
     .audio-header {
         text-align: center;
         max-width: 720px;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 16px;
     }
 
     .tag-pill {
         font-size: 0.75rem;
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        font-weight: var(--fw-semibold);
+        letter-spacing: 0.05em;
+        font-weight: 700;
         color: var(--primary);
         background: var(--bg-sub);
         border: 1px solid var(--border);
@@ -246,9 +266,9 @@ const canonical = `/audio/${audio.slug}`;
 
     .audio-title {
         font-size: clamp(2rem, 4vw, 2.75rem);
-        line-height: 1.15;
-        letter-spacing: -0.03em;
     }
+
+    /* CLEANED: Removed .audio-title letter-spacing & line-height; configured via layout file globally now */
 
     .audio-subtitle {
         font-size: 1.1rem;
@@ -261,7 +281,6 @@ const canonical = `/audio/${audio.slug}`;
     /* =========================
        BODY
     ========================== */
-
     .audio-body {
         max-width: 720px;
         margin: 0 auto;
@@ -277,9 +296,8 @@ const canonical = `/audio/${audio.slug}`;
     /* =========================
        FOOTER
     ========================== */
-
     .audio-footer {
-        margin-top: 32px;
+        margin-top: 16px;
         padding-top: 32px;
         border-top: 1px solid var(--border);
         display: flex;
@@ -304,7 +322,6 @@ const canonical = `/audio/${audio.slug}`;
     /* =========================
        MOBILE
     ========================== */
-
     @media (max-width: 600px) {
         .content-shell {
             padding: 24px 16px 60px;

@@ -1,7 +1,6 @@
 ---
 import Site from "../layouts/Site.astro";
 import CTAButton from "./CTAButton.astro";
-import { blogPosts } from "../data/generated";
 import type { BlogPost } from "../data/types";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 
@@ -56,7 +55,7 @@ const contentAny = post.content as any;
 const ops = Array.isArray(contentAny) ? contentAny : contentAny?.ops || [];
 const contentHtml = renderContent(ops);
 
-// 👉 Reading time
+// Reading time calculation
 const readingTime = Math.ceil(
     contentHtml.replace(/<[^>]*>/g, "").split(" ").length / 200,
 );
@@ -72,7 +71,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
     ogImage={post.image}
     hasTranslation={false}
 >
-    <!-- 🔥 Reading Progress -->
+    <!-- Reading Progress Indicator Bar -->
     <div class="reading-progress"></div>
 
     <div class="content-shell">
@@ -117,7 +116,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
 
                 <div class="author-info">
                     <div class="author-header">
-                        <!-- <span class="author-label">{t.writtenBy}</span> -->
                         <h3 class="author-name">{author.name}</h3>
                     </div>
 
@@ -168,7 +166,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
         </article>
     </div>
 
-    <!-- 🔥 Reading Progress Script -->
+    <!-- Reading Progress Tracker Implementation -->
     <script>
         document.addEventListener("scroll", () => {
             const scrollTop = document.documentElement.scrollTop;
@@ -177,7 +175,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
                 document.documentElement.clientHeight;
             const progress = (scrollTop / height) * 100;
 
-            // Assert the type as HTMLElement here 👇
             const el = document.querySelector(
                 ".reading-progress",
             ) as HTMLElement;
@@ -228,6 +225,8 @@ const primaryLabel = post.cta?.text || t.appLabel;
         margin-bottom: 12px;
     }
 
+    /* CLEANED: Removed manual custom letter-spacing tags. These scale beautifully via master layouts now. */
+
     .article-subtitle {
         font-size: 1.15rem;
         color: var(--text-muted);
@@ -248,7 +247,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
         letter-spacing: 0.01em;
     }
 
-    /* ✨ Rich Text Styling */
+    /* ✨ Rich Content Body Parameters */
     .rich-text :global(p) {
         margin-bottom: 1.6em;
     }
@@ -282,7 +281,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
         font-weight: 500;
     }
 
-    /* ✨ Drop cap */
+    /* Drop-cap configuration */
     .rich-text :global(p:first-of-type::first-letter) {
         font-size: 2.8rem;
         float: left;
@@ -291,21 +290,20 @@ const primaryLabel = post.cta?.text || t.appLabel;
         font-weight: bold;
     }
 
-    /* ✨ Premium Author Section */
+    /* Author Bio Info Section */
     .author-bio {
         margin-top: 56px;
-        padding: 16px 20px; /* Reduced vertical padding */
+        padding: 16px 20px;
         display: flex;
         gap: 20px;
         align-items: center;
         background: var(--bg-sub);
         border: 1px solid var(--border);
-        border-radius: 12px; /* Slightly tighter radius for a modern look */
+        border-radius: 12px;
         position: relative;
         overflow: hidden;
     }
 
-    /* Add a subtle highlight flare for a "premium" feel */
     .author-bio::before {
         content: "";
         position: absolute;
@@ -322,7 +320,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
     }
 
     .author-avatar-wrap {
-        width: 56px; /* Slightly smaller to feel more integrated */
+        width: 56px;
         height: 56px;
         flex-shrink: 0;
         border-radius: 50%;
@@ -346,21 +344,13 @@ const primaryLabel = post.cta?.text || t.appLabel;
     .author-info {
         display: flex;
         flex-direction: column;
-        gap: 2px; /* Tight vertical spacing */
+        gap: 2px;
     }
 
     .author-header {
         display: flex;
         align-items: baseline;
         gap: 8px;
-    }
-
-    .author-label {
-        font-size: 0.65rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        color: var(--text-muted);
-        font-weight: 600;
     }
 
     .author-name {
@@ -404,7 +394,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
         transform: translate(1px, -1px);
     }
 
-    /* Mobile: Keep it compact instead of stacking if possible */
     @media (max-width: 480px) {
         .author-bio {
             gap: 12px;
@@ -420,18 +409,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
         }
     }
 
-    .app-prompt {
-        display: flex;
-        gap: 8px;
-        align-items: center;
-        font-size: 0.9rem;
-        color: var(--text-muted);
-        background: var(--bg-sub);
-        padding: 8px 14px;
-        border-radius: 999px;
-        border: 1px solid var(--border);
-    }
-
     .button-group {
         display: flex;
         gap: 10px;
@@ -439,7 +416,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
         justify-content: center;
     }
 
-    /* 🔥 Reading progress */
     .reading-progress {
         position: fixed;
         top: 0;

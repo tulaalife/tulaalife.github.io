@@ -21,7 +21,6 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const isHindi = currentLang === "hi";
 
 interface Props {
     headline?: string;
@@ -69,7 +68,7 @@ const { subline = t.subline } = Astro.props;
         overflow: hidden;
         isolation: isolate;
 
-        /* Glassmorphism base */
+        /* Glassmorphism base blending system variables */
         background: linear-gradient(
             135deg,
             color-mix(in srgb, var(--bg-main), white 2%) 0%,
@@ -78,6 +77,7 @@ const { subline = t.subline } = Astro.props;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
         backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
     }
 
     :global([data-theme="dark"]) .footer-card {
@@ -111,21 +111,16 @@ const { subline = t.subline } = Astro.props;
         margin: 0 auto;
     }
 
-    .title {
+    .section-title {
         font-size: clamp(2.4rem, 6vw, 3.8rem);
-        font-weight: 800;
         margin-bottom: 1.5rem;
-        line-height: 1.1;
-        letter-spacing: -0.03em;
     }
 
     .title-main {
         color: var(--text-main);
     }
 
-    .title.is-hindi {
-        line-height: 1.4;
-    }
+    /* CLEANED: .title.is-hindi configurations removed. Optical adjustments are automated inside our layouts layout structure. */
 
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
@@ -161,12 +156,12 @@ const { subline = t.subline } = Astro.props;
 
     @media (max-width: 768px) {
         .footer-card {
-            padding: 2rem 1rem;
+            padding: 2.5rem 1rem;
             border-radius: 32px;
         }
 
-        .title {
-            font-size: 2.5rem;
+        .section-title {
+            font-size: 2.2rem;
         }
 
         .sub {

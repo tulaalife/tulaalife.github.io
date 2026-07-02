@@ -47,7 +47,7 @@ const t = labels[lang];
     canonicalPath={page.url.current}
     hasTranslation={true}
 >
-    <div class="listing-container" style="min-height: 70vh;">
+    <main class="listing-container" style="min-height: 70vh;">
         <div class="listing-header">
             <h1 class="page-title">{title}</h1>
             <p class="page-subtitle">{description}</p>
@@ -101,14 +101,13 @@ const t = labels[lang];
                 </nav>
             )
         }
-    </div>
+    </main>
 </Site>
 
 <style>
     /* =========================================
        SHARED LISTING LAYOUT
     ========================================= */
-
     .listing-container {
         max-width: var(--container-width);
         margin: 0 auto;
@@ -124,25 +123,23 @@ const t = labels[lang];
     }
 
     .page-title {
-        font-size: var(--text-display);
+        font-size: clamp(2.4rem, 5vw, 3.5rem);
         margin-bottom: 16px;
-        letter-spacing: -0.02em;
-        line-height: 1.1;
     }
+
+    /* CLEANED: Standardized global title tracking rules. Custom is-hindi logic handled natively by layout container now. */
 
     .page-subtitle {
         font-size: 1.15rem;
         color: var(--text-muted);
-        line-height: 1.5;
     }
 
     /* =========================================
        GRID
     ========================================= */
-
     .blog-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
         gap: 32px;
         margin-bottom: 60px;
     }
@@ -150,7 +147,6 @@ const t = labels[lang];
     /* =========================================
        CARD
     ========================================= */
-
     .blog-card {
         display: flex;
         flex-direction: column;
@@ -168,15 +164,14 @@ const t = labels[lang];
     }
 
     .blog-card:hover {
-        transform: translateY(-4px);
+        transform: translateY(-5px);
         box-shadow: var(--shadow);
-        border-color: color-mix(in srgb, var(--primary), transparent 70%);
+        border-color: var(--primary);
     }
 
     /* =========================================
        IMAGE
     ========================================= */
-
     .blog-thumb {
         position: relative;
         aspect-ratio: 16 / 9;
@@ -193,13 +188,12 @@ const t = labels[lang];
     }
 
     .blog-card:hover .blog-thumb img {
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
 
     /* =========================================
        CONTENT
     ========================================= */
-
     .blog-content {
         padding: 24px;
         display: flex;
@@ -215,16 +209,13 @@ const t = labels[lang];
 
     .blog-title-sm {
         font-size: 1.25rem;
-        font-weight: var(--fw-bold);
         margin-bottom: 8px;
-        line-height: 1.2;
-        letter-spacing: -0.01em;
+        color: var(--text-main);
     }
 
     .blog-excerpt {
         font-size: 0.95rem;
         color: var(--text-muted);
-        line-height: 1.6;
         margin-bottom: 20px;
         display: -webkit-box;
         -webkit-line-clamp: 3;
@@ -241,17 +232,11 @@ const t = labels[lang];
         font-size: 0.85rem;
         font-weight: 600;
         color: var(--primary);
-        transition: transform 0.2s ease;
-    }
-
-    .blog-card:hover .blog-more {
-        transform: translateX(4px);
     }
 
     /* =========================================
        PAGINATION
     ========================================= */
-
     .pagination {
         margin-top: 60px;
         display: flex;
@@ -293,7 +278,6 @@ const t = labels[lang];
     /* =========================================
        MOBILE
     ========================================= */
-
     @media (max-width: 600px) {
         .listing-container {
             padding: 40px 20px 60px;

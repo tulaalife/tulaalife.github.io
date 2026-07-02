@@ -1,4 +1,5 @@
 ---
+// src/components/SectionCTA.astro
 const { href, labelEn, labelHi, class: className } = Astro.props;
 
 const currentLang = Astro.currentLocale || "en";
@@ -10,7 +11,7 @@ const getLink = (path: string) => {
 };
 ---
 
-<a href={getLink(href)} class={`cta-link ${className || ""}`}>
+<a href={getLink(href)} class:list={["cta-link", className]}>
     <div class="cta-glow"></div>
 
     <div class="cta-label-container">
@@ -42,8 +43,9 @@ const getLink = (path: string) => {
         margin-top: 40px;
         padding: 12px 28px;
         background: var(--primary);
-        color: var(--primary-fg);
+        color: var(--bg-main);
         border-radius: 99px;
+        font-family: var(--font-sans-en);
         font-weight: 750;
         font-size: 1.1rem;
         letter-spacing: -0.01em;
@@ -51,16 +53,22 @@ const getLink = (path: string) => {
         transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
         border: 1px solid rgba(255, 255, 255, 0.1);
         isolation: isolate;
-        /* Ensure the button doesn't get ridiculously wide on small screens */
         max-width: 100%;
         overflow: hidden;
     }
 
-    /* Logic for Ellipsis */
+    /* Native Language Context Interception */
+    :global(:lang(hi)) .cta-link {
+        font-family: var(--font-sans-hi);
+        font-weight: 600;
+        letter-spacing: normal;
+    }
+
     .cta-label-container {
         flex: 1;
-        min-width: 0; /* Allows container to shrink below content size */
+        min-width: 0;
         display: flex;
+        align-items: center;
     }
 
     .cta-text {
@@ -69,9 +77,15 @@ const getLink = (path: string) => {
         text-overflow: ellipsis;
         display: block;
         width: 100%;
+        line-height: 1.2;
     }
 
-    /* High-end ambient glow */
+    :global(:lang(hi)) .cta-text {
+        line-height: 1.5; /* Yields essential vertical clearance for Devanagari vowel signs */
+        font-size: 1rem;
+    }
+
+    /* Ambient hover backdrop system */
     .cta-glow {
         position: absolute;
         inset: 0;
@@ -88,7 +102,7 @@ const getLink = (path: string) => {
 
     .icon-circle {
         display: flex;
-        flex-shrink: 0; /* Prevents arrow from squishing */
+        flex-shrink: 0;
         align-items: center;
         justify-content: center;
         width: 32px;
@@ -101,14 +115,16 @@ const getLink = (path: string) => {
     .cta-link svg {
         width: 16px;
         height: 16px;
-        stroke: var(--primary-fg);
-        transition: transform 0.5s ease;
+        stroke: var(--bg-main);
+        transition:
+            stroke 0.4s ease,
+            transform 0.5s ease;
     }
 
     /* --- HOVER EFFECTS --- */
     .cta-link:hover {
         transform: translateY(-4px);
-        background: color-mix(in srgb, var(--primary), white 10%);
+        filter: brightness(1.08);
         box-shadow:
             0 20px 40px rgba(0, 0, 0, 0.1),
             inset 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -120,7 +136,7 @@ const getLink = (path: string) => {
     }
 
     .cta-link:hover .icon-circle {
-        background: var(--primary-fg);
+        background: var(--bg-main);
         transform: scale(1.1);
     }
 
@@ -135,20 +151,17 @@ const getLink = (path: string) => {
             padding: 10px 20px;
             font-size: 1rem;
             margin-top: 24px;
-            /* Force button to stay manageable on mobile */
             max-width: 260px;
+        }
+
+        :global(:lang(hi)) .cta-link {
+            padding-top: 11px;
+            padding-bottom: 9px;
         }
 
         .icon-circle {
             width: 28px;
             height: 28px;
         }
-    }
-
-    /* --- HINDI SPECIFIC FIXES --- */
-    :global([lang="hi"]) .cta-text {
-        line-height: 1.5; /* Essential for Hindi matras not to get clipped */
-        font-weight: 700;
-        font-size: 0.95em; /* Hindi characters are naturally larger */
     }
 </style>

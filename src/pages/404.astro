@@ -31,14 +31,14 @@ const description =
 <style>
     /* Centered Layout */
     .error-container {
-        min-height: 80vh; /* Takes up most of the screen */
+        min-height: 80vh;
         display: flex;
         align-items: center;
         justify-content: center;
         padding: 20px;
         text-align: center;
 
-        /* Subtle background glow */
+        /* Ambient layout glow */
         background: radial-gradient(
             circle at 50% 50%,
             var(--bg-sub) 0%,
@@ -48,28 +48,26 @@ const description =
 
     .error-content {
         max-width: 500px;
-        margin-top: -60px; /* Visual balance */
+        margin-top: -60px;
     }
 
     /* Typography */
     .error-code {
-        font-size: 5rem;
-        font-weight: var(--fw-bold);
+        font-size: clamp(4rem, 10vw, 6rem);
         color: var(--primary);
         opacity: 0.2;
         line-height: 1;
         display: block;
         margin-bottom: 24px;
-        letter-spacing: -0.05em;
     }
 
     .error-title {
-        font-size: clamp(2rem, 5vw, 2.5rem);
-        font-weight: var(--fw-bold);
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
         color: var(--text-main);
         margin-bottom: 16px;
-        line-height: 1.1;
     }
+
+    /* CLEANED: Extracted individual letter-spacing adjustments to rely gracefully on layouts engine tracking configurations */
 
     .error-desc {
         font-size: 1.1rem;
@@ -92,41 +90,18 @@ const description =
         justify-content: center;
         background: var(--text-main);
         color: var(--bg-main);
-        padding: 14px 32px;
+        padding: 12px 28px;
         border-radius: 99px;
+        font-family: var(--font-sans-en);
         font-weight: 600;
         text-decoration: none;
         transition:
-            transform 0.2s,
-            opacity 0.2s;
+            transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
+            filter 0.2s ease;
     }
 
     .btn-primary:hover {
-        transform: translateY(-2px);
-        opacity: 0.9;
-    }
-
-    /* Secondary Links */
-    .secondary-links {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .link-pill {
-        padding: 8px 20px;
-        border: 1px solid var(--border);
-        border-radius: 99px;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 0.95rem;
-        transition: all 0.2s;
-    }
-
-    .link-pill:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        background: var(--bg-sub);
+        transform: translateY(-4px);
+        filter: brightness(1.08);
     }
 </style>
