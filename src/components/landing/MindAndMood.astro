@@ -1,5 +1,6 @@
 ---
 import SectionCTA from "../SectionCTA.astro";
+import { guidedAudios } from "../../data/generated";
 
 // 1. Get current language
 const currentLang = Astro.currentLocale || "en";
@@ -9,61 +10,88 @@ const ui = {
     en: {
         titleTop: "Calm Your Mind.",
         titleBottom: "Understand Your Emotions.",
-        body: "From traditional chanting to anxiety relief. Log your moods to spot patterns and journal your thoughts in a private, safe space.",
-        baseImg: "mind-mood",
-        imgAlt: "Meditation and Journaling Interface",
+        body: "From traditional chanting to anxiety relief. Listen to guided audio and journal your thoughts in a private, safe space.",
         ctaEn: "Explore Audio Sessions",
         ctaHi: "ऑडियो सेशन देखें",
+        play: "Listen Now",
     },
     hi: {
         titleTop: "अपने मन को शांत करें।",
         titleBottom: "अपनी भावनाओं को समझें।",
-        body: "पारंपरिक मंत्रोच्चार से लेकर चिंता से राहत तक। पैटर्न पहचानने के लिए अपना मूड लॉग करें और एक सुरक्षित, निजी स्थान पर अपने विचार लिखें।",
-        baseImg: "mind-mood-hi",
-        imgAlt: "ध्यान और जर्नलिंग इंटरफ़ेस",
+        body: "पारंपरिक मंत्रोच्चार से लेकर चिंता से राहत तक। निर्देशित ऑडियो सुनें और एक सुरक्षित, निजी स्थान पर अपने विचार लिखें।",
         ctaEn: "Explore Audio Sessions",
         ctaHi: "ऑडियो सेशन देखें",
+        play: "अभी सुनें",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 const isHindi = currentLang === "hi";
+
+// 3. Fetch and filter the audios for the carousel
+const displayAudios = guidedAudios
+    .filter((a) => a.language === currentLang)
+    .slice(0, 8); // Grab top 8 for the landing page
 ---
 
 <section class="scroll-section section-mind">
-    <div style="width: 100%;">
-        <div class="container center-text animate-on-scroll">
-            <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
-                {t.titleTop}
-                <br />
-                <span class="text-gradient">{t.titleBottom}</span>
-            </h2>
-            <p class="body-text max-w-md">
-                {t.body}
-            </p>
+    <div class="container animate-on-scroll">
+        <div class="header-row">
+            <div class="header-text">
+                <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
+                    {t.titleTop}
+                    <br />
+                    <span class="text-gradient">{t.titleBottom}</span>
+                </h2>
+                <p class="body-text max-w-md">
+                    {t.body}
+                </p>
+            </div>
+            
+            <div class="desktop-cta hidden-mobile">
+                <SectionCTA href={`/${currentLang}/audio`} labelEn={t.ctaEn} labelHi={t.ctaHi} />
+            </div>
         </div>
 
-        <div class="container wide-visual animate-on-scroll delay-1">
-            <div class="floating-visual-wrapper">
-                <picture>
-                    <source
-                        srcset={`/images/mobile/${t.baseImg}.webp`}
-                        media="(max-width: 767px)"
-                    />
-                    <img
-                        src={`/images/desktop/${t.baseImg}.webp`}
-                        alt={t.imgAlt}
-                        class="feature-img"
-                        loading="eager"
-                        fetchpriority="high"
-                    />
-                </picture>
-                <div class="glow-orb"></div>
+        <!-- Horizontal Audio Carousel -->
+        <div class="carousel-wrapper animate-on-scroll delay-1">
+            <div class="glow-orb"></div>
+            
+            <div class="carousel-track" id="audio-plans-track">
+                {displayAudios.map((audio) => (
+                    <a
+                        href={`/${currentLang}/audio/${audio.slug}`}
+                        class="carousel-card"
+                    >
+                        <div class="card-image">
+                            <img
+                                src={audio.image}
+                                alt={audio.title}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <!-- A subtle play button overlay for audio cards -->
+                            <div class="play-overlay">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="play-icon">
+                                    <path fill-rule="evenodd" d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="card-content">
+                            <h3 class="card-title">{audio.title}</h3>
+                            <p class="card-desc">{audio.subtitle}</p>
+                            <div class="card-footer">
+                                <span class="view-link">{t.play}</span>
+                                <span class="icon">→</span>
+                            </div>
+                        </div>
+                    </a>
+                ))}
             </div>
+        </div>
 
-            <div class="cta-wrapper">
-                <SectionCTA href="/audio" labelEn={t.ctaEn} labelHi={t.ctaHi} />
-            </div>
+        <div class="mobile-cta animate-on-scroll delay-2">
+            <SectionCTA href={`/${currentLang}/audio`} labelEn={t.ctaEn} labelHi={t.ctaHi} />
         </div>
     </div>
 </section>
@@ -74,19 +102,24 @@ const isHindi = currentLang === "hi";
         background-color: var(--bg-main);
     }
 
-    .center-text {
-        text-align: center;
-        margin-bottom: 4dvh; /* Dynamic margin to respect viewport height */
+    .header-row {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 40px;
+        position: relative;
+        z-index: 2;
+    }
+
+    .header-text {
+        max-width: 600px;
     }
 
     .section-title {
         font-size: clamp(2.6rem, 4vw, 3.5rem);
         line-height: 1.2;
         font-weight: 800;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
         letter-spacing: -0.02em;
         color: var(--text-main);
     }
@@ -107,74 +140,203 @@ const isHindi = currentLang === "hi";
         font-size: 1.15rem;
         line-height: 1.6;
         color: var(--text-muted);
-        max-width: 520px;
+        margin: 0;
     }
 
-    .wide-visual {
-        max-width: 800px;
-        margin: 0 auto;
+    /* --- HORIZONTAL CAROUSEL --- */
+    .carousel-wrapper {
         position: relative;
-        text-align: center;
-    }
-
-    .floating-visual-wrapper {
-        position: relative;
-        z-index: 1;
-        transition: transform 0.3s ease;
-    }
-
-    .floating-visual-wrapper:hover {
-        transform: translateY(-8px);
-    }
-
-    .feature-img {
         width: 100%;
-        height: auto;
-        max-height: 50dvh; /* Keeps the image from pushing content out of the screen */
-        object-fit: contain;
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+        margin-bottom: 24px;
+    }
+
+    /* Gradient fade on the right to indicate more content */
+    .carousel-wrapper::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 80px;
+        height: 100%;
+        background: linear-gradient(to right, transparent, var(--bg-main));
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    /* Flip gradient for light/dark mode correctness if needed */
+    html[data-theme="light"] .carousel-wrapper::after,
+    html[data-theme="dark"] .carousel-wrapper::after {
+        background: linear-gradient(to left, var(--bg-main) 0%, transparent 100%);
+    }
+
+    .carousel-track {
+        display: flex;
+        gap: 24px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 0;
+        padding-bottom: 24px; /* Room for shadow */
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
         position: relative;
         z-index: 2;
     }
+    
+    .carousel-track::-webkit-scrollbar { display: none; }
 
-    .cta-wrapper {
-        margin-top: 4dvh; /* Dynamic margin to respect viewport height */
+    .carousel-card {
+        scroll-snap-align: start;
+        flex: 0 0 320px; /* Fixed width */
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        height: 100%;
     }
 
-    .glow-orb {
+    .carousel-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow);
+        border-color: var(--primary);
+    }
+
+    .card-image {
+        position: relative;
+        aspect-ratio: 16/10; /* Slightly different aspect ratio for audio to distinguish from yoga */
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+        background-color: #000;
+    }
+
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0.85;
+        transition: transform 0.5s ease, opacity 0.5s ease;
+    }
+    
+    .carousel-card:hover .card-image img {
+        transform: scale(1.05);
+        opacity: 0.7;
+    }
+
+    .play-overlay {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 140%;
-        height: 140%;
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+
+    .play-icon {
+        width: 24px;
+        height: 24px;
+        color: white;
+        margin-left: 2px; /* optical alignment for play triangle */
+    }
+
+    .carousel-card:hover .play-overlay {
+        background: var(--primary);
+        transform: translate(-50%, -50%) scale(1.1);
+        border-color: var(--primary);
+    }
+
+    .card-content {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+    }
+
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        line-height: 1.3;
+    }
+
+    .card-desc {
+        font-size: 0.95rem;
+        color: var(--text-muted);
+        line-height: 1.4;
+        margin-bottom: 20px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex-grow: 1;
+    }
+
+    .card-footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 0.95rem;
+    }
+
+    /* --- AMBIENT GLOW --- */
+    .glow-orb {
+        position: absolute;
+        top: 50%;
+        left: 30%;
+        transform: translateY(-50%);
+        width: 80%;
+        height: 180%;
         background: radial-gradient(
             circle,
-            color-mix(in srgb, var(--primary), transparent 88%) 0%,
-            color-mix(in srgb, var(--primary), transparent 98%) 40%,
-            transparent 70%
+            color-mix(in srgb, var(--primary), transparent 90%) 0%,
+            transparent 60%
         );
-        z-index: -1;
+        z-index: 1;
         pointer-events: none;
     }
 
+    .mobile-cta {
+        display: none;
+    }
+
     @media (max-width: 768px) {
-        .center-text {
-            margin-bottom: 30px;
+        .header-row {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 24px;
         }
-        .section-title {
-            font-size: 2.2rem;
+
+        .hidden-mobile {
+            display: none;
         }
-        .section-title.is-hindi {
-            font-size: 1.9rem;
+
+        .carousel-card {
+            flex: 0 0 280px; /* Slightly narrower on mobile */
         }
-        .cta-wrapper {
-            margin-top: 24px;
+
+        .carousel-wrapper::after {
+            width: 40px;
         }
-        .floating-visual-wrapper:hover {
-            transform: none;
+
+        .mobile-cta {
+            display: flex;
+            justify-content: center;
+            margin-top: 8px;
         }
     }
 </style>

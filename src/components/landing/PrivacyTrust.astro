@@ -81,23 +81,26 @@ const isHindi = currentLang === "hi";
             </p>
         </div>
 
-        <div class="container features-grid animate-on-scroll delay-1">
-            {
-                t.features.map((feature) => (
-                    <div
-                        class="privacy-card"
-                        style={`--card-accent: ${feature.color}`}
-                    >
-                        <div class="card-content">
-                            <h3 class="card-title">{feature.title}</h3>
-                            <p class="card-desc">{feature.desc}</p>
+        <!-- Carousel Wrapper for Mobile / Grid for Desktop -->
+        <div class="container carousel-wrapper animate-on-scroll delay-1">
+            <div class="features-track">
+                {
+                    t.features.map((feature) => (
+                        <div
+                            class="privacy-card"
+                            style={`--card-accent: ${feature.color}`}
+                        >
+                            <div class="card-content">
+                                <h3 class="card-title">{feature.title}</h3>
+                                <p class="card-desc">{feature.desc}</p>
+                            </div>
+                            <span class="bg-icon" aria-hidden="true">
+                                {feature.icon}
+                            </span>
                         </div>
-                        <span class="bg-icon" aria-hidden="true">
-                            {feature.icon}
-                        </span>
-                    </div>
-                ))
-            }
+                    ))
+                }
+            </div>
         </div>
 
         <div class="cta-wrapper animate-on-scroll delay-2">
@@ -154,17 +157,23 @@ const isHindi = currentLang === "hi";
         color: var(--text-muted);
     }
 
-    /* --- PREMIUM PRIVACY CARDS --- */
-    .features-grid {
+    /* --- RESPONSIVE GRID / CAROUSEL --- */
+    .carousel-wrapper {
+        position: relative;
+        width: 100%;
+    }
+
+    .features-track {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 24px;
+        width: 100%;
     }
 
     .privacy-card {
         position: relative;
         overflow: hidden;
-        padding: 32px; /* Slightly reduced to guarantee fit on 13" laptops */
+        padding: 32px;
         border-radius: 32px;
         background: linear-gradient(
             135deg,
@@ -181,6 +190,7 @@ const isHindi = currentLang === "hi";
         display: flex;
         flex-direction: column;
         z-index: 1;
+        height: 100%; /* Ensures cards in grid stretch equally */
     }
 
     :root[data-theme="dark"] .privacy-card {
@@ -201,10 +211,9 @@ const isHindi = currentLang === "hi";
         z-index: 2;
     }
 
-    /* Subtle Card Hierarchy */
     .card-title {
         font-size: 1.35rem;
-        font-weight: 800; /* Extra bold for distinction */
+        font-weight: 800;
         margin-bottom: 12px;
         color: var(--text-main);
         letter-spacing: -0.01em;
@@ -213,7 +222,7 @@ const isHindi = currentLang === "hi";
     .card-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
-        opacity: 0.85; /* Lowered opacity for hierarchy */
+        opacity: 0.85;
         line-height: 1.6;
         margin: 0;
         font-weight: 400;
@@ -245,13 +254,48 @@ const isHindi = currentLang === "hi";
         margin-top: 5dvh;
     }
 
+    /* --- MOBILE HORIZONTAL CAROUSEL --- */
     @media (max-width: 992px) {
-        .features-grid {
-            grid-template-columns: 1fr;
-            gap: 20px;
+        .carousel-wrapper::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 60px;
+            height: 100%;
+            background: linear-gradient(to right, transparent, var(--bg-main));
+            pointer-events: none;
+            z-index: 5;
         }
+
+        /* Adjust gradient direction for light/dark theme correctness */
+        html[data-theme="light"] .carousel-wrapper::after,
+        html[data-theme="dark"] .carousel-wrapper::after {
+            background: linear-gradient(
+                to left,
+                var(--bg-main) 0%,
+                transparent 100%
+            );
+        }
+
+        .features-track {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: 24px;
+            gap: 16px;
+        }
+
+        .features-track::-webkit-scrollbar {
+            display: none;
+        }
+
         .privacy-card {
-            padding: 24px;
+            scroll-snap-align: center;
+            flex: 0 0 85%; /* Shows a peek of the next card */
+            padding: 28px;
         }
     }
 
@@ -264,6 +308,12 @@ const isHindi = currentLang === "hi";
         }
         .hidden-mobile {
             display: none;
+        }
+        .header-content {
+            margin-bottom: 4dvh;
+        }
+        .cta-wrapper {
+            margin-top: 2dvh;
         }
     }
 </style>

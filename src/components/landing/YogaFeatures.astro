@@ -1,109 +1,179 @@
 ---
 import SectionCTA from "../SectionCTA.astro";
-import { YOGA_UI, type SupportedLang } from "../../utils/ui-strings";
+import {
+    YOGA_UI,
+    CATEGORY_MAP,
+    type SupportedLang,
+} from "../../utils/ui-strings";
+import { yogaPlans } from "../../data/generated"; // <-- CORRECTED IMPORT
 
 const currentLang = (Astro.currentLocale || "en") as SupportedLang;
 const t = YOGA_UI[currentLang] || YOGA_UI.en;
 const isHindi = currentLang === "hi";
 
-// Extract feature values into an array for mapping
-const featureList = Object.values(t.features);
-
-const mobileImg = `/images/mobile/${t.heroImg}.webp`;
-const desktopImg = `/images/desktop/${t.heroImg}.webp`;
+// CORRECTED LOGIC: Filter the static JSON array by language and grab the first 8 for the carousel
+const displayPlans = yogaPlans
+    .filter((p) => p.language === currentLang)
+    .slice(0, 8);
 ---
 
 <section class="scroll-section section-yoga">
-    <div class="container grid-layout">
-        <div class="text-col animate-on-scroll">
-            <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
-                <span class="title-main">{t.heroTitleTop}</span>
-                <br />
-                <span class="text-gradient">{t.heroTitleBottom}</span>
-            </h2>
-            <p class="body-text">{t.heroBody}</p>
+    <div class="container animate-on-scroll">
+        <div class="header-row">
+            <div class="header-text">
+                <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
+                    <span class="title-main">{t.heroTitleTop}</span>
+                    <br />
+                    <span class="text-gradient">{t.heroTitleBottom}</span>
+                </h2>
+                <p class="body-text">{t.heroBody}</p>
+            </div>
 
-            <div class="feature-list-wrapper">
-                <div class="feature-list">
-                    {
-                        featureList.map((feature) => (
-                            <a
-                                href={feature.link}
-                                class="feature-card"
-                                style={`--card-accent: ${feature.color}`}
-                            >
-                                <div class="card-content">
-                                    <strong class="card-title">
-                                        {feature.title}
-                                    </strong>
-                                    <p class="card-desc">{feature.desc}</p>
-                                </div>
-                                <span class="bg-icon" aria-hidden="true">
-                                    {feature.icon}
-                                </span>
-                            </a>
-                        ))
-                    }
-                </div>
-
-                <div class="desktop-cta">
-                    <SectionCTA
-                        href="/yoga"
-                        labelEn="Explore All Yoga Plans"
-                        labelHi="सभी योग प्लान देखें"
-                    />
-                </div>
+            <div class="desktop-cta hidden-mobile">
+                <SectionCTA
+                    href={`/${currentLang}/yoga`}
+                    labelEn="Explore All Plans"
+                    labelHi="सभी प्लान देखें"
+                />
             </div>
         </div>
 
-        <div class="visual-col animate-on-scroll delay-1">
-            <picture>
-                <source srcset={mobileImg} media="(max-width: 767px)" />
-                <img
-                    src={desktopImg}
-                    alt={t.heroImgAlt}
-                    class="feature-img"
-                    width="600"
-                    height="495"
-                    loading="lazy"
-                    decoding="async"
-                />
-            </picture>
+        <!-- Filter Navigation -->
+        <div class="filter-container animate-on-scroll delay-1">
+            <span class="filter-label hidden-mobile">{t.filterLabel}</span>
+            <div class="filter-scroll">
+                <button class="filter-btn active" data-filter="all"
+                    >{t.filterAll}</button
+                >
+                <button class="filter-btn" data-filter="general"
+                    >{t.filterGeneral}</button
+                >
+                <button class="filter-btn" data-filter="womens"
+                    >{t.filterWomens}</button
+                >
+                <button class="filter-btn" data-filter="seniors"
+                    >{t.filterSeniors}</button
+                >
+                <button class="filter-btn" data-filter="medical"
+                    >{t.filterMedical}</button
+                >
+            </div>
+        </div>
+
+        <!-- Horizontal Plan Carousel -->
+        <div class="carousel-wrapper animate-on-scroll delay-2">
+            <div class="carousel-track" id="featured-plans-track">
+                {
+                    displayPlans.map((p) => (
+                        <a
+                            href={`/${currentLang}/yoga/${p.slug}`}
+                            class="carousel-card"
+                            data-goals={p.goals?.join(",")}
+                        >
+                            <div class="card-image">
+                                <img
+                                    src={p.image}
+                                    alt={p.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">{p.title}</h3>
+                                <p class="card-desc">{p.subtitle}</p>
+                                <div class="card-footer">
+                                    <span class="view-link">{t.view}</span>
+                                    <span class="icon">→</span>
+                                </div>
+                            </div>
+                        </a>
+                    ))
+                }
+            </div>
         </div>
 
         <div class="mobile-cta animate-on-scroll delay-2">
             <SectionCTA
-                href="/yoga"
-                labelEn="Explore All Yoga Plans"
-                labelHi="सभी योग प्लान देखें"
+                href={`/${currentLang}/yoga`}
+                labelEn="Explore All Plans"
+                labelHi="सभी प्लान देखें"
             />
         </div>
     </div>
 </section>
 
+<!-- Pass the CATEGORY_MAP to the client script for filtering -->
+<script is:inline define:vars={{ CATEGORY_MAP }}>
+    document.addEventListener("astro:page-load", () => {
+        const filterBtns = document.querySelectorAll(".filter-btn");
+        const track = document.getElementById("featured-plans-track");
+        if (!track || filterBtns.length === 0) return;
+
+        const cards = Array.from(track.querySelectorAll(".carousel-card"));
+
+        filterBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                // 1. Update active state
+                filterBtns.forEach((b) => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                // 2. Filter cards
+                const filterId = btn.getAttribute("data-filter");
+
+                cards.forEach((card) => {
+                    if (filterId === "all") {
+                        card.style.display = "flex";
+                        setTimeout(() => (card.style.opacity = "1"), 10);
+                        return;
+                    }
+
+                    const targetGoals = CATEGORY_MAP[filterId] || [];
+                    const itemGoals = (
+                        card.getAttribute("data-goals") || ""
+                    ).split(",");
+
+                    const isMatch = targetGoals.some((goal) =>
+                        itemGoals.includes(goal),
+                    );
+
+                    if (isMatch) {
+                        card.style.display = "flex";
+                        setTimeout(() => (card.style.opacity = "1"), 10);
+                    } else {
+                        card.style.opacity = "0";
+                        setTimeout(() => (card.style.display = "none"), 300); // Wait for fade out
+                    }
+                });
+
+                // Reset scroll position smoothly
+                track.scrollTo({ left: 0, behavior: "smooth" });
+            });
+        });
+    });
+</script>
+
 <style>
     .section-yoga {
         width: 100%;
-        overflow: hidden;
+        background-color: var(--bg-main);
     }
 
-    .grid-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 60px; /* Reduced from 80px to save horizontal/vertical space */
-        align-items: center;
+    .header-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-end;
+        margin-bottom: 24px;
     }
 
-    .mobile-cta {
-        display: none;
+    .header-text {
+        max-width: 600px;
     }
 
-    /* --- TYPOGRAPHY --- */
     .section-title {
         font-size: clamp(2.6rem, 4vw, 3.5rem);
         line-height: 1.15;
         font-weight: 800;
-        margin-bottom: 20px; /* Reduced from 24px */
+        margin-bottom: 12px;
         letter-spacing: -0.02em;
     }
 
@@ -128,147 +198,218 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
         font-size: 1.15rem;
         line-height: 1.6;
         color: var(--text-muted);
-        margin-bottom: 24px; /* Reduced from 32px */
-        max-width: 520px;
+        margin: 0;
     }
 
-    /* --- FEATURE CARDS --- */
-    .feature-list {
-        display: flex;
-        flex-direction: column;
-        gap: 12px; /* Reduced from 16px to compress the list height */
-        width: 100%;
-    }
-
-    .feature-card {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--bg-main), white 5%) 0%,
-            var(--card-accent) 100%
-        );
-        backdrop-filter: blur(10px);
-        padding: 20px 24px; /* Slightly reduced top/bottom padding */
-        border-radius: 24px;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        transition:
-            transform 0.3s ease,
-            box-shadow 0.3s ease;
+    /* --- FILTER NAVIGATION --- */
+    .filter-container {
         display: flex;
         align-items: center;
-        z-index: 1;
-        text-decoration: none;
-        cursor: pointer;
+        gap: 16px;
+        margin-bottom: 32px;
+        padding-bottom: 8px;
     }
 
-    :root[data-theme="dark"] .feature-card {
+    .filter-label {
+        font-weight: 600;
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        white-space: nowrap;
+    }
+
+    .filter-scroll {
+        display: flex;
+        gap: 12px;
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        padding: 4px 4px 4px 0;
+    }
+
+    .filter-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-btn {
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        padding: 8px 20px;
+        border-radius: 99px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.3s ease;
+    }
+
+    .filter-btn:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .filter-btn.active {
+        background: var(--primary);
+        color: #fff;
+        border-color: var(--primary);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+    }
+
+    /* --- HORIZONTAL CAROUSEL --- */
+    .carousel-wrapper {
+        position: relative;
+        width: 100%;
+        margin-bottom: 24px;
+    }
+
+    .carousel-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 80px;
+        height: 100%;
         background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.05) 0%,
-            var(--card-accent) 100%
+            to right,
+            var(--bg-main) 0%,
+            transparent 100%
+        );
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    /* Adjust gradient direction for light/dark theme correctness */
+    html[data-theme="light"] .carousel-wrapper::after,
+    html[data-theme="dark"] .carousel-wrapper::after {
+        background: linear-gradient(
+            to left,
+            var(--bg-main) 0%,
+            transparent 100%
         );
     }
 
-    .feature-card:hover {
-        transform: translateX(8px);
+    .carousel-track {
+        display: flex;
+        gap: 24px;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        scroll-padding-left: 0;
+        padding-bottom: 24px; /* Room for shadow */
+        scrollbar-width: none;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .carousel-card {
+        scroll-snap-align: start;
+        flex: 0 0 320px;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+        transition:
+            transform 0.3s ease,
+            box-shadow 0.3s ease,
+            opacity 0.3s ease;
+        height: 100%;
+    }
+
+    .carousel-card:hover {
+        transform: translateY(-6px);
+        box-shadow: var(--shadow);
         border-color: var(--primary);
     }
 
-    .card-content {
+    .card-image {
         position: relative;
-        z-index: 2;
-        padding-right: 60px;
+        aspect-ratio: 4/3;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .carousel-card:hover .card-image img {
+        transform: scale(1.05);
+    }
+
+    .card-content {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
     }
 
     .card-title {
-        display: block;
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: var(--text-main);
-        margin-bottom: 4px;
+        font-size: 1.2rem;
+        font-weight: 700;
+        margin-bottom: 8px;
+        line-height: 1.3;
     }
 
     .card-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
-        opacity: 0.85;
-        margin: 0;
-        line-height: 1.5;
-        font-weight: 400;
+        line-height: 1.4;
+        margin-bottom: 20px;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        flex-grow: 1;
     }
 
-    .bg-icon {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%) rotate(10deg);
-        font-size: 3.5rem;
-        opacity: 0.12;
-        pointer-events: none;
+    .card-footer {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 0.95rem;
     }
 
-    .desktop-cta {
-        margin-top: 24px;
-    }
-
-    /* --- VISUALS --- */
-    .feature-img {
-        width: 100%;
-        height: auto;
-        max-height: 55dvh; /* CRITICAL: Constrains image to respect viewport */
-        object-fit: contain;
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
+    .mobile-cta {
+        display: none;
     }
 
     @media (max-width: 768px) {
-        .grid-layout {
-            display: flex;
+        .header-row {
             flex-direction: column;
-            text-align: center;
-            gap: 32px;
+            align-items: flex-start;
+            gap: 16px;
         }
 
-        .text-col {
-            display: contents;
-        }
-
-        .section-title {
-            order: 1;
-            margin-bottom: 8px;
-        }
-        .body-text {
-            order: 1;
-            margin-bottom: 24px;
-        }
-
-        .visual-col {
-            order: 2;
-            margin-bottom: 8px;
-        }
-
-        .feature-list-wrapper {
-            order: 3;
-            width: 100%;
-        }
-
-        .feature-list {
-            text-align: left;
-        }
-
-        .mobile-cta {
-            order: 4;
-            display: block;
-            margin-top: 16px;
-        }
-
-        .desktop-cta {
+        .hidden-mobile {
             display: none;
         }
 
-        .feature-img {
-            max-height: 45dvh; /* Stricter on mobile to ensure the list fits */
+        .filter-container {
+            margin-bottom: 24px;
+        }
+
+        .carousel-card {
+            flex: 0 0 280px;
+        }
+
+        .carousel-wrapper::after {
+            width: 40px;
+        }
+
+        .mobile-cta {
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
         }
     }
 </style>
