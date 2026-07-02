@@ -1,0 +1,209 @@
+---
+const currentLang = Astro.currentLocale || "en";
+
+const ui = {
+    en: { basePoster: "poster" },
+    hi: { basePoster: "poster-hindi" },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+
+const mobilePoster = `/images/mobile/${t.basePoster}.webp`;
+const desktopPoster = `/images/desktop/${t.basePoster}.webp`;
+
+const videoWebm =
+    currentLang === "hi"
+        ? "/website-app-demo-hindi.webm"
+        : "/website-app-demo.webm";
+const videoMp4 =
+    currentLang === "hi"
+        ? "/website-app-demo-hindi.mp4"
+        : "/website-app-demo.mp4";
+---
+
+<section class="scroll-section video-section">
+    <div class="container visual-centered animate-on-scroll">
+        <div
+            class="phone-frame-wrapper"
+            id="phoneWrapper"
+            data-webm={videoWebm}
+            data-mp4={videoMp4}
+        >
+            <div class="video-loader" id="videoLoader"></div>
+            <picture>
+                <source media="(min-width: 768px)" srcset={desktopPoster} />
+                <img
+                    src={mobilePoster}
+                    alt="Tulaa App Preview"
+                    class="poster-img"
+                    id="posterImg"
+                    fetchpriority="high"
+                    loading="eager"
+                />
+            </picture>
+            <video
+                id="heroVideo"
+                class="app-video"
+                loop
+                muted
+                playsinline
+                preload="none"></video>
+            <div class="glow-blob"></div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        // --- Video Logic ---
+        const wrapper = document.getElementById("phoneWrapper");
+        const video = document.getElementById("heroVideo") as HTMLVideoElement;
+        const loader = document.getElementById("videoLoader");
+        const poster = document.getElementById("posterImg");
+
+        if (!wrapper || !video) return;
+
+        const initVideo = () => {
+            const webmSrc = wrapper.getAttribute("data-webm");
+            const mp4Src = wrapper.getAttribute("data-mp4");
+
+            if (
+                webmSrc &&
+                video.querySelectorAll('source[type="video/webm"]').length === 0
+            ) {
+                const s = document.createElement("source");
+                s.src = webmSrc;
+                s.type = "video/webm";
+                video.appendChild(s);
+            }
+            if (
+                mp4Src &&
+                video.querySelectorAll('source[type="video/mp4"]').length === 0
+            ) {
+                const s = document.createElement("source");
+                s.src = mp4Src;
+                s.type = "video/mp4";
+                video.appendChild(s);
+            }
+
+            video.addEventListener(
+                "playing",
+                () => {
+                    video.classList.add("is-playing");
+                    if (loader) loader.style.opacity = "0";
+                    setTimeout(() => {
+                        if (poster)
+                            (poster as HTMLElement).style.visibility = "hidden";
+                        if (loader) loader.style.display = "none";
+                    }, 1000);
+                },
+                { once: true },
+            );
+
+            video.load();
+            video.play().catch(() => {
+                if (loader) loader.style.display = "none";
+            });
+        };
+
+        // Initialize when intersecting (better for performance since it's lower down now)
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        initVideo();
+                        observer.disconnect(); // Only load once
+                    }
+                });
+            },
+            { threshold: 0.1 },
+        );
+
+        observer.observe(wrapper);
+
+        document.addEventListener("visibilitychange", () => {
+            if (document.visibilityState === "visible") {
+                video.play().catch(() => {});
+            }
+        });
+    });
+</script>
+
+<style>
+    .video-section {
+        width: 100%;
+        background-color: var(--bg-main);
+    }
+
+    .visual-centered {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 100%;
+    }
+
+    .phone-frame-wrapper {
+        position: relative;
+        width: auto;
+        height: 75dvh; /* Since it's alone on screen, it can be taller! */
+        max-height: 800px; /* Upper limit for very tall monitors */
+        aspect-ratio: 540 / 1174;
+        background-color: #000;
+        border-radius: 48px;
+        border: 12px solid #1a1a1a;
+        overflow: hidden;
+        box-shadow: 0 40px 80px -20px rgba(0, 0, 0, 0.5);
+    }
+
+    .app-video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+        z-index: 10;
+    }
+
+    .app-video.is-playing {
+        opacity: 1;
+    }
+
+    .poster-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        position: absolute;
+        inset: 0;
+    }
+
+    .video-loader {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 40px;
+        height: 40px;
+        border: 3px solid rgba(255, 255, 255, 0.05);
+        border-top-color: var(--primary);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        z-index: 1;
+    }
+
+    @keyframes spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .phone-frame-wrapper {
+            height: 65dvh;
+            border-radius: 40px;
+            border-width: 10px;
+        }
+    }
+</style>
