@@ -125,8 +125,16 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                     window.location.href = androidUrl;
                 }
             } else {
-                // Desktop: Smooth scroll to top
-                window.scrollTo({ top: 0, behavior: "smooth" });
+                // Desktop: Smooth scroll to top of the NEW SNAP CONTAINER
+                const scrollContainer = document.getElementById(
+                    "main-scroll-container",
+                );
+                if (scrollContainer) {
+                    scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
+                } else {
+                    // Fallback just in case
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                }
             }
         });
     });

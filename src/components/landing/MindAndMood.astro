@@ -30,54 +30,53 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 const isHindi = currentLang === "hi";
 ---
 
-<section class="section section-mind">
-    <div class="container center-text">
-        <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
-            {t.titleTop}
-            <br />
-            <span class="text-gradient">{t.titleBottom}</span>
-        </h2>
-        <p class="body-text max-w-md">
-            {t.body}
-        </p>
-    </div>
-
-    <div class="container wide-visual">
-        <div class="floating-visual-wrapper">
-            <picture>
-                <source
-                    srcset={`/images/mobile/${t.baseImg}.webp`}
-                    media="(max-width: 767px)"
-                />
-                <img
-                    src={`/images/desktop/${t.baseImg}.webp`}
-                    alt={t.imgAlt}
-                    class="feature-img"
-                    width="600"
-                    height="495"
-                    loading="eager"
-                    fetchpriority="high"
-                />
-            </picture>
-            <div class="glow-orb"></div>
+<section class="scroll-section section-mind">
+    <div style="width: 100%;">
+        <div class="container center-text animate-on-scroll">
+            <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
+                {t.titleTop}
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
+            </h2>
+            <p class="body-text max-w-md">
+                {t.body}
+            </p>
         </div>
 
-        <div class="cta-wrapper">
-            <SectionCTA href="/audio" labelEn={t.ctaEn} labelHi={t.ctaHi} />
+        <div class="container wide-visual animate-on-scroll delay-1">
+            <div class="floating-visual-wrapper">
+                <picture>
+                    <source
+                        srcset={`/images/mobile/${t.baseImg}.webp`}
+                        media="(max-width: 767px)"
+                    />
+                    <img
+                        src={`/images/desktop/${t.baseImg}.webp`}
+                        alt={t.imgAlt}
+                        class="feature-img"
+                        loading="eager"
+                        fetchpriority="high"
+                    />
+                </picture>
+                <div class="glow-orb"></div>
+            </div>
+
+            <div class="cta-wrapper">
+                <SectionCTA href="/audio" labelEn={t.ctaEn} labelHi={t.ctaHi} />
+            </div>
         </div>
     </div>
 </section>
 
 <style>
-    .section {
-        padding: 100px 0;
+    .section-mind {
+        width: 100%;
         background-color: var(--bg-main);
-        overflow: hidden;
     }
 
     .center-text {
         text-align: center;
-        margin-bottom: 60px;
+        margin-bottom: 4dvh; /* Dynamic margin to respect viewport height */
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -115,7 +114,7 @@ const isHindi = currentLang === "hi";
         max-width: 800px;
         margin: 0 auto;
         position: relative;
-        text-align: center; /* Ensures CTA stays centered */
+        text-align: center;
     }
 
     .floating-visual-wrapper {
@@ -131,13 +130,15 @@ const isHindi = currentLang === "hi";
     .feature-img {
         width: 100%;
         height: auto;
+        max-height: 50dvh; /* Keeps the image from pushing content out of the screen */
+        object-fit: contain;
         filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
         position: relative;
         z-index: 2;
     }
 
     .cta-wrapper {
-        margin-top: 48px;
+        margin-top: 4dvh; /* Dynamic margin to respect viewport height */
         display: flex;
         justify-content: center;
     }
@@ -160,11 +161,8 @@ const isHindi = currentLang === "hi";
     }
 
     @media (max-width: 768px) {
-        .section {
-            padding: 64px 0;
-        }
         .center-text {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
         .section-title {
             font-size: 2.2rem;
@@ -173,7 +171,7 @@ const isHindi = currentLang === "hi";
             font-size: 1.9rem;
         }
         .cta-wrapper {
-            margin-top: 32px;
+            margin-top: 24px;
         }
         .floating-visual-wrapper:hover {
             transform: none;

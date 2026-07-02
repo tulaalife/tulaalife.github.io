@@ -11,11 +11,6 @@ const ui = {
         subtitle:
             "Specialized yoga for 30+ health needs, including <strong>Back Pain, PCOS, Thyroid, and Sciatica.</strong> Your health data stays 100% private on your device.",
         ctaLead: "Download the free app",
-        author: "Latika Bissa",
-        authorLabel: "Yoga Therapist",
-        authorTrust: "⭐ 5-Star Rated • 5,000+ Happy Students",
-        cred1: "🧘‍♀️ 10+ Years of Experience",
-        cred2: "🏅 Gold Medalist, M.Sc Yoga Therapy",
         socialProofs: [
             "Join 5,000+ users healing naturally",
             "Rated 5 stars on Play Store & App Store",
@@ -34,11 +29,6 @@ const ui = {
         subtitle:
             "30+ बीमारियों के लिए खास योग, जैसे <strong>कमर दर्द, PCOS, थायरॉइड और साइटिका।</strong> आपका हेल्थ डेटा आपके ही फोन में 100% सुरक्षित रहता है।",
         ctaLead: "फ्री ऐप डाउनलोड करें",
-        author: "लतिका बिस्सा",
-        authorLabel: "योग चिकित्सक",
-        authorTrust: "⭐ 5-स्टार रेटिंग • 5,000+ संतुष्ट साधक",
-        cred1: "🧘‍♀️ 10+ वर्षों का अनुभव",
-        cred2: "🏅 स्वर्ण पदक विजेता, M.Sc योग थेरेपी",
         socialProofs: [
             "5,000+ लोगों का भरोसेमंद साथी",
             "Play Store पर 5-स्टार रेटिंग",
@@ -68,22 +58,25 @@ const videoMp4 =
         : "/website-app-demo.mp4";
 ---
 
-<section id="hero" class="hero-section">
+<section id="hero" class="scroll-section hero-section">
     <div class="container hero-grid">
         <div class="hero-content">
-            <div class="badge">{t.badge}</div>
+            <div class="badge animate-on-scroll">{t.badge}</div>
 
             <h1
-                class={`hero-title ${isHindi ? "is-hindi" : ""}`}
+                class={`hero-title animate-on-scroll ${isHindi ? "is-hindi" : ""}`}
                 lang={currentLang}
             >
                 {t.titleTop}<br />
                 <span class="text-gradient">{t.titleBottom}</span>
             </h1>
 
-            <p class="hero-sub" set:html={t.subtitle} />
+            <p
+                class="hero-sub animate-on-scroll delay-1"
+                set:html={t.subtitle}
+            />
 
-            <div class="cta-wrapper">
+            <div class="cta-wrapper animate-on-scroll delay-1">
                 <p class="cta-lead">{t.ctaLead}</p>
                 <StoreButtons centered={false} class="hero-buttons" />
 
@@ -101,7 +94,7 @@ const videoMp4 =
             </div>
         </div>
 
-        <div class="hero-visual">
+        <div class="hero-visual animate-on-scroll delay-2">
             <div
                 class="phone-frame-wrapper"
                 id="phoneWrapper"
@@ -130,37 +123,6 @@ const videoMp4 =
                 <div class="glow-blob"></div>
             </div>
         </div>
-    </div>
-
-    <div class="container author-section">
-        <a
-            href="https://yogawithlatika.com"
-            target="_blank"
-            class="author-link"
-            aria-label="Visit Latika Bissa's website"
-        >
-            <div class="author-card">
-                <div class="author-content">
-                    <div class="author-header">
-                        <div class="author-meta">
-                            <span class="author-label">{t.authorLabel}</span>
-                            <h3 class="author-name">
-                                <strong>{t.author}</strong>
-                            </h3>
-                        </div>
-                        <div class="author-trust text-gradient-alt">
-                            {t.authorTrust}
-                        </div>
-                    </div>
-
-                    <div class="creds-list">
-                        <span class="cred">{t.cred1}</span>
-                        <span class="divider"></span>
-                        <span class="cred">{t.cred2}</span>
-                    </div>
-                </div>
-            </div>
-        </a>
     </div>
 </section>
 
@@ -246,11 +208,7 @@ const videoMp4 =
 <style>
     /* --- RESTORED TOP UI STYLES --- */
     .hero-section {
-        padding: 120px 0 60px;
-        min-height: 85vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
+        width: 100%; /* Height is managed by .scroll-section in Layout */
     }
 
     .hero-grid {
@@ -259,7 +217,6 @@ const videoMp4 =
         gap: 60px;
         align-items: center;
         width: 100%;
-        margin-bottom: 60px;
     }
 
     .hero-content {
@@ -352,7 +309,9 @@ const videoMp4 =
 
     .phone-frame-wrapper {
         position: relative;
-        width: 280px;
+        width: auto;
+        height: 65dvh; /* Crucial: Forces it to respect screen height */
+        max-height: 700px;
         aspect-ratio: 540 / 1174;
         background-color: #000;
         border-radius: 44px;
@@ -389,17 +348,18 @@ const videoMp4 =
         animation: spin 0.8s linear infinite;
     }
 
-    @media (max-width: 768px) {
-        .hero-section {
-            padding-top: 100px;
-            padding-bottom: 40px;
+    @keyframes spin {
+        to {
+            transform: translate(-50%, -50%) rotate(360deg);
         }
+    }
+
+    @media (max-width: 768px) {
         .hero-grid {
             display: flex;
             flex-direction: column;
             text-align: center;
             gap: 40px;
-            margin-bottom: 48px;
         }
         .cta-wrapper {
             align-items: center;
@@ -414,154 +374,12 @@ const videoMp4 =
         .hero-visual {
             justify-content: center;
         }
+        .phone-frame-wrapper {
+            height: 50dvh;
+            margin: 0 auto;
+        }
         :global(.hero-buttons) {
             justify-content: center !important;
-        }
-    }
-
-    /* --- Author Card Styles (ONLY this area changed) --- */
-    .author-section {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        margin-top: 2rem;
-    }
-
-    .author-link {
-        text-decoration: none;
-        display: block;
-        width: 100%;
-        max-width: 650px;
-    }
-
-    .author-card {
-        position: relative;
-        background: linear-gradient(
-            110deg,
-            color-mix(in srgb, var(--bg-sub), transparent 20%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 50%) 100%
-        );
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        padding: 24px 40px;
-        border-radius: 24px;
-        border: 1px solid var(--border);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
-
-    .author-link:hover .author-card {
-        border-color: var(--primary);
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        background: linear-gradient(
-            110deg,
-            color-mix(in srgb, var(--bg-sub), transparent 5%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 30%) 100%
-        );
-    }
-
-    .author-content {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        text-align: left;
-    }
-
-    .author-header {
-        display: flex;
-        flex-direction: column; /* Trust is on a new line always */
-        align-items: flex-start;
-        width: 100%;
-        gap: 4px;
-        margin-bottom: 12px;
-    }
-
-    .author-meta {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .author-label {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        color: var(--primary);
-        font-weight: 700;
-        margin-top: 2px;
-        margin-bottom: 2px;
-    }
-
-    .author-name {
-        font-size: 1.4rem;
-        color: var(--text-main);
-        margin: 0;
-        font-weight: 400;
-    }
-
-    /* Gradient is applied, pill background removed */
-    .author-trust {
-        font-size: 0.95rem;
-        font-weight: 700;
-        margin-top: 2px;
-        /* Ensure the element takes up enough width for the gradient to display properly */
-        display: block;
-        width: 100%;
-    }
-
-    .text-gradient-alt {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .creds-list {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .cred {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-    }
-
-    .divider {
-        width: 1px;
-        height: 14px;
-        background: var(--border);
-    }
-
-    @keyframes spin {
-        to {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
-
-    @media (max-width: 768px) {
-        /* Responsive Author Card tweaks (top-level UI CSS is separate) */
-        .author-card {
-            padding: 24px;
-            border-radius: 20px;
-        }
-
-        .creds-list {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 6px;
-        }
-
-        .divider {
-            display: none;
-        }
-
-        .author-name {
-            font-size: 1.15rem;
-        }
-
-        .author-trust {
-            font-size: 0.85rem;
         }
     }
 </style>

@@ -66,9 +66,9 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 const isHindi = currentLang === "hi";
 ---
 
-<section class="section section-privacy">
-    <div class="container">
-        <div class="header-content">
+<section class="scroll-section section-privacy">
+    <div style="width: 100%;">
+        <div class="container header-content animate-on-scroll">
             <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
                 <span class="title-main">{t.titleTop}</span>
                 <br />
@@ -81,7 +81,7 @@ const isHindi = currentLang === "hi";
             </p>
         </div>
 
-        <div class="features-grid">
+        <div class="container features-grid animate-on-scroll delay-1">
             {
                 t.features.map((feature) => (
                     <div
@@ -99,7 +99,8 @@ const isHindi = currentLang === "hi";
                 ))
             }
         </div>
-        <div style="display: flex; justify-content: center; margin-top: 48px;">
+
+        <div class="cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/faq"
                 labelEn="Frequently Asked Questions"
@@ -110,15 +111,15 @@ const isHindi = currentLang === "hi";
 </section>
 
 <style>
-    .section {
-        padding: 100px 0;
+    .section-privacy {
+        width: 100%;
         background-color: var(--bg-main);
     }
 
     .header-content {
         text-align: center;
         max-width: 800px;
-        margin: 0 auto 64px;
+        margin: 0 auto 5dvh; /* Dynamic margin to respect viewport height */
     }
 
     /* --- TYPOGRAPHY --- */
@@ -163,7 +164,7 @@ const isHindi = currentLang === "hi";
     .privacy-card {
         position: relative;
         overflow: hidden;
-        padding: 40px 32px;
+        padding: 32px; /* Slightly reduced to guarantee fit on 13" laptops */
         border-radius: 32px;
         background: linear-gradient(
             135deg,
@@ -238,20 +239,23 @@ const isHindi = currentLang === "hi";
         opacity: 0.12;
     }
 
+    .cta-wrapper {
+        display: flex;
+        justify-content: center;
+        margin-top: 5dvh;
+    }
+
     @media (max-width: 992px) {
         .features-grid {
             grid-template-columns: 1fr;
             gap: 20px;
         }
         .privacy-card {
-            padding: 32px;
+            padding: 24px;
         }
     }
 
     @media (max-width: 768px) {
-        .section {
-            padding: 64px 0;
-        }
         .section-title {
             font-size: 2.2rem;
         }

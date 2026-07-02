@@ -1,0 +1,200 @@
+---
+const currentLang = Astro.currentLocale || "en";
+
+const ui = {
+    en: {
+        author: "Latika Bissa",
+        authorLabel: "Yoga Therapist",
+        authorTrust: "⭐ 5-Star Rated • 5,000+ Happy Students",
+        cred1: "🧘‍♀️ 10+ Years of Experience",
+        cred2: "🏅 Gold Medalist, M.Sc Yoga Therapy",
+    },
+    hi: {
+        author: "लतिका बिस्सा",
+        authorLabel: "योग चिकित्सक",
+        authorTrust: "⭐ 5-स्टार रेटिंग • 5,000+ संतुष्ट साधक",
+        cred1: "🧘‍♀️ 10+ वर्षों का अनुभव",
+        cred2: "🏅 स्वर्ण पदक विजेता, M.Sc योग थेरेपी",
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+---
+
+<section class="scroll-section author-section">
+    <div
+        class="container"
+        style="display: flex; justify-content: center; align-items: center; width: 100%;"
+    >
+        <a
+            href="https://yogawithlatika.com"
+            target="_blank"
+            class="author-link animate-on-scroll"
+            aria-label="Visit Latika Bissa's website"
+        >
+            <div class="author-card">
+                <div class="author-content">
+                    <div class="author-header">
+                        <div class="author-meta">
+                            <span class="author-label">{t.authorLabel}</span>
+                            <h3 class="author-name">
+                                <strong>{t.author}</strong>
+                            </h3>
+                        </div>
+                        <div class="author-trust text-gradient-alt">
+                            {t.authorTrust}
+                        </div>
+                    </div>
+
+                    <div class="creds-list">
+                        <span class="cred">{t.cred1}</span>
+                        <span class="divider"></span>
+                        <span class="cred">{t.cred2}</span>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</section>
+
+<style>
+    .author-section {
+        width: 100%;
+        /* Background is inherited from global, but you could add a subtle pattern here if desired */
+    }
+
+    .author-link {
+        text-decoration: none;
+        display: block;
+        width: 100%;
+        max-width: 650px;
+    }
+
+    .author-card {
+        position: relative;
+        background: linear-gradient(
+            110deg,
+            color-mix(in srgb, var(--bg-sub), transparent 20%) 0%,
+            color-mix(in srgb, var(--bg-sub), transparent 50%) 100%
+        );
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        padding: 32px 48px; /* Slightly increased padding for the dedicated section */
+        border-radius: 24px;
+        border: 1px solid var(--border);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .author-link:hover .author-card {
+        border-color: var(--primary);
+        transform: translateY(-4px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        background: linear-gradient(
+            110deg,
+            color-mix(in srgb, var(--bg-sub), transparent 5%) 0%,
+            color-mix(in srgb, var(--bg-sub), transparent 30%) 100%
+        );
+    }
+
+    .author-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        text-align: left;
+    }
+
+    .author-header {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%;
+        gap: 6px;
+        margin-bottom: 16px;
+    }
+
+    .author-meta {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .author-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: var(--primary);
+        font-weight: 700;
+        margin-top: 2px;
+        margin-bottom: 4px;
+        letter-spacing: 0.05em;
+    }
+
+    .author-name {
+        font-size: 1.6rem;
+        color: var(--text-main);
+        margin: 0;
+        font-weight: 400;
+        letter-spacing: -0.01em;
+    }
+
+    .author-trust {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin-top: 4px;
+        display: block;
+        width: 100%;
+    }
+
+    .text-gradient-alt {
+        background: linear-gradient(135deg, var(--primary), #a855f7);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .creds-list {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+
+    .cred {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+    }
+
+    .divider {
+        width: 1px;
+        height: 16px;
+        background: var(--border);
+    }
+
+    @media (max-width: 768px) {
+        .author-card {
+            padding: 28px;
+            border-radius: 20px;
+        }
+
+        .creds-list {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .divider {
+            display: none;
+        }
+
+        .author-name {
+            font-size: 1.35rem;
+        }
+
+        .author-trust {
+            font-size: 0.95rem;
+        }
+
+        .cred {
+            font-size: 0.95rem;
+        }
+    }
+</style>

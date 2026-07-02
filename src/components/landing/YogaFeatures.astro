@@ -13,9 +13,9 @@ const mobileImg = `/images/mobile/${t.heroImg}.webp`;
 const desktopImg = `/images/desktop/${t.heroImg}.webp`;
 ---
 
-<section class="section section-yoga">
+<section class="scroll-section section-yoga">
     <div class="container grid-layout">
-        <div class="text-col">
+        <div class="text-col animate-on-scroll">
             <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
                 <span class="title-main">{t.heroTitleTop}</span>
                 <br />
@@ -56,7 +56,7 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
             </div>
         </div>
 
-        <div class="visual-col">
+        <div class="visual-col animate-on-scroll delay-1">
             <picture>
                 <source srcset={mobileImg} media="(max-width: 767px)" />
                 <img
@@ -71,7 +71,7 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
             </picture>
         </div>
 
-        <div class="mobile-cta">
+        <div class="mobile-cta animate-on-scroll delay-2">
             <SectionCTA
                 href="/yoga"
                 labelEn="Explore All Yoga Plans"
@@ -82,14 +82,15 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
 </section>
 
 <style>
-    .section {
-        padding: 100px 0;
+    .section-yoga {
+        width: 100%;
         overflow: hidden;
     }
+
     .grid-layout {
         display: grid;
         grid-template-columns: 1fr 1fr;
-        gap: 80px;
+        gap: 60px; /* Reduced from 80px to save horizontal/vertical space */
         align-items: center;
     }
 
@@ -102,7 +103,7 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
         font-size: clamp(2.6rem, 4vw, 3.5rem);
         line-height: 1.15;
         font-weight: 800;
-        margin-bottom: 24px;
+        margin-bottom: 20px; /* Reduced from 24px */
         letter-spacing: -0.02em;
     }
 
@@ -127,7 +128,7 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
         font-size: 1.15rem;
         line-height: 1.6;
         color: var(--text-muted);
-        margin-bottom: 32px;
+        margin-bottom: 24px; /* Reduced from 32px */
         max-width: 520px;
     }
 
@@ -135,7 +136,7 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
     .feature-list {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 12px; /* Reduced from 16px to compress the list height */
         width: 100%;
     }
 
@@ -148,7 +149,7 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
             var(--card-accent) 100%
         );
         backdrop-filter: blur(10px);
-        padding: 24px;
+        padding: 20px 24px; /* Slightly reduced top/bottom padding */
         border-radius: 24px;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
@@ -208,10 +209,16 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
         pointer-events: none;
     }
 
+    .desktop-cta {
+        margin-top: 24px;
+    }
+
     /* --- VISUALS --- */
     .feature-img {
         width: 100%;
         height: auto;
+        max-height: 55dvh; /* CRITICAL: Constrains image to respect viewport */
+        object-fit: contain;
         filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
     }
 
@@ -229,7 +236,7 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
 
         .section-title {
             order: 1;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
         }
         .body-text {
             order: 1;
@@ -238,7 +245,7 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
 
         .visual-col {
             order: 2;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
         }
 
         .feature-list-wrapper {
@@ -253,11 +260,15 @@ const desktopImg = `/images/desktop/${t.heroImg}.webp`;
         .mobile-cta {
             order: 4;
             display: block;
-            margin-top: 8px;
+            margin-top: 16px;
         }
 
         .desktop-cta {
             display: none;
+        }
+
+        .feature-img {
+            max-height: 45dvh; /* Stricter on mobile to ensure the list fits */
         }
     }
 </style>

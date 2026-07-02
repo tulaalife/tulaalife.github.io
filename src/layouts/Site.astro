@@ -14,7 +14,6 @@ interface Props {
 const {
     title,
     description = "Your private sanctuary for holistic wellness. Yoga, meditation, and tracking—offline and free.",
-    // Note: Pass the BASE path here (e.g., "/yoga"). The script will handle adding "/hi" automatically.
     canonicalPath = "/",
     ogImage = "https://images.tulaa.life/logo.webp",
     hideFooter = false,
@@ -22,12 +21,8 @@ const {
 } = Astro.props;
 
 const site = "https://tulaalife.com";
-
-// 1. Get current language from Astro
 const currentLang = Astro.currentLocale || "en";
 const currentPath = Astro.url.pathname;
-
-// 2. Compute absolute URLs for SEO Hreflang tags
 const basePath = canonicalPath.startsWith("/")
     ? canonicalPath
     : `/${canonicalPath}`;
@@ -36,45 +31,27 @@ const hiUrl = new URL(
     basePath === "/" ? "/hi" : `/hi${basePath}`,
     site,
 ).toString();
-
-// If a page has NO translation, the canonical should strictly be the current URL
-// and we should NOT imply a relationship to the other language version.
 const currentUrl = new URL(currentPath, site).toString();
-
 const socialImage = ogImage.startsWith("http")
     ? ogImage
     : new URL(ogImage, site).toString();
 
-// 3. Simple UI dictionary for the layout text
 const ui = {
     en: { privacy: "Privacy", terms: "Terms", contact: "Contact" },
     hi: { privacy: "गोपनीयता", terms: "शर्तें", contact: "संपर्क" },
 };
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+const getLink = (path: string) =>
+    currentLang === "en" ? path : path === "/" ? "/hi" : `/hi${path}`;
 
-// 4. Helper function to correct internal links
-const getLink = (path: string) => {
-    if (currentLang === "en") return path;
-    return path === "/" ? "/hi" : `/hi${path}`;
-};
-
-// 5. Calculate target URL for the language toggle
 let targetUrl = "/";
-
-// Standardize the path by removing trailing slashes for consistent regex matching
 const cleanPath = currentPath.replace(/\/$/, "") || "/";
-
 if (currentLang === "en") {
-    // If we are in English, we might be at /yoga OR /en/yoga
-    // We strip /en/ if it exists, then prepend /hi
     const pathWithoutEn = cleanPath.replace(/^\/en(\/|$)/, "/");
     targetUrl = pathWithoutEn === "/" ? "/hi" : `/hi${pathWithoutEn}`;
 } else {
-    // If we are in Hindi, we strip /hi/ and default to root if it becomes empty
     targetUrl = cleanPath.replace(/^\/hi(\/|$)/, "/") || "/";
 }
-
-// Final safety check to ensure we never have double slashes
 targetUrl = targetUrl.replace(/\/+/g, "/");
 ---
 
@@ -85,11 +62,8 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
         <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
-
         <title>{title}</title>
-
         <meta name="description" content={description} />
-
         <link rel="canonical" href={currentUrl} />
         <meta name="robots" content="index,follow" />
 
@@ -104,22 +78,15 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         }
 
         <meta property="og:type" content="website" />
-        <meta property="og:site_name" content="Tulaa" />
         <meta property="og:url" content={currentUrl} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={socialImage} />
 
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={title} />
-        <meta name="twitter:description" content={description} />
-        <meta name="twitter:image" content={socialImage} />
-
         <link rel="icon" type="image/webp" href="/assets/icons/logo_64.webp" />
-        <link rel="apple-touch-icon" href="/assets/icons/logo_64.webp" />
-
         <ClientRouter />
 
+        <!-- Theme Initialization Script -->
         <script is:inline>
             (() => {
                 const root = document.documentElement;
@@ -141,39 +108,32 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 }
 
                 function init() {
-                    // 1. Handle Language Redirect (Only on first visit to home page)
                     const hasBeenRedirected = localStorage.getItem(
                         "tulaa-lang-detected",
                     );
                     const isHomePage =
                         window.location.pathname === "/" ||
                         window.location.pathname === "";
-
                     if (!hasBeenRedirected && isHomePage) {
                         const userLang =
                             navigator.language || navigator.userLanguage;
                         if (userLang.startsWith("hi")) {
                             localStorage.setItem("tulaa-lang-detected", "true");
                             window.location.href = "/hi";
-                            return; // Stop execution here as we are redirecting
+                            return;
                         }
                         localStorage.setItem("tulaa-lang-detected", "true");
                     }
-
-                    // 2. Handle Theme
                     const savedTheme = localStorage.getItem("tulaa-theme");
                     setTheme(savedTheme || getSystemTheme());
                 }
 
-                // Listen for system theme changes in real-time
                 window
                     .matchMedia("(prefers-color-scheme: dark)")
                     .addEventListener("change", (e) => {
-                        if (!localStorage.getItem("tulaa-theme")) {
+                        if (!localStorage.getItem("tulaa-theme"))
                             setTheme(e.matches ? "dark" : "light");
-                        }
                     });
-
                 init();
                 document.addEventListener("astro:page-load", init);
 
@@ -204,7 +164,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         </style>
 
         <style is:global>
-            /* (Your existing CSS remains untouched here) */
+            /* Base Variables & Reset */
             *,
             *::before,
             *::after {
@@ -215,102 +175,113 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 margin: 0;
                 padding: 0;
                 width: 100%;
-                overflow-x: hidden;
+                height: 100%;
+                overflow: hidden; /* Hide body scroll for snap scrolling */
             }
+
             :root {
                 --container-width: 1120px;
                 --header-height: 64px;
-                --radius-lg: 24px;
-                --radius-md: 16px;
-                --radius-sm: 8px;
                 --font-sans:
                     "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
-                --fw-regular: 400;
-                --fw-medium: 500;
-                --fw-semibold: 600;
                 --fw-bold: 750;
-                --text-display: clamp(2.5rem, 5vw, 3.75rem);
-                --text-h1: clamp(2rem, 3.5vw, 2.5rem);
-                --text-h2: clamp(1.5rem, 2.5vw, 2rem);
-                --text-h3: 1.25rem;
-                --text-body: 1.05rem;
-                --text-sm: 0.9rem;
             }
-            .page-content {
-                padding-top: var(--header-height);
-            }
+
             :root[data-theme="light"] {
                 --bg-main: oklch(100% 0 0);
                 --bg-sub: oklch(97% 0 0);
-                --text-main: oklch(20% 0 0); /* Ratio ~15:1 (Pass) */
-                /* Darkened from 50% to 42% to pass 4.5:1 ratio against white */
+                --text-main: oklch(20% 0 0);
                 --text-muted: oklch(42% 0 0);
                 --primary: oklch(62% 0.14 145);
-                --primary-fg: oklch(98% 0 0);
                 --border: oklch(92% 0 0);
                 --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             }
-
             :root[data-theme="dark"] {
                 --bg-main: oklch(15% 0.01 145);
                 --bg-sub: oklch(18% 0.01 145);
                 --text-main: oklch(96% 0 0);
-                /* Brightened from 65% to 75% for better contrast against dark zinc/green background */
                 --text-muted: oklch(75% 0 0);
                 --primary: oklch(70% 0.12 145);
-                --primary-fg: oklch(15% 0.02 145);
                 --border: oklch(25% 0 0);
                 --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             }
+
             body {
                 font-family: var(--font-sans);
-                font-size: var(--text-body);
-                line-height: 1.6;
                 color: var(--text-main);
                 background-color: var(--bg-main);
                 transition:
                     background-color 0.3s ease,
                     color 0.3s ease;
                 -webkit-font-smoothing: antialiased;
-                -webkit-user-select: none;
-                -moz-user-select: none;
-                -ms-user-select: none;
-                user-select: none;
-                -webkit-tap-highlight-color: transparent;
             }
-            input,
-            textarea,
-            [contenteditable] {
-                -webkit-user-select: text;
-                user-select: text;
+
+            /* --- SNAP SCROLLING ARCHITECTURE --- */
+            .scroll-container {
+                height: 100dvh;
+                width: 100%;
+                overflow-y: scroll;
+                scroll-snap-type: y mandatory;
+                scroll-behavior: smooth;
+                /* Hide scrollbar for cleaner look */
+                scrollbar-width: none;
             }
-            img,
-            video {
-                max-width: 100%;
-                height: auto;
-                display: block;
-                -webkit-user-drag: none;
-                user-select: none;
+            .scroll-container::-webkit-scrollbar {
+                display: none;
+            }
+
+            .scroll-section {
+                height: 100dvh;
+                width: 100%;
+                scroll-snap-align: start;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: relative;
+                overflow: hidden;
+                padding-top: var(--header-height); /* Prevent header overlap */
+            }
+
+            /* --- PREMIUM ANIMATIONS --- */
+            .animate-on-scroll {
+                opacity: 0;
+                transform: translateY(30px);
+                transition:
+                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            .delay-1 {
+                transition-delay: 0.15s;
+            }
+            .delay-2 {
+                transition-delay: 0.3s;
+            }
+
+            .is-visible .animate-on-scroll {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            /* Utilities */
+            .container {
+                max-width: var(--container-width);
+                margin: 0 auto;
+                padding: 0 24px;
+                width: 100%;
             }
             h1,
             h2,
-            h3,
-            h4 {
+            h3 {
                 margin: 0;
                 font-weight: var(--fw-bold);
                 line-height: 1.15;
-                color: var(--text-main);
-                letter-spacing: -0.025em;
             }
             a {
                 color: inherit;
                 text-decoration: none;
             }
-            .container {
-                max-width: var(--container-width);
-                margin: 0 auto;
-                padding: 0 24px;
-            }
+
+            /* --- RESTORED HEADER & BUTTON STYLES --- */
             header {
                 position: fixed;
                 top: 0;
@@ -320,8 +291,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 z-index: 50;
                 background: color-mix(in srgb, var(--bg-main), transparent 15%);
                 backdrop-filter: blur(12px);
-                border-bottom: 1px solid
-                    color-mix(in srgb, var(--border), transparent 50%);
+                border-bottom: 1px solid var(--border);
             }
             header .inner {
                 display: flex;
@@ -334,16 +304,12 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 align-items: center;
                 gap: 10px;
                 font-weight: var(--fw-bold);
-                font-size: 1.1rem;
-                letter-spacing: -0.01em;
             }
             .logo img {
                 width: 32px;
                 height: 32px;
                 border-radius: 8px;
             }
-
-            /* NEW: Container for header buttons */
             .header-actions {
                 display: flex;
                 align-items: center;
@@ -366,7 +332,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 background: none;
                 border: 1px solid var(--border);
                 border-radius: 99px;
-                text-decoration: none;
                 transition: background 0.2s;
             }
 
@@ -383,26 +348,12 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 border-radius: 50%;
                 transition: background 0.2s;
             }
+
             .theme-toggle:hover {
                 background: var(--bg-sub);
             }
-            footer {
-                margin-top: 80px;
-                padding-bottom: 40px;
-                text-align: center;
-                color: var(--text-muted);
-            }
-            footer a:hover {
-                color: var(--text-main);
-                text-decoration: underline;
-            }
-            .legal {
-                margin-top: 24px;
-                display: flex;
-                gap: 24px;
-                justify-content: center;
-                font-size: var(--text-sm);
-            }
+
+            /* --- RESTORED FOOTER & TOAST STYLES --- */
             .contact-btn {
                 background: none;
                 border: none;
@@ -417,7 +368,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 text-decoration: underline;
             }
 
-            /* 🌿 Toast */
             .copy-toast {
                 position: fixed;
                 bottom: 24px;
@@ -434,6 +384,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 pointer-events: none;
                 transition: all 0.3s ease;
                 backdrop-filter: blur(10px);
+                z-index: 1000; /* Ensure toast sits above snap sections */
             }
 
             .copy-toast.show {
@@ -453,21 +404,15 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                     />
                     <span>Tulaa</span>
                 </a>
-
                 <div class="header-actions">
                     {
                         hasTranslation && (
-                            <a
-                                href={targetUrl}
-                                class="lang-toggle"
-                                aria-label="Change Language"
-                            >
+                            <a href={targetUrl} class="lang-toggle">
                                 <span class="lang-icon">🌐</span>
                                 {currentLang === "en" ? "हिंदी" : "EN"}
                             </a>
                         )
                     }
-
                     <button
                         id="themeBtn"
                         class="theme-toggle"
@@ -492,32 +437,48 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             </div>
         </header>
 
-        <main class="page-content">
+        <!-- THIS IS THE NEW SCROLL CONTAINER -->
+        <main class="scroll-container" id="main-scroll-container">
             <slot />
+
+            <!-- 
+                Footer Section Updates: 
+                1. Removed fixed height to let contents breathe.
+                2. Changed scroll-snap-align to 'end' so the bottom of the footer 
+                   always touches the bottom of the screen.
+            -->
+            {
+                !hideFooter && (
+                    <section
+                        class="scroll-section"
+                        style="height: auto; padding: 60px 0; scroll-snap-align: end;"
+                    >
+                        <div class="container">
+                            <FooterCard />
+                            <div
+                                class="legal"
+                                style="margin-top:24px; display:flex; gap:24px; justify-content:center;"
+                            >
+                                <a href={getLink("/legal/privacy")}>
+                                    {t.privacy}
+                                </a>
+                                <a href={getLink("/legal/terms")}>{t.terms}</a>
+                                <button class="contact-btn" id="contactBtn">
+                                    {t.contact}
+                                </button>
+                            </div>
+                            <p style="text-align: center; font-size: 0.8rem; margin-top: 20px; color: var(--text-muted);">
+                                © {new Date().getFullYear()} Tulaalife Wellness
+                                Private Limited
+                            </p>
+                        </div>
+                    </section>
+                )
+            }
         </main>
 
-        {
-            !hideFooter && (
-                <footer>
-                    <div class="container">
-                        <FooterCard />
-                        <div class="legal">
-                            <a href={getLink("/legal/privacy")}>{t.privacy}</a>
-                            <a href={getLink("/legal/terms")}>{t.terms}</a>
-                            <button class="contact-btn" id="contactBtn">
-                                {t.contact}
-                            </button>
-                        </div>
-                        <p style="font-size: 0.8rem; margin-top: 20px; color: var(--text-muted);">
-                            © {new Date().getFullYear()} Tulaalife Wellness
-                            Private Limited
-                        </p>
-                    </div>
-                </footer>
-            )
-        }
-
         <script>
+            // Restored Copy Email Logic
             declare global {
                 interface Window {
                     toggleTheme: () => void;
@@ -525,10 +486,8 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 }
             }
 
-            // 🌿 Copy email function (global safe)
             window.copyEmail = async function () {
                 const email = "contact@tulaalife.com";
-
                 try {
                     await navigator.clipboard.writeText(email);
                 } catch (e) {
@@ -538,9 +497,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
 
                 const toastId = "copyToast";
                 let toast = document.getElementById(toastId);
-
                 const isHindi = document.documentElement.lang === "hi";
-
                 const message = isHindi
                     ? "ईमेल कॉपी हो गया 💛 आप हमें कभी भी लिख सकते हैं"
                     : "Email copied 💛 You can write to us anytime";
@@ -562,18 +519,39 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 }, 2200);
             };
 
+            // Initialize Event Listeners & Intersection Observer
             document.addEventListener("astro:page-load", () => {
-                // 🌙 Theme toggle
-                const btn = document.getElementById("themeBtn");
-                if (btn) {
-                    btn.addEventListener("click", () => window.toggleTheme());
+                const themeBtn = document.getElementById("themeBtn");
+                if (themeBtn) {
+                    themeBtn.addEventListener("click", () =>
+                        window.toggleTheme(),
+                    );
                 }
 
-                // 📩 Contact button
                 const contactBtn = document.getElementById("contactBtn");
                 if (contactBtn) {
                     contactBtn.addEventListener("click", window.copyEmail);
                 }
+
+                // Animation Observer for smooth fade-ins
+                const observerOptions = {
+                    root: document.getElementById("main-scroll-container"),
+                    threshold: 0.4,
+                };
+
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add("is-visible");
+                        }
+                    });
+                }, observerOptions);
+
+                document
+                    .querySelectorAll(".scroll-section")
+                    .forEach((section) => {
+                        observer.observe(section);
+                    });
             });
         </script>
     </body>
