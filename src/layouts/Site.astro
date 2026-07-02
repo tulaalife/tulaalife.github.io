@@ -9,7 +9,7 @@ interface Props {
     ogImage?: string;
     hideFooter?: boolean;
     hasTranslation?: boolean;
-    isLandingPage?: boolean; // <-- NEW PROP
+    isLandingPage?: boolean;
 }
 
 const {
@@ -19,7 +19,7 @@ const {
     ogImage = "https://images.tulaa.life/logo.webp",
     hideFooter = false,
     hasTranslation = true,
-    isLandingPage = false, // <-- Defaults to false for normal pages
+    isLandingPage = false,
 } = Astro.props;
 
 const site = "https://tulaalife.com";
@@ -58,7 +58,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
 ---
 
 <!doctype html>
-<!-- NEW: Apply a class to HTML only if it's the landing page -->
 <html
     lang={currentLang}
     data-theme="light"
@@ -92,6 +91,14 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
 
         <link rel="icon" type="image/webp" href="/assets/icons/logo_64.webp" />
         <ClientRouter />
+
+        <!-- Google Fonts for Hindi (Noto Sans Devanagari) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+            rel="stylesheet"
+        />
 
         <script is:inline>
             (() => {
@@ -193,23 +200,43 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             :root {
                 --container-width: 1120px;
                 --header-height: 64px;
-                --font-sans:
+
+                /* Typography Variables */
+                --font-sans-en:
                     "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
+                --font-sans-hi: "Noto Sans Devanagari", sans-serif;
                 --fw-bold: 750;
             }
 
             :root[data-theme="light"] {
                 --bg-main: oklch(100% 0 0);
                 --bg-sub: oklch(97% 0 0);
+
+                /* Subtle Premium Gradient Background */
+                --body-bg: linear-gradient(
+                    160deg,
+                    oklch(100% 0 0) 0%,
+                    color-mix(in srgb, oklch(97% 0 0), var(--primary) 3%) 100%
+                );
+
                 --text-main: oklch(20% 0 0);
                 --text-muted: oklch(42% 0 0);
                 --primary: oklch(62% 0.14 145);
                 --border: oklch(92% 0 0);
                 --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
             }
+
             :root[data-theme="dark"] {
                 --bg-main: oklch(15% 0.01 145);
                 --bg-sub: oklch(18% 0.01 145);
+
+                /* Subtle Premium Gradient Background */
+                --body-bg: linear-gradient(
+                    160deg,
+                    oklch(16% 0.01 145) 0%,
+                    oklch(12% 0.01 145) 100%
+                );
+
                 --text-main: oklch(96% 0 0);
                 --text-muted: oklch(75% 0 0);
                 --primary: oklch(70% 0.12 145);
@@ -217,14 +244,55 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
             }
 
+            /* --- GLOBAL TYPOGRAPHY LOGIC --- */
             body {
-                font-family: var(--font-sans);
+                font-family: var(--font-sans-en);
                 color: var(--text-main);
-                background-color: var(--bg-main);
-                transition:
-                    background-color 0.3s ease,
-                    color 0.3s ease;
+                background: var(--body-bg);
+                background-attachment: fixed;
+                transition: color 0.3s ease;
                 -webkit-font-smoothing: antialiased;
+                line-height: 1.6;
+            }
+
+            body:lang(hi) {
+                font-family: var(--font-sans-hi);
+                line-height: 1.7; /* Devanagari needs more breathing room */
+            }
+
+            h1,
+            h2,
+            h3,
+            .section-title,
+            .hero-title {
+                margin: 0;
+                font-weight: var(--fw-bold);
+                line-height: 1.15;
+                letter-spacing: -0.02em; /* English looks great tight */
+            }
+
+            /* Hindi Typography Overrides */
+            :lang(hi) h1,
+            :lang(hi) h2,
+            :lang(hi) h3,
+            :lang(hi) .section-title,
+            :lang(hi) .hero-title {
+                font-weight: 700; /* Dial back the boldness for clearer counters */
+                letter-spacing: normal; /* Restore tracking to keep the shirorekha continuous */
+                line-height: 1.35;
+            }
+
+            /* Optical adjustment for Hindi buttons */
+            :lang(hi) .btn-pill,
+            :lang(hi) .btn-sm,
+            :lang(hi) .filter-btn {
+                padding-top: 10px;
+                padding-bottom: 8px;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
             }
 
             /* --- SCOPED SNAP SCROLLING ARCHITECTURE --- */
@@ -288,17 +356,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 margin: 0 auto;
                 padding: 0 24px;
                 width: 100%;
-            }
-            h1,
-            h2,
-            h3 {
-                margin: 0;
-                font-weight: var(--fw-bold);
-                line-height: 1.15;
-            }
-            a {
-                color: inherit;
-                text-decoration: none;
             }
 
             /* Header styles */
