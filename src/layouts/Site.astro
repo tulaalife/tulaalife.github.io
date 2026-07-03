@@ -1,6 +1,7 @@
 ---
 import FooterCard from "../components/FooterCard.astro";
 import { ClientRouter } from "astro:transitions";
+import "../styles/global.css"; // Driving global design and typography variables tokens from our common CSS file
 
 interface Props {
     title: string;
@@ -177,112 +178,14 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         </style>
 
         <style is:global>
-            /* Base Variables & Reset */
-            *,
-            *::before,
-            *::after {
-                box-sizing: border-box;
-            }
-            html,
-            body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-            }
-
-            /* ONLY lock scrolling if on the landing page */
+            /* ONLY lock scrolling if on the landing page layout view */
             html.is-landing,
             html.is-landing body {
                 height: 100%;
                 overflow: hidden;
             }
 
-            :root {
-                --container-width: 1120px;
-                --header-height: 64px;
-
-                /* Typography Variables */
-                --font-sans-en:
-                    "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
-                --font-sans-hi: "Noto Sans Devanagari", sans-serif;
-                --fw-bold: 750;
-            }
-
-            :root[data-theme="light"] {
-                --bg-main: oklch(100% 0 0);
-                --bg-sub: oklch(97% 0 0);
-
-                /* Subtle Premium Gradient Background */
-                --body-bg: linear-gradient(
-                    160deg,
-                    oklch(100% 0 0) 0%,
-                    color-mix(in srgb, oklch(97% 0 0), var(--primary) 3%) 100%
-                );
-
-                --text-main: oklch(20% 0 0);
-                --text-muted: oklch(42% 0 0);
-                --primary: oklch(62% 0.14 145);
-                --border: oklch(92% 0 0);
-                --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            }
-
-            :root[data-theme="dark"] {
-                --bg-main: oklch(15% 0.01 145);
-                --bg-sub: oklch(18% 0.01 145);
-
-                /* Subtle Premium Gradient Background */
-                --body-bg: linear-gradient(
-                    160deg,
-                    oklch(16% 0.01 145) 0%,
-                    oklch(12% 0.01 145) 100%
-                );
-
-                --text-main: oklch(96% 0 0);
-                --text-muted: oklch(75% 0 0);
-                --primary: oklch(70% 0.12 145);
-                --border: oklch(25% 0 0);
-                --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-            }
-
-            /* --- GLOBAL TYPOGRAPHY LOGIC --- */
-            body {
-                font-family: var(--font-sans-en);
-                color: var(--text-main);
-                background: var(--body-bg);
-                background-attachment: fixed;
-                transition: color 0.3s ease;
-                -webkit-font-smoothing: antialiased;
-                line-height: 1.6;
-            }
-
-            body:lang(hi) {
-                font-family: var(--font-sans-hi);
-                line-height: 1.7; /* Devanagari needs more breathing room */
-            }
-
-            h1,
-            h2,
-            h3,
-            .section-title,
-            .hero-title {
-                margin: 0;
-                font-weight: var(--fw-bold);
-                line-height: 1.15;
-                letter-spacing: -0.02em; /* English looks great tight */
-            }
-
-            /* Hindi Typography Overrides */
-            :lang(hi) h1,
-            :lang(hi) h2,
-            :lang(hi) h3,
-            :lang(hi) .section-title,
-            :lang(hi) .hero-title {
-                font-weight: 700; /* Dial back the boldness for clearer counters */
-                letter-spacing: normal; /* Restore tracking to keep the shirorekha continuous */
-                line-height: 1.35;
-            }
-
-            /* Optical adjustment for Hindi buttons */
+            /* Optical adjustments for buttons dependent on layout context */
             :lang(hi) .btn-pill,
             :lang(hi) .btn-sm,
             :lang(hi) .filter-btn {
@@ -330,7 +233,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 padding-bottom: 40px;
             }
 
-            /* --- PREMIUM ANIMATIONS --- */
+            /* --- SCROLL DRIVEN LAYOUT ANIMATIONS --- */
             .animate-on-scroll {
                 opacity: 0;
                 transform: translateY(30px);
@@ -350,15 +253,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 transform: translateY(0);
             }
 
-            /* Utilities */
-            .container {
-                max-width: var(--container-width);
-                margin: 0 auto;
-                padding: 0 24px;
-                width: 100%;
-            }
-
-            /* Header styles */
+            /* Header Specific Layout Styling */
             header {
                 position: fixed;
                 top: 0;
@@ -427,7 +322,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 background: var(--bg-sub);
             }
 
-            /* Footer & Toast Styles */
+            /* Footer Card Sub-actions & Toast System */
             .contact-btn {
                 background: none;
                 border: none;
@@ -512,7 +407,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         <main class="scroll-container" id="main-scroll-container">
             <slot />
 
-            <!-- Conditionally style the footer depending on if it's the landing page -->
             {
                 !hideFooter && (
                     <section
@@ -616,7 +510,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                     });
                 }, observerOptions);
 
-                // This will safely observe on landing pages, and peacefully do nothing on standard pages
                 document
                     .querySelectorAll(".scroll-section, .footer-card-container")
                     .forEach((section) => {

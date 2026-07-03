@@ -44,10 +44,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
 <section id="hero" class="scroll-section hero-section">
-    <div class="container hero-content-centered">
-        <div class="badge animate-on-scroll">{t.badge}</div>
+    <!-- Combined layout tracking under standard common header wrapper -->
+    <div class="container section-header-center hero-content">
+        <div class="badge-small animate-on-scroll" style="margin-bottom: 32px;">
+            {t.badge}
+        </div>
 
-        <!-- CLEANED: Removed conditional is-hindi class template string -->
         <h1 class="hero-title animate-on-scroll" lang={currentLang}>
             {t.titleTop}<br />
             <span class="text-gradient">{t.titleBottom}</span>
@@ -76,7 +78,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <script>
     document.addEventListener("astro:page-load", () => {
-        // --- Social Proof Rotation ---
         const proofs = document.querySelectorAll(".social-proof-item");
         let currentProof = 0;
 
@@ -93,42 +94,18 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 <style>
     .hero-section {
         width: 100%;
-    }
-
-    .hero-content-centered {
         display: flex;
-        flex-direction: column;
         align-items: center;
-        text-align: center;
-        max-width: 800px;
-        margin: 0 auto;
-        z-index: 2;
     }
 
-    .badge {
-        display: inline-flex;
-        padding: 6px 14px;
-        border-radius: 100px;
-        background: var(--bg-sub);
-        color: var(--primary);
-        font-weight: 600;
-        font-size: 0.85rem;
-        margin-bottom: 32px;
-        border: 1px solid var(--border);
+    .hero-content {
+        max-width: 800px;
+        z-index: 2;
     }
 
     .hero-title {
         font-size: clamp(3rem, 5vw, 4.5rem);
-        line-height: 1.15;
-        font-weight: 800;
         margin-bottom: 24px;
-        letter-spacing: -0.02em;
-    }
-
-    .text-gradient {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
     }
 
     .hero-sub {

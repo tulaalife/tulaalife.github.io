@@ -26,7 +26,6 @@ const ui = {
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 
-// Compute the accurate deep link directory
 const baseAudioHref = currentLang === "hi" ? "/hi/audio" : "/audio";
 
 const displayAudios = guidedAudios
@@ -37,13 +36,14 @@ const displayAudios = guidedAudios
 <section class="scroll-section section-mind">
     <div class="container animate-on-scroll">
         <div class="header-row">
-            <div class="header-text">
+            <!-- Utilized section-header-left class token for structural typography framework alignment -->
+            <div class="section-header-left header-text">
                 <h2 class="section-title">
                     {t.titleTop}
                     <br />
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
-                <p class="body-text max-w-md">
+                <p class="body-text max-w-md" style="margin-top: 8px;">
                     {t.body}
                 </p>
             </div>
@@ -123,7 +123,7 @@ const displayAudios = guidedAudios
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        margin-bottom: 16px; /* Optimized: Reduced from 40px */
+        margin-bottom: 16px;
         position: relative;
         z-index: 2;
     }
@@ -133,37 +133,14 @@ const displayAudios = guidedAudios
     }
 
     .section-title {
-        font-size: clamp(
-            2.2rem,
-            4vw,
-            3.2rem
-        ); /* Optimized: Scaled down for screen fold safety */
-        line-height: 1.15;
-        font-weight: 800;
-        margin-bottom: 8px; /* Optimized from 16px */
-        color: var(--text-main);
-    }
-
-    .text-gradient {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-        padding-bottom: 2px;
-    }
-
-    .body-text {
-        font-size: 1.05rem; /* Optimized from 1.15rem */
-        line-height: 1.5;
-        color: var(--text-muted);
-        margin: 0;
+        font-size: clamp(2.2rem, 4vw, 3.2rem);
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 16px; /* Optimized from 24px */
+        margin-bottom: 16px;
     }
 
     .carousel-wrapper::after {
@@ -189,11 +166,11 @@ const displayAudios = guidedAudios
 
     .carousel-track {
         display: flex;
-        gap: 20px; /* Optimized from 24px */
+        gap: 20px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 0;
-        padding-bottom: 16px; /* Optimized from 24px */
+        padding-bottom: 16px;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
         position: relative;
@@ -206,7 +183,7 @@ const displayAudios = guidedAudios
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 300px; /* Optimized from 320px */
+        flex: 0 0 300px;
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -222,7 +199,7 @@ const displayAudios = guidedAudios
     }
 
     .carousel-card:hover {
-        transform: translateY(-4px); /* Optimized from -6px */
+        transform: translateY(-4px);
         box-shadow: var(--shadow);
         border-color: var(--primary);
     }
@@ -246,7 +223,7 @@ const displayAudios = guidedAudios
     }
 
     .carousel-card:hover .card-image img {
-        transform: scale(1.03); /* Optimized from 1.05 */
+        transform: scale(1.03);
         opacity: 0.7;
     }
 
@@ -255,7 +232,7 @@ const displayAudios = guidedAudios
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 44px; /* Optimized from 48px */
+        width: 44px;
         height: 44px;
         background: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(8px);
@@ -269,7 +246,7 @@ const displayAudios = guidedAudios
     }
 
     .play-icon {
-        width: 20px; /* Optimized from 24px */
+        width: 20px;
         height: 20px;
         color: white;
         margin-left: 2px;
@@ -282,24 +259,24 @@ const displayAudios = guidedAudios
     }
 
     .card-content {
-        padding: 16px 20px; /* Optimized from 24px structural frames */
+        padding: 16px 20px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
 
     .card-title {
-        font-size: 1.15rem; /* Optimized from 1.2rem */
+        font-size: 1.15rem;
         font-weight: 700;
-        margin-bottom: 4px; /* Optimized from 8px */
+        margin-bottom: 4px;
         line-height: 1.3;
     }
 
     .card-desc {
-        font-size: 0.9rem; /* Optimized from 0.95rem */
+        font-size: 0.9rem;
         color: var(--text-muted);
         line-height: 1.4;
-        margin-bottom: 12px; /* Optimized from 20px */
+        margin-bottom: 12px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -310,7 +287,7 @@ const displayAudios = guidedAudios
     .card-footer {
         display: flex;
         align-items: center;
-        gap: 6px; /* Optimized from 8px */
+        gap: 6px;
         font-weight: 600;
         color: var(--primary);
         font-size: 0.9rem;
@@ -340,14 +317,14 @@ const displayAudios = guidedAudios
         .header-row {
             flex-direction: column;
             align-items: flex-start;
-            gap: 8px; /* Optimized from 16px */
-            margin-bottom: 16px; /* Optimized from 24px */
+            gap: 8px;
+            margin-bottom: 16px;
         }
         .hidden-mobile {
             display: none;
         }
         .carousel-card {
-            flex: 0 0 260px; /* Optimized from 280px */
+            flex: 0 0 260px;
         }
         .carousel-wrapper::after {
             width: 40px;

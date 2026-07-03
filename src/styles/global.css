@@ -1,0 +1,137 @@
+/* src/styles/global.css */
+
+/* --- 1. BASE VARIABLES & TOKENS --- */
+:root {
+    --container-width: 1120px;
+    --header-height: 64px;
+
+    /* Typography */
+    --font-sans-en: "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans-hi: "Noto Sans Devanagari", sans-serif;
+    --fw-bold: 750;
+    --radius-lg: 24px;
+}
+
+/* Light Theme Tokens */
+:root[data-theme="light"] {
+    --bg-main: oklch(100% 0 0);
+    --bg-sub: oklch(97% 0 0);
+    --body-bg: linear-gradient(160deg, oklch(100% 0 0) 0%, color-mix(in srgb, oklch(97% 0 0), var(--primary) 3%) 100%);
+    --text-main: oklch(20% 0 0);
+    --text-muted: oklch(42% 0 0);
+    --primary: oklch(62% 0.14 145);
+    --border: oklch(92% 0 0);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+/* Dark Theme Tokens */
+:root[data-theme="dark"] {
+    --bg-main: oklch(15% 0.01 145);
+    --bg-sub: oklch(18% 0.01 145);
+    --body-bg: linear-gradient(160deg, oklch(16% 0.01 145) 0%, oklch(12% 0.01 145) 100%);
+    --text-main: oklch(96% 0 0);
+    --text-muted: oklch(75% 0 0);
+    --primary: oklch(70% 0.12 145);
+    --border: oklch(25% 0 0);
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* --- 2. GLOBAL RESET & TYPOGRAPHY --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+body {
+    font-family: var(--font-sans-en);
+    color: var(--text-main);
+    background: var(--body-bg);
+    background-attachment: fixed;
+    transition: color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+}
+
+body:lang(hi) {
+    font-family: var(--font-sans-hi);
+    line-height: 1.7;
+}
+
+/* --- 3. PREMIUM TYPOGRAPHY UTILITIES --- */
+h1,
+h2,
+h3,
+.hero-title,
+.section-title {
+    margin: 0;
+    font-weight: var(--fw-bold);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--primary), #a855f7);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+}
+
+.body-text {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.badge-small {
+    display: inline-flex;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: var(--bg-sub);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+}
+
+/* Hindi Overrides */
+:lang(hi) h1,
+:lang(hi) h2,
+:lang(hi) h3,
+:lang(hi) .section-title,
+:lang(hi) .hero-title {
+    font-weight: 700;
+    letter-spacing: normal;
+    line-height: 1.35;
+}
+
+/* --- 4. LAYOUT & ALIGNMENT UTILITIES --- */
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+}
+
+/* Use these to enforce consistent alignment */
+.section-header-left {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.section-header-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

@@ -1,10 +1,8 @@
 ---
 import SectionCTA from "../SectionCTA.astro";
 
-// 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dictionary for Privacy & Trust content
 const ui = {
     en: {
         titleTop: "100% Private.",
@@ -67,20 +65,22 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <section class="scroll-section section-privacy">
     <div style="width: 100%;">
-        <div class="container header-content animate-on-scroll">
+        <!-- Standardized text to left-alignment to eliminate scrolling layout friction -->
+        <div
+            class="container section-header-left header-content animate-on-scroll"
+        >
             <h2 class="section-title">
                 <span class="title-main">{t.titleTop}</span>
                 <br />
                 <span class="text-gradient">{t.titleBottom}</span>
             </h2>
-            <p class="body-text">
+            <p class="body-text" style="margin-top: 12px;">
                 {t.descTop}
                 <br class="hidden-mobile" />
                 {t.descBottom}
             </p>
         </div>
 
-        <!-- Carousel Wrapper for Mobile / Grid for Desktop -->
         <div class="container carousel-wrapper animate-on-scroll delay-1">
             <div class="features-track">
                 {
@@ -102,7 +102,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             </div>
         </div>
 
-        <div class="cta-wrapper animate-on-scroll delay-2">
+        <!-- Aligned CTA button beautifully to match the left margin setup -->
+        <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/faq"
                 labelEn="Frequently Asked Questions"
@@ -116,41 +117,28 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     .section-privacy {
         width: 100%;
         background-color: var(--bg-main);
+        display: flex;
+        align-items: center;
     }
 
     .header-content {
-        text-align: center;
         max-width: 800px;
-        margin: 0 auto 5dvh; /* Dynamic margin to respect viewport height */
+        margin-bottom: 4vh;
+        text-align: left; /* FIX: Clear structural alignment shift away from center */
+        width: 100%;
     }
 
-    /* --- TYPOGRAPHY --- */
     .section-title {
         font-size: clamp(2.6rem, 4vw, 3.5rem);
-        line-height: 1.15;
-        font-weight: 800;
-        margin-bottom: 24px;
-        letter-spacing: -0.02em;
+        text-align: left; /* FIX: Removes visual shifting on gradient lines */
     }
 
     .title-main {
         color: var(--text-main);
     }
 
-    /* CLEANED: .section-title.is-hindi has been removed. Styled automatically via master layout overrides. */
-
-    .text-gradient {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-        padding-bottom: 4px;
-    }
-
     .body-text {
-        font-size: 1.15rem;
-        line-height: 1.6;
-        color: var(--text-muted);
+        text-align: left; /* FIX: Corrects the split shown in your screenshot */
     }
 
     /* --- RESPONSIVE GRID / CAROUSEL --- */
@@ -170,7 +158,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         position: relative;
         overflow: hidden;
         padding: 32px;
-        border-radius: 32px;
+        border-radius: var(--radius-lg);
         background: linear-gradient(
             135deg,
             color-mix(in srgb, var(--bg-main), white 5%) 0%,
@@ -186,7 +174,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: flex;
         flex-direction: column;
         z-index: 1;
-        height: 100%; /* Ensures cards in grid stretch equally */
+        height: 100%;
     }
 
     :root[data-theme="dark"] .privacy-card {
@@ -224,7 +212,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         font-weight: 400;
     }
 
-    /* --- BACKGROUND ICON EFFECT --- */
     .bg-icon {
         position: absolute;
         bottom: -20px;
@@ -245,12 +232,11 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .cta-wrapper {
+        margin-top: 4vh;
         display: flex;
-        justify-content: center;
-        margin-top: 5dvh;
+        justify-content: flex-start;
     }
 
-    /* --- MOBILE HORIZONTAL CAROUSEL --- */
     @media (max-width: 992px) {
         .carousel-wrapper::after {
             content: "";
@@ -259,12 +245,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             right: 0;
             width: 60px;
             height: 100%;
-            background: linear-gradient(to right, transparent, var(--bg-main));
             pointer-events: none;
             z-index: 5;
         }
 
-        /* Adjust gradient direction for light/dark theme correctness */
         html[data-theme="light"] .carousel-wrapper::after,
         html[data-theme="dark"] .carousel-wrapper::after {
             background: linear-gradient(
@@ -289,8 +273,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         }
 
         .privacy-card {
-            scroll-snap-align: center;
-            flex: 0 0 85%; /* Shows a peek of the next card */
+            scroll-snap-align: start;
+            flex: 0 0 85%;
             padding: 28px;
         }
     }
@@ -303,10 +287,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             display: none;
         }
         .header-content {
-            margin-bottom: 4dvh;
+            margin-bottom: 4vh;
         }
         .cta-wrapper {
-            margin-top: 2dvh;
+            margin-top: 2vh;
         }
     }
 </style>

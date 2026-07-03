@@ -22,10 +22,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
 <section class="scroll-section author-section">
-    <div
-        class="container"
-        style="display: flex; justify-content: center; align-items: center; width: 100%;"
-    >
+    <div class="container author-container">
         <a
             href="https://yogawithlatika.com"
             target="_blank"
@@ -41,7 +38,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                                 <strong>{t.author}</strong>
                             </h3>
                         </div>
-                        <div class="author-trust text-gradient-alt">
+                        <!-- Applied the central .text-gradient class utility token -->
+                        <div class="author-trust text-gradient">
                             {t.authorTrust}
                         </div>
                     </div>
@@ -60,6 +58,14 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 <style>
     .author-section {
         width: 100%;
+        display: flex;
+        align-items: center;
+    }
+
+    .author-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .author-link {
@@ -79,16 +85,15 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         padding: 32px 48px;
-        border-radius: 24px;
+        border-radius: var(--radius-lg);
         border: 1px solid var(--border);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+        box-shadow: var(--shadow);
         transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
     }
 
     .author-link:hover .author-card {
         border-color: var(--primary);
         transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
         background: linear-gradient(
             110deg,
             color-mix(in srgb, var(--bg-sub), transparent 5%) 0%,
@@ -132,7 +137,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         color: var(--text-main);
         margin: 0;
         font-weight: 400;
-        letter-spacing: -0.01em; /* CLEANED: Handled cleanly via master global layout overrides for :lang(hi) */
     }
 
     .author-trust {
@@ -141,12 +145,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         margin-top: 4px;
         display: block;
         width: 100%;
-    }
-
-    .text-gradient-alt {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
     }
 
     .creds-list {
@@ -171,7 +169,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     @media (max-width: 768px) {
         .author-card {
             padding: 28px;
-            border-radius: 20px;
         }
 
         .creds-list {

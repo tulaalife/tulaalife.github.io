@@ -1,8 +1,6 @@
 ---
 import SectionCTA from "../SectionCTA.astro";
 
-// src/components/WellnessTools.astro
-
 const currentLang = Astro.currentLocale || "en";
 
 const ui = {
@@ -101,10 +99,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <section class="scroll-section section-tools">
     <div class="container content-wrapper">
-        <div class="text-col animate-on-scroll">
+        <!-- Enforced consistent left-alignment utility token -->
+        <div class="section-header-left text-col animate-on-scroll">
             <span class="badge-small">{t.badge}</span>
             <h2 class="section-title">
                 {t.titleTop}
+                <br class="mobile-only" />
                 <span class="text-gradient">{t.titleBottom}</span>
             </h2>
             <p class="body-text" set:html={t.body} />
@@ -146,42 +146,28 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     .content-wrapper {
         display: flex;
         flex-direction: column;
-        align-items: center;
         width: 100%;
-        max-width: var(--container-width);
-        margin: 0 auto;
-        padding: 0 24px;
     }
 
     .text-col {
-        text-align: center;
-        margin-bottom: 3rem;
+        margin-bottom: 2.5rem;
+        text-align: left; /* FIX: Replaces legacy center text alignments */
+        width: 100%;
     }
 
     .badge-small {
-        display: inline-block;
-        padding: 6px 16px;
-        border-radius: 99px;
-        background: var(--bg-sub);
-        color: var(--primary);
-        font-size: 0.85rem;
-        margin-bottom: 20px;
-        border: 1px solid var(--border);
+        margin-bottom: 16px;
     }
 
     .section-title {
         font-size: clamp(2.4rem, 5vw, 3.8rem);
-        margin-bottom: 20px;
+        margin-bottom: 16px;
+        text-align: left; /* FIX: Locks the title lines firmly to the left wall */
     }
 
-    /* CLEANED: Local alignment tracking removed. Layout engine processes tracking rules natively. */
-
     .body-text {
-        font-size: 1.2rem;
-        color: var(--text-muted);
-        max-width: 600px;
-        margin: 0 auto;
-        line-height: 1.6;
+        max-width: 650px;
+        text-align: left; /* FIX: Prevents description block centering */
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
@@ -205,7 +191,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         flex: 0 0 280px;
         background: var(--bg-sub);
         padding: 24px;
-        border-radius: 24px;
+        border-radius: var(--radius-lg);
         border: 1px solid var(--border);
         display: flex;
         align-items: flex-start;
@@ -240,23 +226,29 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .tool-info p {
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         color: var(--text-muted);
         margin: 0;
         line-height: 1.4;
     }
 
     .cta-wrapper {
-        margin-top: 2rem;
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .mobile-only {
+        display: none;
     }
 
     @media (max-width: 768px) {
-        .content-wrapper {
-            padding: 0 16px;
-        }
-
         .section-title {
             font-size: 2.2rem;
+        }
+
+        .mobile-only {
+            display: block;
         }
     }
 </style>

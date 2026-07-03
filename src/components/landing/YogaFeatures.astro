@@ -18,13 +18,14 @@ const displayPlans = yogaPlans
 <section class="scroll-section section-yoga">
     <div class="container animate-on-scroll">
         <div class="header-row">
-            <div class="header-text">
+            <!-- Driven through common layout system utility section-header-left -->
+            <div class="section-header-left header-text">
                 <h2 class="section-title">
                     <span class="title-main">{t.heroTitleTop}</span>
                     <br />
                     <span class="text-gradient">{t.heroTitleBottom}</span>
                 </h2>
-                <p class="body-text">{t.heroBody}</p>
+                <p class="body-text" style="margin-top: 8px;">{t.heroBody}</p>
             </div>
 
             <div class="desktop-cta hidden-mobile">
@@ -149,13 +150,16 @@ const displayPlans = yogaPlans
     .section-yoga {
         width: 100%;
         background-color: var(--bg-main);
+        display: flex;
+        align-items: center;
     }
 
     .header-row {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        margin-bottom: 16px; /* Reduced gap from 24px */
+        margin-bottom: 16px;
+        width: 100%;
     }
 
     .header-text {
@@ -163,33 +167,11 @@ const displayPlans = yogaPlans
     }
 
     .section-title {
-        font-size: clamp(
-            2.2rem,
-            4vw,
-            3.2rem
-        ); /* Scaled down slightly for tight screen views */
-        line-height: 1.15;
-        font-weight: 800;
-        margin-bottom: 8px;
+        font-size: clamp(2.2rem, 4vw, 3.2rem);
     }
 
     .title-main {
         color: var(--text-main);
-    }
-
-    .text-gradient {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-        padding-bottom: 2px;
-    }
-
-    .body-text {
-        font-size: 1.05rem; /* Sized down from 1.15rem */
-        line-height: 1.5;
-        color: var(--text-muted);
-        margin: 0;
     }
 
     /* --- FILTER NAVIGATION --- */
@@ -197,7 +179,7 @@ const displayPlans = yogaPlans
         display: flex;
         align-items: center;
         gap: 16px;
-        margin-bottom: 20px; /* Reduced from 32px */
+        margin-bottom: 20px;
         padding-bottom: 4px;
     }
 
@@ -225,7 +207,7 @@ const displayPlans = yogaPlans
         background: var(--bg-sub);
         border: 1px solid var(--border);
         color: var(--text-main);
-        padding: 6px 16px; /* More compact button shapes */
+        padding: 6px 16px;
         border-radius: 99px;
         font-size: 0.85rem;
         font-weight: 600;
@@ -243,7 +225,7 @@ const displayPlans = yogaPlans
         background: var(--primary);
         color: #fff;
         border-color: var(--primary);
-        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15);
+        box-shadow: var(--shadow);
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
@@ -260,11 +242,6 @@ const displayPlans = yogaPlans
         right: 0;
         width: 80px;
         height: 100%;
-        background: linear-gradient(
-            to right,
-            var(--bg-main) 0%,
-            transparent 100%
-        );
         pointer-events: none;
         z-index: 5;
     }
@@ -280,7 +257,7 @@ const displayPlans = yogaPlans
 
     .carousel-track {
         display: flex;
-        gap: 20px; /* Tightened gap */
+        gap: 20px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 0;
@@ -294,7 +271,7 @@ const displayPlans = yogaPlans
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 300px; /* Slimmed down width slightly */
+        flex: 0 0 300px;
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -318,7 +295,7 @@ const displayPlans = yogaPlans
 
     .card-image {
         position: relative;
-        aspect-ratio: 16 / 10; /* Changed from 4/3 to match widescreen premium specs and save height */
+        aspect-ratio: 16 / 10;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
     }
@@ -335,7 +312,7 @@ const displayPlans = yogaPlans
     }
 
     .card-content {
-        padding: 16px 20px; /* Reduced vertical padding from 24px */
+        padding: 16px 20px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
@@ -352,7 +329,7 @@ const displayPlans = yogaPlans
         font-size: 0.9rem;
         color: var(--text-muted);
         line-height: 1.4;
-        margin-bottom: 12px; /* Reduced from 20px */
+        margin-bottom: 12px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -389,7 +366,7 @@ const displayPlans = yogaPlans
         }
 
         .carousel-card {
-            flex: 0 0 260px; /* Tighter layout boundaries for responsive display */
+            flex: 0 0 260px;
         }
 
         .carousel-wrapper::after {
