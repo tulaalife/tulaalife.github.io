@@ -5,7 +5,6 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "All-in-One Wellness",
         titleTop: "Replace 5 Apps",
         titleBottom: "With One.",
         body: "Simplify your digital wellness. Tulaa brings your essential health tools into one secure, offline-first ecosystem. <strong>No data mining. No subscriptions.</strong>",
@@ -14,42 +13,41 @@ const ui = {
                 title: "Cycle Tracker",
                 desc: "Predict periods & symptoms.",
                 icon: "🌸",
-                color: "rgba(255, 182, 193, 0.15)",
+                color: "oklch(88% 0.03 350)",
             },
             {
                 title: "Habit Rhythm",
                 desc: "Build consistent healthy streaks.",
                 icon: "⚡️",
-                color: "rgba(255, 215, 0, 0.15)",
+                color: "oklch(88% 0.05 90)",
             },
             {
                 title: "Hydration",
                 desc: "Monitor daily water intake.",
                 icon: "💧",
-                color: "rgba(0, 191, 255, 0.15)",
+                color: "oklch(85% 0.06 220)",
             },
             {
                 title: "Fast Tracker",
                 desc: "Track intermittent fasting.",
                 icon: "⏳",
-                color: "rgba(147, 112, 219, 0.15)",
+                color: "oklch(82% 0.05 280)",
             },
             {
                 title: "Health Tips",
                 desc: "Research-backed daily guidance.",
                 icon: "💡",
-                color: "rgba(255, 165, 0, 0.15)",
+                color: "oklch(86% 0.06 40)",
             },
             {
                 title: "Care Blog",
                 desc: "Learn expert care routines.",
                 icon: "📚",
-                color: "rgba(60, 179, 113, 0.15)",
+                color: "oklch(84% 0.05 150)",
             },
         ],
     },
     hi: {
-        badge: "एक ही ऐप में पूरी सेहत",
         titleTop: "5 अलग ऐप्स की जगह",
         titleBottom: "अब सिर्फ एक।",
         body: "अपने डिजिटल वेलनेस को सरल बनाएं। Tulaa आपके ज़रूरी स्वास्थ्य टूल्स को एक सुरक्षित, ऑफलाइन-फर्स्ट ऐप में लाता है। <strong>कोई डेटा माइनिंग नहीं। कोई सब्सक्रिप्शन नहीं।</strong>",
@@ -58,37 +56,37 @@ const ui = {
                 title: "पीरियड ट्रैकर",
                 desc: "पीरियड्स और लक्षणों का अनुमान।",
                 icon: "🌸",
-                color: "rgba(255, 182, 193, 0.15)",
+                color: "oklch(88% 0.03 350)",
             },
             {
                 title: "आदत रिदम",
                 desc: "स्वस्थ आदतों की निरंतरता।",
                 icon: "⚡️",
-                color: "rgba(255, 215, 0, 0.15)",
+                color: "oklch(88% 0.05 90)",
             },
             {
                 title: "हाइड्रेशन",
                 desc: "पानी पीने पर नज़र रखें।",
                 icon: "💧",
-                color: "rgba(0, 191, 255, 0.15)",
+                color: "oklch(85% 0.06 220)",
             },
             {
                 title: "फास्टिंग",
                 desc: "उपवास का समय ट्रैक करें।",
                 icon: "⏳",
-                color: "rgba(147, 112, 219, 0.15)",
+                color: "oklch(82% 0.05 280)",
             },
             {
                 title: "हेल्थ टिप्स",
                 desc: "रिसर्च आधारित सुझाव।",
                 icon: "💡",
-                color: "rgba(255, 165, 0, 0.15)",
+                color: "oklch(86% 0.06 40)",
             },
             {
                 title: "थेरेपी ब्लॉग",
                 desc: "विशेषज्ञ देखभाल लेख।",
                 icon: "📚",
-                color: "rgba(60, 179, 113, 0.15)",
+                color: "oklch(84% 0.05 150)",
             },
         ],
     },
@@ -98,34 +96,43 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
 <section class="scroll-section section-tools">
-    <div class="container content-wrapper">
-        <!-- Enforced consistent left-alignment utility token -->
-        <div class="section-header-left text-col animate-on-scroll">
-            <span class="badge-small">{t.badge}</span>
-            <h2 class="section-title">
-                {t.titleTop}
-                <br class="mobile-only" />
-                <span class="text-gradient">{t.titleBottom}</span>
-            </h2>
-            <p class="body-text" set:html={t.body} />
+    <div class="content-wrapper">
+        <!-- 1. Pure Header Container Grid Alignment Module -->
+        <div class="container">
+            <div class="section-header-left text-col animate-on-scroll">
+                <h2 class="section-title">
+                    {t.titleTop}
+                    <br class="mobile-only" />
+                    <span class="text-gradient">{t.titleBottom}</span>
+                </h2>
+                <p class="body-text" set:html={t.body} />
+            </div>
         </div>
 
-        <!-- Horizontal Carousel -->
-        <div class="carousel-track animate-on-scroll delay-1">
-            {
-                t.tools.map((tool) => (
-                    <div class="tool-card" style={`--card-bg: ${tool.color}`}>
-                        <span class="tool-icon">{tool.icon}</span>
-                        <div class="tool-info">
-                            <strong>{tool.title}</strong>
-                            <p>{tool.desc}</p>
+        <!-- 2. Full Width Horizontal Carousel Container Track -->
+        <div class="container carousel-wrapper animate-on-scroll delay-1">
+            <div class="carousel-track">
+                {
+                    t.tools.map((tool) => (
+                        <div
+                            class="tool-card"
+                            style={`--card-accent: ${tool.color}`}
+                        >
+                            <div class="tool-icon-wrapper">
+                                <span class="tool-icon">{tool.icon}</span>
+                            </div>
+                            <div class="tool-info">
+                                <h3 class="card-title">{tool.title}</h3>
+                                <p class="card-desc">{tool.desc}</p>
+                            </div>
                         </div>
-                    </div>
-                ))
-            }
+                    ))
+                }
+            </div>
         </div>
 
-        <div class="cta-wrapper animate-on-scroll delay-2">
+        <!-- 3. Aligned Secondary Bottom Button -->
+        <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/blog"
                 labelEn="Read Wellness Blogs"
@@ -138,7 +145,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 <style>
     .section-tools {
         width: 100%;
-        background-color: var(--bg-main);
+        background-color: transparent;
         display: flex;
         align-items: center;
     }
@@ -147,36 +154,60 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: flex;
         flex-direction: column;
         width: 100%;
+        margin: 0 auto;
     }
 
     .text-col {
-        margin-bottom: 2.5rem;
-        text-align: left; /* FIX: Replaces legacy center text alignments */
+        margin-bottom: 3.5rem;
+        text-align: left;
         width: 100%;
-    }
-
-    .badge-small {
-        margin-bottom: 16px;
     }
 
     .section-title {
-        font-size: clamp(2.4rem, 5vw, 3.8rem);
-        margin-bottom: 16px;
-        text-align: left; /* FIX: Locks the title lines firmly to the left wall */
+        font-size: clamp(3rem, 5vw, 4.2rem);
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        text-align: left;
+        margin-bottom: 1.5rem;
     }
 
     .body-text {
-        max-width: 650px;
-        text-align: left; /* FIX: Prevents description block centering */
+        font-size: 1.25rem;
+        color: var(--text-muted);
+        max-width: 600px;
+        text-align: left;
+        line-height: 1.7;
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
+    .carousel-wrapper {
+        position: relative;
+        width: 100%;
+        margin-bottom: 3.5rem;
+    }
+
+    .carousel-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 100px;
+        height: 100%;
+        background: linear-gradient(
+            to left,
+            var(--bg-main) 0%,
+            transparent 100%
+        );
+        pointer-events: none;
+        z-index: 5;
+    }
+
     .carousel-track {
         display: flex;
-        gap: 20px;
+        gap: 24px;
         overflow-x: auto;
         width: 100%;
-        padding-bottom: 24px;
+        padding-bottom: 20px;
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
@@ -188,52 +219,63 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .tool-card {
         scroll-snap-align: start;
-        flex: 0 0 280px;
+        flex: 0 0 290px;
         background: var(--bg-sub);
-        padding: 24px;
+        padding: 28px;
         border-radius: var(--radius-lg);
         border: 1px solid var(--border);
         display: flex;
         align-items: flex-start;
-        gap: 16px;
+        gap: 20px;
         transition:
-            transform 0.3s ease,
-            border-color 0.3s ease,
-            box-shadow 0.3s ease;
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.4s ease,
+            box-shadow 0.4s ease;
+        height: 100%;
     }
 
     .tool-card:hover {
-        transform: translateY(-5px);
-        border-color: var(--primary);
+        transform: translateY(-6px);
+        border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
         box-shadow: var(--shadow);
     }
 
-    .tool-icon {
-        font-size: 1.5rem;
-        background: var(--card-bg);
-        padding: 12px;
-        border-radius: 16px;
+    .tool-icon-wrapper {
         display: flex;
         align-items: center;
         justify-content: center;
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        background: color-mix(in srgb, var(--card-accent) 25%, var(--bg-main));
+        border: 1px solid
+            color-mix(in srgb, var(--card-accent) 35%, var(--border));
+        font-size: 1.35rem;
         flex-shrink: 0;
     }
 
-    .tool-info strong {
-        display: block;
-        margin-bottom: 4px;
-        color: var(--text-main);
+    .tool-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
-    .tool-info p {
-        font-size: 0.9rem;
+    .card-title {
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin: 0 0 6px 0;
+        color: var(--text-main);
+        letter-spacing: -0.01em;
+    }
+
+    .card-desc {
+        font-size: 0.95rem;
         color: var(--text-muted);
         margin: 0;
-        line-height: 1.4;
+        line-height: 1.5;
     }
 
     .cta-wrapper {
-        margin-top: 1.5rem;
         display: flex;
         justify-content: flex-start;
     }
@@ -243,12 +285,29 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     @media (max-width: 768px) {
+        .text-col {
+            margin-bottom: 2.5rem;
+        }
+
         .section-title {
-            font-size: 2.2rem;
+            font-size: clamp(2.6rem, 8vw, 3.4rem);
+        }
+
+        .carousel-wrapper {
+            margin-bottom: 2.5rem;
+        }
+
+        .tool-card {
+            flex: 0 0 265px;
+            padding: 24px;
         }
 
         .mobile-only {
             display: block;
+        }
+
+        .carousel-wrapper::after {
+            width: 40px;
         }
     }
 </style>

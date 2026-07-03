@@ -33,21 +33,21 @@ const displayAudios = guidedAudios
 ---
 
 <section class="scroll-section section-mind">
-    <div class="container content-wrapper">
-        <!-- Integrated structural alignment utility matching wellnessTools layout rules -->
-        <div class="section-header-left text-col animate-on-scroll">
-            <h2 class="section-title">
-                {t.titleTop}
-                <br />
-                <span class="text-gradient">{t.titleBottom}</span>
-            </h2>
-            <p class="body-text" set:html={t.body} />
+    <div class="content-wrapper">
+        <!-- 1. Pure Header Container Grid Alignment Module -->
+        <div class="container">
+            <div class="section-header-left text-col animate-on-scroll">
+                <h2 class="section-title">
+                    {t.titleTop}
+                    <br />
+                    <span class="text-gradient">{t.titleBottom}</span>
+                </h2>
+                <p class="body-text" set:html={t.body} />
+            </div>
         </div>
 
-        <!-- Horizontal Carousel -->
-        <div class="carousel-wrapper animate-on-scroll delay-1">
-            <div class="glow-orb"></div>
-
+        <!-- 2. Full Width Horizontal Carousel Container Track -->
+        <div class="container carousel-wrapper animate-on-scroll delay-1">
             <div class="carousel-track" id="audio-plans-track">
                 {
                     displayAudios.map((audio) => (
@@ -91,8 +91,8 @@ const displayAudios = guidedAudios
             </div>
         </div>
 
-        <!-- Left-aligned unified CTA below carousel component wrapper -->
-        <div class="cta-wrapper animate-on-scroll delay-2">
+        <!-- 3. Standardised Unified Left Button Alignment Module -->
+        <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href={baseAudioHref}
                 labelEn={t.ctaEn}
@@ -105,7 +105,7 @@ const displayAudios = guidedAudios
 <style>
     .section-mind {
         width: 100%;
-        background-color: var(--bg-main);
+        background-color: transparent;
         display: flex;
         align-items: center;
     }
@@ -114,36 +114,35 @@ const displayAudios = guidedAudios
         display: flex;
         flex-direction: column;
         width: 100%;
-        max-width: var(--container-width);
         margin: 0 auto;
-        padding: 0 24px;
     }
 
     .text-col {
-        margin-bottom: 2.5rem;
+        margin-bottom: 3.5rem; /* Increased whitespace breathing space */
         text-align: left;
         width: 100%;
     }
 
     .section-title {
-        font-size: clamp(2.4rem, 5vw, 3.8rem);
-        text-align: left;
+        font-size: clamp(3rem, 5vw, 4.2rem);
+        letter-spacing: -0.03em;
+        line-height: 1.1;
     }
 
     .body-text {
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         color: var(--text-muted);
-        max-width: 650px; /* Locked constraint limits maximum line wrap width */
+        max-width: 600px; /* Tighter layout boundaries */
         text-align: left;
-        line-height: 1.6;
-        margin-top: 12px;
+        line-height: 1.7;
+        margin-top: 1.5rem;
     }
 
-    /* --- HORIZONTAL CAROUSEL --- */
+    /* --- CAROUSEL STRUCTURE --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 24px;
+        margin-bottom: 3.5rem;
     }
 
     .carousel-wrapper::after {
@@ -151,12 +150,12 @@ const displayAudios = guidedAudios
         position: absolute;
         top: 0;
         right: 0;
-        width: 80px;
+        width: 100px;
         height: 100%;
         background: linear-gradient(
             to left,
             var(--bg-main) 0%,
-            transparent 100%
+            transparent 100__
         );
         pointer-events: none;
         z-index: 5;
@@ -164,10 +163,10 @@ const displayAudios = guidedAudios
 
     .carousel-track {
         display: flex;
-        gap: 20px;
+        gap: 24px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        padding-bottom: 16px;
+        padding-bottom: 20px;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
         position: relative;
@@ -180,7 +179,7 @@ const displayAudios = guidedAudios
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 300px;
+        flex: 0 0 310px;
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -190,90 +189,96 @@ const displayAudios = guidedAudios
         text-decoration: none;
         color: inherit;
         transition:
-            transform 0.3s ease,
-            box-shadow 0.3s ease,
-            border-color 0.3s ease;
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.4s ease,
+            border-color 0.4s ease;
         height: 100%;
     }
 
     .carousel-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-6px);
         box-shadow: var(--shadow);
-        border-color: var(--primary);
+        border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
     }
 
     .card-image {
         position: relative;
-        aspect-ratio: 16/10;
+        aspect-ratio: 16 / 10;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
-        background-color: #000;
     }
 
     .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        opacity: 0.85;
-        transition:
-            transform 0.5s ease,
-            opacity 0.5s ease;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .carousel-card:hover .card-image img {
-        transform: scale(1.03);
-        opacity: 0.7;
+        transform: scale(1.02);
     }
 
+    /* Premium translucent design */
     .play-overlay {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 44px;
-        height: 44px;
-        background: rgba(255, 255, 255, 0.2);
+        width: 48px;
+        height: 48px;
+        background: color-mix(in srgb, var(--bg-main) 70%, transparent);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         border-radius: 50%;
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.3s ease;
-        border: 1px solid rgba(255, 255, 255, 0.4);
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid var(--border);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     }
 
     .play-icon {
-        width: 20px;
-        height: 20px;
-        color: white;
+        width: 18px;
+        height: 18px;
+        color: var(--text-main);
         margin-left: 2px;
+        transition: color 0.3s ease;
     }
 
     .carousel-card:hover .play-overlay {
         background: var(--primary);
-        transform: translate(-50%, -50%) scale(1.1);
         border-color: var(--primary);
+        transform: translate(-50%, -50%) scale(1.08);
+        box-shadow: 0 8px 20px
+            color-mix(in srgb, var(--primary) 30%, transparent);
+    }
+
+    .carousel-card:hover .play-icon {
+        color: var(--bg-main);
     }
 
     .card-content {
-        padding: 20px;
+        padding: 24px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
 
     .card-title {
-        font-size: 1.2rem;
-        margin-bottom: 4px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 6px;
         color: var(--text-main);
+        letter-spacing: -0.01em;
     }
 
     .card-desc {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         color: var(--text-muted);
-        line-height: 1.4;
-        margin-bottom: 16px;
+        line-height: 1.5;
+        margin-bottom: 20px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -289,45 +294,29 @@ const displayAudios = guidedAudios
         color: var(--primary);
         font-size: 0.9rem;
         margin-top: auto;
-    }
-
-    .glow-orb {
-        position: absolute;
-        top: 50%;
-        left: 30%;
-        transform: translateY(-50%);
-        width: 80%;
-        height: 180%;
-        background: radial-gradient(
-            circle,
-            color-mix(in srgb, var(--primary), transparent 90%) 0%,
-            transparent 60%
-        );
-        z-index: 1;
-        pointer-events: none;
+        letter-spacing: 0.02em;
     }
 
     .cta-wrapper {
-        margin-top: 1.5rem;
         display: flex;
         justify-content: flex-start;
     }
 
     @media (max-width: 768px) {
-        .content-wrapper {
-            padding: 0 16px;
-        }
-
         .text-col {
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .section-title {
-            font-size: 2.2rem;
+            font-size: clamp(2.6rem, 8vw, 3.4rem);
         }
 
         .carousel-card {
-            flex: 0 0 260px;
+            flex: 0 0 270px;
+        }
+
+        .carousel-wrapper {
+            margin-bottom: 2.5rem;
         }
 
         .carousel-wrapper::after {

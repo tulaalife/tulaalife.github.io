@@ -17,19 +17,21 @@ const displayPlans = yogaPlans
 ---
 
 <section class="scroll-section section-yoga">
-    <div class="container content-wrapper">
-        <!-- Integrated left-alignment layout token matching premium specifications -->
-        <div class="section-header-left text-col animate-on-scroll">
-            <h2 class="section-title">
-                <span class="title-main">{t.heroTitleTop}</span>
-                <br />
-                <span class="text-gradient">{t.heroTitleBottom}</span>
-            </h2>
-            <p class="body-text">{t.heroBody}</p>
+    <div class="content-wrapper">
+        <!-- 1. Pure Header Container Grid Alignment Module -->
+        <div class="container">
+            <div class="section-header-left text-col animate-on-scroll">
+                <h2 class="section-title">
+                    <span class="title-main">{t.heroTitleTop}</span>
+                    <br />
+                    <span class="text-gradient">{t.heroTitleBottom}</span>
+                </h2>
+                <p class="body-text">{t.heroBody}</p>
+            </div>
         </div>
 
-        <!-- Filter Navigation Tracking Modules -->
-        <div class="filter-container animate-on-scroll delay-1">
+        <!-- 2. Filter Navigation Control Module -->
+        <div class="container filter-container animate-on-scroll delay-1">
             <span class="filter-label hidden-mobile">{t.filterLabel}</span>
             <div class="filter-scroll">
                 <button class="filter-btn active" data-filter="all"
@@ -50,8 +52,8 @@ const displayPlans = yogaPlans
             </div>
         </div>
 
-        <!-- Horizontal Plan Carousel Track -->
-        <div class="carousel-wrapper animate-on-scroll delay-2">
+        <!-- 3. Full Width Horizontal Carousel Container Track -->
+        <div class="container carousel-wrapper animate-on-scroll delay-2">
             <div class="carousel-track" id="featured-plans-track">
                 {
                     displayPlans.map((p) => (
@@ -82,8 +84,8 @@ const displayPlans = yogaPlans
             </div>
         </div>
 
-        <!-- Unified Core Left-Aligned CTA Module Point Below Carousel -->
-        <div class="cta-wrapper animate-on-scroll delay-2">
+        <!-- 4. Left-Aligned Unified Secondary Button Hook -->
+        <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href={`/${currentLang}/yoga`}
                 labelEn="Explore All Plans"
@@ -141,7 +143,7 @@ const displayPlans = yogaPlans
 <style>
     .section-yoga {
         width: 100%;
-        background-color: var(--bg-main);
+        background-color: transparent;
         display: flex;
         align-items: center;
     }
@@ -150,59 +152,56 @@ const displayPlans = yogaPlans
         display: flex;
         flex-direction: column;
         width: 100%;
-        max-width: var(--container-width);
         margin: 0 auto;
-        padding: 0 24px;
     }
 
     .text-col {
-        margin-bottom: 2.5rem;
+        margin-bottom: 3.5rem;
         text-align: left;
         width: 100%;
     }
 
     .section-title {
-        font-size: clamp(2.4rem, 5vw, 3.8rem);
+        font-size: clamp(3rem, 5vw, 4.2rem);
+        letter-spacing: -0.03em;
+        line-height: 1.1;
         text-align: left;
-    }
-
-    .title-main {
-        color: var(--text-main);
     }
 
     .body-text {
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         color: var(--text-muted);
-        max-width: 650px; /* Locked measure constraint limits line text limits */
+        max-width: 600px;
         text-align: left;
-        line-height: 1.6;
-        margin-top: 12px;
+        line-height: 1.7;
+        margin-top: 1.5rem;
     }
 
     /* --- FILTER NAVIGATION --- */
     .filter-container {
         display: flex;
         align-items: center;
-        gap: 16px;
-        margin-bottom: 24px;
-        padding-bottom: 4px;
+        gap: 20px;
+        margin-bottom: 2.5rem;
         width: 100%;
     }
 
     .filter-label {
-        font-weight: 600;
+        font-weight: 700;
         color: var(--text-muted);
-        font-size: 0.95rem;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
         white-space: nowrap;
     }
 
     .filter-scroll {
         display: flex;
-        gap: 10px;
+        gap: 12px;
         overflow-x: auto;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-        padding: 4px 4px 4px 0;
+        padding: 4px 0;
     }
 
     .filter-scroll::-webkit-scrollbar {
@@ -212,33 +211,33 @@ const displayPlans = yogaPlans
     .filter-btn {
         background: var(--bg-sub);
         border: 1px solid var(--border);
-        color: var(--text-main);
-        padding: 6px 16px;
+        color: var(--text-muted);
+        padding: 8px 18px;
         border-radius: 99px;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
-        transition: all 0.25s ease;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .filter-btn:hover {
-        border-color: var(--primary);
-        color: var(--primary);
+        border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+        color: var(--text-main);
     }
 
     .filter-btn.active {
         background: var(--primary);
         color: var(--bg-main);
         border-color: var(--primary);
-        box-shadow: var(--shadow);
+        box-shadow: none; /* Strip out heavy pixel shadows to sustain minimalism */
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 24px;
+        margin-bottom: 3.5rem;
     }
 
     .carousel-wrapper::after {
@@ -246,7 +245,7 @@ const displayPlans = yogaPlans
         position: absolute;
         top: 0;
         right: 0;
-        width: 80px;
+        width: 100px;
         height: 100%;
         background: linear-gradient(
             to left,
@@ -259,10 +258,10 @@ const displayPlans = yogaPlans
 
     .carousel-track {
         display: flex;
-        gap: 20px;
+        gap: 24px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        padding-bottom: 16px;
+        padding-bottom: 20px;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
     }
@@ -273,7 +272,7 @@ const displayPlans = yogaPlans
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 300px;
+        flex: 0 0 310px;
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -283,17 +282,16 @@ const displayPlans = yogaPlans
         text-decoration: none;
         color: inherit;
         transition:
-            transform 0.3s ease,
-            box-shadow 0.3s ease,
-            border-color 0.3s ease,
-            opacity 0.3s ease;
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.4s ease,
+            border-color 0.4s ease;
         height: 100%;
     }
 
     .carousel-card:hover {
-        transform: translateY(-5px);
+        transform: translateY(-6px);
         box-shadow: var(--shadow);
-        border-color: var(--primary);
+        border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
     }
 
     .card-image {
@@ -307,31 +305,28 @@ const displayPlans = yogaPlans
         width: 100%;
         height: 100%;
         object-fit: cover;
-        transition: transform 0.5s ease;
-    }
-
-    .carousel-card:hover .card-image img {
-        transform: scale(1.03);
     }
 
     .card-content {
-        padding: 20px;
+        padding: 24px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
 
     .card-title {
-        font-size: 1.2rem;
-        margin-bottom: 4px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 6px;
         color: var(--text-main);
+        letter-spacing: -0.01em;
     }
 
     .card-desc {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         color: var(--text-muted);
-        line-height: 1.4;
-        margin-bottom: 16px;
+        line-height: 1.5;
+        margin-bottom: 20px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -347,37 +342,34 @@ const displayPlans = yogaPlans
         color: var(--primary);
         font-size: 0.9rem;
         margin-top: auto;
+        letter-spacing: 0.02em;
     }
 
     .cta-wrapper {
-        margin-top: 1.5rem;
         display: flex;
         justify-content: flex-start;
     }
 
     @media (max-width: 768px) {
-        .content-wrapper {
-            padding: 0 16px;
-        }
-
         .text-col {
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
 
         .section-title {
-            font-size: 2.2rem;
-        }
-
-        .hidden-mobile {
-            display: none;
+            font-size: clamp(2.6rem, 8vw, 3.4rem);
         }
 
         .filter-container {
-            margin-bottom: 16px;
+            margin-bottom: 2rem;
+            gap: 12px;
         }
 
         .carousel-card {
-            flex: 0 0 260px;
+            flex: 0 0 270px;
+        }
+
+        .carousel-wrapper {
+            margin-bottom: 2.5rem;
         }
 
         .carousel-wrapper::after {
