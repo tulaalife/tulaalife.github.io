@@ -8,10 +8,8 @@ const label = currentLang === "hi" ? labelHi : labelEn;
 const getLink = (path: string) => {
     if (currentLang === "en") return path;
 
-    // Handle root path mapping safely
     if (path === "/") return "/hi";
 
-    // 🔥 FIX: If the path already includes the language prefix, pass it through directly without duplicating it
     if (path.startsWith("/hi/") || path === "/hi") return path;
 
     return `/hi${path}`;
@@ -41,7 +39,6 @@ const getLink = (path: string) => {
 </a>
 
 <style>
-    /* ... Keep all your existing CSS configurations completely untouched ... */
     .cta-link {
         position: relative;
         display: inline-flex;
@@ -54,7 +51,9 @@ const getLink = (path: string) => {
         color: var(--bg-main);
         border-radius: 99px;
         font-family: var(--font-sans-en);
-        font-weight: 750;
+        font-weight: var(
+            --fw-bold
+        ); /* Tapped cleanly into shared typography variable */
         font-size: 1.1rem;
         letter-spacing: -0.01em;
         text-decoration: none;
@@ -130,9 +129,7 @@ const getLink = (path: string) => {
     .cta-link:hover {
         transform: translateY(-4px);
         filter: brightness(1.08);
-        box-shadow:
-            0 20px 40px rgba(0, 0, 0, 0.1),
-            inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        box-shadow: var(--shadow); /* Standardized shadow utilization metric */
     }
 
     .cta-link:hover .cta-glow {

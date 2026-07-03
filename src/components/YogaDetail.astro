@@ -30,7 +30,6 @@ const translations = {
 
 const t = translations[lang as keyof typeof translations] || translations.en;
 
-// Convert benefits string into an array
 const benefitsList = plan.benefits
     ? plan.benefits
           .split(/\s*[,\n·]\s*/)
@@ -86,17 +85,26 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                 </div>
             </div>
 
-            <!-- Title + Subtitle -->
-            <div class="plan-header">
-                <h1 class="plan-title">{plan.title}</h1>
-                {plan.subtitle && <p class="plan-subtitle">{plan.subtitle}</p>}
+            <!-- Standardized to left-alignment structural format rules for effortless readability -->
+            <div class="section-header-left plan-header">
+                <h1 class="plan-title section-title">{plan.title}</h1>
+                {
+                    plan.subtitle && (
+                        <p
+                            class="plan-subtitle body-text"
+                            style="margin-top: 8px;"
+                        >
+                            {plan.subtitle}
+                        </p>
+                    )
+                }
             </div>
 
             <!-- Body -->
             <div class="plan-body">
                 {
                     plan.description && (
-                        <p class="plan-lead">{plan.description}</p>
+                        <p class="plan-lead body-text">{plan.description}</p>
                     )
                 }
 
@@ -138,9 +146,9 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
 <style>
     .content-shell {
-        max-width: 880px;
+        max-width: 760px; /* Aligned container geometry to match dynamic content modules */
         margin: 0 auto;
-        padding: 40px 20px 80px;
+        padding: 40px 24px 80px;
     }
 
     .plan-card {
@@ -149,9 +157,7 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         gap: 32px;
     }
 
-    /* ================================
-       NAV
-    ================================= */
+    /* --- NAV --- */
     .plan-nav {
         display: flex;
     }
@@ -161,7 +167,7 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         align-items: center;
         gap: 6px;
         font-size: 0.95rem;
-        font-weight: 500;
+        font-weight: 600;
         color: var(--text-muted);
         transition: all 0.2s ease;
     }
@@ -171,16 +177,14 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         transform: translateX(-2px);
     }
 
-    /* ================================
-       HERO IMAGE
-    ================================= */
+    /* --- HERO IMAGE --- */
     .image-hero {
         margin-top: 4px;
     }
 
     .image-frame {
         width: 100%;
-        border-radius: 24px;
+        border-radius: var(--radius-lg);
         overflow: hidden;
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
@@ -189,61 +193,53 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
     .image-frame img {
         width: 100%;
-        aspect-ratio: 16/9;
+        aspect-ratio: 16 / 10; /* Transitioned to widescreen scale standard format */
         object-fit: cover;
         display: block;
         transition: transform 0.6s ease;
     }
 
     .image-frame:hover img {
-        transform: scale(1.03);
+        transform: scale(1.02);
     }
 
-    /* ================================
-       TITLE SECTION
-    ================================= */
+    /* --- TITLE SECTION --- */
     .plan-header {
-        text-align: center;
-        margin: 24px auto 8px;
-        max-width: 720px;
+        width: 100%;
+        text-align: left;
     }
 
     .plan-title {
         font-size: clamp(2rem, 4vw, 2.75rem);
+        text-align: left;
     }
-
-    /* CLEANED: Removed manual custom tracking/letter-spacing configs. Optimized globally now. */
 
     .plan-subtitle {
-        font-size: 1.15rem;
         color: var(--text-muted);
-        line-height: 1.6;
+        text-align: left;
     }
 
-    /* ================================
-       BODY
-    ================================= */
+    /* --- BODY --- */
     .plan-body {
-        max-width: 720px;
-        margin: 0 auto;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 28px;
     }
 
     .plan-lead {
-        font-size: 1.2rem;
-        line-height: 1.7;
         color: var(--text-main);
-        margin-bottom: 40px;
+        text-align: left;
     }
 
-    /* ================================
-       BENEFITS
-    ================================= */
+    /* --- BENEFITS MODULE --- */
     .benefits-module {
         background: var(--bg-sub);
         border: 1px solid var(--border);
-        border-radius: 20px;
+        border-radius: var(--radius-lg);
         padding: 28px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        box-shadow: var(--shadow);
+        text-align: left;
     }
 
     .benefits-label {
@@ -251,6 +247,8 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         text-transform: uppercase;
         color: var(--primary);
         margin-bottom: 16px;
+        font-weight: var(--fw-bold);
+        letter-spacing: 0.05em;
     }
 
     .benefits-list {
@@ -276,29 +274,28 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         color: var(--primary);
         font-size: 0.85rem;
         margin-top: 4px;
+        flex-shrink: 0;
     }
 
-    /* ================================
-       FOOTER / CTA
-    ================================= */
+    /* --- FOOTER / CTA --- */
     .plan-footer {
+        margin-top: 16px;
+        padding-top: 32px;
+        border-top: 1px solid var(--border);
         display: flex;
         flex-direction: column;
-        align-items: center;
+        align-items: flex-start;
         gap: 20px;
-        text-align: center;
+        text-align: left;
     }
 
     .button-group {
         display: flex;
         gap: 14px;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start;
     }
 
-    /* ================================
-       MOBILE
-    ================================= */
     @media (max-width: 600px) {
         .content-shell {
             padding: 24px 16px 60px;

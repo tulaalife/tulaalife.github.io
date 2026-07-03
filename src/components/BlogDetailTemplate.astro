@@ -55,7 +55,6 @@ const contentAny = post.content as any;
 const ops = Array.isArray(contentAny) ? contentAny : contentAny?.ops || [];
 const contentHtml = renderContent(ops);
 
-// Reading time calculation
 const readingTime = Math.ceil(
     contentHtml.replace(/<[^>]*>/g, "").split(" ").length / 200,
 );
@@ -95,10 +94,20 @@ const primaryLabel = post.cta?.text || t.appLabel;
                 />
             </div>
 
-            <div class="article-header">
-                <h1 class="article-title">{post.title}</h1>
+            <!-- Standardized to left-alignment to eliminate scrolling layout friction -->
+            <div class="section-header-left article-header">
+                <h1 class="article-title section-title">{post.title}</h1>
 
-                {post.excerpt && <p class="article-subtitle">{post.excerpt}</p>}
+                {
+                    post.excerpt && (
+                        <p
+                            class="article-subtitle body-text"
+                            style="margin-top: 8px;"
+                        >
+                            {post.excerpt}
+                        </p>
+                    )
+                }
 
                 <div class="meta-row">
                     <span class="reading-time">{readingTime} min read</span>
@@ -166,7 +175,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
         </article>
     </div>
 
-    <!-- Reading Progress Tracker Implementation -->
     <script>
         document.addEventListener("scroll", () => {
             const scrollTop = document.documentElement.scrollTop;
@@ -190,7 +198,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
     .content-shell {
         max-width: 760px;
         margin: 0 auto;
-        padding: 0 16px 64px;
+        padding: 0 24px 64px;
     }
 
     .article-card {
@@ -204,69 +212,83 @@ const primaryLabel = post.cta?.text || t.appLabel;
     }
 
     .back-link {
-        font-size: 0.9rem;
+        font-size: 0.95rem;
+        font-weight: 600;
         color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        transition: color 0.2s ease;
+    }
+
+    .back-link:hover {
+        color: var(--primary);
     }
 
     .image-frame {
         border-radius: var(--radius-lg);
         overflow: hidden;
         box-shadow: var(--shadow);
+        border: 1px solid var(--border);
         margin-bottom: 8px;
     }
 
     .article-header {
-        text-align: center;
+        width: 100%;
+        text-align: left;
     }
 
     .article-title {
         font-size: clamp(2rem, 5vw, 2.6rem);
-        line-height: 1.2;
-        margin-bottom: 12px;
+        text-align: left;
     }
 
-    /* CLEANED: Removed manual custom letter-spacing tags. These scale beautifully via master layouts now. */
-
     .article-subtitle {
-        font-size: 1.15rem;
+        text-align: left;
         color: var(--text-muted);
-        line-height: 1.6;
     }
 
     .meta-row {
-        margin-top: 10px;
+        margin-top: 12px;
         font-size: 0.85rem;
         color: var(--text-muted);
+        font-weight: 500;
     }
 
     .article-body {
         max-width: 62ch;
-        margin: 0 auto;
+        width: 100%;
+        margin: 0 0; /* Left flush placement */
         font-size: 1.125rem;
         line-height: 1.9;
         letter-spacing: 0.01em;
+        text-align: left;
     }
 
-    /* ✨ Rich Content Body Parameters */
+    /* ✨ Premium Rich Content Settings */
     .rich-text :global(p) {
         margin-bottom: 1.6em;
+        color: var(--text-main);
     }
 
     .rich-text :global(h2) {
         font-size: 1.6rem;
         margin: 2.2em 0 0.8em;
-        font-weight: 600;
+        font-weight: var(--fw-bold);
+        color: var(--text-main);
     }
 
     .rich-text :global(h3) {
         font-size: 1.3rem;
         margin: 1.8em 0 0.6em;
+        font-weight: var(--fw-bold);
+        color: var(--text-main);
     }
 
     .rich-text :global(ul),
     .rich-text :global(ol) {
         margin: 1.5em 0;
         padding-left: 1.2em;
+        color: var(--text-main);
     }
 
     .rich-text :global(li) {
@@ -278,45 +300,31 @@ const primaryLabel = post.cta?.text || t.appLabel;
         color: var(--primary);
         text-decoration: underline;
         text-underline-offset: 3px;
-        font-weight: 500;
+        font-weight: 600;
     }
 
-    /* Drop-cap configuration */
+    /* Elegant Drop-cap setup */
     .rich-text :global(p:first-of-type::first-letter) {
-        font-size: 2.8rem;
+        font-size: 3rem;
         float: left;
-        line-height: 1;
-        padding-right: 6px;
-        font-weight: bold;
+        line-height: 0.9;
+        padding-right: 8px;
+        font-weight: var(--fw-bold);
+        color: var(--primary);
     }
 
-    /* Author Bio Info Section */
+    /* Author Profile Layout Structure */
     .author-bio {
         margin-top: 56px;
-        padding: 16px 20px;
+        padding: 20px;
         display: flex;
         gap: 20px;
         align-items: center;
         background: var(--bg-sub);
         border: 1px solid var(--border);
-        border-radius: 12px;
+        border-radius: var(--radius-lg);
         position: relative;
         overflow: hidden;
-    }
-
-    .author-bio::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 1px;
-        background: linear-gradient(
-            90deg,
-            transparent,
-            rgba(255, 255, 255, 0.1),
-            transparent
-        );
     }
 
     .author-avatar-wrap {
@@ -330,7 +338,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
             var(--primary) 0%,
             transparent 100%
         );
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: var(--shadow);
     }
 
     .author-avatar-wrap img {
@@ -338,13 +346,13 @@ const primaryLabel = post.cta?.text || t.appLabel;
         height: 100%;
         border-radius: 50%;
         object-fit: cover;
-        background: var(--bg);
     }
 
     .author-info {
         display: flex;
         flex-direction: column;
         gap: 2px;
+        text-align: left;
     }
 
     .author-header {
@@ -354,8 +362,8 @@ const primaryLabel = post.cta?.text || t.appLabel;
     }
 
     .author-name {
-        font-size: 1rem;
-        font-weight: 700;
+        font-size: 1.1rem;
+        font-weight: var(--fw-bold);
         margin: 0;
         color: var(--text-main);
     }
@@ -369,19 +377,17 @@ const primaryLabel = post.cta?.text || t.appLabel;
 
     .author-link {
         margin-top: 4px;
-        font-size: 0.8rem;
-        font-weight: 500;
+        font-size: 0.85rem;
+        font-weight: 600;
         color: var(--primary);
         text-decoration: none;
         display: inline-flex;
         align-items: center;
         gap: 3px;
-        opacity: 0.85;
         transition: opacity 0.2s ease;
     }
 
     .author-link:hover {
-        opacity: 1;
         text-decoration: underline;
         text-underline-offset: 2px;
     }
@@ -394,26 +400,12 @@ const primaryLabel = post.cta?.text || t.appLabel;
         transform: translate(1px, -1px);
     }
 
-    @media (max-width: 480px) {
-        .author-bio {
-            gap: 12px;
-            padding: 12px;
-        }
-        .author-header {
-            flex-direction: column;
-            gap: 0;
-        }
-        .author-avatar-wrap {
-            width: 48px;
-            height: 48px;
-        }
-    }
-
     .button-group {
         display: flex;
-        gap: 10px;
+        gap: 14px;
         flex-wrap: wrap;
-        justify-content: center;
+        justify-content: flex-start; /* Kept clean and left aligned */
+        margin-top: 24px;
     }
 
     .reading-progress {
@@ -424,5 +416,21 @@ const primaryLabel = post.cta?.text || t.appLabel;
         width: 0%;
         background: var(--primary);
         z-index: 999;
+    }
+
+    @media (max-width: 480px) {
+        .author-bio {
+            gap: 12px;
+            padding: 16px;
+            border-radius: var(--radius-lg);
+        }
+        .author-header {
+            flex-direction: column;
+            gap: 0;
+        }
+        .author-avatar-wrap {
+            width: 48px;
+            height: 48px;
+        }
     }
 </style>

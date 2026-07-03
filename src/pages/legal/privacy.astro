@@ -40,10 +40,11 @@ const contentHtml = await marked.parse(rawMarkdown);
     canonicalPath="/legal/privacy"
     hideFooter={true}
 >
-    <main class="legal-wrap">
+    <!-- Combined layout tracking under premium left alignment container system rules -->
+    <main class="section-header-left legal-wrap">
         <div class="markdown-body" set:html={contentHtml} />
 
-        <p class="legal-meta">
+        <p class="legal-meta body-text">
             <a href={getLink("/legal/terms")}>{t.termsLink}</a> · {t.help}
             <a href="mailto:contact@tulaalife.com">contact@tulaalife.com</a>
         </p>
@@ -62,10 +63,11 @@ const contentHtml = await marked.parse(rawMarkdown);
 
 <style is:global>
     .legal-wrap {
-        max-width: 940px;
+        max-width: 760px; /* Optimized container width for smooth long-form tracking comfort */
         margin: 0 auto;
-        padding: 40px 24px;
+        padding: 60px 24px 80px;
         font-family: var(--font-sans-en);
+        text-align: left;
     }
 
     :global(:lang(hi)) .legal-wrap {
@@ -87,31 +89,41 @@ const contentHtml = await marked.parse(rawMarkdown);
 
     .legal-meta {
         color: var(--text-muted);
-        font-size: 0.9rem;
+        font-size: 0.95rem;
         margin: 40px 0 18px;
         border-top: 1px solid var(--border);
         padding-top: 20px;
+        text-align: left;
+        width: 100%;
+    }
+
+    .markdown-body h1,
+    .markdown-body h2,
+    .markdown-body h3 {
+        font-weight: var(--fw-bold);
+        color: var(--text-main);
+        text-align: left;
     }
 
     .markdown-body h2 {
         margin-top: 32px;
         margin-bottom: 12px;
-        font-size: 1.35rem;
-        color: var(--text-main);
+        font-size: 1.4rem;
     }
 
     .markdown-body p,
     .markdown-body ul,
     .markdown-body li {
-        font-size: 1rem;
-        line-height: 1.6;
-        margin-bottom: 12px;
+        font-size: 1.05rem;
+        line-height: 1.65;
+        margin-bottom: 14px;
         color: var(--text-main);
+        text-align: left;
     }
 
     :global(:lang(hi)) .markdown-body p,
     :global(:lang(hi)) .markdown-body li {
-        line-height: 1.7;
+        line-height: 1.75;
     }
 
     .markdown-body ul {
@@ -123,15 +135,15 @@ const contentHtml = await marked.parse(rawMarkdown);
     }
 
     .markdown-body strong {
-        font-weight: 700;
+        font-weight: var(--fw-bold);
     }
 
     .markdown-body blockquote {
         background: var(--bg-sub);
         border: 1px solid var(--border);
-        padding: 16px 18px;
-        border-radius: 14px;
-        margin: 18px 0;
+        padding: 20px;
+        border-radius: var(--radius-lg);
+        margin: 20px 0;
         margin-inline-start: 0;
         margin-inline-end: 0;
     }
@@ -144,5 +156,6 @@ const contentHtml = await marked.parse(rawMarkdown);
         color: var(--primary);
         text-decoration: underline;
         text-underline-offset: 4px;
+        font-weight: 600;
     }
 </style>

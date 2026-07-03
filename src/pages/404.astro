@@ -1,5 +1,6 @@
 ---
 import Site from "../layouts/Site.astro";
+import CTAButton from "../components/CTAButton.astro";
 
 const title = "Page not found · Tulaa";
 const description =
@@ -13,30 +14,38 @@ const description =
     hasTranslation={false}
 >
     <main class="error-container">
-        <div class="error-content">
+        <!-- Integrated our layout structure center-alignment configuration utility framework -->
+        <div class="section-header-center error-content">
             <span class="error-code">404</span>
-            <h1 class="error-title">Breathe out. Let's refocus.</h1>
-            <p class="error-desc">
+            <h1 class="error-title hero-title">Breathe out. Let's refocus.</h1>
+            <p
+                class="error-desc body-text"
+                style="margin-top: 16px; margin-bottom: 40px;"
+            >
                 The page you are looking for seems to have wandered off. Don't
                 worry, you are still in a safe space.
             </p>
 
             <div class="action-grid">
-                <a href="/" class="btn-primary"> Return Home </a>
+                <CTAButton
+                    href="/"
+                    label="Return Home"
+                    variant="solid"
+                    size="lg"
+                    icon="→"
+                />
             </div>
         </div>
     </main>
 </Site>
 
 <style>
-    /* Centered Layout */
     .error-container {
         min-height: 80vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
-        text-align: center;
+        padding: 24px;
 
         /* Ambient layout glow */
         background: radial-gradient(
@@ -48,12 +57,12 @@ const description =
 
     .error-content {
         max-width: 500px;
-        margin-top: -60px;
     }
 
     /* Typography */
     .error-code {
         font-size: clamp(4rem, 10vw, 6rem);
+        font-weight: var(--fw-bold);
         color: var(--primary);
         opacity: 0.2;
         line-height: 1;
@@ -64,44 +73,17 @@ const description =
     .error-title {
         font-size: clamp(1.8rem, 5vw, 2.5rem);
         color: var(--text-main);
-        margin-bottom: 16px;
     }
-
-    /* CLEANED: Extracted individual letter-spacing adjustments to rely gracefully on layouts engine tracking configurations */
 
     .error-desc {
-        font-size: 1.1rem;
         color: var(--text-muted);
-        margin-bottom: 40px;
-        line-height: 1.6;
     }
 
-    /* Actions */
+    /* Actions Layout Structure */
     .action-grid {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 24px;
-    }
-
-    .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--text-main);
-        color: var(--bg-main);
-        padding: 12px 28px;
-        border-radius: 99px;
-        font-family: var(--font-sans-en);
-        font-weight: 600;
-        text-decoration: none;
-        transition:
-            transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1),
-            filter 0.2s ease;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-4px);
-        filter: brightness(1.08);
+        width: 100%;
     }
 </style>
