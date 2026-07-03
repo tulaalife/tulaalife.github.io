@@ -412,40 +412,49 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             <slot />
 
             {
-                !hideFooter && (
-                    <section
-                        class={
-                            isLandingPage ? "scroll-section" : "normal-footer"
-                        }
-                        style={
-                            isLandingPage
-                                ? /* Force the section to fill the screen to push previous content out of view */
-                                  "min-height: 100dvh; padding: 60px 0; scroll-snap-align: center; scroll-snap-stop: always;"
-                                : ""
-                        }
-                    >
-                        <div class="container">
-                            <FooterCard />
-                            <div
-                                class="legal"
-                                style="margin-top:24px; display:flex; gap:24px; justify-content:center;"
-                            >
-                                <a href={getLink("/legal/privacy")}>
-                                    {t.privacy}
-                                </a>
-                                <a href={getLink("/legal/terms")}>{t.terms}</a>
-                                <button class="contact-btn" id="contactBtn">
-                                    {t.contact}
-                                </button>
-                            </div>
-                            <p style="text-align: center; font-size: 0.8rem; margin-top: 20px; color: var(--text-muted);">
-                                © {new Date().getFullYear()} Tulaalife Wellness
-                                Private Limited
-                            </p>
-                        </div>
-                    </section>
-                )
+    !hideFooter && (
+        <section
+            class={
+                isLandingPage ? "scroll-section" : "normal-footer"
             }
+            style={
+                isLandingPage
+                    /* Added position: relative and removed top/bottom padding */
+                    ? "min-height: 100dvh; padding: 0; scroll-snap-align: center; scroll-snap-stop: always; position: relative;"
+                    : "position: relative;"
+            }
+        >
+            <div 
+                class="container" 
+                style={isLandingPage ? "display: flex; align-items: center; justify-content: center; height: 100%;" : ""}
+            >
+                <FooterCard />
+                
+                <!-- Pin to bottom on landing page, flow normally on other pages -->
+                <div 
+                    class="legal-wrapper" 
+                    style={isLandingPage ? "position: absolute; bottom: 32px; left: 0; right: 0; width: 100%;" : "margin-top: 48px;"}
+                >
+                    <div
+                        class="legal"
+                        style="display:flex; gap:24px; justify-content:center;"
+                    >
+                        <a href={getLink("/legal/privacy")}>
+                            {t.privacy}
+                        </a>
+                        <a href={getLink("/legal/terms")}>{t.terms}</a>
+                        <button class="contact-btn" id="contactBtn">
+                            {t.contact}
+                        </button>
+                    </div>
+                    <p style="text-align: center; font-size: 0.8rem; margin-top: 16px; color: var(--text-muted);">
+                        © {new Date().getFullYear()} Tulaalife Wellness Private Limited
+                    </p>
+                </div>
+            </div>
+        </section>
+    )
+}
         </main>
 
         <script>
