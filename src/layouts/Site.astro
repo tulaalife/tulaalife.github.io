@@ -215,6 +215,10 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 height: 100dvh;
                 width: 100%;
                 scroll-snap-align: start;
+
+                /* ADD THIS LINE 👇 */
+                scroll-snap-stop: always;
+
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -415,7 +419,8 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                         }
                         style={
                             isLandingPage
-                                ? "height: auto; padding: 60px 0; scroll-snap-align: end;"
+                                ? /* Force the section to fill the screen to push previous content out of view */
+                                  "min-height: 100dvh; padding: 60px 0; scroll-snap-align: center; scroll-snap-stop: always;"
                                 : ""
                         }
                     >
