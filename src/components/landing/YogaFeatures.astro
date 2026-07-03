@@ -10,7 +10,6 @@ import { yogaPlans } from "../../data/generated";
 const currentLang = (Astro.currentLocale || "en") as SupportedLang;
 const t = YOGA_UI[currentLang] || YOGA_UI.en;
 
-// Filter the static JSON array by language and grab the first 8 for the carousel
 const displayPlans = yogaPlans
     .filter((p) => p.language === currentLang)
     .slice(0, 8);
@@ -101,7 +100,6 @@ const displayPlans = yogaPlans
     </div>
 </section>
 
-<!-- Pass the CATEGORY_MAP to the client script for filtering -->
 <script is:inline define:vars={{ CATEGORY_MAP }}>
     document.addEventListener("astro:page-load", () => {
         const filterBtns = document.querySelectorAll(".filter-btn");
@@ -112,11 +110,9 @@ const displayPlans = yogaPlans
 
         filterBtns.forEach((btn) => {
             btn.addEventListener("click", () => {
-                // 1. Update active state
                 filterBtns.forEach((b) => b.classList.remove("active"));
                 btn.classList.add("active");
 
-                // 2. Filter cards
                 const filterId = btn.getAttribute("data-filter");
 
                 cards.forEach((card) => {
@@ -130,7 +126,6 @@ const displayPlans = yogaPlans
                     const itemGoals = (
                         card.getAttribute("data-goals") || ""
                     ).split(",");
-
                     const isMatch = targetGoals.some((goal) =>
                         itemGoals.includes(goal),
                     );
@@ -140,11 +135,10 @@ const displayPlans = yogaPlans
                         setTimeout(() => (card.style.opacity = "1"), 10);
                     } else {
                         card.style.opacity = "0";
-                        setTimeout(() => (card.style.display = "none"), 300); // Wait for fade out
+                        setTimeout(() => (card.style.display = "none"), 300);
                     }
                 });
 
-                // Reset scroll position smoothly
                 track.scrollTo({ left: 0, behavior: "smooth" });
             });
         });
@@ -161,7 +155,7 @@ const displayPlans = yogaPlans
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        margin-bottom: 24px;
+        margin-bottom: 16px; /* Reduced gap from 24px */
     }
 
     .header-text {
@@ -169,30 +163,31 @@ const displayPlans = yogaPlans
     }
 
     .section-title {
-        font-size: clamp(2.6rem, 4vw, 3.5rem);
+        font-size: clamp(
+            2.2rem,
+            4vw,
+            3.2rem
+        ); /* Scaled down slightly for tight screen views */
         line-height: 1.15;
         font-weight: 800;
-        margin-bottom: 12px;
-        letter-spacing: -0.02em;
+        margin-bottom: 8px;
     }
 
     .title-main {
         color: var(--text-main);
     }
 
-    /* CLEANED: .section-title.is-hindi has been safely pruned. Typography is scaled natively inside our layout file now. */
-
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         display: inline-block;
-        padding-bottom: 4px;
+        padding-bottom: 2px;
     }
 
     .body-text {
-        font-size: 1.15rem;
-        line-height: 1.6;
+        font-size: 1.05rem; /* Sized down from 1.15rem */
+        line-height: 1.5;
         color: var(--text-muted);
         margin: 0;
     }
@@ -202,8 +197,8 @@ const displayPlans = yogaPlans
         display: flex;
         align-items: center;
         gap: 16px;
-        margin-bottom: 32px;
-        padding-bottom: 8px;
+        margin-bottom: 20px; /* Reduced from 32px */
+        padding-bottom: 4px;
     }
 
     .filter-label {
@@ -215,7 +210,7 @@ const displayPlans = yogaPlans
 
     .filter-scroll {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         overflow-x: auto;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
@@ -230,13 +225,13 @@ const displayPlans = yogaPlans
         background: var(--bg-sub);
         border: 1px solid var(--border);
         color: var(--text-main);
-        padding: 8px 20px;
+        padding: 6px 16px; /* More compact button shapes */
         border-radius: 99px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
-        transition: all 0.3s ease;
+        transition: all 0.25s ease;
     }
 
     .filter-btn:hover {
@@ -248,14 +243,14 @@ const displayPlans = yogaPlans
         background: var(--primary);
         color: #fff;
         border-color: var(--primary);
-        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.2);
+        box-shadow: 0 4px 12px rgba(var(--primary-rgb), 0.15);
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 24px;
+        margin-bottom: 16px;
     }
 
     .carousel-wrapper::after {
@@ -285,11 +280,11 @@ const displayPlans = yogaPlans
 
     .carousel-track {
         display: flex;
-        gap: 24px;
+        gap: 20px; /* Tightened gap */
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 0;
-        padding-bottom: 24px;
+        padding-bottom: 16px;
         scrollbar-width: none;
     }
 
@@ -299,7 +294,7 @@ const displayPlans = yogaPlans
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 320px;
+        flex: 0 0 300px; /* Slimmed down width slightly */
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -316,14 +311,14 @@ const displayPlans = yogaPlans
     }
 
     .carousel-card:hover {
-        transform: translateY(-6px);
+        transform: translateY(-4px);
         box-shadow: var(--shadow);
         border-color: var(--primary);
     }
 
     .card-image {
         position: relative;
-        aspect-ratio: 4/3;
+        aspect-ratio: 16 / 10; /* Changed from 4/3 to match widescreen premium specs and save height */
         overflow: hidden;
         border-bottom: 1px solid var(--border);
     }
@@ -336,28 +331,28 @@ const displayPlans = yogaPlans
     }
 
     .carousel-card:hover .card-image img {
-        transform: scale(1.05);
+        transform: scale(1.03);
     }
 
     .card-content {
-        padding: 24px;
+        padding: 16px 20px; /* Reduced vertical padding from 24px */
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
 
     .card-title {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         font-weight: 700;
-        margin-bottom: 8px;
+        margin-bottom: 4px;
         line-height: 1.3;
     }
 
     .card-desc {
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         color: var(--text-muted);
         line-height: 1.4;
-        margin-bottom: 20px;
+        margin-bottom: 12px; /* Reduced from 20px */
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -368,10 +363,10 @@ const displayPlans = yogaPlans
     .card-footer {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px;
         font-weight: 600;
         color: var(--primary);
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
 
     .mobile-cta {
@@ -382,7 +377,7 @@ const displayPlans = yogaPlans
         .header-row {
             flex-direction: column;
             align-items: flex-start;
-            gap: 16px;
+            gap: 8px;
         }
 
         .hidden-mobile {
@@ -390,11 +385,11 @@ const displayPlans = yogaPlans
         }
 
         .filter-container {
-            margin-bottom: 24px;
+            margin-bottom: 16px;
         }
 
         .carousel-card {
-            flex: 0 0 280px;
+            flex: 0 0 260px; /* Tighter layout boundaries for responsive display */
         }
 
         .carousel-wrapper::after {
@@ -404,7 +399,7 @@ const displayPlans = yogaPlans
         .mobile-cta {
             display: flex;
             justify-content: center;
-            margin-top: 16px;
+            margin-top: 8px;
         }
     }
 </style>

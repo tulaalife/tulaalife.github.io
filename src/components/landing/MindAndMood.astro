@@ -26,7 +26,7 @@ const ui = {
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 
-// Compute the accurate deep link directory based on Screenshot 2026-07-03 at 5.52.33 AM.jpg layout parameters
+// Compute the accurate deep link directory
 const baseAudioHref = currentLang === "hi" ? "/hi/audio" : "/audio";
 
 const displayAudios = guidedAudios
@@ -114,46 +114,58 @@ const displayAudios = guidedAudios
 </section>
 
 <style>
-    /* Styles preserved completely unchanged */
     .section-mind {
         width: 100%;
         background-color: var(--bg-main);
     }
+
     .header-row {
         display: flex;
         justify-content: space-between;
         align-items: flex-end;
-        margin-bottom: 40px;
+        margin-bottom: 16px; /* Optimized: Reduced from 40px */
         position: relative;
         z-index: 2;
     }
+
     .header-text {
         max-width: 600px;
     }
+
     .section-title {
-        font-size: clamp(2.6rem, 4vw, 3.5rem);
-        line-height: 1.2;
+        font-size: clamp(
+            2.2rem,
+            4vw,
+            3.2rem
+        ); /* Optimized: Scaled down for screen fold safety */
+        line-height: 1.15;
         font-weight: 800;
-        margin-bottom: 16px;
+        margin-bottom: 8px; /* Optimized from 16px */
         color: var(--text-main);
     }
+
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         display: inline-block;
+        padding-bottom: 2px;
     }
+
     .body-text {
-        font-size: 1.15rem;
-        line-height: 1.6;
+        font-size: 1.05rem; /* Optimized from 1.15rem */
+        line-height: 1.5;
         color: var(--text-muted);
         margin: 0;
     }
+
+    /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 24px;
+        margin-bottom: 16px; /* Optimized from 24px */
     }
+
     .carousel-wrapper::after {
         content: "";
         position: absolute;
@@ -165,6 +177,7 @@ const displayAudios = guidedAudios
         pointer-events: none;
         z-index: 5;
     }
+
     html[data-theme="light"] .carousel-wrapper::after,
     html[data-theme="dark"] .carousel-wrapper::after {
         background: linear-gradient(
@@ -173,24 +186,27 @@ const displayAudios = guidedAudios
             transparent 100%
         );
     }
+
     .carousel-track {
         display: flex;
-        gap: 24px;
+        gap: 20px; /* Optimized from 24px */
         overflow-x: auto;
         scroll-snap-type: x mandatory;
         scroll-padding-left: 0;
-        padding-bottom: 24px;
+        padding-bottom: 16px; /* Optimized from 24px */
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
         position: relative;
         z-index: 2;
     }
+
     .carousel-track::-webkit-scrollbar {
         display: none;
     }
+
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 320px;
+        flex: 0 0 300px; /* Optimized from 320px */
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -204,11 +220,13 @@ const displayAudios = guidedAudios
             box-shadow 0.3s ease;
         height: 100%;
     }
+
     .carousel-card:hover {
-        transform: translateY(-6px);
+        transform: translateY(-4px); /* Optimized from -6px */
         box-shadow: var(--shadow);
         border-color: var(--primary);
     }
+
     .card-image {
         position: relative;
         aspect-ratio: 16/10;
@@ -216,6 +234,7 @@ const displayAudios = guidedAudios
         border-bottom: 1px solid var(--border);
         background-color: #000;
     }
+
     .card-image img {
         width: 100%;
         height: 100%;
@@ -225,17 +244,19 @@ const displayAudios = guidedAudios
             transform 0.5s ease,
             opacity 0.5s ease;
     }
+
     .carousel-card:hover .card-image img {
-        transform: scale(1.05);
+        transform: scale(1.03); /* Optimized from 1.05 */
         opacity: 0.7;
     }
+
     .play-overlay {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 48px;
-        height: 48px;
+        width: 44px; /* Optimized from 48px */
+        height: 44px;
         background: rgba(255, 255, 255, 0.2);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
@@ -246,48 +267,55 @@ const displayAudios = guidedAudios
         transition: all 0.3s ease;
         border: 1px solid rgba(255, 255, 255, 0.4);
     }
+
     .play-icon {
-        width: 24px;
-        height: 24px;
+        width: 20px; /* Optimized from 24px */
+        height: 20px;
         color: white;
         margin-left: 2px;
     }
+
     .carousel-card:hover .play-overlay {
         background: var(--primary);
         transform: translate(-50%, -50%) scale(1.1);
         border-color: var(--primary);
     }
+
     .card-content {
-        padding: 24px;
+        padding: 16px 20px; /* Optimized from 24px structural frames */
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
+
     .card-title {
-        font-size: 1.2rem;
+        font-size: 1.15rem; /* Optimized from 1.2rem */
         font-weight: 700;
-        margin-bottom: 8px;
+        margin-bottom: 4px; /* Optimized from 8px */
         line-height: 1.3;
     }
+
     .card-desc {
-        font-size: 0.95rem;
+        font-size: 0.9rem; /* Optimized from 0.95rem */
         color: var(--text-muted);
         line-height: 1.4;
-        margin-bottom: 20px;
+        margin-bottom: 12px; /* Optimized from 20px */
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
         flex-grow: 1;
     }
+
     .card-footer {
         display: flex;
         align-items: center;
-        gap: 8px;
+        gap: 6px; /* Optimized from 8px */
         font-weight: 600;
         color: var(--primary);
-        font-size: 0.95rem;
+        font-size: 0.9rem;
     }
+
     .glow-orb {
         position: absolute;
         top: 50%;
@@ -303,21 +331,23 @@ const displayAudios = guidedAudios
         z-index: 1;
         pointer-events: none;
     }
+
     .mobile-cta {
         display: none;
     }
+
     @media (max-width: 768px) {
         .header-row {
             flex-direction: column;
             align-items: flex-start;
-            gap: 16px;
-            margin-bottom: 24px;
+            gap: 8px; /* Optimized from 16px */
+            margin-bottom: 16px; /* Optimized from 24px */
         }
         .hidden-mobile {
             display: none;
         }
         .carousel-card {
-            flex: 0 0 280px;
+            flex: 0 0 260px; /* Optimized from 280px */
         }
         .carousel-wrapper::after {
             width: 40px;
