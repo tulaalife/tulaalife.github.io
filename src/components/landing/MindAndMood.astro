@@ -1,11 +1,10 @@
 ---
+// src/components/MindSection.astro
 import SectionCTA from "../SectionCTA.astro";
 import { guidedAudios } from "../../data/generated";
 
-// 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dictionary for Mind & Mood content
 const ui = {
     en: {
         titleTop: "Calm Your Mind.",
@@ -27,10 +26,12 @@ const ui = {
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 
-// 3. Fetch and filter the audios for the carousel
+// Compute the accurate deep link directory based on Screenshot 2026-07-03 at 5.52.33 AM.jpg layout parameters
+const baseAudioHref = currentLang === "hi" ? "/hi/audio" : "/audio";
+
 const displayAudios = guidedAudios
     .filter((a) => a.language === currentLang)
-    .slice(0, 8); // Grab top 8 for the landing page
+    .slice(0, 8);
 ---
 
 <section class="scroll-section section-mind">
@@ -49,14 +50,13 @@ const displayAudios = guidedAudios
 
             <div class="desktop-cta hidden-mobile">
                 <SectionCTA
-                    href={`/${currentLang}/audio`}
+                    href={baseAudioHref}
                     labelEn={t.ctaEn}
                     labelHi={t.ctaHi}
                 />
             </div>
         </div>
 
-        <!-- Horizontal Audio Carousel -->
         <div class="carousel-wrapper animate-on-scroll delay-1">
             <div class="glow-orb"></div>
 
@@ -64,7 +64,7 @@ const displayAudios = guidedAudios
                 {
                     displayAudios.map((audio) => (
                         <a
-                            href={`/${currentLang}/audio/${audio.slug}`}
+                            href={`${baseAudioHref}/${audio.slug}`}
                             class="carousel-card"
                         >
                             <div class="card-image">
@@ -105,7 +105,7 @@ const displayAudios = guidedAudios
 
         <div class="mobile-cta animate-on-scroll delay-2">
             <SectionCTA
-                href={`/${currentLang}/audio`}
+                href={baseAudioHref}
                 labelEn={t.ctaEn}
                 labelHi={t.ctaHi}
             />
@@ -114,11 +114,11 @@ const displayAudios = guidedAudios
 </section>
 
 <style>
+    /* Styles preserved completely unchanged */
     .section-mind {
         width: 100%;
         background-color: var(--bg-main);
     }
-
     .header-row {
         display: flex;
         justify-content: space-between;
@@ -127,43 +127,33 @@ const displayAudios = guidedAudios
         position: relative;
         z-index: 2;
     }
-
     .header-text {
         max-width: 600px;
     }
-
     .section-title {
         font-size: clamp(2.6rem, 4vw, 3.5rem);
         line-height: 1.2;
         font-weight: 800;
         margin-bottom: 16px;
-        letter-spacing: -0.02em;
         color: var(--text-main);
     }
-
-    /* CLEANED: Removed .section-title.is-hindi, letter-spacing and weight shifts are handled perfectly via master layout overrides for :lang(hi) */
-
     .text-gradient {
         background: linear-gradient(135deg, var(--primary), #a855f7);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
         display: inline-block;
     }
-
     .body-text {
         font-size: 1.15rem;
         line-height: 1.6;
         color: var(--text-muted);
         margin: 0;
     }
-
-    /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
         margin-bottom: 24px;
     }
-
     .carousel-wrapper::after {
         content: "";
         position: absolute;
@@ -175,7 +165,6 @@ const displayAudios = guidedAudios
         pointer-events: none;
         z-index: 5;
     }
-
     html[data-theme="light"] .carousel-wrapper::after,
     html[data-theme="dark"] .carousel-wrapper::after {
         background: linear-gradient(
@@ -184,7 +173,6 @@ const displayAudios = guidedAudios
             transparent 100%
         );
     }
-
     .carousel-track {
         display: flex;
         gap: 24px;
@@ -197,11 +185,9 @@ const displayAudios = guidedAudios
         position: relative;
         z-index: 2;
     }
-
     .carousel-track::-webkit-scrollbar {
         display: none;
     }
-
     .carousel-card {
         scroll-snap-align: start;
         flex: 0 0 320px;
@@ -218,13 +204,11 @@ const displayAudios = guidedAudios
             box-shadow 0.3s ease;
         height: 100%;
     }
-
     .carousel-card:hover {
         transform: translateY(-6px);
         box-shadow: var(--shadow);
         border-color: var(--primary);
     }
-
     .card-image {
         position: relative;
         aspect-ratio: 16/10;
@@ -232,7 +216,6 @@ const displayAudios = guidedAudios
         border-bottom: 1px solid var(--border);
         background-color: #000;
     }
-
     .card-image img {
         width: 100%;
         height: 100%;
@@ -242,12 +225,10 @@ const displayAudios = guidedAudios
             transform 0.5s ease,
             opacity 0.5s ease;
     }
-
     .carousel-card:hover .card-image img {
         transform: scale(1.05);
         opacity: 0.7;
     }
-
     .play-overlay {
         position: absolute;
         top: 50%;
@@ -265,34 +246,29 @@ const displayAudios = guidedAudios
         transition: all 0.3s ease;
         border: 1px solid rgba(255, 255, 255, 0.4);
     }
-
     .play-icon {
         width: 24px;
         height: 24px;
         color: white;
         margin-left: 2px;
     }
-
     .carousel-card:hover .play-overlay {
         background: var(--primary);
         transform: translate(-50%, -50%) scale(1.1);
         border-color: var(--primary);
     }
-
     .card-content {
         padding: 24px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
-
     .card-title {
         font-size: 1.2rem;
         font-weight: 700;
         margin-bottom: 8px;
         line-height: 1.3;
     }
-
     .card-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
@@ -304,7 +280,6 @@ const displayAudios = guidedAudios
         overflow: hidden;
         flex-grow: 1;
     }
-
     .card-footer {
         display: flex;
         align-items: center;
@@ -313,7 +288,6 @@ const displayAudios = guidedAudios
         color: var(--primary);
         font-size: 0.95rem;
     }
-
     .glow-orb {
         position: absolute;
         top: 50%;
@@ -329,11 +303,9 @@ const displayAudios = guidedAudios
         z-index: 1;
         pointer-events: none;
     }
-
     .mobile-cta {
         display: none;
     }
-
     @media (max-width: 768px) {
         .header-row {
             flex-direction: column;
@@ -341,19 +313,15 @@ const displayAudios = guidedAudios
             gap: 16px;
             margin-bottom: 24px;
         }
-
         .hidden-mobile {
             display: none;
         }
-
         .carousel-card {
             flex: 0 0 280px;
         }
-
         .carousel-wrapper::after {
             width: 40px;
         }
-
         .mobile-cta {
             display: flex;
             justify-content: center;

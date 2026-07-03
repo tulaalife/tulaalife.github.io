@@ -10,7 +10,8 @@ interface Props {
 }
 
 const { title, description, displayAudios, lang } = Astro.props;
-const baseHref = "/audio";
+// Dynamically resolve directory location mapped to file layout setup
+const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
 ---
 
 <Site
@@ -19,6 +20,7 @@ const baseHref = "/audio";
     canonicalPath="/audio"
     hasTranslation={true}
 >
+    <!-- Template body content and style tags remain exactly as you configured them -->
     <main class="listing-container">
         <div class="listing-header">
             <h1 class="page-title">{title}</h1>
@@ -69,13 +71,13 @@ const baseHref = "/audio";
 </Site>
 
 <style>
+    /* Retaining your exact optimized architectural styles layout */
     .listing-container {
         max-width: var(--container-width);
         margin: 0 auto;
         padding: 60px 24px 80px;
         min-height: 60vh;
     }
-
     .listing-header {
         text-align: center;
         margin-bottom: 60px;
@@ -83,23 +85,19 @@ const baseHref = "/audio";
         margin-left: auto;
         margin-right: auto;
     }
-
     .page-title {
         font-size: clamp(2.4rem, 5vw, 3.5rem);
         margin-bottom: 16px;
     }
-
     .page-subtitle {
         font-size: 1.15rem;
         color: var(--text-muted);
     }
-
     .audio-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 32px;
     }
-
     .audio-card {
         display: flex;
         flex-direction: column;
@@ -113,13 +111,11 @@ const baseHref = "/audio";
             border-color 0.3s ease;
         height: 100%;
     }
-
     .audio-card:hover {
         transform: translateY(-5px);
         border-color: var(--primary);
         box-shadow: var(--shadow);
     }
-
     .audio-cover {
         position: relative;
         aspect-ratio: 16 / 10;
@@ -127,7 +123,6 @@ const baseHref = "/audio";
         border-bottom: 1px solid var(--border);
         background-color: #000;
     }
-
     .audio-cover img {
         width: 100%;
         height: 100%;
@@ -137,12 +132,10 @@ const baseHref = "/audio";
             transform 0.5s ease,
             opacity 0.5s ease;
     }
-
     .audio-card:hover .audio-cover img {
         transform: scale(1.04);
         opacity: 0.75;
     }
-
     .play-overlay {
         position: absolute;
         inset: 0;
@@ -153,11 +146,9 @@ const baseHref = "/audio";
         transition: opacity 0.3s ease;
         z-index: 2;
     }
-
     .audio-card:hover .play-overlay {
         opacity: 1;
     }
-
     .play-inner {
         width: 48px;
         height: 48px;
@@ -173,33 +164,28 @@ const baseHref = "/audio";
             transform 0.3s ease,
             background-color 0.3s ease;
     }
-
     .audio-card:hover .play-inner {
         background: var(--primary);
         border-color: var(--primary);
         transform: scale(1.08);
     }
-
     .play-icon {
         width: 22px;
         height: 22px;
         color: #ffffff;
         margin-left: 2px;
     }
-
     .audio-content {
         padding: 24px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
-
     .audio-title {
         font-size: 1.25rem;
         margin-bottom: 8px;
         color: var(--text-main);
     }
-
     .audio-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
@@ -208,7 +194,6 @@ const baseHref = "/audio";
         -webkit-box-orient: vertical;
         overflow: hidden;
     }
-
     @media (max-width: 600px) {
         .audio-grid {
             grid-template-columns: 1fr;

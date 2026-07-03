@@ -7,7 +7,14 @@ const label = currentLang === "hi" ? labelHi : labelEn;
 
 const getLink = (path: string) => {
     if (currentLang === "en") return path;
-    return path === "/" ? "/hi" : `/hi${path}`;
+
+    // Handle root path mapping safely
+    if (path === "/") return "/hi";
+
+    // 🔥 FIX: If the path already includes the language prefix, pass it through directly without duplicating it
+    if (path.startsWith("/hi/") || path === "/hi") return path;
+
+    return `/hi${path}`;
 };
 ---
 
@@ -34,6 +41,7 @@ const getLink = (path: string) => {
 </a>
 
 <style>
+    /* ... Keep all your existing CSS configurations completely untouched ... */
     .cta-link {
         position: relative;
         display: inline-flex;
@@ -57,7 +65,6 @@ const getLink = (path: string) => {
         overflow: hidden;
     }
 
-    /* Native Language Context Interception */
     :global(:lang(hi)) .cta-link {
         font-family: var(--font-sans-hi);
         font-weight: 600;
@@ -81,11 +88,10 @@ const getLink = (path: string) => {
     }
 
     :global(:lang(hi)) .cta-text {
-        line-height: 1.5; /* Yields essential vertical clearance for Devanagari vowel signs */
+        line-height: 1.5;
         font-size: 1rem;
     }
 
-    /* Ambient hover backdrop system */
     .cta-glow {
         position: absolute;
         inset: 0;
@@ -121,7 +127,6 @@ const getLink = (path: string) => {
             transform 0.5s ease;
     }
 
-    /* --- HOVER EFFECTS --- */
     .cta-link:hover {
         transform: translateY(-4px);
         filter: brightness(1.08);
@@ -145,7 +150,6 @@ const getLink = (path: string) => {
         transform: translateX(2px);
     }
 
-    /* --- MOBILE OPTIMIZATIONS --- */
     @media (max-width: 768px) {
         .cta-link {
             padding: 10px 20px;
