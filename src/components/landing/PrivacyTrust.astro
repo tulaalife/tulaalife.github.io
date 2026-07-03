@@ -65,20 +65,21 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <section class="scroll-section section-privacy">
     <div style="width: 100%;">
-        <!-- Standardized text to left-alignment to eliminate scrolling layout friction -->
-        <div
-            class="container section-header-left header-content animate-on-scroll"
-        >
-            <h2 class="section-title">
-                <span class="title-main">{t.titleTop}</span>
-                <br />
-                <span class="text-gradient">{t.titleBottom}</span>
-            </h2>
-            <p class="body-text" style="margin-top: 12px;">
-                {t.descTop}
-                <br class="hidden-mobile" />
-                {t.descBottom}
-            </p>
+        <!-- 1. Pure container for standard left-edge alignment -->
+        <div class="container">
+            <!-- 2. Inner wrapper to restrict width and align text -->
+            <div class="section-header-left header-content animate-on-scroll">
+                <h2 class="section-title">
+                    <span class="title-main">{t.titleTop}</span>
+                    <br />
+                    <span class="text-gradient">{t.titleBottom}</span>
+                </h2>
+                <p class="body-text" style="margin-top: 12px;">
+                    {t.descTop}
+                    <br class="hidden-mobile" />
+                    {t.descBottom}
+                </p>
+            </div>
         </div>
 
         <div class="container carousel-wrapper animate-on-scroll delay-1">
