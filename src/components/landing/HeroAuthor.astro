@@ -5,24 +5,26 @@ const ui = {
     en: {
         author: "Latika Bissa",
         authorLabel: "Yoga Therapist",
-        authorTrust: "⭐ 5-Star Rated • 5,000+ Happy Students",
+        authorTrust: "Rated 5 stars • 5,000+ Happy Students",
         cred1: "🧘‍♀️ 10+ Years of Experience",
         cred2: "🏅 Gold Medalist, M.Sc Yoga Therapy",
     },
     hi: {
         author: "लतिका बिस्सा",
         authorLabel: "योग चिकित्सक",
-        authorTrust: "⭐ 5-स्टार रेटिंग • 5,000+ संतुष्ट साधक",
+        authorTrust: "5-स्टार रेटिंग • 5,000+ संतुष्ट साधक",
         cred1: "🧘‍♀️ 10+ वर्षों का अनुभव",
         cred2: "🏅 स्वर्ण पदक विजेता, M.Sc योग थेरेपी",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
+const authorImg = "/images/latika.png";
 ---
 
 <section class="scroll-section author-section">
-    <div class="container author-container">
+    <!-- Outer container enforces the standard 1120px max-width -->
+    <div class="container">
         <a
             href="https://yogawithlatika.com"
             target="_blank"
@@ -30,25 +32,31 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             aria-label="Visit Latika Bissa's website"
         >
             <div class="author-card">
+                <!-- Left Content: Takes up all available flex space -->
                 <div class="author-content">
                     <div class="author-header">
-                        <div class="author-meta">
-                            <span class="author-label">{t.authorLabel}</span>
-                            <h3 class="author-name">
-                                <strong>{t.author}</strong>
-                            </h3>
-                        </div>
-                        <!-- Applied the central .text-gradient class utility token -->
+                        <span class="author-label">{t.authorLabel}</span>
+                        <h2 class="author-name">{t.author}</h2>
                         <div class="author-trust text-gradient">
                             {t.authorTrust}
                         </div>
                     </div>
 
                     <div class="creds-list">
-                        <span class="cred">{t.cred1}</span>
-                        <span class="divider"></span>
-                        <span class="cred">{t.cred2}</span>
+                        <div class="cred-item">{t.cred1}</div>
+                        <div class="cred-item">{t.cred2}</div>
                     </div>
+                </div>
+
+                <!-- Right Visual: Dedicated split pane for the cutout image -->
+                <div class="author-image-pane">
+                    <img
+                        src={authorImg}
+                        alt="Latika Bissa"
+                        class="author-img"
+                        loading="lazy"
+                        decoding="async"
+                    />
                 </div>
             </div>
         </a>
@@ -60,138 +68,154 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         width: 100%;
         display: flex;
         align-items: center;
-        background-color: var(--bg-main);
-    }
-
-    .author-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        background-color: transparent;
     }
 
     .author-link {
         text-decoration: none;
         display: block;
         width: 100%;
-        max-width: 650px;
     }
 
+    /* True Split-Pane Card Architecture */
     .author-card {
-        position: relative;
-        background: linear-gradient(
-            110deg,
-            color-mix(in srgb, var(--bg-sub), transparent 20%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 50%) 100%
-        );
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        padding: 32px 48px;
+        background: var(--bg-sub);
         border-radius: var(--radius-lg);
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: stretch; /* Forces both panes to match height */
+        overflow: hidden; /* Clips the image perfectly at the bottom corner */
+        transition:
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.4s ease,
+            box-shadow 0.4s ease;
     }
 
     .author-link:hover .author-card {
-        border-color: var(--primary);
-        transform: translateY(-4px);
-        background: linear-gradient(
-            110deg,
-            color-mix(in srgb, var(--bg-sub), transparent 5%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 30%) 100%
-        );
+        transform: translateY(-6px);
+        border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
     }
 
     .author-content {
+        padding: 64px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        justify-content: center;
+        flex: 1; /* Expands to fill empty space, pushing image to the right */
+        z-index: 2;
         text-align: left;
     }
 
     .author-header {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        width: 100%;
-        gap: 6px;
-        margin-bottom: 16px;
-    }
-
-    .author-meta {
-        display: flex;
-        flex-direction: column;
+        margin-bottom: 32px;
     }
 
     .author-label {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
         text-transform: uppercase;
         color: var(--primary);
         font-weight: 700;
-        margin-top: 2px;
-        margin-bottom: 4px;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.08em;
+        display: block;
+        margin-bottom: 12px;
     }
 
     .author-name {
-        font-size: 1.6rem;
+        font-size: clamp(2.4rem, 5vw, 3.4rem);
         color: var(--text-main);
-        margin: 0;
-        font-weight: 400;
+        margin: 0 0 8px 0;
+        font-weight: var(--fw-bold);
+        letter-spacing: -0.03em;
+        line-height: 1.1;
     }
 
     .author-trust {
-        font-size: 1.05rem;
-        font-weight: 700;
-        margin-top: 4px;
-        display: block;
-        width: 100%;
+        font-size: 1.15rem;
+        font-weight: 600;
+        letter-spacing: -0.01em;
     }
 
     .creds-list {
         display: flex;
-        align-items: center;
+        flex-direction: column;
         gap: 16px;
     }
 
-    .cred {
-        font-size: 1.05rem;
+    .cred-item {
+        font-size: 1.1rem;
         color: var(--text-muted);
-        display: flex;
-        align-items: center;
+        font-weight: 500;
     }
 
-    .divider {
-        width: 1px;
-        height: 16px;
-        background: var(--border);
+    /* Right Pane Background & Image Anchoring */
+    .author-image-pane {
+        width: 45%;
+        max-width: 480px;
+        position: relative;
+        display: flex;
+        align-items: flex-end; /* Grounds Latika to the bottom of the card */
+        justify-content: center;
+        background: radial-gradient(
+            circle at bottom center,
+            color-mix(in srgb, var(--primary) 10%, transparent) 0%,
+            transparent 70%
+        );
+        flex-shrink: 0;
+    }
+
+    .author-img {
+        width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        object-position: bottom right; /* Locks image to the bottom right corner */
+        transform-origin: bottom center;
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        display: block; /* Removes baseline gap */
+    }
+
+    .author-link:hover .author-img {
+        transform: scale(1.03);
+    }
+
+    /* Responsive Adjustments */
+    @media (max-width: 992px) {
+        .author-content {
+            padding: 48px 40px;
+        }
+        .author-image-pane {
+            width: 40%;
+        }
     }
 
     @media (max-width: 768px) {
         .author-card {
-            padding: 28px;
-        }
-
-        .creds-list {
             flex-direction: column;
-            align-items: flex-start;
-            gap: 8px;
         }
 
-        .divider {
-            display: none;
+        .author-content {
+            padding: 40px 24px 0 24px; /* Removes bottom padding so image flows naturally */
         }
 
-        .author-name {
-            font-size: 1.35rem;
+        .author-image-pane {
+            width: 100%;
+            max-width: 100%;
+            height: 320px;
+            margin-top: 16px;
+            background: radial-gradient(
+                circle at bottom center,
+                color-mix(in srgb, var(--primary) 8%, transparent) 0%,
+                transparent 60%
+            );
         }
 
-        .author-trust {
-            font-size: 0.95rem;
-        }
-
-        .cred {
-            font-size: 0.95rem;
+        .author-img {
+            object-position: bottom center; /* Centers image on mobile */
+            height: 100%;
         }
     }
 </style>
