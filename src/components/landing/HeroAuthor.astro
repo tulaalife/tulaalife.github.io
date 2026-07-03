@@ -23,43 +23,35 @@ const authorImg = "/images/latika.png";
 ---
 
 <section class="scroll-section author-section">
-    <!-- Outer container enforces the standard 1120px max-width -->
-    <div class="container">
-        <a
-            href="https://yogawithlatika.com"
-            target="_blank"
-            class="author-link animate-on-scroll"
-            aria-label="Visit Latika Bissa's website"
-        >
-            <div class="author-card">
-                <!-- Left Content: Takes up all available flex space -->
-                <div class="author-content">
-                    <div class="author-header">
-                        <span class="author-label">{t.authorLabel}</span>
-                        <h2 class="author-name">{t.author}</h2>
-                        <div class="author-trust text-gradient">
-                            {t.authorTrust}
-                        </div>
-                    </div>
-
-                    <div class="creds-list">
-                        <div class="cred-item">{t.cred1}</div>
-                        <div class="cred-item">{t.cred2}</div>
+    <div class="container layout-wrapper">
+        <div class="author-card">
+            <!-- Left Content: Clean, flat typography -->
+            <div class="author-content">
+                <div class="author-header">
+                    <span class="author-label">{t.authorLabel}</span>
+                    <h2 class="author-name">{t.author}</h2>
+                    <div class="author-trust text-gradient">
+                        {t.authorTrust}
                     </div>
                 </div>
 
-                <!-- Right Visual: Dedicated split pane for the cutout image -->
-                <div class="author-image-pane">
-                    <img
-                        src={authorImg}
-                        alt="Latika Bissa"
-                        class="author-img"
-                        loading="lazy"
-                        decoding="async"
-                    />
+                <div class="creds-list">
+                    <div class="cred-item">{t.cred1}</div>
+                    <div class="cred-item">{t.cred2}</div>
                 </div>
             </div>
-        </a>
+
+            <!-- Right Visual: Flat background, drop-shadow on the image itself -->
+            <div class="author-image-pane">
+                <img
+                    src={authorImg}
+                    alt="Latika Bissa"
+                    class="author-img"
+                    loading="lazy"
+                    decoding="async"
+                />
+            </div>
+        </div>
     </div>
 </section>
 
@@ -68,45 +60,33 @@ const authorImg = "/images/latika.png";
         width: 100%;
         display: flex;
         align-items: center;
-        background-color: transparent;
     }
 
-    .author-link {
-        text-decoration: none;
-        display: block;
+    .layout-wrapper {
         width: 100%;
+        display: flex;
+        justify-content: flex-start;
     }
 
-    /* True Split-Pane Card Architecture */
+    /* Flat, clean card architecture */
     .author-card {
-        background: var(--bg-sub);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
         width: 100%;
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: stretch; /* Forces both panes to match height */
-        overflow: hidden; /* Clips the image perfectly at the bottom corner */
+        align-items: stretch;
+        overflow: hidden;
         transition:
-            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-            border-color 0.4s ease,
-            box-shadow 0.4s ease;
-    }
-
-    .author-link:hover .author-card {
-        transform: translateY(-6px);
-        border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+            transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.5s ease,
+            box-shadow 0.5s ease;
     }
 
     .author-content {
-        padding: 64px;
         display: flex;
         flex-direction: column;
         justify-content: center;
-        flex: 1; /* Expands to fill empty space, pushing image to the right */
+        flex: 1;
         z-index: 2;
         text-align: left;
     }
@@ -152,43 +132,38 @@ const authorImg = "/images/latika.png";
         font-weight: 500;
     }
 
-    /* Right Pane Background & Image Anchoring */
+    /* Removed all gradients, added padding for breathing room */
     .author-image-pane {
         width: 45%;
-        max-width: 480px;
+        max-width: 440px;
         position: relative;
         display: flex;
-        align-items: flex-end; /* Grounds Latika to the bottom of the card */
+        align-items: flex-end;
         justify-content: center;
-        background: radial-gradient(
-            circle at bottom center,
-            color-mix(in srgb, var(--primary) 10%, transparent) 0%,
-            transparent 70%
-        );
+        background: transparent;
         flex-shrink: 0;
+        padding-right: 40px; /* Keeps image from blending into the right border */
     }
 
     .author-img {
         width: 100%;
-        max-height: 100%;
+        max-height: 95%; /* Tiny gap at the top so it doesn't touch the ceiling */
         object-fit: contain;
-        object-position: bottom right; /* Locks image to the bottom right corner */
+        object-position: bottom center;
         transform-origin: bottom center;
-        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-        display: block; /* Removes baseline gap */
-    }
-
-    .author-link:hover .author-img {
-        transform: scale(1.03);
+        display: block;
+        /* Drops a soft shadow directly from the transparent pixels of the PNG */
+        filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.08));
+        transition:
+            transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+            filter 0.5s ease;
     }
 
     /* Responsive Adjustments */
     @media (max-width: 992px) {
-        .author-content {
-            padding: 48px 40px;
-        }
         .author-image-pane {
             width: 40%;
+            padding-right: 24px;
         }
     }
 
@@ -197,25 +172,18 @@ const authorImg = "/images/latika.png";
             flex-direction: column;
         }
 
-        .author-content {
-            padding: 40px 24px 0 24px; /* Removes bottom padding so image flows naturally */
-        }
-
         .author-image-pane {
             width: 100%;
             max-width: 100%;
             height: 320px;
-            margin-top: 16px;
-            background: radial-gradient(
-                circle at bottom center,
-                color-mix(in srgb, var(--primary) 8%, transparent) 0%,
-                transparent 60%
-            );
+            margin-top: 24px;
+            padding-right: 0; /* Reset padding for mobile */
+            padding-bottom: 0;
         }
 
         .author-img {
-            object-position: bottom center; /* Centers image on mobile */
             height: 100%;
+            object-position: bottom center;
         }
     }
 </style>
