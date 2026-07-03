@@ -25,7 +25,6 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-
 const baseAudioHref = currentLang === "hi" ? "/hi/audio" : "/audio";
 
 const displayAudios = guidedAudios
@@ -34,29 +33,18 @@ const displayAudios = guidedAudios
 ---
 
 <section class="scroll-section section-mind">
-    <div class="container animate-on-scroll">
-        <div class="header-row">
-            <!-- Utilized section-header-left class token for structural typography framework alignment -->
-            <div class="section-header-left header-text">
-                <h2 class="section-title">
-                    {t.titleTop}
-                    <br />
-                    <span class="text-gradient">{t.titleBottom}</span>
-                </h2>
-                <p class="body-text max-w-md" style="margin-top: 8px;">
-                    {t.body}
-                </p>
-            </div>
-
-            <div class="desktop-cta hidden-mobile">
-                <SectionCTA
-                    href={baseAudioHref}
-                    labelEn={t.ctaEn}
-                    labelHi={t.ctaHi}
-                />
-            </div>
+    <div class="container content-wrapper">
+        <!-- Integrated structural alignment utility matching wellnessTools layout rules -->
+        <div class="section-header-left text-col animate-on-scroll">
+            <h2 class="section-title">
+                {t.titleTop}
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
+            </h2>
+            <p class="body-text" set:html={t.body} />
         </div>
 
+        <!-- Horizontal Carousel -->
         <div class="carousel-wrapper animate-on-scroll delay-1">
             <div class="glow-orb"></div>
 
@@ -103,7 +91,8 @@ const displayAudios = guidedAudios
             </div>
         </div>
 
-        <div class="mobile-cta animate-on-scroll delay-2">
+        <!-- Left-aligned unified CTA below carousel component wrapper -->
+        <div class="cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href={baseAudioHref}
                 labelEn={t.ctaEn}
@@ -117,30 +106,44 @@ const displayAudios = guidedAudios
     .section-mind {
         width: 100%;
         background-color: var(--bg-main);
-    }
-
-    .header-row {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-end;
-        margin-bottom: 16px;
-        position: relative;
-        z-index: 2;
+        align-items: center;
     }
 
-    .header-text {
-        max-width: 600px;
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: var(--container-width);
+        margin: 0 auto;
+        padding: 0 24px;
+    }
+
+    .text-col {
+        margin-bottom: 2.5rem;
+        text-align: left;
+        width: 100%;
     }
 
     .section-title {
-        font-size: clamp(2.2rem, 4vw, 3.2rem);
+        font-size: clamp(2.4rem, 5vw, 3.8rem);
+        text-align: left;
+    }
+
+    .body-text {
+        font-size: 1.2rem;
+        color: var(--text-muted);
+        max-width: 650px; /* Locked constraint limits maximum line wrap width */
+        text-align: left;
+        line-height: 1.6;
+        margin-top: 12px;
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 16px;
+        margin-bottom: 24px;
     }
 
     .carousel-wrapper::after {
@@ -150,18 +153,13 @@ const displayAudios = guidedAudios
         right: 0;
         width: 80px;
         height: 100%;
-        background: linear-gradient(to right, transparent, var(--bg-main));
-        pointer-events: none;
-        z-index: 5;
-    }
-
-    html[data-theme="light"] .carousel-wrapper::after,
-    html[data-theme="dark"] .carousel-wrapper::after {
         background: linear-gradient(
             to left,
             var(--bg-main) 0%,
             transparent 100%
         );
+        pointer-events: none;
+        z-index: 5;
     }
 
     .carousel-track {
@@ -169,7 +167,6 @@ const displayAudios = guidedAudios
         gap: 20px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        scroll-padding-left: 0;
         padding-bottom: 16px;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
@@ -194,12 +191,13 @@ const displayAudios = guidedAudios
         color: inherit;
         transition:
             transform 0.3s ease,
-            box-shadow 0.3s ease;
+            box-shadow 0.3s ease,
+            border-color 0.3s ease;
         height: 100%;
     }
 
     .carousel-card:hover {
-        transform: translateY(-4px);
+        transform: translateY(-5px);
         box-shadow: var(--shadow);
         border-color: var(--primary);
     }
@@ -259,24 +257,23 @@ const displayAudios = guidedAudios
     }
 
     .card-content {
-        padding: 16px 20px;
+        padding: 20px;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
     }
 
     .card-title {
-        font-size: 1.15rem;
-        font-weight: 700;
+        font-size: 1.2rem;
         margin-bottom: 4px;
-        line-height: 1.3;
+        color: var(--text-main);
     }
 
     .card-desc {
         font-size: 0.9rem;
         color: var(--text-muted);
         line-height: 1.4;
-        margin-bottom: 12px;
+        margin-bottom: 16px;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -291,6 +288,7 @@ const displayAudios = guidedAudios
         font-weight: 600;
         color: var(--primary);
         font-size: 0.9rem;
+        margin-top: auto;
     }
 
     .glow-orb {
@@ -309,30 +307,31 @@ const displayAudios = guidedAudios
         pointer-events: none;
     }
 
-    .mobile-cta {
-        display: none;
+    .cta-wrapper {
+        margin-top: 1.5rem;
+        display: flex;
+        justify-content: flex-start;
     }
 
     @media (max-width: 768px) {
-        .header-row {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 8px;
-            margin-bottom: 16px;
+        .content-wrapper {
+            padding: 0 16px;
         }
-        .hidden-mobile {
-            display: none;
+
+        .text-col {
+            margin-bottom: 2rem;
         }
+
+        .section-title {
+            font-size: 2.2rem;
+        }
+
         .carousel-card {
             flex: 0 0 260px;
         }
+
         .carousel-wrapper::after {
             width: 40px;
-        }
-        .mobile-cta {
-            display: flex;
-            justify-content: center;
-            margin-top: 8px;
         }
     }
 </style>
