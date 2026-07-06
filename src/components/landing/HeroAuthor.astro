@@ -25,14 +25,15 @@ const authorImg = "/images/latika.png";
 <section class="scroll-section author-section">
     <div class="container layout-wrapper">
         <div class="author-card">
-            <!-- Left Content: Clean, flat typography -->
+            <!-- Left Content Pane -->
             <div class="author-content">
                 <div class="author-header">
                     <span class="author-label">{t.authorLabel}</span>
                     <h2 class="author-name">{t.author}</h2>
-                    <div class="author-trust text-gradient">
-                        {t.authorTrust}
-                    </div>
+                    <div
+                        class="author-trust text-gradient"
+                        set:html={t.authorTrust}
+                    />
                 </div>
 
                 <div class="creds-list">
@@ -41,7 +42,7 @@ const authorImg = "/images/latika.png";
                 </div>
             </div>
 
-            <!-- Right Visual: Flat background, drop-shadow on the image itself -->
+            <!-- Right Visual Pane -->
             <div class="author-image-pane">
                 <img
                     src={authorImg}
@@ -60,6 +61,7 @@ const authorImg = "/images/latika.png";
         width: 100%;
         display: flex;
         align-items: center;
+        background-color: transparent;
     }
 
     .layout-wrapper {
@@ -68,7 +70,6 @@ const authorImg = "/images/latika.png";
         justify-content: flex-start;
     }
 
-    /* Flat, clean card architecture */
     .author-card {
         width: 100%;
         display: flex;
@@ -76,10 +77,13 @@ const authorImg = "/images/latika.png";
         justify-content: space-between;
         align-items: stretch;
         overflow: hidden;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow);
         transition:
             transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-            border-color 0.5s ease,
-            box-shadow 0.5s ease;
+            border-color 0.5s ease;
     }
 
     .author-content {
@@ -89,10 +93,11 @@ const authorImg = "/images/latika.png";
         flex: 1;
         z-index: 2;
         text-align: left;
+        padding: 54px 64px;
     }
 
     .author-header {
-        margin-bottom: 32px;
+        margin-bottom: 28px;
     }
 
     .author-label {
@@ -102,13 +107,13 @@ const authorImg = "/images/latika.png";
         font-weight: 700;
         letter-spacing: 0.08em;
         display: block;
-        margin-bottom: 12px;
+        margin-bottom: 10px;
     }
 
     .author-name {
         font-size: clamp(2.4rem, 5vw, 3.4rem);
         color: var(--text-main);
-        margin: 0 0 8px 0;
+        margin: 0 0 6px 0;
         font-weight: var(--fw-bold);
         letter-spacing: -0.03em;
         line-height: 1.1;
@@ -118,21 +123,21 @@ const authorImg = "/images/latika.png";
         font-size: 1.15rem;
         font-weight: 600;
         letter-spacing: -0.01em;
+        white-space: normal;
     }
 
     .creds-list {
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: 14px;
     }
 
     .cred-item {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: var(--text-muted);
         font-weight: 500;
     }
 
-    /* Removed all gradients, added padding for breathing room */
     .author-image-pane {
         width: 45%;
         max-width: 440px;
@@ -144,34 +149,32 @@ const authorImg = "/images/latika.png";
         flex-shrink: 0;
         padding-right: 40px;
 
-        /* ADD THESE TWO LINES 👇 */
+        /* Linear gradient mask to clear away edge pixels cleanly */
         -webkit-mask-image: linear-gradient(
             to bottom,
-            black 90%,
+            black 88%,
             transparent 100%
         );
-        mask-image: linear-gradient(to bottom, black 90%, transparent 100%);
+        mask-image: linear-gradient(to bottom, black 88%, transparent 100%);
     }
 
     .author-img {
         width: 100%;
-        max-height: 95%; /* Tiny gap at the top so it doesn't touch the ceiling */
+        max-height: 95%;
         object-fit: contain;
         object-position: bottom center;
         transform-origin: bottom center;
         display: block;
-        /* Drops a soft shadow directly from the transparent pixels of the PNG */
-        filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.08));
-        transition:
-            transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-            filter 0.5s ease;
+        filter: drop-shadow(0 8px 24px rgba(0, 0, 0, 0.06));
     }
 
-    /* Responsive Adjustments */
     @media (max-width: 992px) {
+        .author-content {
+            padding: 44px 36px;
+        }
         .author-image-pane {
             width: 40%;
-            padding-right: 24px;
+            padding-right: 20px;
         }
     }
 
@@ -180,18 +183,28 @@ const authorImg = "/images/latika.png";
             flex-direction: column;
         }
 
+        .author-content {
+            padding: 40px 24px 0 24px;
+        }
+
+        .author-name {
+            font-size: 2.2rem;
+        }
+
+        .author-trust {
+            font-size: 1rem;
+        }
+
         .author-image-pane {
             width: 100%;
             max-width: 100%;
-            height: 320px;
-            margin-top: 24px;
-            padding-right: 0; /* Reset padding for mobile */
-            padding-bottom: 0;
+            height: 340px;
+            margin-top: 20px;
+            padding-right: 0;
         }
 
         .author-img {
             height: 100%;
-            object-position: bottom center;
         }
     }
 </style>
