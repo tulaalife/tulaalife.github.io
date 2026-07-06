@@ -156,18 +156,17 @@ const displayPlans = yogaPlans
     }
 
     .text-col {
-        margin-bottom: var(
-            --space-md
-        ); /* Reduced from large for punchier pairing */
+        margin-bottom: var(--space-md);
         text-align: left;
         width: 100%;
     }
 
     .section-title {
-        font-size: clamp(2rem, 5vw, 3.8rem);
-        letter-spacing: -0.03em;
+        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+        letter-spacing: -0.035em;
         line-height: 1.1;
         text-align: left;
+        color: var(--text-main);
     }
 
     .body-text {
@@ -231,12 +230,13 @@ const displayPlans = yogaPlans
         margin-bottom: var(--space-md);
     }
 
+    /* Polished, zero-obstrusive right edge gradient mask seen in Screenshot 2026-07-06 at 9.58.18 AM.jpg */
     .carousel-wrapper::after {
         content: "";
         position: absolute;
         top: 0;
         right: 0;
-        width: 60px;
+        width: 48px;
         height: 100%;
         background: linear-gradient(
             to left,
@@ -252,7 +252,7 @@ const displayPlans = yogaPlans
         gap: var(--space-md);
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        padding: 4px 0 var(--space-sm) 0;
+        padding: 6px 0 var(--space-sm) 0;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
     }
@@ -263,7 +263,7 @@ const displayPlans = yogaPlans
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 280px; /* Snappier card widths */
+        flex: 0 0 290px;
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -272,6 +272,11 @@ const displayPlans = yogaPlans
         overflow: hidden;
         text-decoration: none;
         color: inherit;
+
+        /* Enforces matching static heights across all filtered states */
+        height: 100%;
+        min-height: 295px;
+
         transition:
             transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
             box-shadow 0.4s ease,
@@ -301,32 +306,57 @@ const displayPlans = yogaPlans
         padding: var(--space-md);
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        gap: var(--space-md);
         flex-grow: 1;
+        justify-content: space-between; /* Pushes footer neatly to base */
     }
 
     .card-title {
-        font-size: 1.15rem;
-        font-weight: 700;
-        margin: 0 0 var(--space-sm) 0;
+        font-size: 1.2rem;
+        font-weight: 750;
+        margin: 0;
         color: var(--text-main);
-        letter-spacing: -0.01em;
+        letter-spacing: -0.015em;
         line-height: 1.35;
+
+        /* Enforces a 2-line maximum constraint with fluid ellipsis (...) */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        /* Reserves a locked height footprint equal exactly to 2 lines of prose */
+        min-height: calc(1.35em * 2);
     }
 
+    /* Polished, vertically centered line item alignment */
     .card-footer {
         display: flex;
         align-items: center;
-        gap: var(--space-xs);
+        gap: 6px;
         font-weight: 600;
         color: var(--primary);
-        font-size: 0.85rem;
-        letter-spacing: 0.02em;
+        font-size: 0.9rem;
+        letter-spacing: 0.01em;
+        margin-top: auto;
+    }
+
+    .icon {
+        display: inline-flex;
+        align-items: center;
+        transform: translateY(-1px); /* Perfect visual alignment tweak */
+        transition: transform 0.2s ease;
+    }
+
+    .carousel-card:hover .icon {
+        transform: translateX(2px) translateY(-1px);
     }
 
     .cta-wrapper {
         display: flex;
         justify-content: flex-start;
+        margin-top: var(--space-xs);
     }
 
     /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
@@ -339,6 +369,7 @@ const displayPlans = yogaPlans
     }
     :lang(hi) .card-title {
         line-height: 1.45;
+        min-height: calc(1.45em * 2);
     }
 
     /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
@@ -347,10 +378,10 @@ const displayPlans = yogaPlans
             margin-bottom: var(--space-sm);
         }
         .body-text {
-            display: none; /* Hide helper descriptive lines to rescue critical UI items */
+            display: none;
         }
         .carousel-card {
-            flex: 0 0 240px;
+            flex: 0 0 250px;
         }
         .card-content {
             padding: var(--space-sm);

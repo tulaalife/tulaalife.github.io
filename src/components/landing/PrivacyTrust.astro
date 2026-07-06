@@ -82,42 +82,38 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             </div>
         </div>
 
-        <!-- 2. Optimized Responsive Features Grid Layout Track -->
-        <div class="container carousel-wrapper animate-on-scroll delay-1">
-            <div class="features-track">
+        <!-- 2. Single Feature Animation Display Frame -->
+        <div class="container stack-stage-container animate-on-scroll delay-1">
+            <div class="stage-frame" id="privacy-stage-frame">
                 {
-                    t.features.map((feature) => (
+                    t.features.map((feature, index) => (
                         <div
-                            class="privacy-card"
+                            class={`animated-privacy-card ${index === 0 ? "active" : ""}`}
                             style={`--card-accent: ${feature.color}`}
                         >
-                            <!-- Background Watermark Container -->
+                            <!-- Premium Background Watermark Icons -->
                             <div class="card-watermark">
                                 {feature.type === "privacy" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <rect width="256" height="256" fill="none"/>
-                                        <rect x="40" y="88" width="176" height="128" rx="24" opacity="0.15" fill="currentColor"/>
-                                        <rect x="40" y="88" width="176" height="128" rx="24" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M92,88V52a36,36,0,0,1,72,0V88" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <circle cx="128" cy="152" r="10" fill="currentColor"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+                                        <rect x="56" y="104" width="144" height="112" rx="16"/>
+                                        <path d="M88,104V72a40,40,0,0,1,80,0v32"/>
+                                        <circle cx="128" cy="160" r="12" fill="currentColor" stroke="none"/>
                                     </svg>
                                 )}
                                 {feature.type === "offline" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <rect width="256" height="256" fill="none"/>
-                                        <polygon points="120 104 80 104 144 24 136 112 176 112 112 232 120 104" opacity="0.15" fill="currentColor"/>
-                                        <polygon points="120 104 80 104 144 24 136 112 176 112 112 232 120 104" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M48,208,208,48"/>
+                                        <path d="M84.5,123.5a72,72,0,0,1,87,0"/>
+                                        <path d="M50.4,89.5a120,120,0,0,1,155.2,0"/>
+                                        <circle cx="128" cy="176" r="12" fill="currentColor" stroke="none"/>
                                     </svg>
                                 )}
                                 {feature.type === "customize" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <rect width="256" height="256" fill="none"/>
-                                        <circle cx="128" cy="128" r="88" opacity="0.15" fill="currentColor"/>
-                                        <circle cx="128" cy="128" r="88" fill="none" stroke="currentColor" stroke-width="12" stroke-miterlimit="10"/>
-                                        <path d="M128,40a88,88,0,0,1,0,176Z" fill="currentColor" opacity="0.2"/>
-                                        <circle cx="96" cy="96" r="12" fill="currentColor"/>
-                                        <circle cx="96" cy="160" r="12" fill="currentColor"/>
-                                        <circle cx="160" cy="128" r="12" fill="currentColor"/>
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="40" y1="88" x2="216" y2="88"/>
+                                        <line x1="40" y1="168" x2="216" y2="168"/>
+                                        <circle cx="104" cy="88" r="24"/>
+                                        <circle cx="152" cy="168" r="24"/>
                                     </svg>
                                 )}
                             </div>
@@ -144,6 +140,24 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     </div>
 </section>
 
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const stage = document.getElementById("privacy-stage-frame");
+        if (!stage) return;
+        
+        const cards = stage.querySelectorAll(".animated-privacy-card");
+        if (cards.length === 0) return;
+
+        let activeIndex = 0;
+
+        setInterval(() => {
+            cards[activeIndex].classList.remove("active");
+            activeIndex = (activeIndex + 1) % cards.length;
+            cards[activeIndex].classList.add("active");
+        }, 4500); // 4.5s allows comfortable reading for the slightly longer privacy descriptions
+    });
+</script>
+
 <style>
     .section-privacy {
         width: 100%;
@@ -161,10 +175,11 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .section-title {
-        font-size: clamp(2rem, 5vw, 3.8rem);
-        letter-spacing: -0.03em;
+        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+        letter-spacing: -0.035em;
         line-height: 1.1;
         text-align: left;
+        color: var(--text-main);
     }
 
     .body-text {
@@ -175,54 +190,67 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         margin-top: var(--space-xs);
     }
 
-    /* --- RESPONSIVE GRID / CAROUSEL --- */
-    .carousel-wrapper {
-        position: relative;
+    /* --- SEQUENTIAL FADE CONTEXT DISPLAY --- */
+    .stack-stage-container {
         width: 100%;
-        margin-bottom: var(--space-md);
+        margin-bottom: var(--space-lg);
     }
 
-    .features-track {
+    .stage-frame {
+        position: relative;
+        width: 100%;
+        max-width: 480px;
+        height: 150px; /* Locked height preserves structural grid layouts for 2-3 line descriptions */
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: var(--space-md);
-        width: 100%;
+        grid-template-columns: 1fr;
     }
 
-    .privacy-card {
-        position: relative;
-        overflow: hidden;
-        padding: clamp(1.5rem, 4vw, 2.2rem);
-        border-radius: var(--radius-lg);
+    .animated-privacy-card {
+        grid-area: 1 / 1 / 2 / 2;
         background: var(--bg-sub);
+        padding: var(--space-md) var(--space-xl) var(--space-md) var(--space-md);
+        border-radius: var(--radius-lg);
         border: 1px solid var(--border);
-        transition:
-            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-            border-color 0.4s ease,
-            box-shadow 0.4s ease;
-        text-align: left;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        min-height: 180px;
         justify-content: center;
+        align-items: flex-start;
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        
+        /* High-fidelity Cinematic Fade transition system */
+        opacity: 0;
+        transform: scale(0.97) translateY(4px);
+        filter: blur(4px);
+        pointer-events: none;
+        transition:
+            opacity 0.6s ease-in-out,
+            transform 0.6s ease-in-out,
+            filter 0.5s ease-in-out,
+            border-color 0.3s ease;
     }
 
-    .privacy-card::before {
+    /* Distinct top-edge security highlight line for privacy cards */
+    .animated-privacy-card::before {
         content: "";
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        height: 3px;
+        height: 4px;
         background: var(--card-accent);
-        opacity: 0.6;
+        opacity: 0.8;
         z-index: 3;
     }
 
-    .privacy-card:hover {
-        transform: translateY(-4px);
-        border-color: color-mix(in srgb, var(--card-accent) 30%, var(--border));
+    .animated-privacy-card.active {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+        pointer-events: auto;
+        border-color: color-mix(in srgb, var(--card-accent) 40%, var(--border));
         box-shadow: var(--shadow);
     }
 
@@ -232,10 +260,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         bottom: -20px;
         right: -20px;
         color: var(--card-accent);
-        opacity: 0.05; /* Balanced ambient backdrop visibility */
+        opacity: 0.05;
         pointer-events: none;
         z-index: 1;
-        transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .watermark-svg {
@@ -243,7 +271,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         height: 140px;
     }
 
-    .privacy-card:hover .card-watermark {
+    .animated-privacy-card.active .card-watermark {
         opacity: 0.09;
         transform: scale(1.05) rotate(-3deg);
     }
@@ -256,10 +284,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .card-title {
         font-size: 1.25rem;
-        font-weight: 700;
+        font-weight: 750;
         margin: 0 0 var(--space-xs) 0;
         color: var(--text-main);
-        letter-spacing: -0.01em;
+        letter-spacing: -0.015em;
         line-height: 1.35;
     }
 
@@ -275,6 +303,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     .cta-wrapper {
         display: flex;
         justify-content: flex-start;
+    }
+
+    .hidden-mobile {
+        display: inline;
     }
 
     /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
@@ -296,12 +328,14 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         .body-text {
             display: none;
         }
-        .carousel-wrapper {
+        .stack-stage-container {
             margin-bottom: var(--space-sm);
         }
-        .privacy-card {
+        .stage-frame {
+            height: 130px;
+        }
+        .animated-privacy-card {
             padding: var(--space-md);
-            min-height: 140px;
         }
         .watermark-svg {
             width: 110px;
@@ -309,25 +343,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         }
     }
 
-    @media (max-width: 992px) {
-        .features-track {
-            display: flex;
-            overflow-x: auto;
-            scroll-snap-type: x mandatory;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-            padding: 4px 0 var(--space-sm) 0;
-            gap: var(--space-sm);
-        }
-
-        .features-track::-webkit-scrollbar {
+    @media (max-width: 768px) {
+        .hidden-mobile {
             display: none;
         }
-
-        .privacy-card {
-            scroll-snap-align: start;
-            flex: 0 0 280px;
-            min-height: 160px;
+        .stage-frame {
+            max-width: 100%;
         }
     }
 </style>

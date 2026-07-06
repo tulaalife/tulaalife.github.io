@@ -78,11 +78,11 @@ const authorImg = "/images/latika.png";
         display: flex;
         flex-direction: row;
         justify-content: space-between;
-        align-items: center; /* Balanced centering for a flat layout */
-        background: transparent; /* Stripped background */
-        border: none; /* Stripped border */
+        align-items: center;
+        background: transparent;
+        border: none;
         border-radius: 0;
-        box-shadow: none; /* Stripped container shadow */
+        box-shadow: none;
     }
 
     .author-content {
@@ -92,7 +92,6 @@ const authorImg = "/images/latika.png";
         flex: 1;
         z-index: 2;
         text-align: left;
-        /* Removed defensive card inner-paddings; replaced with side margins where needed */
         padding: 0;
         padding-right: var(--space-xl);
     }
@@ -102,11 +101,11 @@ const authorImg = "/images/latika.png";
     }
 
     .author-label {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         color: var(--primary);
         font-weight: 700;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.1em;
         display: block;
         margin-bottom: var(--space-xs);
     }
@@ -114,36 +113,43 @@ const authorImg = "/images/latika.png";
     .author-name {
         font-size: clamp(2.2rem, 5vw, 3.5rem);
         color: var(--text-main);
-        margin: 0 0 var(--space-xs) 0;
+        margin: 0 0 6px 0;
         font-weight: var(--fw-bold);
-        letter-spacing: -0.03em;
-        line-height: 1.15;
+        letter-spacing: -0.035em;
+        line-height: 1.1;
     }
 
     .author-trust {
-        font-size: clamp(1.05rem, 2vw, 1.2rem);
+        font-size: clamp(0.95rem, 1.8vw, 1.1rem);
         font-weight: 600;
         letter-spacing: -0.01em;
-        white-space: normal;
+        color: var(--text-muted);
         display: inline-block;
+        margin-top: 2px;
     }
 
+    /* Polished Line Item Layout for Credentials */
     .creds-list {
         display: flex;
         flex-direction: column;
-        gap: var(--space-sm);
+        gap: 14px;
+        margin-top: var(--space-xs);
+        max-width: 480px;
     }
 
     .cred-item {
         font-size: 1.05rem;
-        color: var(--text-muted);
+        color: var(--text-main);
         font-weight: 500;
         line-height: 1.4;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
 
     .author-image-pane {
         width: 45%;
-        max-width: 420px;
+        max-width: 400px;
         position: relative;
         display: flex;
         align-items: flex-end;
@@ -152,15 +158,15 @@ const authorImg = "/images/latika.png";
         flex-shrink: 0;
     }
 
+    /* Soft organic directional drop-shadow optimized for light/dark viewports */
     .author-img {
         width: 100%;
         height: auto;
-        max-height: 480px; /* Safe ceiling to avoid layout clipping on tiny displays */
+        max-height: 480px;
         object-fit: contain;
         display: block;
-        /* Drop shadow sits organically directly on the transparent asset portrait silhouette */
         filter: drop-shadow(
-            0 12px 32px color-mix(in srgb, var(--text-main) 12%, transparent)
+            0 16px 24px color-mix(in srgb, var(--text-main) 8%, transparent)
         );
     }
 
@@ -208,15 +214,15 @@ const authorImg = "/images/latika.png";
 
         .author-content {
             padding-right: 0;
-            margin-bottom: var(--space-lg);
+            margin-bottom: var(--space-md);
         }
 
         .author-name {
-            font-size: 2.2rem;
+            font-size: 2rem;
         }
 
         .author-trust {
-            font-size: 1.05rem;
+            font-size: 0.95rem;
         }
 
         .author-image-pane {

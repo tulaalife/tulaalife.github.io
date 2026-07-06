@@ -51,7 +51,7 @@ const ui = {
     hi: {
         titleTop: "5 अलग ऐप्स की जगह",
         titleBottom: "अब सिर्फ एक।",
-        body: "अपने डिजिटल वेलनेस को सरल बनाएं। Tulaa आपके ज़रूरी स्वास्थ्य टूल्स को एक सुरक्षित, ऑफलाइन-फर्स्ट ऐप में लाता है। <strong>कोई डेटा माइनिंग नहीं। कोई सब्सक्रिप्शन नहीं।</strong>",
+        body: "अपने डिजिटल वेलनेस को सरल बनाएं। Tulaa आपके ज़रूरी स्वास्थ्य टूल्स को एक सुरक्षित, ऑफ़लाइन-फर्स्ट ऐप में लाता है। <strong>कोई डेटा माइनिंग नहीं। कोई सब्सक्रिप्शन नहीं।</strong>",
         tools: [
             {
                 title: "पीरियड ट्रैकर",
@@ -98,7 +98,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <section class="scroll-section section-tools">
     <div class="content-wrapper">
-        <!-- 1. Pure Header Container Grid Alignment Module -->
+        <!-- 1. Header Container -->
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
                 <h2 class="section-title">
@@ -110,55 +110,133 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             </div>
         </div>
 
-        <!-- 2. Full Width Horizontal Carousel Container Track -->
-        <div class="container carousel-wrapper animate-on-scroll delay-1">
-            <div class="carousel-track">
+        <!-- 2. Single Feature Animation Display Frame -->
+        <div class="container stack-stage-container animate-on-scroll delay-1">
+            <div class="stage-frame" id="animation-stage-frame">
                 {
-                    t.tools.map((tool) => (
+                    t.tools.map((tool, index) => (
                         <div
-                            class="tool-card"
+                            class={`animated-tool-card ${index === 0 ? "active" : ""}`}
                             style={`--card-accent: ${tool.color}`}
                         >
-                            <!-- Background Premium Watermark System -->
                             <div class="card-watermark">
                                 {tool.type === "cycle" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <circle cx="128" cy="104" r="48" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M128,152v64" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M96,184h64" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 256 256"
+                                        class="watermark-svg"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="14"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <circle cx="128" cy="96" r="56" />
+                                        <line
+                                            x1="128"
+                                            y1="152"
+                                            x2="128"
+                                            y2="224"
+                                        />
+                                        <line
+                                            x1="96"
+                                            y1="192"
+                                            x2="160"
+                                            y2="192"
+                                        />
                                     </svg>
                                 )}
                                 {tool.type === "habit" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <polygon points="120 104 80 104 144 24 136 112 176 112 112 232 120 104" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 256 256"
+                                        class="watermark-svg"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="14"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <polygon points="136 16 48 136 128 136 120 240 208 120 128 120 136 16" />
                                     </svg>
                                 )}
                                 {tool.type === "water" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <path d="M208,144A80,80,0,0,1,48,144C48,102,128,32,128,32S208,102,208,144Z" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 256 256"
+                                        class="watermark-svg"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="14"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M128,24 C128,24,216,108,216,164 a88,88,0,0,1-176,0 C40,108,128,24,128,24Z" />
                                     </svg>
                                 )}
                                 {tool.type === "fast" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <circle cx="128" cy="128" r="88" fill="none" stroke="currentColor" stroke-width="12" stroke-miterlimit="10"/>
-                                        <polyline points="128 72 128 128 176 128" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 256 256"
+                                        class="watermark-svg"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="14"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <circle cx="128" cy="128" r="88" />
+                                        <polyline points="128 72 128 128 168 152" />
                                     </svg>
                                 )}
                                 {tool.type === "tips" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <path d="M112,216h32" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
-                                        <path d="M56,112a72,72,0,1,1,120.4,53.2c-10.4,9.2-16.4,21.6-16.4,34.8v4H96v-4c0-13.2-6-25.6-16.4-34.8A71.6,71.6,0,0,1,56,112Z" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 256 256"
+                                        class="watermark-svg"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="14"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M104,224h48M80,112a48,48,0,0,1,96,0c0,26-16,40-24,48v24H104V160C92,152,80,138,80,112Z" />
                                     </svg>
                                 )}
                                 {tool.type === "blog" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
-                                        <path d="M48,208V56A16,16,0,0,1,64,40H208V192H64A16,16,0,0,0,48,208Z" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
-                                        <path d="M48,208H208" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 256 256"
+                                        class="watermark-svg"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="14"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M48,216V40A16,16,0,0,1,64,24H208V200H64A16,16,0,0,0,48,216Z" />
+                                        <line
+                                            x1="48"
+                                            y1="216"
+                                            x2="208"
+                                            y2="216"
+                                        />
+                                        <line
+                                            x1="96"
+                                            y1="72"
+                                            x2="160"
+                                            y2="72"
+                                        />
+                                        <line
+                                            x1="96"
+                                            y1="120"
+                                            x2="160"
+                                            y2="120"
+                                        />
                                     </svg>
                                 )}
                             </div>
 
-                            <!-- Floating Content Module Layer -->
                             <div class="tool-info">
                                 <h3 class="card-title">{tool.title}</h3>
                                 <p class="card-desc">{tool.desc}</p>
@@ -169,7 +247,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             </div>
         </div>
 
-        <!-- 3. Aligned Secondary Bottom Button -->
+        <!-- 3. Bottom Button Line -->
         <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/blog"
@@ -179,6 +257,24 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         </div>
     </div>
 </section>
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const stage = document.getElementById("animation-stage-frame");
+        if (!stage) return;
+
+        const cards = stage.querySelectorAll(".animated-tool-card");
+        if (cards.length === 0) return;
+
+        let activeIndex = 0;
+
+        setInterval(() => {
+            cards[activeIndex].classList.remove("active");
+            activeIndex = (activeIndex + 1) % cards.length;
+            cards[activeIndex].classList.add("active");
+        }, 4000); // Transitions smoothly every 4 seconds
+    });
+</script>
 
 <style>
     .section-tools {
@@ -203,10 +299,11 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .section-title {
-        font-size: clamp(2rem, 5vw, 3.8rem);
-        letter-spacing: -0.03em;
+        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+        letter-spacing: -0.035em;
         line-height: 1.1;
         text-align: left;
+        color: var(--text-main);
     }
 
     .body-text {
@@ -218,88 +315,82 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         margin-top: var(--space-xs);
     }
 
-    /* --- HORIZONTAL CAROUSEL --- */
-    .carousel-wrapper {
+    .body-text :global(strong) {
+        color: var(--text-main);
+        font-weight: 700;
+    }
+
+    /* --- SEQUENTIAL FADE CONTEXT DISPLAY --- */
+    .stack-stage-container {
+        width: 100%;
+        margin-bottom: var(--space-lg);
+    }
+
+    .stage-frame {
         position: relative;
         width: 100%;
-        margin-bottom: var(--space-md);
+        max-width: 480px;
+        height: 110px; /* Locked height preserves structural grid layouts */
+        display: grid;
+        grid-template-columns: 1fr;
     }
 
-    .carousel-wrapper::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 60px;
-        height: 100%;
-        background: linear-gradient(
-            to left,
-            var(--bg-main) 0%,
-            transparent 100%
-        );
-        pointer-events: none;
-        z-index: 5;
-    }
-
-    .carousel-track {
-        display: flex;
-        gap: var(--space-md);
-        overflow-x: auto;
-        width: 100%;
-        padding: 4px 0 var(--space-sm) 0;
-        scroll-snap-type: x mandatory;
-        scrollbar-width: none;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    .carousel-track::-webkit-scrollbar {
-        display: none;
-    }
-
-    .tool-card {
-        scroll-snap-align: start;
-        flex: 0 0 260px;
+    .animated-tool-card {
+        grid-area: 1 / 1 / 2 / 2;
         background: var(--bg-sub);
-        padding: var(--space-md) var(--space-lg) var(--space-md) var(--space-md);
+        padding: var(--space-md) var(--space-xl) var(--space-md) var(--space-md);
         border-radius: var(--radius-lg);
         border: 1px solid var(--border);
         display: flex;
         align-items: center;
         position: relative;
         overflow: hidden;
-        min-height: 96px;
+        width: 100%;
+        height: 100%;
+
+        /* High-fidelity Cinematic Fade transition system */
+        opacity: 0;
+        transform: scale(0.97) translateY(4px);
+        filter: blur(4px);
+        pointer-events: none;
         transition:
-            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-            border-color 0.4s ease,
-            box-shadow 0.4s ease;
+            opacity 0.6s ease-in-out,
+            transform 0.6s ease-in-out,
+            filter 0.5s ease-in-out,
+            border-color 0.3s ease;
     }
 
-    .tool-card:hover {
-        transform: translateY(-4px);
-        border-color: color-mix(in srgb, var(--card-accent) 30%, var(--border));
+    .animated-tool-card.active {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        filter: blur(0);
+        pointer-events: auto;
+        border-color: color-mix(in srgb, var(--card-accent) 40%, var(--border));
         box-shadow: var(--shadow);
     }
 
-    /* --- BACKGROUND WATERMARK STRATEGY --- */
+    /* --- RE-ARCHITECTED WATERMARK MARKUP --- */
     .card-watermark {
         position: absolute;
-        bottom: -15px;
-        right: -15px;
+        bottom: -10px;
+        right: -10px;
         color: var(--card-accent);
-        opacity: 0.04; /* Delicate background footprint */
+        opacity: 0.05;
         pointer-events: none;
         z-index: 1;
-        transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition:
+            opacity 0.4s ease,
+            transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .watermark-svg {
-        width: 84px;
-        height: 84px;
+        width: 96px;
+        height: 96px;
     }
 
-    .tool-card:hover .card-watermark {
+    .animated-tool-card.active .card-watermark {
         opacity: 0.08;
-        transform: scale(1.06) rotate(-4deg);
+        transform: scale(1.04) rotate(-2deg);
     }
 
     .tool-info {
@@ -307,25 +398,25 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         flex-direction: column;
         justify-content: center;
         position: relative;
-        z-index: 2; /* Forces content stacking above background vectors */
+        z-index: 2;
         width: 100%;
     }
 
     .card-title {
-        font-size: 1.1rem;
-        font-weight: 700;
+        font-size: 1.25rem;
+        font-weight: 750;
         margin: 0 0 4px 0;
         color: var(--text-main);
-        letter-spacing: -0.01em;
-        line-height: 1.35;
+        letter-spacing: -0.015em;
+        line-height: 1.3;
     }
 
     .card-desc {
-        font-size: 0.88rem;
+        font-size: 0.95rem;
         color: var(--text-muted);
         margin: 0;
         line-height: 1.4;
-        max-width: 92%;
+        max-width: 90%;
     }
 
     .cta-wrapper {
@@ -337,19 +428,18 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: none;
     }
 
-    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
+    /* --- DEVANAGARI ALIGNMENT OPTIMIZATIONS --- */
     :lang(hi) .section-title {
         line-height: 1.35;
     }
     :lang(hi) .card-title {
         line-height: 1.45;
-        padding-bottom: 1px;
     }
     :lang(hi) .card-desc {
         line-height: 1.5;
     }
 
-    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    /* --- RESPONSIVE CONTROLS --- */
     @media (max-height: 740px) {
         .text-col {
             margin-bottom: var(--space-sm);
@@ -357,26 +447,20 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         .body-text {
             display: none;
         }
-        .carousel-wrapper {
+        .stack-stage-container {
             margin-bottom: var(--space-sm);
         }
-        .tool-card {
-            padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-sm);
-            flex: 0 0 230px;
-            min-height: 80px;
-        }
-        .watermark-svg {
-            width: 72px;
-            height: 72px;
+        .stage-frame {
+            height: 96px;
         }
     }
 
     @media (max-width: 768px) {
-        .tool-card {
-            flex: 0 0 240px;
-        }
         .mobile-only {
             display: block;
+        }
+        .stage-frame {
+            max-width: 100%;
         }
     }
 </style>

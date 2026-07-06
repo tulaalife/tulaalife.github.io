@@ -125,9 +125,10 @@ const displayAudios = guidedAudios
     }
 
     .section-title {
-        font-size: clamp(2rem, 5vw, 3.8rem);
-        letter-spacing: -0.03em;
+        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+        letter-spacing: -0.035em;
         line-height: 1.1;
+        color: var(--text-main);
     }
 
     .body-text {
@@ -146,12 +147,13 @@ const displayAudios = guidedAudios
         margin-bottom: var(--space-md);
     }
 
+    /* Polished, zero-obtrusive right edge gradient mask seen in Screenshot 2026-07-06 at 10.04.48 AM.jpg */
     .carousel-wrapper::after {
         content: "";
         position: absolute;
         top: 0;
         right: 0;
-        width: 60px;
+        width: 48px;
         height: 100%;
         background: linear-gradient(
             to left,
@@ -167,7 +169,7 @@ const displayAudios = guidedAudios
         gap: var(--space-md);
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        padding: 4px 0 var(--space-sm) 0;
+        padding: 6px 0 var(--space-sm) 0;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
         position: relative;
@@ -180,7 +182,7 @@ const displayAudios = guidedAudios
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 280px;
+        flex: 0 0 290px;
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -189,6 +191,11 @@ const displayAudios = guidedAudios
         overflow: hidden;
         text-decoration: none;
         color: inherit;
+
+        /* Enforces matching static heights across all states */
+        height: 100%;
+        min-height: 295px;
+
         transition:
             transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
             box-shadow 0.4s ease,
@@ -219,6 +226,7 @@ const displayAudios = guidedAudios
         transform: scale(1.02);
     }
 
+    /* High-fidelity Glassmorphic Play button */
     .play-overlay {
         position: absolute;
         top: 50%;
@@ -226,7 +234,7 @@ const displayAudios = guidedAudios
         transform: translate(-50%, -50%);
         width: 44px;
         height: 44px;
-        background: color-mix(in srgb, var(--bg-main) 75%, transparent);
+        background: color-mix(in srgb, var(--bg-main) 80%, transparent);
         backdrop-filter: blur(8px);
         -webkit-backdrop-filter: blur(8px);
         border-radius: 50%;
@@ -235,7 +243,7 @@ const displayAudios = guidedAudios
         justify-content: center;
         transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid var(--border);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        box-shadow: var(--shadow); /* Premium shadow rendering */
     }
 
     .play-icon {
@@ -260,32 +268,54 @@ const displayAudios = guidedAudios
         padding: var(--space-md);
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        gap: var(--space-md);
         flex-grow: 1;
+        justify-content: space-between;
     }
 
+    /* Rigid structural multi-line title clamp ceiling */
     .card-title {
-        font-size: 1.15rem;
-        font-weight: 700;
-        margin: 0 0 var(--space-sm) 0;
+        font-size: 1.2rem;
+        font-weight: 750;
+        margin: 0;
         color: var(--text-main);
-        letter-spacing: -0.01em;
+        letter-spacing: -0.015em;
         line-height: 1.35;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: calc(1.35em * 2);
     }
 
     .card-footer {
         display: flex;
         align-items: center;
-        gap: var(--space-xs);
+        gap: 6px;
         font-weight: 600;
         color: var(--primary);
-        font-size: 0.85rem;
-        letter-spacing: 0.02em;
+        font-size: 0.9rem;
+        letter-spacing: 0.01em;
+        margin-top: auto;
+    }
+
+    .icon {
+        display: inline-flex;
+        align-items: center;
+        transform: translateY(-1px);
+        transition: transform 0.2s ease;
+    }
+
+    .carousel-card:hover .icon {
+        transform: translateX(2px) translateY(-1px);
     }
 
     .cta-wrapper {
         display: flex;
         justify-content: flex-start;
+        margin-top: var(--space-xs);
     }
 
     /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
@@ -294,6 +324,7 @@ const displayAudios = guidedAudios
     }
     :lang(hi) .card-title {
         line-height: 1.45;
+        min-height: calc(1.45em * 2);
     }
 
     /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
@@ -305,7 +336,7 @@ const displayAudios = guidedAudios
             display: none;
         }
         .carousel-card {
-            flex: 0 0 240px;
+            flex: 0 0 250px;
         }
         .card-content {
             padding: var(--space-sm);
@@ -314,7 +345,7 @@ const displayAudios = guidedAudios
 
     @media (max-width: 768px) {
         .carousel-card {
-            flex: 0 0 270px;
+            flex: 0 0 290px; /* Keep uniform structure on mobile viewports */
         }
     }
 </style>
