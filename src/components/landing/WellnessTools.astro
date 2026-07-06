@@ -103,7 +103,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             <div class="section-header-left text-col animate-on-scroll">
                 <h2 class="section-title">
                     {t.titleTop}
-                    <br class="mobile-only" />
+                    <br />
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
                 <p class="body-text" set:html={t.body} />
