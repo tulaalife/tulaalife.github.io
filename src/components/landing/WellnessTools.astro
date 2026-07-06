@@ -1,4 +1,5 @@
 ---
+// src/components/landing/WellnessTools.astro
 import SectionCTA from "../SectionCTA.astro";
 
 const currentLang = Astro.currentLocale || "en";
@@ -61,7 +62,7 @@ const ui = {
             {
                 title: "आदत रिदम",
                 desc: "स्वस्थ आदतों की निरंतरता।",
-                icon: "⚡️",
+                icon: "⚡ें",
                 color: "oklch(88% 0.05 90)",
             },
             {
@@ -147,6 +148,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         width: 100%;
         display: flex;
         align-items: center;
+        padding-top: var(--section-v-padding);
+        padding-bottom: var(--section-v-padding);
     }
 
     .content-wrapper {
@@ -157,32 +160,32 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .text-col {
-        margin-bottom: 3.5rem;
+        margin-bottom: var(--space-md);
         text-align: left;
         width: 100%;
     }
 
     .section-title {
-        font-size: clamp(3rem, 5vw, 4.2rem);
+        font-size: clamp(2rem, 5vw, 3.8rem);
         letter-spacing: -0.03em;
         line-height: 1.1;
         text-align: left;
-        margin-bottom: 1.5rem;
     }
 
     .body-text {
-        font-size: 1.25rem;
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
         max-width: 600px;
         text-align: left;
-        line-height: 1.7;
+        line-height: 1.6;
+        margin-top: var(--space-xs);
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 3.5rem;
+        margin-bottom: var(--space-md);
     }
 
     .carousel-wrapper::after {
@@ -190,7 +193,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         position: absolute;
         top: 0;
         right: 0;
-        width: 100px;
+        width: 60px;
         height: 100%;
         background: linear-gradient(
             to left,
@@ -203,10 +206,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .carousel-track {
         display: flex;
-        gap: 24px;
+        gap: var(--space-md);
         overflow-x: auto;
         width: 100%;
-        padding-bottom: 20px;
+        padding: 4px 0 var(--space-sm) 0;
         scroll-snap-type: x mandatory;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
@@ -218,23 +221,22 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .tool-card {
         scroll-snap-align: start;
-        flex: 0 0 290px;
+        flex: 0 0 270px;
         background: var(--bg-sub);
-        padding: 28px;
+        padding: var(--space-md);
         border-radius: var(--radius-lg);
         border: 1px solid var(--border);
         display: flex;
-        align-items: flex-start;
-        gap: 20px;
+        align-items: center; /* Vertically centered row content looks cleaner when flat */
+        gap: var(--space-md);
         transition:
             transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
             border-color 0.4s ease,
             box-shadow 0.4s ease;
-        height: 100%;
     }
 
     .tool-card:hover {
-        transform: translateY(-6px);
+        transform: translateY(-4px);
         border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
         box-shadow: var(--shadow);
     }
@@ -243,13 +245,13 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        background: color-mix(in srgb, var(--card-accent) 25%, var(--bg-main));
+        width: 44px;
+        height: 44px;
+        border-radius: 12px;
+        background: color-mix(in srgb, var(--card-accent) 15%, var(--bg-main));
         border: 1px solid
-            color-mix(in srgb, var(--card-accent) 35%, var(--border));
-        font-size: 1.35rem;
+            color-mix(in srgb, var(--card-accent) 25%, var(--border));
+        font-size: 1.25rem;
         flex-shrink: 0;
     }
 
@@ -260,18 +262,19 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .card-title {
-        font-size: 1.15rem;
+        font-size: 1.1rem;
         font-weight: 700;
-        margin: 0 0 6px 0;
+        margin: 0 0 4px 0;
         color: var(--text-main);
         letter-spacing: -0.01em;
+        line-height: 1.35;
     }
 
     .card-desc {
-        font-size: 0.95rem;
+        font-size: 0.88rem;
         color: var(--text-muted);
         margin: 0;
-        line-height: 1.5;
+        line-height: 1.4;
     }
 
     .cta-wrapper {
@@ -283,30 +286,41 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: none;
     }
 
-    @media (max-width: 768px) {
+    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
+    :lang(hi) .section-title {
+        line-height: 1.35;
+    }
+    :lang(hi) .card-title {
+        line-height: 1.45;
+    }
+    :lang(hi) .card-desc {
+        line-height: 1.5;
+    }
+
+    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    @media (max-height: 740px) {
         .text-col {
-            margin-bottom: 2.5rem;
+            margin-bottom: var(--space-sm);
         }
-
-        .section-title {
-            font-size: clamp(2.6rem, 8vw, 3.4rem);
+        .body-text {
+            display: none; /* Safely reclaim real estate on strict scroll-snap screens */
         }
-
         .carousel-wrapper {
-            margin-bottom: 2.5rem;
+            margin-bottom: var(--space-sm);
         }
-
         .tool-card {
-            flex: 0 0 265px;
-            padding: 24px;
+            padding: var(--space-sm);
+            flex: 0 0 240px;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .tool-card {
+            flex: 0 0 250px;
         }
 
         .mobile-only {
             display: block;
-        }
-
-        .carousel-wrapper::after {
-            width: 40px;
         }
     }
 </style>

@@ -12,11 +12,11 @@ const ui = {
             "Science-backed plans for <strong>Back Pain, PCOS, Thyroid, and 30+ health needs.</strong> Relieve pain, reduce stress, and heal naturally—while your data stays strictly on your device.",
         ctaLead: "Start your free journey today",
         socialProofs: [
-            "🌿 Science-backed yoga for 30+ health needs",
-            "🔒 100% Private: No accounts, no data mining",
-            "💤 Guided audio for deep sleep and anxiety",
-            "📊 Built-in trackers for cycles, moods, and fasting",
-            "✨ Completely free forever. No hidden paywalls.",
+            "Science-backed yoga for 30+ health needs",
+            "100% Private: No accounts, no data mining",
+            "Guided audio for deep sleep and anxiety",
+            "Built-in trackers for cycles, moods, and fasting",
+            "Completely free forever. No hidden paywalls.",
         ],
     },
     hi: {
@@ -27,11 +27,11 @@ const ui = {
             "<strong>कमर दर्द, PCOS, थायरॉइड</strong> और 30+ स्वास्थ्य समस्याओं के लिए वैज्ञानिक योग। प्राकृतिक रूप से स्वस्थ बनें—आपका डेटा आपके ही फोन में 100% सुरक्षित है।",
         ctaLead: "आज ही अपनी फ्री शुरुआत करें",
         socialProofs: [
-            "🌿 30+ बीमारियों के लिए वैज्ञानिक योग प्लान",
-            "🔒 100% सुरक्षित: कोई अकाउंट या डेटा ट्रैकिंग नहीं",
-            "💤 बेहतर नींद और तनाव-मुक्ति के लिए गाइडेड ऑडियो",
-            "📊 पीरियड, मूड और फास्टिंग के लिए वेलनेस ट्रैकर्स",
-            "✨ पूरी तरह फ्री। कोई छिपा हुआ शुल्क नहीं।",
+            "30+ बीमारियों के लिए वैज्ञानिक योग प्लान",
+            "100% सुरक्षित: कोई अकाउंट या डेटा ट्रैकिंग नहीं",
+            "बेहतर नींद और तनाव-मुक्ति के लिए गाइडेड ऑडियो",
+            "पीरियड, मूड और फास्टिंग के लिए वेलनेस ट्रैकर्स",
+            "पूरी तरह फ्री। कोई छिपा हुआ शुल्क नहीं।",
         ],
     },
 };
@@ -86,7 +86,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                 proofs[currentProof].classList.remove("active");
                 currentProof = (currentProof + 1) % proofs.length;
                 proofs[currentProof].classList.add("active");
-            }, 3000);
+            }, 8000);
         }
     });
 </script>
@@ -96,108 +96,134 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         width: 100%;
         display: flex;
         align-items: center;
+        padding-top: var(--section-v-padding);
+        padding-bottom: var(--section-v-padding);
     }
 
     .hero-content {
-        max-width: 720px; /* Slightly tighter for better reading line-length */
+        max-width: 720px;
         z-index: 2;
+        display: flex;
+        flex-direction: column;
     }
 
     /* Upgraded premium pill badge */
     .badge-pill {
         display: inline-flex;
-        padding: 8px 18px;
+        padding: 6px 16px;
         border-radius: 999px;
         background: color-mix(in srgb, var(--primary) 8%, transparent);
         color: var(--primary);
         font-weight: 600;
         font-size: 0.85rem;
         letter-spacing: 0.02em;
-        margin-bottom: 2.5rem;
+        margin-bottom: var(--space-lg);
         border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
         backdrop-filter: blur(8px);
+        align-self: flex-start;
     }
 
     .hero-title {
-        font-size: clamp(2.4rem, 5.5vw, 4.5rem);
-        margin-bottom: 1.5rem;
+        font-size: clamp(2.2rem, 5vw, 4.2rem);
+        margin-bottom: var(--space-md);
         letter-spacing: -0.03em;
-        line-height: 1.05;
+        line-height: 1.1;
     }
 
     .hero-sub {
-        font-size: 1.25rem;
-        line-height: 1.7;
+        font-size: clamp(1.1rem, 2vw, 1.25rem);
+        line-height: 1.65;
         color: var(--text-muted);
-        margin-bottom: 3.5rem; /* Increased whitespace */
-        max-width: 600px;
+        margin-bottom: var(--space-lg);
+        max-width: 620px;
     }
 
     .cta-wrapper {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 16px;
+        gap: var(--space-sm);
         width: 100%;
     }
 
     .cta-lead {
         font-weight: 700;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         color: var(--text-muted);
         text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin: 0 0 4px 0;
+        letter-spacing: 0.08em;
+        margin: 0;
     }
 
+    /* --- FIXED PROOF SLIDER CONTAINER --- */
     .proof-slider {
-        height: 24px;
+        /* Removed fixed heights & overflow hidden constraints entirely */
         position: relative;
-        overflow: hidden;
-        margin-top: 12px;
+        margin-top: var(--space-sm);
         width: 100%;
-        /* Subtle fade out at the bottom of the slider */
-        mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
-        -webkit-mask-image: linear-gradient(
-            to bottom,
-            black 60%,
-            transparent 100%
-        );
+        min-height: 2rem; /* Safe minimum, scales fluidly */
+        display: grid;
+        grid-template-columns: 1fr;
     }
 
     .social-proof-item {
-        position: absolute;
-        top: 0;
-        left: 0;
+        /* Place all items over each other naturally via grid stack */
+        grid-area: 1 / 1 / 2 / 2;
         text-align: left;
         font-size: 0.95rem;
-        font-weight: 500; /* Replaced italic with a clean medium weight */
+        font-weight: 500;
         color: var(--text-muted);
         opacity: 0;
-        transform: translateY(12px);
+        /* Replaced extreme vertical translations with a clean, cinematic fade-in-blur */
+        transform: scale(0.98);
+        filter: blur(4px);
+        pointer-events: none;
         transition:
-            opacity 0.6s ease,
-            transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity 0.5s ease-in-out,
+            transform 0.5s ease-in-out,
+            filter 0.5s ease-in-out;
+
+        /* Padding adjustments specifically tailored to secure Hindi matras */
+        padding: 4px 0;
+        line-height: 1.4;
     }
 
     .social-proof-item.active {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
+        filter: blur(0);
+        pointer-events: auto;
+    }
+
+    /* Keep native Hindi layout loose and beautiful */
+    :lang(hi) .social-proof-item {
+        line-height: 1.5;
+        font-size: 1rem;
+    }
+
+    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    @media (max-height: 740px) {
+        .badge-pill {
+            margin-bottom: var(--space-sm);
+            padding: 4px 12px;
+            font-size: 0.8rem;
+        }
+        .hero-title {
+            font-size: 2rem;
+            margin-bottom: var(--space-xs);
+        }
+        .hero-sub {
+            font-size: 1.05rem;
+            margin-bottom: var(--space-md);
+        }
+        .proof-slider {
+            margin-top: var(--space-xs);
+        }
     }
 
     @media (max-width: 768px) {
         .hero-section {
-            padding-top: 8vh; /* extra breathing room top for mobile */
-        }
-        .hero-title {
-            font-size: 2.5rem;
-            line-height: 1.1;
-        }
-        .hero-sub {
-            font-size: 1.15rem;
-        }
-        .badge-pill {
-            margin-bottom: 2rem;
+            padding-top: calc(var(--header-height) + var(--space-md));
         }
     }
 </style>

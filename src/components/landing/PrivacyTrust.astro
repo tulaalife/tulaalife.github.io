@@ -1,4 +1,5 @@
 ---
+// src/components/landing/PrivacyTrust.astro
 import SectionCTA from "../SectionCTA.astro";
 
 const currentLang = Astro.currentLocale || "en";
@@ -15,19 +16,19 @@ const ui = {
                 title: "Privacy First",
                 desc: "No account needed. Your data is stored locally. Export or delete it anytime.",
                 icon: "🔒",
-                color: "oklch(65% 0.13 250)", // Clean indigo/blue accent token
+                color: "oklch(65% 0.13 250)",
             },
             {
                 title: "Free & Offline",
                 desc: "No ads, no tracking, no subscriptions. Works perfectly without internet access.",
                 icon: "⚡",
-                color: "oklch(72% 0.15 140)", // Clean green accent token
+                color: "oklch(72% 0.15 140)",
             },
             {
                 title: "Make it Yours",
                 desc: "Choose from 30+ themes and fonts. Set your own daily wellbeing goals.",
                 icon: "🎨",
-                color: "oklch(68% 0.17 350)", // Clean pink/rose accent token
+                color: "oklch(68% 0.17 350)",
             },
         ],
     },
@@ -65,6 +66,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <section class="scroll-section section-privacy">
     <div style="width: 100%;">
+        <!-- 1. Left-Aligned Minimalist Header -->
         <div class="container">
             <div class="section-header-left header-content animate-on-scroll">
                 <h2 class="section-title">
@@ -72,7 +74,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                     <br />
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
-                <p class="body-text" style="margin-top: 1.5rem;">
+                <p class="body-text">
                     {t.descTop}
                     <br class="hidden-mobile" />
                     {t.descBottom}
@@ -80,6 +82,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             </div>
         </div>
 
+        <!-- 2. Optimized Responsive Features Grid Layout Track -->
         <div class="container carousel-wrapper animate-on-scroll delay-1">
             <div class="features-track">
                 {
@@ -101,6 +104,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             </div>
         </div>
 
+        <!-- 3. Unified Secondary CTA Interaction Hook -->
         <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/faq"
@@ -116,51 +120,53 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         width: 100%;
         display: flex;
         align-items: center;
+        padding-top: var(--section-v-padding);
+        padding-bottom: var(--section-v-padding);
     }
 
     .header-content {
         max-width: 720px;
-        margin-bottom: 3.5rem;
+        margin-bottom: var(--space-md);
         text-align: left;
         width: 100%;
     }
 
     .section-title {
-        font-size: clamp(3rem, 5vw, 4.2rem);
+        font-size: clamp(2rem, 5vw, 3.8rem);
         letter-spacing: -0.03em;
         line-height: 1.1;
         text-align: left;
     }
 
     .body-text {
-        font-size: 1.25rem;
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        line-height: 1.7;
+        line-height: 1.6;
         text-align: left;
+        margin-top: var(--space-xs);
     }
 
     /* --- RESPONSIVE GRID / CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 3.5rem;
+        margin-bottom: var(--space-md);
     }
 
     .features-track {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 28px;
+        gap: var(--space-md);
         width: 100%;
     }
 
     .privacy-card {
         position: relative;
         overflow: hidden;
-        padding: 36px;
+        padding: var(--space-md); /* Reduced from heavy static 36px */
         border-radius: var(--radius-lg);
         background: var(--bg-sub);
         border: 1px solid var(--border);
-        box-shadow: var(--shadow);
         transition:
             transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
             border-color 0.4s ease,
@@ -169,10 +175,9 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        height: 100%;
     }
 
-    /* Subtle hair-line indicator accent at the top of the card */
+    /* Elegant indicator line */
     .privacy-card::before {
         content: "";
         position: absolute;
@@ -181,12 +186,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         right: 0;
         height: 3px;
         background: var(--card-accent);
-        opacity: 0.7;
+        opacity: 0.6;
     }
 
     .privacy-card:hover {
-        transform: translateY(-6px);
-        border-color: color-mix(in srgb, var(--card-accent) 40%, var(--border));
+        transform: translateY(-4px);
+        border-color: color-mix(in srgb, var(--card-accent) 30%, var(--border));
         box-shadow: var(--shadow);
     }
 
@@ -194,14 +199,14 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: color-mix(in srgb, var(--card-accent) 10%, var(--bg-main));
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        background: color-mix(in srgb, var(--card-accent) 8%, var(--bg-main));
         border: 1px solid
-            color-mix(in srgb, var(--card-accent) 20%, var(--border));
-        margin-bottom: 20px;
-        font-size: 1.25rem;
+            color-mix(in srgb, var(--card-accent) 15%, var(--border));
+        margin-bottom: var(--space-sm);
+        font-size: 1.15rem;
     }
 
     .card-content {
@@ -209,17 +214,18 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .card-title {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
         font-weight: 700;
-        margin-bottom: 10px;
+        margin: 0 0 var(--space-xs) 0;
         color: var(--text-main);
         letter-spacing: -0.01em;
+        line-height: 1.35;
     }
 
     .card-desc {
         font-size: 0.95rem;
         color: var(--text-muted);
-        line-height: 1.6;
+        line-height: 1.5;
         margin: 0;
         font-weight: 400;
     }
@@ -229,6 +235,33 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         justify-content: flex-start;
     }
 
+    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
+    :lang(hi) .section-title {
+        line-height: 1.35;
+    }
+    :lang(hi) .card-title {
+        line-height: 1.45;
+    }
+    :lang(hi) .card-desc {
+        line-height: 1.6;
+    }
+
+    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    @media (max-height: 740px) {
+        .header-content {
+            margin-bottom: var(--space-sm);
+        }
+        .body-text {
+            display: none; /* Hide description snippet on shallow screens to keep layout within limits */
+        }
+        .carousel-wrapper {
+            margin-bottom: var(--space-sm);
+        }
+        .privacy-card {
+            padding: var(--space-sm);
+        }
+    }
+
     @media (max-width: 992px) {
         .features-track {
             display: flex;
@@ -236,8 +269,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             scroll-snap-type: x mandatory;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
-            padding-bottom: 16px;
-            gap: 20px;
+            padding: 4px 0 var(--space-sm) 0;
+            gap: var(--space-sm);
         }
 
         .features-track::-webkit-scrollbar {
@@ -246,20 +279,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
         .privacy-card {
             scroll-snap-align: start;
-            flex: 0 0 290px;
-            padding: 32px;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .header-content {
-            margin-bottom: 2.5rem;
-        }
-        .section-title {
-            font-size: clamp(2.6rem, 8vw, 3.4rem);
-        }
-        .carousel-wrapper {
-            margin-bottom: 2.5rem;
+            flex: 0 0 260px;
         }
     }
 </style>

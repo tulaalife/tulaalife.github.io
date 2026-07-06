@@ -30,9 +30,8 @@ const displayPlans = yogaPlans
             </div>
         </div>
 
-        <!-- 2. Filter Navigation Control Module -->
+        <!-- 2. Filter Navigation Control Module (Label Removed for Minimalist Look) -->
         <div class="container filter-container animate-on-scroll delay-1">
-            <span class="filter-label hidden-mobile">{t.filterLabel}</span>
             <div class="filter-scroll">
                 <button class="filter-btn active" data-filter="all"
                     >{t.filterAll}</button
@@ -72,7 +71,7 @@ const displayPlans = yogaPlans
                             </div>
                             <div class="card-content">
                                 <h3 class="card-title">{p.title}</h3>
-                                <p class="card-desc">{p.subtitle}</p>
+                                {/* Subtitle description paragraph removed entirely */}
                                 <div class="card-footer">
                                     <span class="view-link">{t.view}</span>
                                     <span class="icon">→</span>
@@ -145,6 +144,8 @@ const displayPlans = yogaPlans
         width: 100%;
         display: flex;
         align-items: center;
+        padding-top: var(--section-v-padding);
+        padding-bottom: var(--section-v-padding);
     }
 
     .content-wrapper {
@@ -155,48 +156,40 @@ const displayPlans = yogaPlans
     }
 
     .text-col {
-        margin-bottom: 3.5rem;
+        margin-bottom: var(
+            --space-md
+        ); /* Reduced from large for punchier pairing */
         text-align: left;
         width: 100%;
     }
 
     .section-title {
-        font-size: clamp(3rem, 5vw, 4.2rem);
+        font-size: clamp(2rem, 5vw, 3.8rem);
         letter-spacing: -0.03em;
         line-height: 1.1;
         text-align: left;
     }
 
     .body-text {
-        font-size: 1.25rem;
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
         max-width: 600px;
         text-align: left;
-        line-height: 1.7;
-        margin-top: 1.5rem;
+        line-height: 1.6;
+        margin-top: var(--space-xs);
     }
 
-    /* --- FILTER NAVIGATION --- */
+    /* --- FILTER NAVIGATION (CLEAN CHIPS) --- */
     .filter-container {
         display: flex;
         align-items: center;
-        gap: 20px;
-        margin-bottom: 2.5rem;
+        margin-bottom: var(--space-md);
         width: 100%;
-    }
-
-    .filter-label {
-        font-weight: 700;
-        color: var(--text-muted);
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.08em;
-        white-space: nowrap;
     }
 
     .filter-scroll {
         display: flex;
-        gap: 12px;
+        gap: var(--space-xs);
         overflow-x: auto;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
@@ -211,13 +204,13 @@ const displayPlans = yogaPlans
         background: var(--bg-sub);
         border: 1px solid var(--border);
         color: var(--text-muted);
-        padding: 8px 18px;
+        padding: 6px 16px;
         border-radius: 99px;
-        font-size: 0.9rem;
+        font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .filter-btn:hover {
@@ -229,14 +222,13 @@ const displayPlans = yogaPlans
         background: var(--primary);
         color: var(--bg-main);
         border-color: var(--primary);
-        box-shadow: none; /* Strip out heavy pixel shadows to sustain minimalism */
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: 3.5rem;
+        margin-bottom: var(--space-md);
     }
 
     .carousel-wrapper::after {
@@ -244,7 +236,7 @@ const displayPlans = yogaPlans
         position: absolute;
         top: 0;
         right: 0;
-        width: 100px;
+        width: 60px;
         height: 100%;
         background: linear-gradient(
             to left,
@@ -257,10 +249,10 @@ const displayPlans = yogaPlans
 
     .carousel-track {
         display: flex;
-        gap: 24px;
+        gap: var(--space-md);
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        padding-bottom: 20px;
+        padding: 4px 0 var(--space-sm) 0;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
     }
@@ -271,7 +263,7 @@ const displayPlans = yogaPlans
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 310px;
+        flex: 0 0 280px; /* Snappier card widths */
         display: flex;
         flex-direction: column;
         background: var(--bg-sub);
@@ -284,13 +276,12 @@ const displayPlans = yogaPlans
             transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
             box-shadow 0.4s ease,
             border-color 0.4s ease;
-        height: 100%;
     }
 
     .carousel-card:hover {
-        transform: translateY(-6px);
+        transform: translateY(-4px);
         box-shadow: var(--shadow);
-        border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+        border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
     }
 
     .card-image {
@@ -307,40 +298,29 @@ const displayPlans = yogaPlans
     }
 
     .card-content {
-        padding: 24px;
+        padding: var(--space-md);
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
         flex-grow: 1;
     }
 
     .card-title {
-        font-size: 1.25rem;
+        font-size: 1.15rem;
         font-weight: 700;
-        margin-bottom: 6px;
+        margin: 0 0 var(--space-sm) 0;
         color: var(--text-main);
         letter-spacing: -0.01em;
-    }
-
-    .card-desc {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        line-height: 1.5;
-        margin-bottom: 20px;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        flex-grow: 1;
+        line-height: 1.35;
     }
 
     .card-footer {
         display: flex;
         align-items: center;
-        gap: 6px;
+        gap: var(--space-xs);
         font-weight: 600;
         color: var(--primary);
-        font-size: 0.9rem;
-        margin-top: auto;
+        font-size: 0.85rem;
         letter-spacing: 0.02em;
     }
 
@@ -349,30 +329,31 @@ const displayPlans = yogaPlans
         justify-content: flex-start;
     }
 
-    @media (max-width: 768px) {
+    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
+    :lang(hi) .section-title {
+        line-height: 1.35;
+    }
+    :lang(hi) .filter-btn {
+        padding-top: 7px;
+        padding-bottom: 5px;
+    }
+    :lang(hi) .card-title {
+        line-height: 1.45;
+    }
+
+    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    @media (max-height: 740px) {
         .text-col {
-            margin-bottom: 2.5rem;
+            margin-bottom: var(--space-sm);
         }
-
-        .section-title {
-            font-size: clamp(2.6rem, 8vw, 3.4rem);
+        .body-text {
+            display: none; /* Hide helper descriptive lines to rescue critical UI items */
         }
-
-        .filter-container {
-            margin-bottom: 2rem;
-            gap: 12px;
-        }
-
         .carousel-card {
-            flex: 0 0 270px;
+            flex: 0 0 240px;
         }
-
-        .carousel-wrapper {
-            margin-bottom: 2.5rem;
-        }
-
-        .carousel-wrapper::after {
-            width: 40px;
+        .card-content {
+            padding: var(--space-sm);
         }
     }
 </style>
