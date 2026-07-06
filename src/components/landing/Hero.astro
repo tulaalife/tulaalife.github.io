@@ -5,37 +5,33 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "✨ 100% Free • No Ads • No Login",
-        titleTop: "Heal with Expert",
-        titleBottom: "Yoga Therapy.",
+        badge: "No Login • No Ads • 100% Free",
+        titleTop: "Unlock the power of",
+        titleBottom: "Therapeutic Yoga.",
         subtitle:
-            "Specialized yoga for 30+ health needs, including <strong>Back Pain, PCOS, Thyroid, and Sciatica.</strong> Your health data stays 100% private on your device.",
-        ctaLead: "Download the free app",
+            "Science-backed plans for <strong>Back Pain, PCOS, Thyroid, and 30+ health needs.</strong> Relieve pain, reduce stress, and heal naturally—while your data stays strictly on your device.",
+        ctaLead: "Start your free journey today",
         socialProofs: [
-            "Join 5,000+ users healing naturally",
-            "Rated 5 stars on Play Store & App Store",
-            "Yoga plans for 30+ health needs",
-            "100% Private: No account needed",
-            "Completely Free: No hidden costs",
-            "Mediate, track, and find balance",
-            "Sleep better and relax deeply",
+            "🌿 Science-backed yoga for 30+ health needs",
+            "🔒 100% Private: No accounts, no data mining",
+            "💤 Guided audio for deep sleep and anxiety",
+            "📊 Built-in trackers for cycles, moods, and fasting",
+            "✨ Completely free forever. No hidden paywalls.",
         ],
     },
     hi: {
-        badge: "✨ 100% फ्री • बिना विज्ञापन • बिना लॉगिन",
-        titleTop: "विशेषज्ञ योग थेरेपी",
-        titleBottom: "अब आपके हाथ में।",
+        badge: "कोई लॉगिन नहीं • कोई विज्ञापन नहीं • 100% फ्री",
+        titleTop: "योग की रोग-मुक्त करने वाली",
+        titleBottom: "शक्तियों को सीखें।",
         subtitle:
-            "30+ बीमारियों के लिए खास योग, जैसे <strong>कमर दर्द, PCOS, थायरॉइड और साइटिका।</strong> आपका हेल्थ डेटा आपके ही फोन में 100% सुरक्षित रहता है।",
-        ctaLead: "फ्री ऐप डाउनलोड करें",
+            "<strong>कमर दर्द, PCOS, थायरॉइड</strong> और 30+ स्वास्थ्य समस्याओं के लिए वैज्ञानिक योग। प्राकृतिक रूप से स्वस्थ बनें—आपका डेटा आपके ही फोन में 100% सुरक्षित है।",
+        ctaLead: "आज ही अपनी फ्री शुरुआत करें",
         socialProofs: [
-            "5,000+ लोगों का भरोसेमंद साथी",
-            "Play Store पर 5-स्टार रेटिंग",
-            "30+ बीमारियों के लिए खास योग प्लान",
-            "100% प्राइवेट: लॉगिन की ज़रूरत नहीं",
-            "पूरी तरह फ्री: कोई गुप्त शुल्क नहीं",
-            "ध्यान लगाएं और संतुलन पाएं",
-            "बेहतर नींद और गहरी शांति",
+            "🌿 30+ बीमारियों के लिए वैज्ञानिक योग प्लान",
+            "🔒 100% सुरक्षित: कोई अकाउंट या डेटा ट्रैकिंग नहीं",
+            "💤 बेहतर नींद और तनाव-मुक्ति के लिए गाइडेड ऑडियो",
+            "📊 पीरियड, मूड और फास्टिंग के लिए वेलनेस ट्रैकर्स",
+            "✨ पूरी तरह फ्री। कोई छिपा हुआ शुल्क नहीं।",
         ],
     },
 };
@@ -123,10 +119,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .hero-title {
-        font-size: clamp(3.2rem, 6vw, 5rem);
+        font-size: clamp(2.4rem, 5.5vw, 4.5rem);
         margin-bottom: 1.5rem;
         letter-spacing: -0.03em;
-        line-height: 1.1;
+        line-height: 1.05;
     }
 
     .hero-sub {
@@ -194,7 +190,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             padding-top: 8vh; /* extra breathing room top for mobile */
         }
         .hero-title {
-            font-size: clamp(2.8rem, 10vw, 3.8rem);
+            font-size: 2.5rem;
+            line-height: 1.1;
         }
         .hero-sub {
             font-size: 1.15rem;
