@@ -124,6 +124,13 @@ const { subline = t.subline } = Astro.props;
     }
 
     .button-container {
+        width: 100%;
+        /* 
+           Allocates exactly enough horizontal space to fit both 
+           store actions (max-width: 175px each) plus their gap inline
+        */
+        max-width: 370px;
+        margin: 0 auto;
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
