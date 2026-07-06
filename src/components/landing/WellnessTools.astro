@@ -13,38 +13,38 @@ const ui = {
             {
                 title: "Cycle Tracker",
                 desc: "Predict periods & symptoms.",
-                icon: "🌸",
-                color: "oklch(88% 0.03 350)",
+                type: "cycle",
+                color: "oklch(65% 0.18 350)",
             },
             {
                 title: "Habit Rhythm",
                 desc: "Build consistent healthy streaks.",
-                icon: "⚡️",
-                color: "oklch(88% 0.05 90)",
+                type: "habit",
+                color: "oklch(75% 0.15 90)",
             },
             {
                 title: "Hydration",
                 desc: "Monitor daily water intake.",
-                icon: "💧",
-                color: "oklch(85% 0.06 220)",
+                type: "water",
+                color: "oklch(62% 0.14 220)",
             },
             {
                 title: "Fast Tracker",
                 desc: "Track intermittent fasting.",
-                icon: "⏳",
-                color: "oklch(82% 0.05 280)",
+                type: "fast",
+                color: "oklch(60% 0.12 280)",
             },
             {
                 title: "Health Tips",
                 desc: "Research-backed daily guidance.",
-                icon: "💡",
-                color: "oklch(86% 0.06 40)",
+                type: "tips",
+                color: "oklch(78% 0.13 60)",
             },
             {
                 title: "Care Blog",
                 desc: "Learn expert care routines.",
-                icon: "📚",
-                color: "oklch(84% 0.05 150)",
+                type: "blog",
+                color: "oklch(64% 0.12 150)",
             },
         ],
     },
@@ -56,38 +56,38 @@ const ui = {
             {
                 title: "पीरियड ट्रैकर",
                 desc: "पीरियड्स और लक्षणों का अनुमान।",
-                icon: "🌸",
-                color: "oklch(88% 0.03 350)",
+                type: "cycle",
+                color: "oklch(65% 0.18 350)",
             },
             {
                 title: "आदत रिदम",
                 desc: "स्वस्थ आदतों की निरंतरता।",
-                icon: "⚡ें",
-                color: "oklch(88% 0.05 90)",
+                type: "habit",
+                color: "oklch(75% 0.15 90)",
             },
             {
                 title: "हाइड्रेशन",
                 desc: "पानी पीने पर नज़र रखें।",
-                icon: "💧",
-                color: "oklch(85% 0.06 220)",
+                type: "water",
+                color: "oklch(62% 0.14 220)",
             },
             {
                 title: "फास्टिंग",
                 desc: "उपवास का समय ट्रैक करें।",
-                icon: "⏳",
-                color: "oklch(82% 0.05 280)",
+                type: "fast",
+                color: "oklch(60% 0.12 280)",
             },
             {
                 title: "हेल्थ टिप्स",
                 desc: "रिसर्च आधारित सुझाव।",
-                icon: "💡",
-                color: "oklch(86% 0.06 40)",
+                type: "tips",
+                color: "oklch(78% 0.13 60)",
             },
             {
                 title: "थेरेपी ब्लॉग",
                 desc: "विशेषज्ञ देखभाल लेख।",
-                icon: "📚",
-                color: "oklch(84% 0.05 150)",
+                type: "blog",
+                color: "oklch(64% 0.12 150)",
             },
         ],
     },
@@ -119,9 +119,46 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                             class="tool-card"
                             style={`--card-accent: ${tool.color}`}
                         >
-                            <div class="tool-icon-wrapper">
-                                <span class="tool-icon">{tool.icon}</span>
+                            <!-- Background Premium Watermark System -->
+                            <div class="card-watermark">
+                                {tool.type === "cycle" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <circle cx="128" cy="104" r="48" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M128,152v64" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M96,184h64" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                )}
+                                {tool.type === "habit" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <polygon points="120 104 80 104 144 24 136 112 176 112 112 232 120 104" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                )}
+                                {tool.type === "water" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <path d="M208,144A80,80,0,0,1,48,144C48,102,128,32,128,32S208,102,208,144Z" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                )}
+                                {tool.type === "fast" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <circle cx="128" cy="128" r="88" fill="none" stroke="currentColor" stroke-width="12" stroke-miterlimit="10"/>
+                                        <polyline points="128 72 128 128 176 128" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                )}
+                                {tool.type === "tips" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <path d="M112,216h32" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round"/>
+                                        <path d="M56,112a72,72,0,1,1,120.4,53.2c-10.4,9.2-16.4,21.6-16.4,34.8v4H96v-4c0-13.2-6-25.6-16.4-34.8A71.6,71.6,0,0,1,56,112Z" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                )}
+                                {tool.type === "blog" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <path d="M48,208V56A16,16,0,0,1,64,40H208V192H64A16,16,0,0,0,48,208Z" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M48,208H208" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                )}
                             </div>
+
+                            <!-- Floating Content Module Layer -->
                             <div class="tool-info">
                                 <h3 class="card-title">{tool.title}</h3>
                                 <p class="card-desc">{tool.desc}</p>
@@ -221,14 +258,16 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .tool-card {
         scroll-snap-align: start;
-        flex: 0 0 270px;
+        flex: 0 0 260px;
         background: var(--bg-sub);
-        padding: var(--space-md);
+        padding: var(--space-md) var(--space-lg) var(--space-md) var(--space-md);
         border-radius: var(--radius-lg);
         border: 1px solid var(--border);
         display: flex;
-        align-items: center; /* Vertically centered row content looks cleaner when flat */
-        gap: var(--space-md);
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+        min-height: 96px;
         transition:
             transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
             border-color 0.4s ease,
@@ -237,28 +276,39 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .tool-card:hover {
         transform: translateY(-4px);
-        border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+        border-color: color-mix(in srgb, var(--card-accent) 30%, var(--border));
         box-shadow: var(--shadow);
     }
 
-    .tool-icon-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 44px;
-        height: 44px;
-        border-radius: 12px;
-        background: color-mix(in srgb, var(--card-accent) 15%, var(--bg-main));
-        border: 1px solid
-            color-mix(in srgb, var(--card-accent) 25%, var(--border));
-        font-size: 1.25rem;
-        flex-shrink: 0;
+    /* --- BACKGROUND WATERMARK STRATEGY --- */
+    .card-watermark {
+        position: absolute;
+        bottom: -15px;
+        right: -15px;
+        color: var(--card-accent);
+        opacity: 0.04; /* Delicate background footprint */
+        pointer-events: none;
+        z-index: 1;
+        transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .watermark-svg {
+        width: 84px;
+        height: 84px;
+    }
+
+    .tool-card:hover .card-watermark {
+        opacity: 0.08;
+        transform: scale(1.06) rotate(-4deg);
     }
 
     .tool-info {
         display: flex;
         flex-direction: column;
         justify-content: center;
+        position: relative;
+        z-index: 2; /* Forces content stacking above background vectors */
+        width: 100%;
     }
 
     .card-title {
@@ -275,6 +325,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         color: var(--text-muted);
         margin: 0;
         line-height: 1.4;
+        max-width: 92%;
     }
 
     .cta-wrapper {
@@ -292,6 +343,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
     :lang(hi) .card-title {
         line-height: 1.45;
+        padding-bottom: 1px;
     }
     :lang(hi) .card-desc {
         line-height: 1.5;
@@ -303,22 +355,26 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             margin-bottom: var(--space-sm);
         }
         .body-text {
-            display: none; /* Safely reclaim real estate on strict scroll-snap screens */
+            display: none;
         }
         .carousel-wrapper {
             margin-bottom: var(--space-sm);
         }
         .tool-card {
-            padding: var(--space-sm);
-            flex: 0 0 240px;
+            padding: var(--space-sm) var(--space-md) var(--space-sm) var(--space-sm);
+            flex: 0 0 230px;
+            min-height: 80px;
+        }
+        .watermark-svg {
+            width: 72px;
+            height: 72px;
         }
     }
 
     @media (max-width: 768px) {
         .tool-card {
-            flex: 0 0 250px;
+            flex: 0 0 240px;
         }
-
         .mobile-only {
             display: block;
         }

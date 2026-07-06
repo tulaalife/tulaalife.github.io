@@ -15,19 +15,19 @@ const ui = {
             {
                 title: "Privacy First",
                 desc: "No account needed. Your data is stored locally. Export or delete it anytime.",
-                icon: "🔒",
+                type: "privacy",
                 color: "oklch(65% 0.13 250)",
             },
             {
                 title: "Free & Offline",
                 desc: "No ads, no tracking, no subscriptions. Works perfectly without internet access.",
-                icon: "⚡",
+                type: "offline",
                 color: "oklch(72% 0.15 140)",
             },
             {
                 title: "Make it Yours",
                 desc: "Choose from 30+ themes and fonts. Set your own daily wellbeing goals.",
-                icon: "🎨",
+                type: "customize",
                 color: "oklch(68% 0.17 350)",
             },
         ],
@@ -42,19 +42,19 @@ const ui = {
             {
                 title: "प्राइवेसी सबसे पहले",
                 desc: "किसी अकाउंट की ज़रूरत नहीं। आपका डेटा आपके डिवाइस पर रहता है।",
-                icon: "🔒",
+                type: "privacy",
                 color: "oklch(65% 0.13 250)",
             },
             {
                 title: "फ्री और ऑफलाइन",
                 desc: "कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं। बिना इंटरनेट के भी बेहतरीन काम करता है।",
-                icon: "⚡",
+                type: "offline",
                 color: "oklch(72% 0.15 140)",
             },
             {
                 title: "इसे अपना बनाएं",
                 desc: "30+ थीम्स और फ़ॉन्ट्स में से चुनें। अपने दैनिक सेहत लक्ष्य खुद तय करें।",
-                icon: "🎨",
+                type: "customize",
                 color: "oklch(68% 0.17 350)",
             },
         ],
@@ -91,9 +91,38 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                             class="privacy-card"
                             style={`--card-accent: ${feature.color}`}
                         >
-                            <div class="card-icon-wrapper">
-                                <span class="card-icon">{feature.icon}</span>
+                            <!-- Background Watermark Container -->
+                            <div class="card-watermark">
+                                {feature.type === "privacy" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <rect width="256" height="256" fill="none"/>
+                                        <rect x="40" y="88" width="176" height="128" rx="24" opacity="0.15" fill="currentColor"/>
+                                        <rect x="40" y="88" width="176" height="128" rx="24" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <path d="M92,88V52a36,36,0,0,1,72,0V88" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="128" cy="152" r="10" fill="currentColor"/>
+                                    </svg>
+                                )}
+                                {feature.type === "offline" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <rect width="256" height="256" fill="none"/>
+                                        <polygon points="120 104 80 104 144 24 136 112 176 112 112 232 120 104" opacity="0.15" fill="currentColor"/>
+                                        <polygon points="120 104 80 104 144 24 136 112 176 112 112 232 120 104" fill="none" stroke="currentColor" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                )}
+                                {feature.type === "customize" && (
+                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg">
+                                        <rect width="256" height="256" fill="none"/>
+                                        <circle cx="128" cy="128" r="88" opacity="0.15" fill="currentColor"/>
+                                        <circle cx="128" cy="128" r="88" fill="none" stroke="currentColor" stroke-width="12" stroke-miterlimit="10"/>
+                                        <path d="M128,40a88,88,0,0,1,0,176Z" fill="currentColor" opacity="0.2"/>
+                                        <circle cx="96" cy="96" r="12" fill="currentColor"/>
+                                        <circle cx="96" cy="160" r="12" fill="currentColor"/>
+                                        <circle cx="160" cy="128" r="12" fill="currentColor"/>
+                                    </svg>
+                                )}
                             </div>
+
+                            <!-- Floating Content Layer -->
                             <div class="card-content">
                                 <h3 class="card-title">{feature.title}</h3>
                                 <p class="card-desc">{feature.desc}</p>
@@ -163,7 +192,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     .privacy-card {
         position: relative;
         overflow: hidden;
-        padding: var(--space-md); /* Reduced from heavy static 36px */
+        padding: clamp(1.5rem, 4vw, 2.2rem);
         border-radius: var(--radius-lg);
         background: var(--bg-sub);
         border: 1px solid var(--border);
@@ -175,9 +204,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
+        min-height: 180px;
+        justify-content: center;
     }
 
-    /* Elegant indicator line */
     .privacy-card::before {
         content: "";
         position: absolute;
@@ -187,6 +217,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         height: 3px;
         background: var(--card-accent);
         opacity: 0.6;
+        z-index: 3;
     }
 
     .privacy-card:hover {
@@ -195,26 +226,36 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         box-shadow: var(--shadow);
     }
 
-    .card-icon-wrapper {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        background: color-mix(in srgb, var(--card-accent) 8%, var(--bg-main));
-        border: 1px solid
-            color-mix(in srgb, var(--card-accent) 15%, var(--border));
-        margin-bottom: var(--space-sm);
-        font-size: 1.15rem;
+    /* --- PREMIUM WATERMARK POSITIONING SYSTEM --- */
+    .card-watermark {
+        position: absolute;
+        bottom: -20px;
+        right: -20px;
+        color: var(--card-accent);
+        opacity: 0.05; /* Balanced ambient backdrop visibility */
+        pointer-events: none;
+        z-index: 1;
+        transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .watermark-svg {
+        width: 140px;
+        height: 140px;
+    }
+
+    .privacy-card:hover .card-watermark {
+        opacity: 0.09;
+        transform: scale(1.05) rotate(-3deg);
     }
 
     .card-content {
         width: 100%;
+        position: relative;
+        z-index: 2; /* Ensures text remains crisp and highly legible over background watermarks */
     }
 
     .card-title {
-        font-size: 1.2rem;
+        font-size: 1.25rem;
         font-weight: 700;
         margin: 0 0 var(--space-xs) 0;
         color: var(--text-main);
@@ -228,6 +269,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         line-height: 1.5;
         margin: 0;
         font-weight: 400;
+        max-width: 90%;
     }
 
     .cta-wrapper {
@@ -252,13 +294,18 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             margin-bottom: var(--space-sm);
         }
         .body-text {
-            display: none; /* Hide description snippet on shallow screens to keep layout within limits */
+            display: none;
         }
         .carousel-wrapper {
             margin-bottom: var(--space-sm);
         }
         .privacy-card {
-            padding: var(--space-sm);
+            padding: var(--space-md);
+            min-height: 140px;
+        }
+        .watermark-svg {
+            width: 110px;
+            height: 110px;
         }
     }
 
@@ -279,7 +326,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
         .privacy-card {
             scroll-snap-align: start;
-            flex: 0 0 260px;
+            flex: 0 0 280px;
+            min-height: 160px;
         }
     }
 </style>
