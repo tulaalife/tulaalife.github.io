@@ -1,182 +1,351 @@
 ---
+// src/components/MindSection.astro
 import SectionCTA from "../SectionCTA.astro";
+import { guidedAudios } from "../../data/generated";
 
-// 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dictionary for Mind & Mood content
 const ui = {
     en: {
         titleTop: "Calm Your Mind.",
         titleBottom: "Understand Your Emotions.",
-        body: "From traditional chanting to anxiety relief. Log your moods to spot patterns and journal your thoughts in a private, safe space.",
-        baseImg: "mind-mood",
-        imgAlt: "Meditation and Journaling Interface",
+        body: "From traditional chanting to anxiety relief. Listen to guided audio and journal your thoughts in a private, safe space.",
         ctaEn: "Explore Audio Sessions",
         ctaHi: "ऑडियो सेशन देखें",
+        play: "Listen Now",
     },
     hi: {
         titleTop: "अपने मन को शांत करें।",
         titleBottom: "अपनी भावनाओं को समझें।",
-        body: "पारंपरिक मंत्रोच्चार से लेकर चिंता से राहत तक। पैटर्न पहचानने के लिए अपना मूड लॉग करें और एक सुरक्षित, निजी स्थान पर अपने विचार लिखें।",
-        baseImg: "mind-mood-hi",
-        imgAlt: "ध्यान और जर्नलिंग इंटरफ़ेस",
+        body: "पारंपरिक मंत्रोच्चार से लेकर चिंता से राहत तक। निर्देशित ऑडियो सुनें और एक सुरक्षित, निजी स्थान पर अपने विचार लिखें।",
         ctaEn: "Explore Audio Sessions",
         ctaHi: "ऑडियो सेशन देखें",
+        play: "अभी सुनें",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const isHindi = currentLang === "hi";
+const baseAudioHref = currentLang === "hi" ? "/hi/audio" : "/audio";
+
+const displayAudios = guidedAudios
+    .filter((a) => a.language === currentLang)
+    .slice(0, 8);
 ---
 
-<section class="section section-mind">
-    <div class="container center-text">
-        <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
-            {t.titleTop}
-            <br />
-            <span class="text-gradient">{t.titleBottom}</span>
-        </h2>
-        <p class="body-text max-w-md">
-            {t.body}
-        </p>
-    </div>
-
-    <div class="container wide-visual">
-        <div class="floating-visual-wrapper">
-            <picture>
-                <source
-                    srcset={`/images/mobile/${t.baseImg}.webp`}
-                    media="(max-width: 767px)"
-                />
-                <img
-                    src={`/images/desktop/${t.baseImg}.webp`}
-                    alt={t.imgAlt}
-                    class="feature-img"
-                    width="600"
-                    height="495"
-                    loading="eager"
-                    fetchpriority="high"
-                />
-            </picture>
-            <div class="glow-orb"></div>
+<section class="scroll-section section-mind">
+    <div class="content-wrapper">
+        <!-- 1. Pure Header Container Grid Alignment Module -->
+        <div class="container">
+            <div class="section-header-left text-col animate-on-scroll">
+                <h2 class="section-title">
+                    {t.titleTop}
+                    <br />
+                    <span class="text-gradient">{t.titleBottom}</span>
+                </h2>
+                <p class="body-text" set:html={t.body} />
+            </div>
         </div>
 
-        <div class="cta-wrapper">
-            <SectionCTA href="/audio" labelEn={t.ctaEn} labelHi={t.ctaHi} />
+        <!-- 2. Full Width Horizontal Carousel Container Track -->
+        <div class="container carousel-wrapper animate-on-scroll delay-1">
+            <div class="carousel-track" id="audio-plans-track">
+                {
+                    displayAudios.map((audio) => (
+                        <a
+                            href={`${baseAudioHref}/${audio.slug}`}
+                            class="carousel-card"
+                        >
+                            <div class="card-image">
+                                <img
+                                    src={audio.image}
+                                    alt={audio.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                                <div class="play-overlay">
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        viewBox="0 0 24 24"
+                                        fill="currentColor"
+                                        class="play-icon"
+                                    >
+                                        <path
+                                            fill-rule="evenodd"
+                                            d="M4.5 5.653c0-1.426 1.529-2.33 2.779-1.643l11.54 6.348c1.295.712 1.295 2.573 0 3.285L7.28 19.991c-1.25.687-2.779-.217-2.779-1.643V5.653z"
+                                            clip-rule="evenodd"
+                                        />
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">{audio.title}</h3>
+                                {/* Subtitle description removed for space optimization */}
+                                <div class="card-footer">
+                                    <span class="view-link">{t.play}</span>
+                                    <span class="icon">→</span>
+                                </div>
+                            </div>
+                        </a>
+                    ))
+                }
+            </div>
+        </div>
+
+        <!-- 3. Standardised Unified Left Button Alignment Module -->
+        <div class="container cta-wrapper animate-on-scroll delay-2">
+            <SectionCTA
+                href={baseAudioHref}
+                labelEn={t.ctaEn}
+                labelHi={t.ctaHi}
+            />
         </div>
     </div>
 </section>
 
 <style>
-    .section {
-        padding: 100px 0;
-        background-color: var(--bg-main);
-        overflow: hidden;
+    .section-mind {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        padding-top: var(--section-v-padding);
+        padding-bottom: var(--section-v-padding);
     }
 
-    .center-text {
-        text-align: center;
-        margin-bottom: 60px;
+    .content-wrapper {
         display: flex;
         flex-direction: column;
-        align-items: center;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .text-col {
+        margin-bottom: var(--space-md);
+        text-align: left;
+        width: 100%;
     }
 
     .section-title {
-        font-size: clamp(2.6rem, 4vw, 3.5rem);
-        line-height: 1.2;
-        font-weight: 800;
-        margin-bottom: 24px;
-        letter-spacing: -0.02em;
+        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+        letter-spacing: -0.035em;
+        line-height: 1.1;
         color: var(--text-main);
     }
 
-    .section-title.is-hindi {
-        line-height: 1.4;
-        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
-    }
-
-    .text-gradient {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-    }
-
     .body-text {
-        font-size: 1.15rem;
-        line-height: 1.6;
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        max-width: 520px;
+        max-width: 600px;
+        text-align: left;
+        line-height: 1.6;
+        margin-top: var(--space-xs);
     }
 
-    .wide-visual {
-        max-width: 800px;
-        margin: 0 auto;
+    /* --- CAROUSEL STRUCTURE --- */
+    .carousel-wrapper {
         position: relative;
-        text-align: center; /* Ensures CTA stays centered */
-    }
-
-    .floating-visual-wrapper {
-        position: relative;
-        z-index: 1;
-        transition: transform 0.3s ease;
-    }
-
-    .floating-visual-wrapper:hover {
-        transform: translateY(-8px);
-    }
-
-    .feature-img {
         width: 100%;
-        height: auto;
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.15));
+        margin-bottom: var(--space-md);
+    }
+
+    /* Polished, zero-obtrusive right edge gradient mask seen in Screenshot 2026-07-06 at 10.04.48 AM.jpg */
+    .carousel-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 48px;
+        height: 100%;
+        background: linear-gradient(
+            to left,
+            var(--bg-main) 0%,
+            transparent 100%
+        );
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .carousel-track {
+        display: flex;
+        gap: var(--space-md);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 6px 0 var(--space-sm) 0;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
         position: relative;
         z-index: 2;
     }
 
-    .cta-wrapper {
-        margin-top: 48px;
-        display: flex;
-        justify-content: center;
+    .carousel-track::-webkit-scrollbar {
+        display: none;
     }
 
-    .glow-orb {
+    .carousel-card {
+        scroll-snap-align: start;
+        flex: 0 0 290px;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+
+        /* Enforces matching static heights across all states */
+        height: 100%;
+        min-height: 295px;
+
+        transition:
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.4s ease,
+            border-color 0.4s ease;
+    }
+
+    .carousel-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+        border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+    }
+
+    .card-image {
+        position: relative;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .carousel-card:hover .card-image img {
+        transform: scale(1.02);
+    }
+
+    /* High-fidelity Glassmorphic Play button */
+    .play-overlay {
         position: absolute;
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 140%;
-        height: 140%;
-        background: radial-gradient(
-            circle,
-            color-mix(in srgb, var(--primary), transparent 88%) 0%,
-            color-mix(in srgb, var(--primary), transparent 98%) 40%,
-            transparent 70%
-        );
-        z-index: -1;
-        pointer-events: none;
+        width: 44px;
+        height: 44px;
+        background: color-mix(in srgb, var(--bg-main) 80%, transparent);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        border: 1px solid var(--border);
+        box-shadow: var(--shadow); /* Premium shadow rendering */
+    }
+
+    .play-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--text-main);
+        margin-left: 2px;
+        transition: color 0.3s ease;
+    }
+
+    .carousel-card:hover .play-overlay {
+        background: var(--primary);
+        border-color: var(--primary);
+        transform: translate(-50%, -50%) scale(1.06);
+    }
+
+    .carousel-card:hover .play-icon {
+        color: var(--bg-main);
+    }
+
+    .card-content {
+        padding: var(--space-md);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+        flex-grow: 1;
+        justify-content: space-between;
+    }
+
+    /* Rigid structural multi-line title clamp ceiling */
+    .card-title {
+        font-size: 1.2rem;
+        font-weight: 750;
+        margin: 0;
+        color: var(--text-main);
+        letter-spacing: -0.015em;
+        line-height: 1.35;
+
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-height: calc(1.35em * 2);
+    }
+
+    .card-footer {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 0.9rem;
+        letter-spacing: 0.01em;
+        margin-top: auto;
+    }
+
+    .icon {
+        display: inline-flex;
+        align-items: center;
+        transform: translateY(-1px);
+        transition: transform 0.2s ease;
+    }
+
+    .carousel-card:hover .icon {
+        transform: translateX(2px) translateY(-1px);
+    }
+
+    .cta-wrapper {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: var(--space-xs);
+    }
+
+    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
+    :lang(hi) .section-title {
+        line-height: 1.35;
+    }
+    :lang(hi) .card-title {
+        line-height: 1.45;
+        min-height: calc(1.45em * 2);
+    }
+
+    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    @media (max-height: 740px) {
+        .text-col {
+            margin-bottom: var(--space-sm);
+        }
+        .body-text {
+            display: none;
+        }
+        .carousel-card {
+            flex: 0 0 250px;
+        }
+        .card-content {
+            padding: var(--space-sm);
+        }
     }
 
     @media (max-width: 768px) {
-        .section {
-            padding: 64px 0;
-        }
-        .center-text {
-            margin-bottom: 40px;
-        }
-        .section-title {
-            font-size: 2.2rem;
-        }
-        .section-title.is-hindi {
-            font-size: 1.9rem;
-        }
-        .cta-wrapper {
-            margin-top: 32px;
-        }
-        .floating-visual-wrapper:hover {
-            transform: none;
+        .carousel-card {
+            flex: 0 0 290px; /* Keep uniform structure on mobile viewports */
         }
     }
 </style>

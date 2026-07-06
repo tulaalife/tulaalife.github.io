@@ -41,10 +41,10 @@ const {
         align-items: center;
         justify-content: center;
         text-decoration: none;
-        font-family: var(--font-sans);
-        font-weight: var(--fw-medium);
+        font-family: var(--font-sans-en);
+        font-weight: 600; /* Medium weight for premium UI look inside compact buttons */
         letter-spacing: 0.01em;
-        border-radius: 99px; /* Pill shape is more modern/premium than 14px */
+        border-radius: 99px; /* Pill shape */
         border: 1px solid transparent;
         cursor: pointer;
         position: relative;
@@ -61,66 +61,82 @@ const {
         z-index: 2;
     }
 
+    /* ---- Native Hindi Optical Correction ---- */
+    :global(:lang(hi)) .cta {
+        font-family: var(--font-sans-hi);
+        letter-spacing: normal;
+    }
+
     /* ---- Sizes ---- */
     .cta--md {
-        padding: 8px 16px;
+        padding: 8px 20px;
         font-size: 0.94rem;
         min-height: 40px; /* Touch target accessibility */
     }
+
+    :global(:lang(hi)) .cta--md {
+        padding-top: 9px;
+        padding-bottom: 7px;
+    }
+
     .cta--lg {
-        padding: 10px 20px;
+        padding: 10px 24px;
         font-size: 1.05rem;
         min-height: 48px;
+    }
+
+    :global(:lang(hi)) .cta--lg {
+        padding-top: 11px;
+        padding-bottom: 9px;
     }
 
     /* ---- Variants ---- */
 
     /* 1. Solid: The Primary Action */
     .cta--solid {
-        background: var(--fg); /* Dark background */
-        color: var(--bg1); /* Light text */
-        border-color: var(--fg);
-        /* Subtle inner light reflection for 3D feel */
+        background: var(--text-main);
+        color: var(--bg-main);
+        border-color: var(--text-main);
         box-shadow:
             inset 0 1px 1px rgba(255, 255, 255, 0.15),
-            0 4px 10px rgba(0, 0, 0, 0.08);
+            var(--shadow);
     }
+
     .cta--solid:hover {
         transform: translateY(-2px);
         box-shadow:
             inset 0 1px 1px rgba(255, 255, 255, 0.2),
             0 12px 24px rgba(0, 0, 0, 0.15);
-        background: color-mix(
-            in oklch,
-            var(--fg),
-            black 5%
-        ); /* Slightly darker on hover */
+        filter: brightness(1.1);
     }
 
     /* 2. Soft: The Secondary Action (Glassy) */
     .cta--soft {
-        background: color-mix(in oklch, var(--card), transparent 20%);
-        color: var(--fg);
-        border-color: color-mix(in oklch, var(--ring), transparent 40%);
+        background: var(--bg-sub);
+        color: var(--text-main);
+        border-color: var(--border);
         backdrop-filter: blur(8px);
-    }
-    .cta--soft:hover {
-        background: var(--card);
-        border-color: var(--accent);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+        -webkit-backdrop-filter: blur(8px);
     }
 
-    /* 3. Ghost: Minimal (Just text) */
+    .cta--soft:hover {
+        border-color: var(--primary);
+        color: var(--primary);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow);
+    }
+
+    /* 3. Ghost: Minimal Action */
     .cta--ghost {
         background: transparent;
-        color: var(--muted);
+        color: var(--text-muted);
         border-color: transparent;
         padding-inline: 4px;
     }
+
     .cta--ghost:hover {
-        color: var(--accent);
-        background: color-mix(in oklch, var(--accent), transparent 95%);
+        color: var(--primary);
+        background: color-mix(in srgb, var(--primary), transparent 95%);
     }
 
     /* ---- Icon Animation (The Polish) ---- */
@@ -136,12 +152,6 @@ const {
         transform: translate(3px, -3px);
     }
 
-    /* If icon is just an arrow right, move just right */
-    .cta:hover .cta__icon:not(:contains("↗")) {
-        /* Fallback for standard arrows if needed, 
-            though the translate(3px, -3px) looks cool for most icons */
-    }
-
     /* ---- Active State (Tactile Click) ---- */
     .cta:active {
         transform: translateY(0) scale(0.98);
@@ -152,6 +162,6 @@ const {
     .cta:focus-visible {
         outline: none;
         box-shadow: 0 0 0 4px
-            color-mix(in oklch, var(--accent), transparent 70%);
+            color-mix(in srgb, var(--primary), transparent 70%);
     }
 </style>

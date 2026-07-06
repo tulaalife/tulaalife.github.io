@@ -44,9 +44,10 @@ const m = motivation[lang] || motivation.en;
     canonicalPath={canonicalPath}
     hasTranslation={true}
 >
-    <div class="faq-container">
-        <div class="faq-hero">
-            <h1 class="page-title">{title}</h1>
+    <main class="faq-container">
+        <!-- Kept main landing layout header centered using standard global framework -->
+        <div class="section-header-center faq-hero">
+            <h1 class="page-title hero-title">{title}</h1>
         </div>
 
         <div class="faq-list">
@@ -73,7 +74,7 @@ const m = motivation[lang] || motivation.en;
                         </summary>
                         <div class="faq-answer">
                             <div class="answer-content">
-                                <p>{item.answer}</p>
+                                <p class="body-text">{item.answer}</p>
                             </div>
                         </div>
                     </details>
@@ -81,38 +82,35 @@ const m = motivation[lang] || motivation.en;
             }
         </div>
 
-        <section class="vision-section">
+        <!-- Left aligned content cards framework block -->
+        <section class="section-header-left vision-section">
             <span class="philosophy-badge">{m.badge}</span>
             <div class="motivation-content">
                 <p class="lead-text" set:html={m.mission} />
-                <div class="values-grid">
-                    {m.values.map((v) => <p>{v}</p>)}
+                <div class="values-grid body-text">
+                    {m.values.map((v) => <p style="margin: 0;">{v}</p>)}
                 </div>
             </div>
         </section>
-    </div>
+    </main>
 </Site>
 
 <style>
     .faq-container {
         max-width: 880px;
         margin: 0 auto;
-        padding: 80px 24px 120px;
+        padding: 60px 24px 120px;
     }
 
     .faq-hero {
-        text-align: center;
         margin-bottom: 48px;
     }
 
     .page-title {
-        font-size: clamp(2.5rem, 8vw, 3.5rem);
-        letter-spacing: -0.04em;
-        font-weight: 850;
-        color: var(--text-main);
+        font-size: clamp(2.4rem, 5vw, 3.5rem);
     }
 
-    /* --- Vision Section: Styled as a subtle highlight box --- */
+    /* --- Vision Section Highlight Block --- */
     .vision-section {
         margin-top: 80px;
         padding: 40px;
@@ -121,34 +119,33 @@ const m = motivation[lang] || motivation.en;
             var(--bg-sub),
             transparent
         );
-        border-radius: 32px;
-        border: 1px solid var(--border-light);
+        border-radius: var(--radius-lg);
+        border: 1px solid var(--border);
+        text-align: left;
     }
 
     .philosophy-badge {
-        font-size: 1.2rem;
-        font-weight: 800;
-        /* letter-spacing: 0.2em; */
+        font-size: 1.1rem;
+        font-weight: var(--fw-bold);
         color: var(--primary);
         margin-bottom: 20px;
         display: block;
     }
 
     .lead-text {
-        font-size: 1.2rem;
+        font-size: 1.15rem;
         color: var(--text-main);
-        line-height: 1.6;
         margin-bottom: 16px;
+        text-align: left;
     }
 
     .values-grid {
         display: grid;
-        font-size: 1.2rem;
-        color: var(--text-main);
-        line-height: 1.6;
+        gap: 16px;
+        text-align: left;
     }
 
-    /* --- FAQ List --- */
+    /* --- FAQ List Accordions --- */
     .faq-list {
         display: flex;
         flex-direction: column;
@@ -157,7 +154,7 @@ const m = motivation[lang] || motivation.en;
 
     .faq-item {
         background: var(--bg-sub);
-        border: 1px solid var(--border-light);
+        border: 1px solid var(--border);
         border-radius: 20px;
         transition: all 0.2s ease;
     }
@@ -165,7 +162,7 @@ const m = motivation[lang] || motivation.en;
     .faq-item[open] {
         background: var(--bg-main);
         border-color: var(--primary);
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--shadow);
     }
 
     .faq-question {
@@ -177,6 +174,7 @@ const m = motivation[lang] || motivation.en;
         cursor: pointer;
         font-weight: 600;
         color: var(--text-main);
+        text-align: left;
     }
 
     .faq-question::-webkit-details-marker {
@@ -189,6 +187,10 @@ const m = motivation[lang] || motivation.en;
         padding: 6px;
         border-radius: 50%;
         display: flex;
+        transition:
+            transform 0.2s ease,
+            background-color 0.2s ease,
+            color 0.2s ease;
     }
 
     .faq-item[open] .icon-wrapper {
@@ -199,8 +201,7 @@ const m = motivation[lang] || motivation.en;
 
     .answer-content {
         padding: 0 24px 24px;
-        color: var(--text-muted);
-        line-height: 1.6;
+        text-align: left;
     }
 
     @media (max-width: 600px) {

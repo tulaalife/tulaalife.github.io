@@ -1,263 +1,390 @@
 ---
+// src/components/YogaSection.astro
 import SectionCTA from "../SectionCTA.astro";
-import { YOGA_UI, type SupportedLang } from "../../utils/ui-strings";
+import {
+    YOGA_UI,
+    CATEGORY_MAP,
+    type SupportedLang,
+} from "../../utils/ui-strings";
+import { yogaPlans } from "../../data/generated";
 
 const currentLang = (Astro.currentLocale || "en") as SupportedLang;
 const t = YOGA_UI[currentLang] || YOGA_UI.en;
-const isHindi = currentLang === "hi";
 
-// Extract feature values into an array for mapping
-const featureList = Object.values(t.features);
-
-const mobileImg = `/images/mobile/${t.heroImg}.webp`;
-const desktopImg = `/images/desktop/${t.heroImg}.webp`;
+const displayPlans = yogaPlans
+    .filter((p) => p.language === currentLang)
+    .slice(0, 8);
 ---
 
-<section class="section section-yoga">
-    <div class="container grid-layout">
-        <div class="text-col">
-            <h2 class={`section-title ${isHindi ? "is-hindi" : ""}`}>
-                <span class="title-main">{t.heroTitleTop}</span>
-                <br />
-                <span class="text-gradient">{t.heroTitleBottom}</span>
-            </h2>
-            <p class="body-text">{t.heroBody}</p>
-
-            <div class="feature-list-wrapper">
-                <div class="feature-list">
-                    {
-                        featureList.map((feature) => (
-                            <a
-                                href={feature.link}
-                                class="feature-card"
-                                style={`--card-accent: ${feature.color}`}
-                            >
-                                <div class="card-content">
-                                    <strong class="card-title">
-                                        {feature.title}
-                                    </strong>
-                                    <p class="card-desc">{feature.desc}</p>
-                                </div>
-                                <span class="bg-icon" aria-hidden="true">
-                                    {feature.icon}
-                                </span>
-                            </a>
-                        ))
-                    }
-                </div>
-
-                <div class="desktop-cta">
-                    <SectionCTA
-                        href="/yoga"
-                        labelEn="Explore All Yoga Plans"
-                        labelHi="सभी योग प्लान देखें"
-                    />
-                </div>
+<section class="scroll-section section-yoga">
+    <div class="content-wrapper">
+        <!-- 1. Pure Header Container Grid Alignment Module -->
+        <div class="container">
+            <div class="section-header-left text-col animate-on-scroll">
+                <h2 class="section-title">
+                    <span class="title-main">{t.heroTitleTop}</span>
+                    <br />
+                    <span class="text-gradient">{t.heroTitleBottom}</span>
+                </h2>
+                <p class="body-text">{t.heroBody}</p>
             </div>
         </div>
 
-        <div class="visual-col">
-            <picture>
-                <source srcset={mobileImg} media="(max-width: 767px)" />
-                <img
-                    src={desktopImg}
-                    alt={t.heroImgAlt}
-                    class="feature-img"
-                    width="600"
-                    height="495"
-                    loading="lazy"
-                    decoding="async"
-                />
-            </picture>
+        <!-- 2. Filter Navigation Control Module (Label Removed for Minimalist Look) -->
+        <div class="container filter-container animate-on-scroll delay-1">
+            <div class="filter-scroll">
+                <button class="filter-btn active" data-filter="all"
+                    >{t.filterAll}</button
+                >
+                <button class="filter-btn" data-filter="general"
+                    >{t.filterGeneral}</button
+                >
+                <button class="filter-btn" data-filter="womens"
+                    >{t.filterWomens}</button
+                >
+                <button class="filter-btn" data-filter="seniors"
+                    >{t.filterSeniors}</button
+                >
+                <button class="filter-btn" data-filter="medical"
+                    >{t.filterMedical}</button
+                >
+            </div>
         </div>
 
-        <div class="mobile-cta">
+        <!-- 3. Full Width Horizontal Carousel Container Track -->
+        <div class="container carousel-wrapper animate-on-scroll delay-2">
+            <div class="carousel-track" id="featured-plans-track">
+                {
+                    displayPlans.map((p) => (
+                        <a
+                            href={`/${currentLang}/yoga/${p.slug}`}
+                            class="carousel-card"
+                            data-goals={p.goals?.join(",")}
+                        >
+                            <div class="card-image">
+                                <img
+                                    src={p.image}
+                                    alt={p.title}
+                                    loading="lazy"
+                                    decoding="async"
+                                />
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">{p.title}</h3>
+                                {/* Subtitle description paragraph removed entirely */}
+                                <div class="card-footer">
+                                    <span class="view-link">{t.view}</span>
+                                    <span class="icon">→</span>
+                                </div>
+                            </div>
+                        </a>
+                    ))
+                }
+            </div>
+        </div>
+
+        <!-- 4. Left-Aligned Unified Secondary Button Hook -->
+        <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
-                href="/yoga"
-                labelEn="Explore All Yoga Plans"
-                labelHi="सभी योग प्लान देखें"
+                href={`/${currentLang}/yoga`}
+                labelEn="Explore All Plans"
+                labelHi="सभी प्लान देखें"
             />
         </div>
     </div>
 </section>
 
+<script is:inline define:vars={{ CATEGORY_MAP }}>
+    document.addEventListener("astro:page-load", () => {
+        const filterBtns = document.querySelectorAll(".filter-btn");
+        const track = document.getElementById("featured-plans-track");
+        if (!track || filterBtns.length === 0) return;
+
+        const cards = Array.from(track.querySelectorAll(".carousel-card"));
+
+        filterBtns.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                filterBtns.forEach((b) => b.classList.remove("active"));
+                btn.classList.add("active");
+
+                const filterId = btn.getAttribute("data-filter");
+
+                cards.forEach((card) => {
+                    if (filterId === "all") {
+                        card.style.display = "flex";
+                        setTimeout(() => (card.style.opacity = "1"), 10);
+                        return;
+                    }
+
+                    const targetGoals = CATEGORY_MAP[filterId] || [];
+                    const itemGoals = (
+                        card.getAttribute("data-goals") || ""
+                    ).split(",");
+                    const isMatch = targetGoals.some((goal) =>
+                        itemGoals.includes(goal),
+                    );
+
+                    if (isMatch) {
+                        card.style.display = "flex";
+                        setTimeout(() => (card.style.opacity = "1"), 10);
+                    } else {
+                        card.style.opacity = "0";
+                        setTimeout(() => (card.style.display = "none"), 300);
+                    }
+                });
+
+                track.scrollTo({ left: 0, behavior: "smooth" });
+            });
+        });
+    });
+</script>
+
 <style>
-    .section {
-        padding: 100px 0;
-        overflow: hidden;
-    }
-    .grid-layout {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 80px;
+    .section-yoga {
+        width: 100%;
+        display: flex;
         align-items: center;
+        padding-top: var(--section-v-padding);
+        padding-bottom: var(--section-v-padding);
     }
 
-    .mobile-cta {
-        display: none;
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin: 0 auto;
     }
 
-    /* --- TYPOGRAPHY --- */
+    .text-col {
+        margin-bottom: var(--space-md);
+        text-align: left;
+        width: 100%;
+    }
+
     .section-title {
-        font-size: clamp(2.6rem, 4vw, 3.5rem);
-        line-height: 1.15;
-        font-weight: 800;
-        margin-bottom: 24px;
-        letter-spacing: -0.02em;
-    }
-
-    .title-main {
+        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+        letter-spacing: -0.035em;
+        line-height: 1.1;
+        text-align: left;
         color: var(--text-main);
-    }
-
-    .section-title.is-hindi {
-        line-height: 1.4;
-        font-size: clamp(2.2rem, 3.8vw, 3.2rem);
-    }
-
-    .text-gradient {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        display: inline-block;
-        padding-bottom: 4px;
     }
 
     .body-text {
-        font-size: 1.15rem;
-        line-height: 1.6;
+        font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        margin-bottom: 32px;
-        max-width: 520px;
+        max-width: 600px;
+        text-align: left;
+        line-height: 1.6;
+        margin-top: var(--space-xs);
     }
 
-    /* --- FEATURE CARDS --- */
-    .feature-list {
+    /* --- FILTER NAVIGATION (CLEAN CHIPS) --- */
+    .filter-container {
         display: flex;
-        flex-direction: column;
-        gap: 16px;
+        align-items: center;
+        margin-bottom: var(--space-md);
         width: 100%;
     }
 
-    .feature-card {
-        position: relative;
-        overflow: hidden;
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--bg-main), white 5%) 0%,
-            var(--card-accent) 100%
-        );
-        backdrop-filter: blur(10px);
-        padding: 24px;
-        border-radius: 24px;
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
-        transition:
-            transform 0.3s ease,
-            box-shadow 0.3s ease;
+    .filter-scroll {
         display: flex;
-        align-items: center;
-        z-index: 1;
-        text-decoration: none;
+        gap: var(--space-xs);
+        overflow-x: auto;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+        padding: 4px 0;
+    }
+
+    .filter-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    .filter-btn {
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        padding: 6px 16px;
+        border-radius: 99px;
+        font-size: 0.85rem;
+        font-weight: 600;
         cursor: pointer;
+        white-space: nowrap;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    :root[data-theme="dark"] .feature-card {
-        background: linear-gradient(
-            135deg,
-            rgba(255, 255, 255, 0.05) 0%,
-            var(--card-accent) 100%
-        );
+    .filter-btn:hover {
+        border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+        color: var(--text-main);
     }
 
-    .feature-card:hover {
-        transform: translateX(8px);
+    .filter-btn.active {
+        background: var(--primary);
+        color: var(--bg-main);
         border-color: var(--primary);
     }
 
-    .card-content {
+    /* --- HORIZONTAL CAROUSEL --- */
+    .carousel-wrapper {
         position: relative;
-        z-index: 2;
-        padding-right: 60px;
+        width: 100%;
+        margin-bottom: var(--space-md);
+    }
+
+    /* Polished, zero-obstrusive right edge gradient mask seen in Screenshot 2026-07-06 at 9.58.18 AM.jpg */
+    .carousel-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 48px;
+        height: 100%;
+        background: linear-gradient(
+            to left,
+            var(--bg-main) 0%,
+            transparent 100%
+        );
+        pointer-events: none;
+        z-index: 5;
+    }
+
+    .carousel-track {
+        display: flex;
+        gap: var(--space-md);
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        padding: 6px 0 var(--space-sm) 0;
+        scrollbar-width: none;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+        display: none;
+    }
+
+    .carousel-card {
+        scroll-snap-align: start;
+        flex: 0 0 290px;
+        display: flex;
+        flex-direction: column;
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        text-decoration: none;
+        color: inherit;
+
+        /* Enforces matching static heights across all filtered states */
+        height: 100%;
+        min-height: 295px;
+
+        transition:
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.4s ease,
+            border-color 0.4s ease;
+    }
+
+    .carousel-card:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow);
+        border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+    }
+
+    .card-image {
+        position: relative;
+        aspect-ratio: 16 / 10;
+        overflow: hidden;
+        border-bottom: 1px solid var(--border);
+    }
+
+    .card-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .card-content {
+        padding: var(--space-md);
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-md);
+        flex-grow: 1;
+        justify-content: space-between; /* Pushes footer neatly to base */
     }
 
     .card-title {
-        display: block;
-        font-size: 1.1rem;
-        font-weight: 800;
-        color: var(--text-main);
-        margin-bottom: 4px;
-    }
-
-    .card-desc {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        opacity: 0.85;
+        font-size: 1.2rem;
+        font-weight: 750;
         margin: 0;
-        line-height: 1.5;
-        font-weight: 400;
+        color: var(--text-main);
+        letter-spacing: -0.015em;
+        line-height: 1.35;
+
+        /* Enforces a 2-line maximum constraint with fluid ellipsis (...) */
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+
+        /* Reserves a locked height footprint equal exactly to 2 lines of prose */
+        min-height: calc(1.35em * 2);
     }
 
-    .bg-icon {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%) rotate(10deg);
-        font-size: 3.5rem;
-        opacity: 0.12;
-        pointer-events: none;
+    /* Polished, vertically centered line item alignment */
+    .card-footer {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 600;
+        color: var(--primary);
+        font-size: 0.9rem;
+        letter-spacing: 0.01em;
+        margin-top: auto;
     }
 
-    /* --- VISUALS --- */
-    .feature-img {
-        width: 100%;
-        height: auto;
-        filter: drop-shadow(0 20px 40px rgba(0, 0, 0, 0.12));
+    .icon {
+        display: inline-flex;
+        align-items: center;
+        transform: translateY(-1px); /* Perfect visual alignment tweak */
+        transition: transform 0.2s ease;
     }
 
-    @media (max-width: 768px) {
-        .grid-layout {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            gap: 32px;
-        }
+    .carousel-card:hover .icon {
+        transform: translateX(2px) translateY(-1px);
+    }
 
+    .cta-wrapper {
+        display: flex;
+        justify-content: flex-start;
+        margin-top: var(--space-xs);
+    }
+
+    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
+    :lang(hi) .section-title {
+        line-height: 1.35;
+    }
+    :lang(hi) .filter-btn {
+        padding-top: 7px;
+        padding-bottom: 5px;
+    }
+    :lang(hi) .card-title {
+        line-height: 1.45;
+        min-height: calc(1.45em * 2);
+    }
+
+    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    @media (max-height: 740px) {
         .text-col {
-            display: contents;
-        }
-
-        .section-title {
-            order: 1;
-            margin-bottom: 12px;
+            margin-bottom: var(--space-sm);
         }
         .body-text {
-            order: 1;
-            margin-bottom: 24px;
-        }
-
-        .visual-col {
-            order: 2;
-            margin-bottom: 10px;
-        }
-
-        .feature-list-wrapper {
-            order: 3;
-            width: 100%;
-        }
-
-        .feature-list {
-            text-align: left;
-        }
-
-        .mobile-cta {
-            order: 4;
-            display: block;
-            margin-top: 8px;
-        }
-
-        .desktop-cta {
             display: none;
+        }
+        .carousel-card {
+            flex: 0 0 250px;
+        }
+        .card-content {
+            padding: var(--space-sm);
         }
     }
 </style>

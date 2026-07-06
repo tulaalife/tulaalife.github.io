@@ -1,0 +1,187 @@
+/* src/styles/global.css */
+
+/* --- 1. BASE VARIABLES & TOKENS --- */
+:root {
+    --container-width: 1120px;
+    --header-height: 64px;
+
+    /* Centralized Spacing System */
+    --space-xs: 0.5rem;
+    /* 8px */
+    --space-sm: 0.75rem;
+    /* 12px */
+    --space-md: 1.25rem;
+    /* 20px */
+    --space-lg: 2rem;
+    /* 32px */
+    --space-xl: 3rem;
+    /* 48px */
+
+    /* Dynamic section padding that shrinks on small-height screens */
+    --section-v-padding: clamp(1.5rem, 5vh, 4rem);
+
+    /* Typography */
+    --font-sans-en: "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-sans-hi: "Noto Sans Devanagari", sans-serif;
+    --fw-bold: 750;
+    --radius-lg: 24px;
+}
+
+:root[data-theme="light"] {
+    --bg-main: oklch(100% 0 0);
+    --bg-sub: oklch(97% 0.01 240);
+    --primary: oklch(55% 0.12 250);
+    --accent-warm: oklch(75% 0.14 35);
+    --text-main: oklch(20% 0.04 250);
+    --text-muted: oklch(48% 0.02 250);
+    --border: oklch(92% 0.01 240);
+
+
+    --shadow: 0 2px 8px -2px color-mix(in srgb, var(--text-main) 6%, transparent),
+        0 12px 24px -4px color-mix(in srgb, var(--text-main) 6%, transparent),
+        0 32px 48px -12px color-mix(in srgb, var(--text-main) 8%, transparent);
+}
+
+:root[data-theme="dark"] {
+    --bg-main: oklch(16% 0.005 250);
+    --bg-sub: oklch(19% 0.005 250);
+    --primary: oklch(65% 0.10 250);
+    --accent-warm: oklch(70% 0.12 35);
+    --text-main: oklch(98% 0 0);
+    --text-muted: oklch(68% 0.01 250);
+    --border: oklch(25% 0.01 250);
+
+    --shadow: 0 2px 8px -2px rgba(0, 0, 0, 0.3),
+        0 12px 24px -4px rgba(0, 0, 0, 0.4),
+        0 32px 48px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* --- 2. GLOBAL RESET & TYPOGRAPHY --- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+body {
+    font-family: var(--font-sans-en);
+    color: var(--text-main);
+    background: var(--body-bg);
+    background-attachment: fixed;
+    transition: color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.6;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    opacity: 0.15;
+    pointer-events: none;
+    mix-blend-mode: normal;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.5' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+:root[data-theme="dark"] body::before {
+    opacity: 0.05;
+}
+
+body:lang(hi) {
+    font-family: var(--font-sans-hi);
+    line-height: 1.7;
+}
+
+/* --- 3. PREMIUM TYPOGRAPHY UTILITIES --- */
+h1,
+h2,
+h3,
+.hero-title,
+.section-title {
+    margin: 0;
+    font-weight: var(--fw-bold);
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+}
+
+.text-gradient {
+    background: linear-gradient(135deg, var(--accent-warm), var(--primary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    display: inline-block;
+
+    /* ADD THESE LINES TO PREVENT CLIPPING 👇 */
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    margin-top: -0.1em;
+    margin-bottom: -0.1em;
+}
+
+.body-text {
+    font-size: 1.15rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    margin: 0;
+}
+
+.badge-small {
+    display: inline-flex;
+    padding: 6px 14px;
+    border-radius: 100px;
+    background: var(--bg-sub);
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: 1px solid var(--border);
+}
+
+/* Hindi Overrides */
+:lang(hi) h1,
+:lang(hi) h2,
+:lang(hi) h3,
+:lang(hi) .section-title,
+:lang(hi) .hero-title {
+    font-weight: 700;
+    letter-spacing: normal;
+    /* Increased line-height explicitly to prevent Devanagari matra clipping */
+    line-height: 1.35;
+    padding-top: 0.05em;
+    padding-bottom: 0.05em;
+}
+
+:lang(hi) .hero-sub {
+    line-height: 1.6;
+}
+
+/* --- 4. LAYOUT & ALIGNMENT UTILITIES --- */
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 24px;
+    width: 100%;
+}
+
+.section-header-left {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.section-header-center {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

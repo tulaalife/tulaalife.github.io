@@ -5,87 +5,60 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "✨ 100% Free • No Ads • No Login ✨",
-        titleTop: "Heal with Expert",
-        titleBottom: "Yoga Therapy.",
+        badge: "No Login • No Ads • 100% Free",
+        titleTop: "Unlock the power of",
+        titleBottom: "Therapeutic Yoga.",
         subtitle:
-            "Specialized yoga for 30+ health needs, including <strong>Back Pain, PCOS, Thyroid, and Sciatica.</strong> Your health data stays 100% private on your device.",
-        ctaLead: "Download the free app",
-        author: "Latika Bissa",
-        authorLabel: "Yoga Therapist",
-        authorTrust: "⭐ 5-Star Rated • 5,000+ Happy Students",
-        cred1: "🧘‍♀️ 10+ Years of Experience",
-        cred2: "🏅 Gold Medalist, M.Sc Yoga Therapy",
+            "Science-backed plans for <strong>Back Pain, PCOS, Thyroid, and 30+ health needs.</strong> Reduce stress, heal naturally, and reclaim your vitality through Yoga Therapy.",
+        ctaLead: "Start your free journey today",
         socialProofs: [
-            "Join 5,000+ users healing naturally",
-            "Rated 5 stars on Play Store & App Store",
-            "Yoga plans for 30+ health needs",
-            "100% Private: No account needed",
-            "Completely Free: No hidden costs",
-            "Mediate, track, and find balance",
-            "Sleep better and relax deeply",
+            "Science-backed yoga for 30+ health needs",
+            "100% Private: No accounts, no data mining",
+            "Guided audio for deep sleep and anxiety",
+            "Built-in trackers for cycles, moods, and fasting",
+            "Completely free. No hidden paywalls.",
         ],
-        basePoster: "poster",
     },
     hi: {
-        badge: "✨ 100% फ्री • बिना विज्ञापन • बिना लॉगिन ✨",
-        titleTop: "विशेषज्ञ योग थेरेपी",
-        titleBottom: "अब आपके हाथ में।",
+        badge: "कोई लॉगिन नहीं • कोई विज्ञापन नहीं • 100% फ्री",
+        titleTop: "योग की रोग-मुक्त करने वाली",
+        titleBottom: "शक्तियों को सीखें।",
         subtitle:
-            "30+ बीमारियों के लिए खास योग, जैसे <strong>कमर दर्द, PCOS, थायरॉइड और साइटिका।</strong> आपका हेल्थ डेटा आपके ही फोन में 100% सुरक्षित रहता है।",
-        ctaLead: "फ्री ऐप डाउनलोड करें",
-        author: "लतिका बिस्सा",
-        authorLabel: "योग चिकित्सक",
-        authorTrust: "⭐ 5-स्टार रेटिंग • 5,000+ संतुष्ट साधक",
-        cred1: "🧘‍♀️ 10+ वर्षों का अनुभव",
-        cred2: "🏅 स्वर्ण पदक विजेता, M.Sc योग थेरेपी",
+            "<strong>कमर दर्द, PCOS, थायरॉइड</strong> और 30+ स्वास्थ्य समस्याओं के लिए वैज्ञानिक योग। प्राकृतिक रूप से स्वस्थ बनें—आपका डेटा आपके ही फोन में 100% सुरक्षित है।",
+        ctaLead: "आज ही अपनी फ्री शुरुआत करें",
         socialProofs: [
-            "5,000+ लोगों का भरोसेमंद साथी",
-            "Play Store पर 5-स्टार रेटिंग",
-            "30+ बीमारियों के लिए खास योग प्लान",
-            "100% प्राइवेट: लॉगिन की ज़रूरत नहीं",
-            "पूरी तरह फ्री: कोई गुप्त शुल्क नहीं",
-            "ध्यान लगाएं और संतुलन पाएं",
-            "बेहतर नींद और गहरी शांति",
+            "30+ बीमारियों के लिए वैज्ञानिक योग प्लान",
+            "100% सुरक्षित: कोई अकाउंट या डेटा ट्रैकिंग नहीं",
+            "बेहतर नींद और तनाव-मुक्ति के लिए गाइडेड ऑडियो",
+            "पीरियड, मूड और फास्टिंग के लिए वेलनेस ट्रैकर्स",
+            "पूरी तरह फ्री। कोई छिपा हुआ शुल्क नहीं।",
         ],
-        basePoster: "poster-hindi",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const isHindi = currentLang === "hi";
-
-const mobilePoster = `/images/mobile/${t.basePoster}.webp`;
-const desktopPoster = `/images/desktop/${t.basePoster}.webp`;
-
-const videoWebm =
-    currentLang === "hi"
-        ? "/website-app-demo-hindi.webm"
-        : "/website-app-demo.webm";
-const videoMp4 =
-    currentLang === "hi"
-        ? "/website-app-demo-hindi.mp4"
-        : "/website-app-demo.mp4";
 ---
 
-<section id="hero" class="hero-section">
-    <div class="container hero-grid">
-        <div class="hero-content">
-            <div class="badge">{t.badge}</div>
+<section id="hero" class="scroll-section hero-section">
+    <div class="container">
+        <div class="section-header-left hero-content">
+            <div class="badge-pill animate-on-scroll">
+                {t.badge}
+            </div>
 
-            <h1
-                class={`hero-title ${isHindi ? "is-hindi" : ""}`}
-                lang={currentLang}
-            >
+            <h1 class="hero-title animate-on-scroll" lang={currentLang}>
                 {t.titleTop}<br />
                 <span class="text-gradient">{t.titleBottom}</span>
             </h1>
 
-            <p class="hero-sub" set:html={t.subtitle} />
+            <p
+                class="hero-sub animate-on-scroll delay-1"
+                set:html={t.subtitle}
+            />
 
-            <div class="cta-wrapper">
+            <div class="cta-wrapper animate-on-scroll delay-2">
                 <p class="cta-lead">{t.ctaLead}</p>
-                <StoreButtons centered={false} class="hero-buttons" />
+                <StoreButtons class="hero-buttons" />
 
                 <div class="proof-slider">
                     {
@@ -100,73 +73,11 @@ const videoMp4 =
                 </div>
             </div>
         </div>
-
-        <div class="hero-visual">
-            <div
-                class="phone-frame-wrapper"
-                id="phoneWrapper"
-                data-webm={videoWebm}
-                data-mp4={videoMp4}
-            >
-                <div class="video-loader" id="videoLoader"></div>
-                <picture>
-                    <source media="(min-width: 768px)" srcset={desktopPoster} />
-                    <img
-                        src={mobilePoster}
-                        alt="Tulaa App Preview"
-                        class="poster-img"
-                        id="posterImg"
-                        fetchpriority="high"
-                        loading="eager"
-                    />
-                </picture>
-                <video
-                    id="heroVideo"
-                    class="app-video"
-                    loop
-                    muted
-                    playsinline
-                    preload="none"></video>
-                <div class="glow-blob"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container author-section">
-        <a
-            href="https://yogawithlatika.com"
-            target="_blank"
-            class="author-link"
-            aria-label="Visit Latika Bissa's website"
-        >
-            <div class="author-card">
-                <div class="author-content">
-                    <div class="author-header">
-                        <div class="author-meta">
-                            <span class="author-label">{t.authorLabel}</span>
-                            <h3 class="author-name">
-                                <strong>{t.author}</strong>
-                            </h3>
-                        </div>
-                        <div class="author-trust text-gradient-alt">
-                            {t.authorTrust}
-                        </div>
-                    </div>
-
-                    <div class="creds-list">
-                        <span class="cred">{t.cred1}</span>
-                        <span class="divider"></span>
-                        <span class="cred">{t.cred2}</span>
-                    </div>
-                </div>
-            </div>
-        </a>
     </div>
 </section>
 
 <script>
     document.addEventListener("astro:page-load", () => {
-        // --- Social Proof Rotation ---
         const proofs = document.querySelectorAll(".social-proof-item");
         let currentProof = 0;
 
@@ -175,393 +86,148 @@ const videoMp4 =
                 proofs[currentProof].classList.remove("active");
                 currentProof = (currentProof + 1) % proofs.length;
                 proofs[currentProof].classList.add("active");
-            }, 3000);
-        }
-
-        // --- Video Logic ---
-        const wrapper = document.getElementById("phoneWrapper");
-        const video = document.getElementById("heroVideo") as HTMLVideoElement;
-        const loader = document.getElementById("videoLoader");
-        const poster = document.getElementById("posterImg");
-
-        if (!wrapper || !video) return;
-
-        const initVideo = () => {
-            const webmSrc = wrapper.getAttribute("data-webm");
-            const mp4Src = wrapper.getAttribute("data-mp4");
-
-            if (
-                webmSrc &&
-                video.querySelectorAll('source[type="video/webm"]').length === 0
-            ) {
-                const s = document.createElement("source");
-                s.src = webmSrc;
-                s.type = "video/webm";
-                video.appendChild(s);
-            }
-            if (
-                mp4Src &&
-                video.querySelectorAll('source[type="video/mp4"]').length === 0
-            ) {
-                const s = document.createElement("source");
-                s.src = mp4Src;
-                s.type = "video/mp4";
-                video.appendChild(s);
-            }
-
-            video.addEventListener(
-                "playing",
-                () => {
-                    video.classList.add("is-playing");
-                    if (loader) loader.style.opacity = "0";
-                    setTimeout(() => {
-                        if (poster)
-                            (poster as HTMLElement).style.visibility = "hidden";
-                        if (loader) loader.style.display = "none";
-                    }, 1000);
-                },
-                { once: true },
-            );
-
-            video.load();
-            video.play().catch(() => {
-                if (loader) loader.style.display = "none";
-            });
-        };
-
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                video.play().catch(() => {});
-            }
-        });
-
-        if ("requestIdleCallback" in window) {
-            (window as any).requestIdleCallback(initVideo);
-        } else {
-            setTimeout(initVideo, 300);
+            }, 8000);
         }
     });
 </script>
 
 <style>
-    /* --- RESTORED TOP UI STYLES --- */
     .hero-section {
-        padding: 120px 0 60px;
-        min-height: 85vh;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    .hero-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 60px;
-        align-items: center;
         width: 100%;
-        margin-bottom: 60px;
+        display: flex;
+        align-items: center;
+        padding-top: var(--section-v-padding);
+        padding-bottom: var(--section-v-padding);
     }
 
     .hero-content {
+        max-width: 720px;
         z-index: 2;
+        display: flex;
+        flex-direction: column;
     }
 
-    .badge {
+    /* Polished Premium Pill Badge */
+    .badge-pill {
         display: inline-flex;
         padding: 6px 14px;
-        border-radius: 100px;
-        background: var(--bg-sub);
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--primary) 6%, transparent);
         color: var(--primary);
         font-weight: 600;
-        font-size: 0.85rem;
-        margin-bottom: 24px;
-        border: 1px solid var(--border);
+        font-size: 0.8rem;
+        letter-spacing: 0.03em;
+        margin-bottom: var(--space-md);
+        border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
+        backdrop-filter: blur(8px);
+        align-self: flex-start;
     }
 
     .hero-title {
-        font-size: clamp(2.6rem, 4vw, 3.5rem);
-        line-height: 1.15;
-        font-weight: 800;
-        margin-bottom: 24px;
-        letter-spacing: -0.02em;
+        font-size: clamp(2.4rem, 5.5vw, 4.4rem);
+        margin-bottom: var(--space-md);
+        letter-spacing: -0.035em;
+        line-height: 1.08;
+        color: var(--text-main);
     }
 
-    .hero-title.is-hindi {
-        line-height: 1.3;
-    }
-
-    .text-gradient {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
+    /* Enhanced contrast readability for the subtitle */
     .hero-sub {
-        font-size: 1.1rem;
-        line-height: 1.6;
+        font-size: clamp(1.1rem, 2vw, 1.25rem);
+        line-height: 1.65;
         color: var(--text-muted);
-        margin-bottom: 32px;
-        max-width: 580px;
+        margin-bottom: var(--space-lg);
+        max-width: 640px;
+    }
+
+    /* Makes the inline-bold elements truly pop out from muted prose */
+    .hero-sub :global(strong) {
+        color: var(--text-main);
+        font-weight: 700;
     }
 
     .cta-wrapper {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        align-items: flex-start;
+        gap: var(--space-sm);
+        width: 100%;
     }
 
+    /* Polished label styling */
     .cta-lead {
         font-weight: 700;
-        font-size: 0.85rem;
+        font-size: 0.75rem;
         color: var(--text-muted);
         text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin: 0 0 4px 0;
+        letter-spacing: 0.1em;
+        margin-bottom: 2px;
     }
 
+    /* --- FIXED PROOF SLIDER CONTAINER --- */
     .proof-slider {
-        height: 1.8rem;
         position: relative;
-        overflow: hidden;
-        margin-top: 8px;
+        margin-top: var(--space-md);
+        width: 100%;
+        min-height: 2rem;
+        display: grid;
+        grid-template-columns: 1fr;
     }
 
     .social-proof-item {
-        position: absolute;
-        top: 0;
-        left: 0;
-        margin: 0;
-        font-size: 0.9rem;
+        grid-area: 1 / 1 / 2 / 2;
+        text-align: left;
+        font-size: 0.95rem;
+        font-weight: 500;
         color: var(--text-muted);
-        font-style: italic;
         opacity: 0;
-        transform: translateY(10px);
-        transition: all 0.5s ease;
-        line-height: 1.6;
+        transform: scale(0.98);
+        filter: blur(4px);
+        pointer-events: none;
+        transition:
+            opacity 0.5s ease-in-out,
+            transform 0.5s ease-in-out,
+            filter 0.5s ease-in-out;
+        padding: 4px 0;
+        line-height: 1.4;
     }
 
     .social-proof-item.active {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1);
+        filter: blur(0);
+        pointer-events: auto;
     }
 
-    .hero-visual {
-        display: flex;
-        justify-content: flex-end;
+    /* Keep native Hindi layout loose and beautiful */
+    :lang(hi) .social-proof-item {
+        line-height: 1.5;
+        font-size: 1rem;
     }
 
-    .phone-frame-wrapper {
-        position: relative;
-        width: 280px;
-        aspect-ratio: 540 / 1174;
-        background-color: #000;
-        border-radius: 44px;
-        border: 12px solid #1a1a1a;
-        overflow: hidden;
-        box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.4);
-    }
-
-    .app-video {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        opacity: 0;
-        transition: opacity 0.8s ease;
-        z-index: 10;
-    }
-
-    .app-video.is-playing {
-        opacity: 1;
-    }
-
-    .video-loader {
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 40px;
-        height: 40px;
-        border: 3px solid rgba(255, 255, 255, 0.05);
-        border-top-color: var(--primary);
-        border-radius: 50%;
-        animation: spin 0.8s linear infinite;
+    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    @media (max-height: 740px) {
+        .badge-pill {
+            margin-bottom: var(--space-xs);
+            padding: 4px 12px;
+            font-size: 0.75rem;
+        }
+        .hero-title {
+            font-size: 2.2rem;
+            margin-bottom: var(--space-xs);
+        }
+        .hero-sub {
+            font-size: 1.05rem;
+            margin-bottom: var(--space-md);
+        }
+        .proof-slider {
+            margin-top: var(--space-xs);
+        }
     }
 
     @media (max-width: 768px) {
         .hero-section {
-            padding-top: 100px;
-            padding-bottom: 40px;
-        }
-        .hero-grid {
-            display: flex;
-            flex-direction: column;
-            text-align: center;
-            gap: 40px;
-            margin-bottom: 48px;
-        }
-        .cta-wrapper {
-            align-items: center;
-        }
-        .proof-slider {
-            width: 100%;
-        }
-        .social-proof-item {
-            width: 100%;
-            text-align: center;
-        }
-        .hero-visual {
-            justify-content: center;
-        }
-        :global(.hero-buttons) {
-            justify-content: center !important;
-        }
-    }
-
-    /* --- Author Card Styles (ONLY this area changed) --- */
-    .author-section {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        margin-top: 2rem;
-    }
-
-    .author-link {
-        text-decoration: none;
-        display: block;
-        width: 100%;
-        max-width: 650px;
-    }
-
-    .author-card {
-        position: relative;
-        background: linear-gradient(
-            110deg,
-            color-mix(in srgb, var(--bg-sub), transparent 20%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 50%) 100%
-        );
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        padding: 24px 40px;
-        border-radius: 24px;
-        border: 1px solid var(--border);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
-        transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
-
-    .author-link:hover .author-card {
-        border-color: var(--primary);
-        transform: translateY(-4px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        background: linear-gradient(
-            110deg,
-            color-mix(in srgb, var(--bg-sub), transparent 5%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 30%) 100%
-        );
-    }
-
-    .author-content {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-        text-align: left;
-    }
-
-    .author-header {
-        display: flex;
-        flex-direction: column; /* Trust is on a new line always */
-        align-items: flex-start;
-        width: 100%;
-        gap: 4px;
-        margin-bottom: 12px;
-    }
-
-    .author-meta {
-        display: flex;
-        flex-direction: column;
-    }
-
-    .author-label {
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        color: var(--primary);
-        font-weight: 700;
-        margin-top: 2px;
-        margin-bottom: 2px;
-    }
-
-    .author-name {
-        font-size: 1.4rem;
-        color: var(--text-main);
-        margin: 0;
-        font-weight: 400;
-    }
-
-    /* Gradient is applied, pill background removed */
-    .author-trust {
-        font-size: 0.95rem;
-        font-weight: 700;
-        margin-top: 2px;
-        /* Ensure the element takes up enough width for the gradient to display properly */
-        display: block;
-        width: 100%;
-    }
-
-    .text-gradient-alt {
-        background: linear-gradient(135deg, var(--primary), #a855f7);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-    }
-
-    .creds-list {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-
-    .cred {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        display: flex;
-        align-items: center;
-    }
-
-    .divider {
-        width: 1px;
-        height: 14px;
-        background: var(--border);
-    }
-
-    @keyframes spin {
-        to {
-            transform: translate(-50%, -50%) rotate(360deg);
-        }
-    }
-
-    @media (max-width: 768px) {
-        /* Responsive Author Card tweaks (top-level UI CSS is separate) */
-        .author-card {
-            padding: 24px;
-            border-radius: 20px;
-        }
-
-        .creds-list {
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 6px;
-        }
-
-        .divider {
-            display: none;
-        }
-
-        .author-name {
-            font-size: 1.15rem;
-        }
-
-        .author-trust {
-            font-size: 0.85rem;
+            padding-top: calc(var(--header-height) + var(--space-md));
         }
     }
 </style>

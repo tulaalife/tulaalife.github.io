@@ -1,5 +1,6 @@
 ---
 import Site from "../layouts/Site.astro";
+import CTAButton from "../components/CTAButton.astro";
 
 const title = "Page not found · Tulaa";
 const description =
@@ -13,32 +14,40 @@ const description =
     hasTranslation={false}
 >
     <main class="error-container">
-        <div class="error-content">
+        <!-- Integrated our layout structure center-alignment configuration utility framework -->
+        <div class="section-header-center error-content">
             <span class="error-code">404</span>
-            <h1 class="error-title">Breathe out. Let's refocus.</h1>
-            <p class="error-desc">
+            <h1 class="error-title hero-title">Breathe out. Let's refocus.</h1>
+            <p
+                class="error-desc body-text"
+                style="margin-top: 16px; margin-bottom: 40px;"
+            >
                 The page you are looking for seems to have wandered off. Don't
                 worry, you are still in a safe space.
             </p>
 
             <div class="action-grid">
-                <a href="/" class="btn-primary"> Return Home </a>
+                <CTAButton
+                    href="/"
+                    label="Return Home"
+                    variant="solid"
+                    size="lg"
+                    icon="→"
+                />
             </div>
         </div>
     </main>
 </Site>
 
 <style>
-    /* Centered Layout */
     .error-container {
-        min-height: 80vh; /* Takes up most of the screen */
+        min-height: 80vh;
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
-        text-align: center;
+        padding: 24px;
 
-        /* Subtle background glow */
+        /* Ambient layout glow */
         background: radial-gradient(
             circle at 50% 50%,
             var(--bg-sub) 0%,
@@ -48,85 +57,33 @@ const description =
 
     .error-content {
         max-width: 500px;
-        margin-top: -60px; /* Visual balance */
     }
 
     /* Typography */
     .error-code {
-        font-size: 5rem;
+        font-size: clamp(4rem, 10vw, 6rem);
         font-weight: var(--fw-bold);
         color: var(--primary);
         opacity: 0.2;
         line-height: 1;
         display: block;
         margin-bottom: 24px;
-        letter-spacing: -0.05em;
     }
 
     .error-title {
-        font-size: clamp(2rem, 5vw, 2.5rem);
-        font-weight: var(--fw-bold);
+        font-size: clamp(1.8rem, 5vw, 2.5rem);
         color: var(--text-main);
-        margin-bottom: 16px;
-        line-height: 1.1;
     }
 
     .error-desc {
-        font-size: 1.1rem;
         color: var(--text-muted);
-        margin-bottom: 40px;
-        line-height: 1.6;
     }
 
-    /* Actions */
+    /* Actions Layout Structure */
     .action-grid {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 24px;
-    }
-
-    .btn-primary {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--text-main);
-        color: var(--bg-main);
-        padding: 14px 32px;
-        border-radius: 99px;
-        font-weight: 600;
-        text-decoration: none;
-        transition:
-            transform 0.2s,
-            opacity 0.2s;
-    }
-
-    .btn-primary:hover {
-        transform: translateY(-2px);
-        opacity: 0.9;
-    }
-
-    /* Secondary Links */
-    .secondary-links {
-        display: flex;
-        gap: 12px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .link-pill {
-        padding: 8px 20px;
-        border: 1px solid var(--border);
-        border-radius: 99px;
-        color: var(--text-muted);
-        text-decoration: none;
-        font-size: 0.95rem;
-        transition: all 0.2s;
-    }
-
-    .link-pill:hover {
-        border-color: var(--primary);
-        color: var(--primary);
-        background: var(--bg-sub);
+        width: 100%;
     }
 </style>
