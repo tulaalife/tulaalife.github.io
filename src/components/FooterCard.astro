@@ -63,30 +63,29 @@ const { subline = t.subline } = Astro.props;
         position: relative;
         width: 100%;
         max-width: var(--container-width);
-        /* Replaced static 4rem padding with a dynamic scale to optimize vertical space */
         padding: clamp(2.5rem, 6vh, 4.5rem) var(--space-md);
         border-radius: var(--radius-lg);
         overflow: hidden;
         isolation: isolate;
 
-        /* Glassmorphism base styling setup */
+        /* Re-engineered theme-adaptive clean flat mesh */
         background: linear-gradient(
             135deg,
-            color-mix(in srgb, var(--bg-main), white 2%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 50%) 100%
+            color-mix(in srgb, var(--bg-main), var(--text-main) 1%) 0%,
+            color-mix(in srgb, var(--bg-sub), transparent 30%) 100-percent
         );
         border: 1px solid var(--border);
         box-shadow: var(--shadow);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
     }
 
+    /* Clean dark-mode overrides using matching token primitives */
     :global([data-theme="dark"]) .footer-card {
         background: linear-gradient(
             135deg,
-            rgba(255, 255, 255, 0.03) 0%,
-            rgba(255, 255, 255, 0.01) 100%
+            color-mix(in srgb, var(--bg-sub), var(--text-main) 2%) 0%,
+            var(--bg-main) 100%
         );
+        border-color: var(--border);
     }
 
     .content {
@@ -98,9 +97,10 @@ const { subline = t.subline } = Astro.props;
     }
 
     .section-title {
-        font-size: clamp(2rem, 5.5vw, 3.6rem);
-        margin-bottom: var(--space-sm); /* Controlled rhythm step */
-        line-height: 1.15;
+        font-size: clamp(2.2rem, 5.5vw, 3.6rem);
+        margin-bottom: var(--space-sm);
+        letter-spacing: -0.035em;
+        line-height: 1.12;
     }
 
     .title-main {
@@ -108,27 +108,23 @@ const { subline = t.subline } = Astro.props;
     }
 
     .sub {
-        font-size: clamp(1.05rem, 2vw, 1.2rem);
-        line-height: 1.6;
-        margin-bottom: var(
-            --space-lg
-        ); /* Reduced to prevent cutting off the buttons */
-        max-width: 560px;
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
+        line-height: 1.65;
+        margin-bottom: var(--space-lg);
+        max-width: 580px;
         margin-left: auto;
         margin-right: auto;
         color: var(--text-muted);
     }
 
+    /* Enforces strong reading accents to match hero blocks */
     .sub :global(strong) {
         color: var(--text-main);
-        font-weight: var(--fw-bold);
+        font-weight: 750;
     }
 
     .button-container {
-        filter: drop-shadow(
-            0 12px 24px color-mix(in srgb, var(--text-main) 10%, transparent)
-        );
-        transition: transform 0.3s ease;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .button-container:hover {
@@ -153,7 +149,7 @@ const { subline = t.subline } = Astro.props;
             padding: var(--space-lg) var(--space-md);
         }
         .section-title {
-            font-size: 1.8rem;
+            font-size: 2rem;
             margin-bottom: var(--space-xs);
         }
         .sub {
