@@ -179,12 +179,12 @@ const videoMp4 =
         background-color: var(--bg-sub);
         border-radius: 44px;
 
-        /* Clean multi-layered shadows handling dark/light mode flawlessly */
-        border: 1px solid var(--border);
+        border: 1px solid color-mix(in srgb, var(--text-main) 10%, transparent);
         box-shadow:
-            0 0 0 6px var(--bg-main),
-            0 0 0 7px var(--border),
-            var(--shadow);
+            0 0 0 6px color-mix(in srgb, var(--bg-sub) 60%, transparent),
+            0 12px 40px -8px
+                color-mix(in srgb, var(--text-main) 12%, transparent);
+        backdrop-filter: blur(16px);
 
         overflow: hidden;
     }
@@ -238,10 +238,13 @@ const videoMp4 =
         .phone-frame-wrapper {
             height: 66dvh; /* Nicely padded look for standard smartphones */
             border-radius: 36px;
+            border: 1px solid
+                color-mix(in srgb, var(--text-main) 10%, transparent);
             box-shadow:
-                0 0 0 5px var(--bg-main),
-                0 0 0 6px var(--border),
-                var(--shadow);
+                0 0 0 6px color-mix(in srgb, var(--bg-sub) 60%, transparent),
+                0 12px 40px -8px
+                    color-mix(in srgb, var(--text-main) 12%, transparent);
+            backdrop-filter: blur(16px);
         }
 
         .visual-backlightstage::before {
