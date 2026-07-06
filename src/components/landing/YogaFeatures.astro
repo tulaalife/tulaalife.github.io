@@ -11,9 +11,7 @@ import { yogaPlans } from "../../data/generated";
 const currentLang = (Astro.currentLocale || "en") as SupportedLang;
 const t = YOGA_UI[currentLang] || YOGA_UI.en;
 
-const displayPlans = yogaPlans
-    .filter((p) => p.language === currentLang)
-    .slice(0, 8);
+const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 ---
 
 <section class="scroll-section section-yoga">
