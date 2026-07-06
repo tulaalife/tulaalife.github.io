@@ -16,7 +16,7 @@ const ui = {
             "100% Private: No accounts, no data mining",
             "Guided audio for deep sleep and anxiety",
             "Built-in trackers for cycles, moods, and fasting",
-            "Completely free forever. No hidden paywalls.",
+            "Completely free. No hidden paywalls.",
         ],
     },
     hi: {
@@ -107,35 +107,43 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         flex-direction: column;
     }
 
-    /* Upgraded premium pill badge */
+    /* Polished Premium Pill Badge */
     .badge-pill {
         display: inline-flex;
-        padding: 6px 16px;
+        padding: 6px 14px;
         border-radius: 999px;
-        background: color-mix(in srgb, var(--primary) 8%, transparent);
+        background: color-mix(in srgb, var(--primary) 6%, transparent);
         color: var(--primary);
         font-weight: 600;
-        font-size: 0.85rem;
-        letter-spacing: 0.02em;
-        margin-bottom: var(--space-lg);
-        border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+        font-size: 0.8rem;
+        letter-spacing: 0.03em;
+        margin-bottom: var(--space-md);
+        border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
         backdrop-filter: blur(8px);
         align-self: flex-start;
     }
 
     .hero-title {
-        font-size: clamp(2.2rem, 5vw, 4.2rem);
+        font-size: clamp(2.4rem, 5.5vw, 4.4rem);
         margin-bottom: var(--space-md);
-        letter-spacing: -0.03em;
-        line-height: 1.1;
+        letter-spacing: -0.035em;
+        line-height: 1.08;
+        color: var(--text-main);
     }
 
+    /* Enhanced contrast readability for the subtitle */
     .hero-sub {
         font-size: clamp(1.1rem, 2vw, 1.25rem);
         line-height: 1.65;
         color: var(--text-muted);
         margin-bottom: var(--space-lg);
-        max-width: 620px;
+        max-width: 640px;
+    }
+
+    /* Makes the inline-bold elements truly pop out from muted prose */
+    .hero-sub :global(strong) {
+        color: var(--text-main);
+        font-weight: 700;
     }
 
     .cta-wrapper {
@@ -146,35 +154,33 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         width: 100%;
     }
 
+    /* Polished label styling */
     .cta-lead {
         font-weight: 700;
         font-size: 0.75rem;
         color: var(--text-muted);
         text-transform: uppercase;
-        letter-spacing: 0.08em;
-        margin: 0;
+        letter-spacing: 0.1em;
+        margin-bottom: 2px;
     }
 
     /* --- FIXED PROOF SLIDER CONTAINER --- */
     .proof-slider {
-        /* Removed fixed heights & overflow hidden constraints entirely */
         position: relative;
-        margin-top: var(--space-sm);
+        margin-top: var(--space-md);
         width: 100%;
-        min-height: 2rem; /* Safe minimum, scales fluidly */
+        min-height: 2rem;
         display: grid;
         grid-template-columns: 1fr;
     }
 
     .social-proof-item {
-        /* Place all items over each other naturally via grid stack */
         grid-area: 1 / 1 / 2 / 2;
         text-align: left;
         font-size: 0.95rem;
         font-weight: 500;
         color: var(--text-muted);
         opacity: 0;
-        /* Replaced extreme vertical translations with a clean, cinematic fade-in-blur */
         transform: scale(0.98);
         filter: blur(4px);
         pointer-events: none;
@@ -182,8 +188,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             opacity 0.5s ease-in-out,
             transform 0.5s ease-in-out,
             filter 0.5s ease-in-out;
-
-        /* Padding adjustments specifically tailored to secure Hindi matras */
         padding: 4px 0;
         line-height: 1.4;
     }
@@ -204,12 +208,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
     @media (max-height: 740px) {
         .badge-pill {
-            margin-bottom: var(--space-sm);
+            margin-bottom: var(--space-xs);
             padding: 4px 12px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
         }
         .hero-title {
-            font-size: 2rem;
+            font-size: 2.2rem;
             margin-bottom: var(--space-xs);
         }
         .hero-sub {
