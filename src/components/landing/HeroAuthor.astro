@@ -3,54 +3,62 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        author: "Latika Bissa",
+        sectionLabel: "Meet Your Instructor",
         authorLabel: "Yoga Therapist",
-        authorTrust: "Rated 5 stars • 5,000+ Happy Students",
+        author: "Latika Bissa",
+        authorFounder: "Founder Tulaa, YogaWithLatika",
         cred1: "🧘‍♀️ 12+ Years of Experience",
         cred2: "🏅 Gold Medalist, M.Sc Yoga Therapy",
+        cred3: "⭐ Rated 5 Stars by on Google",
+        cred4: "👀 50 lakh views on social media",
+        cred5: "🔬 Expert in Pain management, Pregnancy",
     },
     hi: {
-        author: "लतिका बिस्सा",
+        sectionLabel: "अपने इंस्ट्रक्टर से मिलें",
         authorLabel: "योग चिकित्सक",
-        authorTrust: "5-स्टार रेटिंग • 5,000+ संतुष्ट साधक",
+        author: "लतिका बिस्सा",
+        authorFounder: "संस्थापक Tulaa, YogaWithLatika",
         cred1: "🧘‍♀️ 12+ वर्षों का अनुभव",
         cred2: "🏅 स्वर्ण पदक विजेता, M.Sc योग थेरेपी",
+        cred3: "⭐ 5,000+ संतुष्ट साधकों द्वारा 5-स्टार रेटिंग",
+        cred4: "👀 सोशल मीडिया पर 50 लाख व्यूज़",
+        cred5: "🔬 दर्द प्रबंधन और गर्भावस्था के विशेषज्ञ",
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const authorImg = "/images/latika.png";
+const authorImg = "/images/latika.png"; // Your existing image works perfectly as it will be cleanly cropped inside the avatar circle frame
 ---
 
 <section class="scroll-section author-section">
     <div class="container layout-wrapper">
-        <div class="author-card">
-            <!-- Left Content Pane -->
-            <div class="author-content">
-                <div class="author-header">
-                    <span class="author-label">{t.authorLabel}</span>
-                    <h2 class="author-name">{t.author}</h2>
-                    <div
-                        class="author-trust text-gradient"
-                        set:html={t.authorTrust}
-                    />
-                </div>
-
-                <div class="creds-list">
-                    <div class="cred-item">{t.cred1}</div>
-                    <div class="cred-item">{t.cred2}</div>
-                </div>
-            </div>
-
-            <!-- Right Visual Pane -->
-            <div class="author-image-pane">
+        <div class="instructor-minimal-profile animate-on-scroll">
+            <!-- 1. Top Centered High-Trust Headshot Avatar -->
+            <div class="avatar-container">
                 <img
                     src={authorImg}
                     alt="Latika Bissa"
-                    class="author-img"
+                    class="instructor-headshot"
                     loading="lazy"
                     decoding="async"
                 />
+            </div>
+
+            <!-- 2. Central Editorial Content Block -->
+            <div class="profile-header-meta">
+                <span class="section-label-banner">{t.sectionLabel}</span>
+                <span class="author-label">{t.authorLabel}</span>
+                <h2 class="author-name">{t.author}</h2>
+                <p class="author-founder-title">{t.authorFounder}</p>
+            </div>
+
+            <!-- 3. High-Density Compact Line Item Credentials -->
+            <div class="compact-creds-box">
+                <div class="cred-line-item trust-highlight">{t.cred1}</div>
+                <div class="cred-line-item">{t.cred2}</div>
+                <div class="cred-line-item">{t.cred3}</div>
+                <div class="cred-line-item">{t.cred4}</div>
+                <div class="cred-line-item">{t.cred5}</div>
             </div>
         </div>
     </div>
@@ -72,167 +80,155 @@ const authorImg = "/images/latika.png";
         justify-content: flex-start;
     }
 
-    /* --- MINIMALIST FLAT CONTAINER --- */
-    .author-card {
+    /* Asymmetric Left-Aligned Row Setup */
+    .instructor-minimal-profile {
         width: 100%;
         display: flex;
         flex-direction: row;
-        justify-content: space-between;
         align-items: center;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        box-shadow: none;
+        justify-content: space-between;
+        gap: var(--space-xl);
     }
 
-    .author-content {
+    /* --- 1. HEADSHOT FRAME GRAPHIC --- */
+    .avatar-container {
+        position: relative;
+        width: 140px; /* Enhanced slightly to fill side-profile layout nicely */
+        height: 140px;
+        border-radius: 50%;
+        background: var(--bg-sub);
+        border: 2px solid var(--border);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        order: 2; /* Shifts avatar to the right side on desktop layout viewports */
+    }
+
+    .instructor-headshot {
+        position: absolute;
+        width: 150%;
+        height: auto;
+        left: 50%;
+        top: 20%;
+        transform: translateX(-50%);
+    }
+
+    /* --- 2. EDITORIAL METADATA HOLDER --- */
+    .profile-header-meta {
         display: flex;
         flex-direction: column;
-        justify-content: center;
         flex: 1;
-        z-index: 2;
         text-align: left;
-        padding: 0;
-        padding-right: var(--space-xl);
     }
 
-    .author-header {
-        margin-bottom: var(--space-md);
+    .section-label-banner {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        color: var(--text-muted);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        display: block;
+        margin-bottom: 2px;
     }
 
     .author-label {
-        font-size: 0.75rem;
+        font-size: 0.82rem;
         text-transform: uppercase;
         color: var(--primary);
-        font-weight: 700;
-        letter-spacing: 0.1em;
+        font-weight: 750;
+        letter-spacing: 0.05em;
         display: block;
         margin-bottom: var(--space-xs);
     }
 
     .author-name {
-        font-size: clamp(2.2rem, 5vw, 3.5rem);
+        font-size: clamp(2.2rem, 5vw, 3.2rem);
         color: var(--text-main);
-        margin: 0 0 6px 0;
+        margin: 0 0 4px 0;
         font-weight: var(--fw-bold);
         letter-spacing: -0.035em;
         line-height: 1.1;
     }
 
-    .author-trust {
-        font-size: clamp(0.95rem, 1.8vw, 1.1rem);
+    .author-founder-title {
+        font-size: clamp(1.05rem, 2vw, 1.25rem);
         font-weight: 600;
-        letter-spacing: -0.01em;
         color: var(--text-muted);
-        display: inline-block;
-        margin-top: 2px;
+        margin: 0 0 var(--space-md) 0;
+        line-height: 1.4;
     }
 
-    /* Polished Line Item Layout for Credentials */
-    .creds-list {
+    /* --- 3. HIGH-DENSITY COMPACT CREDENTIALS LIST --- */
+    .compact-creds-box {
         display: flex;
         flex-direction: column;
-        gap: 14px;
-        margin-top: var(--space-xs);
-        max-width: 480px;
+        gap: 10px;
+        width: 100%;
+        max-width: 520px;
+        align-items: flex-start;
+        padding-top: var(--space-md);
+        border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
     }
 
-    .cred-item {
-        font-size: 1.05rem;
+    .cred-line-item {
+        font-size: 0.98rem;
         color: var(--text-main);
         font-weight: 500;
         line-height: 1.4;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 12px;
+        text-align: left;
     }
 
-    .author-image-pane {
-        width: 45%;
-        max-width: 400px;
-        position: relative;
-        display: flex;
-        align-items: flex-end;
-        justify-content: center;
-        background: transparent;
-        flex-shrink: 0;
-    }
-
-    /* Soft organic directional drop-shadow optimized for light/dark viewports */
-    .author-img {
-        width: 100%;
-        height: auto;
-        max-height: 480px;
-        object-fit: contain;
-        display: block;
-        filter: drop-shadow(
-            0 16px 24px color-mix(in srgb, var(--text-main) 8%, transparent)
-        );
+    .trust-highlight {
+        font-weight: 650;
     }
 
     /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
     :lang(hi) .author-name {
         line-height: 1.35;
-        padding-bottom: 4px;
+    }
+    :lang(hi) .author-founder-title {
+        line-height: 1.45;
+    }
+    :lang(hi) .cred-line-item {
+        font-size: 1rem;
     }
 
-    :lang(hi) .author-trust {
-        line-height: 1.4;
-        padding: 4px 0;
-    }
-
-    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
-    @media (max-height: 740px) {
-        .author-header {
-            margin-bottom: var(--space-sm);
-        }
-        .author-name {
-            font-size: 1.8rem;
-        }
-        .creds-list {
-            gap: var(--space-xs);
-        }
-        .cred-item {
-            font-size: 0.95rem;
-        }
-        .author-img {
-            max-height: 360px;
-        }
-    }
-
-    @media (max-width: 992px) {
-        .author-content {
-            padding-right: var(--space-lg);
-        }
-    }
-
+    /* --- RESPONSIVE ADAPTATIONS --- */
     @media (max-width: 768px) {
-        .author-card {
-            flex-direction: column;
+        .instructor-minimal-profile {
+            flex-direction: column; /* Stack vertically on mobile screen devices */
             align-items: flex-start;
+            gap: var(--space-md);
         }
 
-        .author-content {
-            padding-right: 0;
-            margin-bottom: var(--space-md);
+        .avatar-container {
+            width: 120px;
+            height: 120px;
+            order: -1; /* Pushes the headshot to the very top frame block on mobile */
+            margin-bottom: var(--space-xs);
         }
 
+        .author-name {
+            font-size: 2.2rem;
+        }
+    }
+
+    @media (max-height: 740px) and (min-width: 769px) {
+        .avatar-container {
+            width: 110px;
+            height: 110px;
+        }
         .author-name {
             font-size: 2rem;
         }
-
-        .author-trust {
-            font-size: 0.95rem;
-        }
-
-        .author-image-pane {
-            width: 100%;
-            max-width: 100%;
-            justify-content: center;
-        }
-
-        .author-img {
-            max-height: 340px;
+        .compact-creds-box {
+            gap: 8px;
         }
     }
 </style>
