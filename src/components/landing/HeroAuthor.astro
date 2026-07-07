@@ -27,14 +27,32 @@ const ui = {
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const authorImg = "/images/latika.png"; // Your existing image works perfectly as it will be cleanly cropped inside the avatar circle frame
+const authorImg = "/images/latika.png";
 ---
 
 <section class="scroll-section author-section">
     <div class="container layout-wrapper">
         <div class="instructor-minimal-profile animate-on-scroll">
-            <!-- 1. Top Centered High-Trust Headshot Avatar -->
-            <div class="avatar-container">
+            <!-- Left Grid: Content and Credentials Meta Blocks -->
+            <div class="profile-details-column">
+                <div class="profile-header-meta">
+                    <span class="section-label-banner">{t.sectionLabel}</span>
+                    <span class="author-label">{t.authorLabel}</span>
+                    <h2 class="author-name">{t.author}</h2>
+                    <p class="author-founder-title">{t.authorFounder}</p>
+                </div>
+
+                <div class="compact-creds-box">
+                    <div class="cred-line-item trust-highlight">{t.cred1}</div>
+                    <div class="cred-line-item">{t.cred2}</div>
+                    <div class="cred-line-item">{t.cred3}</div>
+                    <div class="cred-line-item">{t.cred4}</div>
+                    <div class="cred-line-item">{t.cred5}</div>
+                </div>
+            </div>
+
+            <!-- Right Grid: Top Centered High-Trust Headshot Avatar -->
+            <div class="avatar-container premium-gloss-surface">
                 <img
                     src={authorImg}
                     alt="Latika Bissa"
@@ -42,23 +60,6 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
                     loading="lazy"
                     decoding="async"
                 />
-            </div>
-
-            <!-- 2. Central Editorial Content Block -->
-            <div class="profile-header-meta">
-                <span class="section-label-banner">{t.sectionLabel}</span>
-                <span class="author-label">{t.authorLabel}</span>
-                <h2 class="author-name">{t.author}</h2>
-                <p class="author-founder-title">{t.authorFounder}</p>
-            </div>
-
-            <!-- 3. High-Density Compact Line Item Credentials -->
-            <div class="compact-creds-box">
-                <div class="cred-line-item trust-highlight">{t.cred1}</div>
-                <div class="cred-line-item">{t.cred2}</div>
-                <div class="cred-line-item">{t.cred3}</div>
-                <div class="cred-line-item">{t.cred4}</div>
-                <div class="cred-line-item">{t.cred5}</div>
             </div>
         </div>
     </div>
@@ -76,11 +77,9 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
 
     .layout-wrapper {
         width: 100%;
-        display: flex;
-        justify-content: flex-start;
     }
 
-    /* Asymmetric Left-Aligned Row Setup */
+    /* Streamlined Layout Structure */
     .instructor-minimal-profile {
         width: 100%;
         display: flex;
@@ -90,21 +89,28 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
         gap: var(--space-xl);
     }
 
-    /* --- 1. HEADSHOT FRAME GRAPHIC --- */
+    .profile-details-column {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+
+    /* --- 1. HEADSHOT FRAME GRAPHIC WITH PREMIUM GLOSS --- */
     .avatar-container {
-        position: relative;
-        width: 140px; /* Enhanced slightly to fill side-profile layout nicely */
-        height: 140px;
+        width: 154px;
+        height: 154px;
         border-radius: 50%;
-        background: var(--bg-sub);
-        border: 2px solid var(--border);
         overflow: hidden;
-        box-shadow: var(--shadow);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        order: 2; /* Shifts avatar to the right side on desktop layout viewports */
+        will-change: transform;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .avatar-container:hover {
+        transform: scale(1.03);
     }
 
     .instructor-headshot {
@@ -120,7 +126,6 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
     .profile-header-meta {
         display: flex;
         flex-direction: column;
-        flex: 1;
         text-align: left;
     }
 
@@ -131,7 +136,7 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
         font-weight: 700;
         letter-spacing: 0.12em;
         display: block;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
     }
 
     .author-label {
@@ -145,7 +150,7 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
     }
 
     .author-name {
-        font-size: clamp(2.2rem, 5vw, 3.2rem);
+        font-size: clamp(2.4rem, 5vw, 3.4rem);
         color: var(--text-main);
         margin: 0 0 4px 0;
         font-weight: var(--fw-bold);
@@ -157,20 +162,18 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
         font-size: clamp(1.05rem, 2vw, 1.25rem);
         font-weight: 600;
         color: var(--text-muted);
-        margin: 0 0 var(--space-md) 0;
+        margin: 0 0 var(--space-lg) 0;
         line-height: 1.4;
     }
 
     /* --- 3. HIGH-DENSITY COMPACT CREDENTIALS LIST --- */
     .compact-creds-box {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 12px var(--space-md);
         width: 100%;
-        max-width: 520px;
-        align-items: flex-start;
         padding-top: var(--space-md);
-        border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+        border-top: 1px solid var(--border);
     }
 
     .cred-line-item {
@@ -180,7 +183,7 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
         line-height: 1.4;
         display: flex;
         align-items: flex-start;
-        gap: 12px;
+        gap: 10px;
         text-align: left;
     }
 
@@ -204,7 +207,6 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
         font-size: 0.82rem;
         margin-bottom: 4px;
     }
-
     :lang(hi) .author-label {
         letter-spacing: normal;
         text-transform: none;
@@ -214,27 +216,36 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
     /* --- RESPONSIVE ADAPTATIONS --- */
     @media (max-width: 768px) {
         .instructor-minimal-profile {
-            flex-direction: column; /* Stack vertically on mobile screen devices */
+            flex-direction: column;
             align-items: flex-start;
             gap: var(--space-md);
+        }
+
+        .profile-details-column {
+            width: 100%;
         }
 
         .avatar-container {
             width: 120px;
             height: 120px;
-            order: -1; /* Pushes the headshot to the very top frame block on mobile */
+            order: -1; /* Retain headshot positioning at top framework layout on mobiles */
             margin-bottom: var(--space-xs);
         }
 
         .author-name {
             font-size: 2.2rem;
         }
+
+        .compact-creds-box {
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
     }
 
     @media (max-height: 740px) and (min-width: 769px) {
         .avatar-container {
-            width: 110px;
-            height: 110px;
+            width: 120px;
+            height: 120px;
         }
         .author-name {
             font-size: 2rem;

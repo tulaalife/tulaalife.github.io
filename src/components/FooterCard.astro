@@ -32,8 +32,8 @@ const { subline = t.subline } = Astro.props;
 ---
 
 <section class="footer-card-container">
-    <div class="footer-card">
-        <!-- Integrated our layout structure center-alignment configuration utility framework -->
+    <!-- Integrated premium, performant specular gloss styling layers natively -->
+    <div class="footer-card premium-gloss-surface">
         <div class="section-header-center content">
             <h2 class="section-title">
                 <span class="title-main">{t.titleTop}</span>
@@ -60,32 +60,27 @@ const { subline = t.subline } = Astro.props;
     }
 
     .footer-card {
-        position: relative;
         width: 100%;
         max-width: var(--container-width);
         padding: clamp(2.5rem, 6vh, 4.5rem) var(--space-md);
         border-radius: var(--radius-lg);
         overflow: hidden;
-        isolation: isolate;
 
-        /* Re-engineered theme-adaptive clean flat mesh */
+        /* Re-engineered theme-adaptive flat mesh using explicit % steps */
         background: linear-gradient(
             135deg,
             color-mix(in srgb, var(--bg-main), var(--text-main) 1%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 30%) 100-percent
+            color-mix(in srgb, var(--bg-sub), transparent 30%) 100%
         );
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
     }
 
-    /* Clean dark-mode overrides using matching token primitives */
+    /* Seamless dark-mode overrides using matching token primitives */
     :global([data-theme="dark"]) .footer-card {
         background: linear-gradient(
             135deg,
             color-mix(in srgb, var(--bg-sub), var(--text-main) 2%) 0%,
             var(--bg-main) 100%
         );
-        border-color: var(--border);
     }
 
     .content {
@@ -111,13 +106,12 @@ const { subline = t.subline } = Astro.props;
         font-size: clamp(1.05rem, 2vw, 1.25rem);
         line-height: 1.65;
         margin-bottom: var(--space-lg);
-        max-width: 580px;
+        max-width: 54ch; /* Standardized to match global character comfort bounds */
         margin-left: auto;
         margin-right: auto;
         color: var(--text-muted);
     }
 
-    /* Enforces strong reading accents to match hero blocks */
     .sub :global(strong) {
         color: var(--text-main);
         font-weight: 750;
@@ -125,17 +119,18 @@ const { subline = t.subline } = Astro.props;
 
     .button-container {
         width: 100%;
-        /* 
-           Allocates exactly enough horizontal space to fit both 
-           store actions (max-width: 175px each) plus their gap inline
-        */
         max-width: 370px;
         margin: 0 auto;
+        will-change: transform;
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .button-container:hover {
-        transform: translateY(-4px);
+        transform: translateY(-3px);
+    }
+
+    .button-container:active {
+        transform: translateY(-1px) scale(0.99);
     }
 
     /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */

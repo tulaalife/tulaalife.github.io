@@ -53,7 +53,7 @@ const displayAudios = guidedAudios
                     displayAudios.map((audio) => (
                         <a
                             href={`${baseAudioHref}/${audio.slug}`}
-                            class="carousel-card"
+                            class="carousel-card premium-gloss-surface"
                         >
                             <div class="card-image">
                                 <img
@@ -79,7 +79,6 @@ const displayAudios = guidedAudios
                             </div>
                             <div class="card-content">
                                 <h3 class="card-title">{audio.title}</h3>
-                                {/* Subtitle description removed for space optimization */}
                                 <div class="card-footer">
                                     <span class="view-link">{t.play}</span>
                                     <span class="icon">→</span>
@@ -134,7 +133,7 @@ const displayAudios = guidedAudios
     .body-text {
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        max-width: 600px;
+        max-width: 54ch; /* Restricts layout width for premium legibility proportions */
         text-align: left;
         line-height: 1.6;
         margin-top: var(--space-xs);
@@ -147,7 +146,6 @@ const displayAudios = guidedAudios
         margin-bottom: var(--space-md);
     }
 
-    /* Polished, zero-obtrusive right edge gradient mask seen in Screenshot 2026-07-06 at 10.04.48 AM.jpg */
     .carousel-wrapper::after {
         content: "";
         position: absolute;
@@ -185,27 +183,22 @@ const displayAudios = guidedAudios
         flex: 0 0 290px;
         display: flex;
         flex-direction: column;
-        background: var(--bg-sub);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        overflow: hidden;
         text-decoration: none;
         color: inherit;
-
-        /* Enforces matching static heights across all states */
         height: 100%;
         min-height: 250px;
-
-        transition:
-            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-            box-shadow 0.4s ease,
-            border-color 0.4s ease;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        will-change: transform;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .carousel-card:hover {
         transform: translateY(-4px);
-        box-shadow: var(--shadow);
-        border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+    }
+
+    .carousel-card:active {
+        transform: translateY(-2px) scale(0.98); /* Premium app-like tap bounce */
     }
 
     .card-image {
@@ -213,12 +206,14 @@ const displayAudios = guidedAudios
         aspect-ratio: 16 / 10;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
+        background: var(--bg-main);
     }
 
     .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        will-change: transform;
         transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -241,9 +236,10 @@ const displayAudios = guidedAudios
         display: flex;
         align-items: center;
         justify-content: center;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         border: 1px solid var(--border);
-        box-shadow: var(--shadow); /* Premium shadow rendering */
+        box-shadow: var(--shadow);
+        will-change: transform, background-color, border-color;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .play-icon {
@@ -261,7 +257,9 @@ const displayAudios = guidedAudios
     }
 
     .carousel-card:hover .play-icon {
-        color: var(--bg-main);
+        color: oklch(
+            100% 0 0
+        ); /* Ensures flawless visual tone contrast against the color primary layer */
     }
 
     .card-content {
@@ -273,7 +271,6 @@ const displayAudios = guidedAudios
         justify-content: space-between;
     }
 
-    /* Rigid structural multi-line title clamp ceiling */
     .card-title {
         font-size: 1.2rem;
         font-weight: 750;
@@ -281,7 +278,6 @@ const displayAudios = guidedAudios
         color: var(--text-main);
         letter-spacing: -0.015em;
         line-height: 1.35;
-
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -345,7 +341,7 @@ const displayAudios = guidedAudios
 
     @media (max-width: 768px) {
         .carousel-card {
-            flex: 0 0 290px; /* Keep uniform structure on mobile viewports */
+            flex: 0 0 290px;
         }
     }
 </style>

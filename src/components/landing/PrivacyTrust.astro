@@ -88,7 +88,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                 {
                     t.features.map((feature, index) => (
                         <div
-                            class={`animated-privacy-card ${index === 0 ? "active" : ""}`}
+                            class={`animated-privacy-card premium-gloss-surface ${index === 0 ? "active" : ""}`}
                             style={`--card-accent: ${feature.color}`}
                         >
                             <!-- Premium Background Watermark Icons -->
@@ -154,7 +154,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             cards[activeIndex].classList.remove("active");
             activeIndex = (activeIndex + 1) % cards.length;
             cards[activeIndex].classList.add("active");
-        }, 4500); // 4.5s allows comfortable reading for the slightly longer privacy descriptions
+        }, 4500);
     });
 </script>
 
@@ -186,11 +186,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
         line-height: 1.6;
+        max-width: 54ch; /* Restricts long lines to protect the design rhythm */
         text-align: left;
         margin-top: var(--space-xs);
     }
 
-    /* --- SEQUENTIAL FADE CONTEXT DISPLAY --- */
+    /* --- CONTEXT DISPLAY STAGE --- */
     .stack-stage-container {
         width: 100%;
         margin-bottom: var(--space-lg);
@@ -200,40 +201,35 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         position: relative;
         width: 100%;
         max-width: 480px;
-        height: 150px; /* Locked height preserves structural grid layouts for 2-3 line descriptions */
+        height: 154px; /* Perfectly structured space for clean rendering frames */
         display: grid;
         grid-template-columns: 1fr;
     }
 
     .animated-privacy-card {
         grid-area: 1 / 1 / 2 / 2;
-        background: var(--bg-sub);
         padding: var(--space-md) var(--space-xl) var(--space-md) var(--space-md);
         border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: flex-start;
-        position: relative;
         overflow: hidden;
         width: 100%;
         height: 100%;
         
-        /* High-fidelity Cinematic Fade transition system */
+        /* High-fidelity GPU-accelerated transition engine */
         opacity: 0;
-        transform: scale(0.97) translateY(4px);
-        filter: blur(4px);
+        transform: translateY(6px) scale(0.98);
         pointer-events: none;
+        will-change: transform, opacity;
         transition:
-            opacity 0.6s ease-in-out,
-            transform 0.6s ease-in-out,
-            filter 0.5s ease-in-out,
-            border-color 0.3s ease;
+            opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* Distinct top-edge security highlight line for privacy cards */
-    .animated-privacy-card::before {
+    /* Subtle decorative top-edge indicator line */
+    .animated-privacy-card::after {
         content: "";
         position: absolute;
         top: 0;
@@ -247,22 +243,20 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .animated-privacy-card.active {
         opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: blur(0);
+        transform: translateY(0) scale(1);
         pointer-events: auto;
-        border-color: color-mix(in srgb, var(--card-accent) 40%, var(--border));
-        box-shadow: var(--shadow);
     }
 
-    /* --- PREMIUM WATERMARK POSITIONING SYSTEM --- */
+    /* --- BACKGROUND WATERMARK ICONS --- */
     .card-watermark {
         position: absolute;
         bottom: -20px;
         right: -20px;
         color: var(--card-accent);
-        opacity: 0.05;
+        opacity: 0.04;
         pointer-events: none;
         z-index: 1;
+        will-change: transform, opacity;
         transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -272,14 +266,14 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .animated-privacy-card.active .card-watermark {
-        opacity: 0.09;
-        transform: scale(1.05) rotate(-3deg);
+        opacity: 0.08;
+        transform: scale(1.04) rotate(-3deg);
     }
 
     .card-content {
         width: 100%;
         position: relative;
-        z-index: 2; /* Ensures text remains crisp and highly legible over background watermarks */
+        z-index: 2;
     }
 
     .card-title {
@@ -309,7 +303,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: inline;
     }
 
-    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
+    /* --- DEVANAGARI TRANSLATION LAYOUT TWEAKS --- */
     :lang(hi) .section-title {
         line-height: 1.35;
     }
@@ -320,7 +314,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         line-height: 1.6;
     }
 
-    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
+    /* --- RESPONSIVE SCREEN ADAPTATIONS --- */
     @media (max-height: 740px) {
         .header-content {
             margin-bottom: var(--space-sm);
@@ -332,7 +326,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             margin-bottom: var(--space-sm);
         }
         .stage-frame {
-            height: 130px;
+            height: 136px;
         }
         .animated-privacy-card {
             padding: var(--space-md);
