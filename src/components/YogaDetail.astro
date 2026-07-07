@@ -193,7 +193,8 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
     .image-frame img {
         width: 100%;
-        aspect-ratio: 16 / 10; /* Transitioned to widescreen scale standard format */
+        aspect-ratio: 16 / 10; /* Clean cinematic look for desktop layouts */
+        max-height: 420px; /* Prevents it from scaling too massive on ultra-wide desktop monitors */
         object-fit: cover;
         display: block;
         transition: transform 0.6s ease;
@@ -299,6 +300,11 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
     @media (max-width: 600px) {
         .content-shell {
             padding: 24px 16px 60px;
+        }
+
+        .image-frame img {
+            aspect-ratio: 16 / 11;
+            max-height: 250px;
         }
 
         .plan-title {
