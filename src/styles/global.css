@@ -101,11 +101,16 @@ body::before {
     width: 100vw;
     height: 100vh;
     z-index: 9999;
-    opacity: 0.025;
     pointer-events: none;
-    background-image: url("/assets/textures/noise.webp");
-    /* Place a tiny 50x50px tiled noise image file here */
+    /* Crucial: ensures clicks pass right through to buttons */
+    background-image: url("/assets/textures/noise.svg");
     background-repeat: repeat;
+    opacity: 0.3;
+}
+
+:root[data-theme="dark"] body::before {
+    opacity: 0.3;
+    mix-blend-mode: screen;
 }
 
 body:lang(hi) {
