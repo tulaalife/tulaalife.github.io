@@ -1,6 +1,7 @@
 ---
 // src/components/landing/PrivacyTrust.astro
 import SectionCTA from "../SectionCTA.astro";
+import AnimatedFeatureCard from "./AnimatedFeatureCard.astro";
 
 const currentLang = Astro.currentLocale || "en";
 
@@ -14,19 +15,19 @@ const ui = {
         features: [
             {
                 title: "Privacy First",
-                desc: "No account needed. Your data is stored locally. Export or delete it anytime.",
+                desc: "No account needed. Export or delete it anytime.",
                 type: "privacy",
                 color: "oklch(65% 0.13 250)",
             },
             {
                 title: "Free & Offline",
-                desc: "No ads, no tracking, no subscriptions. Works perfectly without internet access.",
+                desc: "No ads, no tracking, no subscriptions, works offline.",
                 type: "offline",
                 color: "oklch(72% 0.15 140)",
             },
             {
                 title: "Make it Yours",
-                desc: "Choose from 30+ themes and fonts. Set your own daily wellbeing goals.",
+                desc: "Choose from 30+ themes and fonts.",
                 type: "customize",
                 color: "oklch(68% 0.17 350)",
             },
@@ -41,19 +42,19 @@ const ui = {
         features: [
             {
                 title: "प्राइवेसी सबसे पहले",
-                desc: "किसी अकाउंट की ज़रूरत नहीं। आपका डेटा आपके डिवाइस पर रहता है।",
+                desc: "किसी अकाउंट की ज़रूरत नहीं।",
                 type: "privacy",
                 color: "oklch(65% 0.13 250)",
             },
             {
                 title: "फ्री और ऑफलाइन",
-                desc: "कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं। बिना इंटरनेट के भी बेहतरीन काम करता है।",
+                desc: "कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं।",
                 type: "offline",
                 color: "oklch(72% 0.15 140)",
             },
             {
                 title: "इसे अपना बनाएं",
-                desc: "30+ थीम्स और फ़ॉन्ट्स में से चुनें। अपने दैनिक सेहत लक्ष्य खुद तय करें।",
+                desc: "30+ थीम्स और फ़ॉन्ट्स में से चुनें।",
                 type: "customize",
                 color: "oklch(68% 0.17 350)",
             },
@@ -66,70 +67,83 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <section class="scroll-section section-privacy">
     <div style="width: 100%;">
-        <!-- 1. Left-Aligned Minimalist Header -->
         <div class="container">
             <div class="section-header-left header-content animate-on-scroll">
                 <h2 class="section-title">
-                    <span class="title-main">{t.titleTop}</span>
-                    <br />
+                    <span class="title-main">{t.titleTop}</span><br />
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
                 <p class="body-text">
-                    {t.descTop}
-                    <br class="hidden-mobile" />
-                    {t.descBottom}
+                    {t.descTop}<br class="hidden-mobile" />{t.descBottom}
                 </p>
             </div>
         </div>
 
-        <!-- 2. Single Feature Animation Display Frame -->
         <div class="container stack-stage-container animate-on-scroll delay-1">
-            <div class="stage-frame" id="privacy-stage-frame">
+            <div class="privacy-stage-frame" id="privacy-stage-frame">
                 {
                     t.features.map((feature, index) => (
-                        <div
-                            class={`animated-privacy-card ${index === 0 ? "active" : ""}`}
-                            style={`--card-accent: ${feature.color}`}
+                        <AnimatedFeatureCard
+                            title={feature.title}
+                            desc={feature.desc}
+                            color={feature.color}
+                            type={feature.type}
+                            index={index}
+                            activeClass="active"
                         >
-                            <!-- Premium Background Watermark Icons -->
-                            <div class="card-watermark">
+                            <Fragment slot="watermark">
                                 {feature.type === "privacy" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="56" y="104" width="144" height="112" rx="16"/>
-                                        <path d="M88,104V72a40,40,0,0,1,80,0v32"/>
-                                        <circle cx="128" cy="160" r="12" fill="currentColor" stroke="none"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
+                                        viewBox="0 0 256 256"
+                                    >
+                                        <path
+                                            d="M216,96V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8H208A8,8,0,0,1,216,96Z"
+                                            opacity="0.2"
+                                        />
+                                        <path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z" />
                                     </svg>
                                 )}
                                 {feature.type === "offline" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M48,208,208,48"/>
-                                        <path d="M84.5,123.5a72,72,0,0,1,87,0"/>
-                                        <path d="M50.4,89.5a120,120,0,0,1,155.2,0"/>
-                                        <circle cx="128" cy="176" r="12" fill="currentColor" stroke="none"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
+                                        viewBox="0 0 256 256"
+                                    >
+                                        <path
+                                            d="M229.06,108.79l-48.7,42,14.88,62.79a8.4,8.4,0,0,1-12.52,9.17L128,189.09,73.28,222.74a8.4,8.4,0,0,1-12.52-9.17l14.88-62.79-48.7-42A8.46,8.46,0,0,1,31.73,94L95.64,88.8l24.62-59.6a8.36,8.36,0,0,1,15.48,0l24.62,59.6L224.27,94A8.46,8.46,0,0,1,229.06,108.79Z"
+                                            opacity="0.2"
+                                        />
+                                        <path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z" />
                                     </svg>
                                 )}
                                 {feature.type === "customize" && (
-                                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" class="watermark-svg" fill="none" stroke="currentColor" stroke-width="14" stroke-linecap="round" stroke-linejoin="round">
-                                        <line x1="40" y1="88" x2="216" y2="88"/>
-                                        <line x1="40" y1="168" x2="216" y2="168"/>
-                                        <circle cx="104" cy="88" r="24"/>
-                                        <circle cx="152" cy="168" r="24"/>
+                                    <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
+                                        viewBox="0 0 256 256"
+                                    >
+                                        <path
+                                            d="M176,112,74.34,213.66a8,8,0,0,1-11.31,0L42.34,193a8,8,0,0,1,0-11.31L144,80Z"
+                                            opacity="0.2"
+                                        />
+                                        <path d="M248,152a8,8,0,0,1-8,8H224v16a8,8,0,0,1-16,0V160H192a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,248,152ZM56,72H72V88a8,8,0,0,0,16,0V72h16a8,8,0,0,0,0-16H88V40a8,8,0,0,0-16,0V56H56a8,8,0,0,0,0,16ZM184,192h-8v-8a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16ZM219.31,80,80,219.31a16,16,0,0,1-22.62,0L36.68,198.63a16,16,0,0,1,0-22.63L176,36.69a16,16,0,0,1,22.63,0l20.68,20.68A16,16,0,0,1,219.31,80Zm-54.63,32L144,91.31l-96,96L68.68,208ZM208,68.69,187.31,48l-32,32L176,100.69Z" />
                                     </svg>
                                 )}
-                            </div>
-
-                            <!-- Floating Content Layer -->
-                            <div class="card-content">
-                                <h3 class="card-title">{feature.title}</h3>
-                                <p class="card-desc">{feature.desc}</p>
-                            </div>
-                        </div>
+                            </Fragment>
+                        </AnimatedFeatureCard>
                     ))
                 }
             </div>
         </div>
 
-        <!-- 3. Unified Secondary CTA Interaction Hook -->
         <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/faq"
@@ -144,17 +158,15 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     document.addEventListener("astro:page-load", () => {
         const stage = document.getElementById("privacy-stage-frame");
         if (!stage) return;
-        
-        const cards = stage.querySelectorAll(".animated-privacy-card");
-        if (cards.length === 0) return;
-
+        const cards = stage.querySelectorAll(".animated-feature-card");
         let activeIndex = 0;
+        if (cards.length === 0) return;
 
         setInterval(() => {
             cards[activeIndex].classList.remove("active");
             activeIndex = (activeIndex + 1) % cards.length;
             cards[activeIndex].classList.add("active");
-        }, 4500); // 4.5s allows comfortable reading for the slightly longer privacy descriptions
+        }, 4500);
     });
 </script>
 
@@ -166,188 +178,61 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         padding-top: var(--section-v-padding);
         padding-bottom: var(--section-v-padding);
     }
-
     .header-content {
         max-width: 720px;
         margin-bottom: var(--space-md);
         text-align: left;
         width: 100%;
     }
-
     .section-title {
         font-size: clamp(2.2rem, 5.5vw, 3.8rem);
         letter-spacing: -0.035em;
         line-height: 1.1;
-        text-align: left;
         color: var(--text-main);
     }
-
     .body-text {
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
         line-height: 1.6;
-        text-align: left;
+        max-width: 54ch;
         margin-top: var(--space-xs);
     }
-
-    /* --- SEQUENTIAL FADE CONTEXT DISPLAY --- */
     .stack-stage-container {
         width: 100%;
         margin-bottom: var(--space-lg);
     }
-
-    .stage-frame {
+    .privacy-stage-frame {
         position: relative;
         width: 100%;
         max-width: 480px;
-        height: 150px; /* Locked height preserves structural grid layouts for 2-3 line descriptions */
+        height: 114px; /* Locked height matching tools exactly */
         display: grid;
         grid-template-columns: 1fr;
     }
-
-    .animated-privacy-card {
-        grid-area: 1 / 1 / 2 / 2;
-        background: var(--bg-sub);
-        padding: var(--space-md) var(--space-xl) var(--space-md) var(--space-md);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: flex-start;
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-        
-        /* High-fidelity Cinematic Fade transition system */
-        opacity: 0;
-        transform: scale(0.97) translateY(4px);
-        filter: blur(4px);
-        pointer-events: none;
-        transition:
-            opacity 0.6s ease-in-out,
-            transform 0.6s ease-in-out,
-            filter 0.5s ease-in-out,
-            border-color 0.3s ease;
-    }
-
-    /* Distinct top-edge security highlight line for privacy cards */
-    .animated-privacy-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--card-accent);
-        opacity: 0.8;
-        z-index: 3;
-    }
-
-    .animated-privacy-card.active {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: blur(0);
-        pointer-events: auto;
-        border-color: color-mix(in srgb, var(--card-accent) 40%, var(--border));
-        box-shadow: var(--shadow);
-    }
-
-    /* --- PREMIUM WATERMARK POSITIONING SYSTEM --- */
-    .card-watermark {
-        position: absolute;
-        bottom: -20px;
-        right: -20px;
-        color: var(--card-accent);
-        opacity: 0.05;
-        pointer-events: none;
-        z-index: 1;
-        transition: opacity 0.4s ease, transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .watermark-svg {
-        width: 140px;
-        height: 140px;
-    }
-
-    .animated-privacy-card.active .card-watermark {
-        opacity: 0.09;
-        transform: scale(1.05) rotate(-3deg);
-    }
-
-    .card-content {
-        width: 100%;
-        position: relative;
-        z-index: 2; /* Ensures text remains crisp and highly legible over background watermarks */
-    }
-
-    .card-title {
-        font-size: 1.25rem;
-        font-weight: 750;
-        margin: 0 0 var(--space-xs) 0;
-        color: var(--text-main);
-        letter-spacing: -0.015em;
-        line-height: 1.35;
-    }
-
-    .card-desc {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        line-height: 1.5;
-        margin: 0;
-        font-weight: 400;
-        max-width: 90%;
-    }
-
     .cta-wrapper {
         display: flex;
         justify-content: flex-start;
     }
-
     .hidden-mobile {
         display: inline;
     }
-
-    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
     :lang(hi) .section-title {
         line-height: 1.35;
     }
-    :lang(hi) .card-title {
-        line-height: 1.45;
-    }
-    :lang(hi) .card-desc {
-        line-height: 1.6;
-    }
 
-    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
     @media (max-height: 740px) {
-        .header-content {
-            margin-bottom: var(--space-sm);
-        }
         .body-text {
             display: none;
         }
-        .stack-stage-container {
-            margin-bottom: var(--space-sm);
-        }
-        .stage-frame {
-            height: 130px;
-        }
-        .animated-privacy-card {
-            padding: var(--space-md);
-        }
-        .watermark-svg {
-            width: 110px;
-            height: 110px;
+        .privacy-stage-frame {
+            height: 96px;
         }
     }
-
     @media (max-width: 768px) {
         .hidden-mobile {
             display: none;
         }
-        .stage-frame {
+        .privacy-stage-frame {
             max-width: 100%;
         }
     }

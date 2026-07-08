@@ -16,7 +16,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 
 <section class="scroll-section section-yoga">
     <div class="content-wrapper">
-        <!-- 1. Pure Header Container Grid Alignment Module -->
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
                 <h2 class="section-title">
@@ -28,7 +27,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
             </div>
         </div>
 
-        <!-- 2. Filter Navigation Control Module (Label Removed for Minimalist Look) -->
         <div class="container filter-container animate-on-scroll delay-1">
             <div class="filter-scroll">
                 <button class="filter-btn active" data-filter="all"
@@ -49,14 +47,13 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
             </div>
         </div>
 
-        <!-- 3. Full Width Horizontal Carousel Container Track -->
         <div class="container carousel-wrapper animate-on-scroll delay-2">
             <div class="carousel-track" id="featured-plans-track">
                 {
                     displayPlans.map((p) => (
                         <a
                             href={`/${currentLang}/yoga/${p.slug}`}
-                            class="carousel-card"
+                            class="carousel-card premium-gloss-surface"
                             data-goals={p.goals?.join(",")}
                         >
                             <div class="card-image">
@@ -69,7 +66,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
                             </div>
                             <div class="card-content">
                                 <h3 class="card-title">{p.title}</h3>
-                                {/* Subtitle description paragraph removed entirely */}
                                 <div class="card-footer">
                                     <span class="view-link">{t.view}</span>
                                     <span class="icon">→</span>
@@ -81,7 +77,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
             </div>
         </div>
 
-        <!-- 4. Left-Aligned Unified Secondary Button Hook -->
         <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href={`/${currentLang}/yoga`}
@@ -170,7 +165,7 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
     .body-text {
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        max-width: 600px;
+        max-width: 54ch; /* Restricts long paragraphs for higher reading fidelity */
         text-align: left;
         line-height: 1.6;
         margin-top: var(--space-xs);
@@ -201,13 +196,14 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         background: var(--bg-sub);
         border: 1px solid var(--border);
         color: var(--text-muted);
-        padding: 6px 16px;
+        padding: 8px 18px;
         border-radius: 99px;
         font-size: 0.85rem;
         font-weight: 600;
         cursor: pointer;
         white-space: nowrap;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        will-change: transform;
+        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .filter-btn:hover {
@@ -217,8 +213,12 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 
     .filter-btn.active {
         background: var(--primary);
-        color: var(--bg-main);
+        color: oklch(100% 0 0);
         border-color: var(--primary);
+    }
+
+    .filter-btn:active {
+        transform: scale(0.96);
     }
 
     /* --- HORIZONTAL CAROUSEL --- */
@@ -228,7 +228,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         margin-bottom: var(--space-md);
     }
 
-    /* Polished, zero-obstrusive right edge gradient mask seen in Screenshot 2026-07-06 at 9.58.18 AM.jpg */
     .carousel-wrapper::after {
         content: "";
         position: absolute;
@@ -264,27 +263,24 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         flex: 0 0 290px;
         display: flex;
         flex-direction: column;
-        background: var(--bg-sub);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-lg);
-        overflow: hidden;
         text-decoration: none;
         color: inherit;
-
-        /* Enforces matching static heights across all filtered states */
         height: 100%;
-        min-height: 275px;
-
+        min-height: 250px;
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        will-change: transform, opacity;
         transition:
             transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-            box-shadow 0.4s ease,
-            border-color 0.4s ease;
+            opacity 0.3s ease;
     }
 
     .carousel-card:hover {
         transform: translateY(-4px);
-        box-shadow: var(--shadow);
-        border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
+    }
+
+    .carousel-card:active {
+        transform: translateY(-2px) scale(0.98);
     }
 
     .card-image {
@@ -292,12 +288,19 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         aspect-ratio: 16 / 10;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
+        background: var(--bg-main);
     }
 
     .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
+        will-change: transform;
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .carousel-card:hover .card-image img {
+        transform: scale(1.02);
     }
 
     .card-content {
@@ -306,7 +309,7 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         flex-direction: column;
         gap: var(--space-md);
         flex-grow: 1;
-        justify-content: space-between; /* Pushes footer neatly to base */
+        justify-content: space-between;
     }
 
     .card-title {
@@ -316,19 +319,14 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         color: var(--text-main);
         letter-spacing: -0.015em;
         line-height: 1.35;
-
-        /* Enforces a 2-line maximum constraint with fluid ellipsis (...) */
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
         text-overflow: ellipsis;
-
-        /* Reserves a locked height footprint equal exactly to 2 lines of prose */
         min-height: calc(1.35em * 2);
     }
 
-    /* Polished, vertically centered line item alignment */
     .card-footer {
         display: flex;
         align-items: center;
@@ -343,7 +341,7 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
     .icon {
         display: inline-flex;
         align-items: center;
-        transform: translateY(-1px); /* Perfect visual alignment tweak */
+        transform: translateY(-1px);
         transition: transform 0.2s ease;
     }
 
@@ -362,8 +360,8 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         line-height: 1.35;
     }
     :lang(hi) .filter-btn {
-        padding-top: 7px;
-        padding-bottom: 5px;
+        padding-top: 9px;
+        padding-bottom: 7px;
     }
     :lang(hi) .card-title {
         line-height: 1.45;

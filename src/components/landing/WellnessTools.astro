@@ -1,6 +1,7 @@
 ---
 // src/components/landing/WellnessTools.astro
 import SectionCTA from "../SectionCTA.astro";
+import AnimatedFeatureCard from "./AnimatedFeatureCard.astro";
 
 const currentLang = Astro.currentLocale || "en";
 
@@ -18,13 +19,13 @@ const ui = {
             },
             {
                 title: "Habit Rhythm",
-                desc: "Build consistent healthy streaks.",
+                desc: "Build healthy habits.",
                 type: "habit",
                 color: "oklch(75% 0.15 90)",
             },
             {
                 title: "Hydration",
-                desc: "Monitor daily water intake.",
+                desc: "Monitor water intake.",
                 type: "water",
                 color: "oklch(62% 0.14 220)",
             },
@@ -36,13 +37,13 @@ const ui = {
             },
             {
                 title: "Health Tips",
-                desc: "Research-backed daily guidance.",
+                desc: "Research-backed guidance.",
                 type: "tips",
                 color: "oklch(78% 0.13 60)",
             },
             {
-                title: "Care Blog",
-                desc: "Learn expert care routines.",
+                title: "Wellness Blog",
+                desc: "Learn care routines.",
                 type: "blog",
                 color: "oklch(64% 0.12 150)",
             },
@@ -98,156 +99,126 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <section class="scroll-section section-tools">
     <div class="content-wrapper">
-        <!-- 1. Header Container -->
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
                 <h2 class="section-title">
-                    {t.titleTop}
-                    <br />
+                    {t.titleTop}<br />
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
                 <p class="body-text" set:html={t.body} />
             </div>
         </div>
 
-        <!-- 2. Single Feature Animation Display Frame -->
         <div class="container stack-stage-container animate-on-scroll delay-1">
             <div class="stage-frame" id="animation-stage-frame">
                 {
                     t.tools.map((tool, index) => (
-                        <div
-                            class={`animated-tool-card ${index === 0 ? "active" : ""}`}
-                            style={`--card-accent: ${tool.color}`}
+                        <AnimatedFeatureCard
+                            title={tool.title}
+                            desc={tool.desc}
+                            color={tool.color}
+                            type={tool.type}
+                            index={index}
+                            activeClass="active"
                         >
-                            <div class="card-watermark">
+                            <Fragment slot="watermark">
                                 {tool.type === "cycle" && (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
                                         viewBox="0 0 256 256"
-                                        class="watermark-svg"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="14"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
                                     >
-                                        <circle cx="128" cy="96" r="56" />
-                                        <line
-                                            x1="128"
-                                            y1="152"
-                                            x2="128"
-                                            y2="224"
+                                        <path
+                                            d="M200,96a72,72,0,1,1-72-72A72,72,0,0,1,200,96Z"
+                                            opacity="0.2"
                                         />
-                                        <line
-                                            x1="96"
-                                            y1="192"
-                                            x2="160"
-                                            y2="192"
-                                        />
+                                        <path d="M208,96a80,80,0,1,0-88,79.6V200H88a8,8,0,0,0,0,16h32v24a8,8,0,0,0,16,0V216h32a8,8,0,0,0,0-16H136V175.6A80.11,80.11,0,0,0,208,96ZM64,96a64,64,0,1,1,64,64A64.07,64.07,0,0,1,64,96Z" />
                                     </svg>
                                 )}
                                 {tool.type === "habit" && (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
                                         viewBox="0 0 256 256"
-                                        class="watermark-svg"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="14"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
                                     >
-                                        <polygon points="136 16 48 136 128 136 120 240 208 120 128 120 136 16" />
+                                        <path
+                                            d="M210.26,210.26c-17.23,17.23-68-5.63-113.46-51.06S28.51,63,45.74,45.74s68,5.63,113.46,51.06S227.49,193,210.26,210.26Z"
+                                            opacity="0.2"
+                                        />
+                                        <path d="M196.12,128c24.65-34.61,37.22-70.38,19.74-87.86S162.61,35.23,128,59.88C93.39,35.23,57.62,22.66,40.14,40.14S35.23,93.39,59.88,128c-24.65,34.61-37.22,70.38-19.74,87.86h0c5.63,5.63,13.15,8.14,21.91,8.14,18.48,0,42.48-11.17,66-27.88C151.47,212.83,175.47,224,194,224c8.76,0,16.29-2.52,21.91-8.14h0C233.34,198.38,220.77,162.61,196.12,128Zm8.43-76.55c7.64,7.64,2.48,32.4-18.52,63.28a300.33,300.33,0,0,0-21.19-23.57A300.33,300.33,0,0,0,141.27,70C172.15,49,196.91,43.8,204.55,51.45ZM176.29,128a289.14,289.14,0,0,1-22.76,25.53A289.14,289.14,0,0,1,128,176.29a289.14,289.14,0,0,1-25.53-22.76A289.14,289.14,0,0,1,79.71,128,298.62,298.62,0,0,1,128,79.71a289.14,289.14,0,0,1,25.53,22.76A289.14,289.14,0,0,1,176.29,128ZM51.45,51.45c2.2-2.21,5.83-3.35,10.62-3.35C73.89,48.1,92.76,55,114.72,70A304,304,0,0,0,91.16,91.16,300.33,300.33,0,0,0,70,114.73C49,83.85,43.81,59.09,51.45,51.45Zm0,153.1C43.81,196.91,49,172.15,70,141.27a300.33,300.33,0,0,0,21.19,23.57A304.18,304.18,0,0,0,114.73,186C83.85,207,59.09,212.2,51.45,204.55Zm153.1,0c-7.64,7.65-32.4,2.48-63.28-18.52a304.18,304.18,0,0,0,23.57-21.19A300.33,300.33,0,0,0,186,141.27C207,172.15,212.19,196.91,204.55,204.55ZM140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128Z" />
                                     </svg>
                                 )}
                                 {tool.type === "water" && (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
                                         viewBox="0 0 256 256"
-                                        class="watermark-svg"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="14"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
                                     >
-                                        <path d="M128,24 C128,24,216,108,216,164 a88,88,0,0,1-176,0 C40,108,128,24,128,24Z" />
+                                        <path
+                                            d="M208,144a80,80,0,0,1-160,0c0-72,80-128,80-128S208,72,208,144Z"
+                                            opacity="0.2"
+                                        />
+                                        <path d="M174,47.75a254.19,254.19,0,0,0-41.45-38.3,8,8,0,0,0-9.18,0A254.19,254.19,0,0,0,82,47.75C54.51,79.32,40,112.6,40,144a88,88,0,0,0,176,0C216,112.6,201.49,79.32,174,47.75ZM128,216a72.08,72.08,0,0,1-72-72c0-57.23,55.47-105,72-118,16.53,13,72,60.75,72,118A72.08,72.08,0,0,1,128,216Zm55.89-62.66a57.6,57.6,0,0,1-46.56,46.55A8.75,8.75,0,0,1,136,200a8,8,0,0,1-1.32-15.89c16.57-2.79,30.63-16.85,33.44-33.45a8,8,0,0,1,15.78,2.68Z" />
                                     </svg>
                                 )}
                                 {tool.type === "fast" && (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
                                         viewBox="0 0 256 256"
-                                        class="watermark-svg"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="14"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
                                     >
-                                        <circle cx="128" cy="128" r="88" />
-                                        <polyline points="128 72 128 128 168 152" />
+                                        <path
+                                            d="M216,136a88,88,0,1,1-88-88A88,88,0,0,1,216,136Z"
+                                            opacity="0.2"
+                                        />
+                                        <path d="M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm0,176a80,80,0,1,1,80-80A80.09,80.09,0,0,1,128,216ZM173.66,90.34a8,8,0,0,1,0,11.32l-40,40a8,8,0,0,1-11.32-11.32l40-40A8,8,0,0,1,173.66,90.34ZM96,16a8,8,0,0,1,8-8h48a8,8,0,0,1,0,16H104A8,8,0,0,1,96,16Z" />
                                     </svg>
                                 )}
                                 {tool.type === "tips" && (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
                                         viewBox="0 0 256 256"
-                                        class="watermark-svg"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="14"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
                                     >
-                                        <path d="M104,224h48M80,112a48,48,0,0,1,96,0c0,26-16,40-24,48v24H104V160C92,152,80,138,80,112Z" />
+                                        <path
+                                            d="M208,104a79.86,79.86,0,0,1-30.59,62.92A24.29,24.29,0,0,0,168,186v6a8,8,0,0,1-8,8H96a8,8,0,0,1-8-8v-6a24.11,24.11,0,0,0-9.3-19A79.87,79.87,0,0,1,48,104.45C47.76,61.09,82.72,25,126.07,24A80,80,0,0,1,208,104Z"
+                                            opacity="0.2"
+                                        />
+                                        <path d="M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-16,0a72,72,0,0,0-73.74-72c-39,.92-70.47,33.39-70.26,72.39a71.65,71.65,0,0,0,27.64,56.3A32,32,0,0,1,96,186v6h64v-6a32.15,32.15,0,0,1,12.47-25.35A71.65,71.65,0,0,0,200,104Zm-16.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z" />
                                     </svg>
                                 )}
                                 {tool.type === "blog" && (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
+                                        width="32"
+                                        height="32"
+                                        fill="#000000"
                                         viewBox="0 0 256 256"
-                                        class="watermark-svg"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="14"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
                                     >
-                                        <path d="M48,216V40A16,16,0,0,1,64,24H208V200H64A16,16,0,0,0,48,216Z" />
-                                        <line
-                                            x1="48"
-                                            y1="216"
-                                            x2="208"
-                                            y2="216"
+                                        <path
+                                            d="M232,56V200H160a32,32,0,0,0-32,32V88a32,32,0,0,1,32-32Z"
+                                            opacity="0.2"
                                         />
-                                        <line
-                                            x1="96"
-                                            y1="72"
-                                            x2="160"
-                                            y2="72"
-                                        />
-                                        <line
-                                            x1="96"
-                                            y1="120"
-                                            x2="160"
-                                            y2="120"
-                                        />
+                                        <path d="M232,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H24a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h72a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48ZM96,192H32V64H96a24,24,0,0,1,24,24V200A39.81,39.81,0,0,0,96,192Zm128,0H160a39.81,39.81,0,0,0-24,8V88a24,24,0,0,1,24-24h64ZM160,88h40a8,8,0,0,1,0,16H160a8,8,0,0,1,0-16Zm48,40a8,8,0,0,1-8,8H160a8,8,0,0,1,0-16h40A8,8,0,0,1,208,128Zm0,32a8,8,0,0,1-8,8H160a8,8,0,0,1,0-16h40A8,8,0,0,1,208,160Z" />
                                     </svg>
                                 )}
-                            </div>
-
-                            <div class="tool-info">
-                                <h3 class="card-title">{tool.title}</h3>
-                                <p class="card-desc">{tool.desc}</p>
-                            </div>
-                        </div>
+                            </Fragment>
+                        </AnimatedFeatureCard>
                     ))
                 }
             </div>
         </div>
 
-        <!-- 3. Bottom Button Line -->
         <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/blog"
@@ -262,17 +233,15 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     document.addEventListener("astro:page-load", () => {
         const stage = document.getElementById("animation-stage-frame");
         if (!stage) return;
-
-        const cards = stage.querySelectorAll(".animated-tool-card");
-        if (cards.length === 0) return;
-
+        const cards = stage.querySelectorAll(".animated-feature-card");
         let activeIndex = 0;
+        if (cards.length === 0) return;
 
         setInterval(() => {
             cards[activeIndex].classList.remove("active");
             activeIndex = (activeIndex + 1) % cards.length;
             cards[activeIndex].classList.add("active");
-        }, 4000); // Transitions smoothly every 4 seconds
+        }, 4000);
     });
 </script>
 
@@ -284,181 +253,63 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         padding-top: var(--section-v-padding);
         padding-bottom: var(--section-v-padding);
     }
-
     .content-wrapper {
         display: flex;
         flex-direction: column;
         width: 100%;
         margin: 0 auto;
     }
-
     .text-col {
         margin-bottom: var(--space-md);
         text-align: left;
         width: 100%;
     }
-
     .section-title {
         font-size: clamp(2.2rem, 5.5vw, 3.8rem);
         letter-spacing: -0.035em;
         line-height: 1.1;
-        text-align: left;
         color: var(--text-main);
     }
-
     .body-text {
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        max-width: 600px;
-        text-align: left;
+        max-width: 54ch;
         line-height: 1.6;
         margin-top: var(--space-xs);
     }
-
     .body-text :global(strong) {
         color: var(--text-main);
         font-weight: 700;
     }
-
-    /* --- SEQUENTIAL FADE CONTEXT DISPLAY --- */
     .stack-stage-container {
         width: 100%;
         margin-bottom: var(--space-lg);
     }
-
     .stage-frame {
         position: relative;
         width: 100%;
         max-width: 480px;
-        height: 110px; /* Locked height preserves structural grid layouts */
+        height: 114px;
         display: grid;
         grid-template-columns: 1fr;
     }
-
-    .animated-tool-card {
-        grid-area: 1 / 1 / 2 / 2;
-        background: var(--bg-sub);
-        padding: var(--space-md) var(--space-xl) var(--space-md) var(--space-md);
-        border-radius: var(--radius-lg);
-        border: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-
-        /* High-fidelity Cinematic Fade transition system */
-        opacity: 0;
-        transform: scale(0.97) translateY(4px);
-        filter: blur(4px);
-        pointer-events: none;
-        transition:
-            opacity 0.6s ease-in-out,
-            transform 0.6s ease-in-out,
-            filter 0.5s ease-in-out,
-            border-color 0.3s ease;
-    }
-
-    .animated-tool-card.active {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        filter: blur(0);
-        pointer-events: auto;
-        border-color: color-mix(in srgb, var(--card-accent) 40%, var(--border));
-        box-shadow: var(--shadow);
-    }
-
-    /* --- RE-ARCHITECTED WATERMARK MARKUP --- */
-    .card-watermark {
-        position: absolute;
-        bottom: -10px;
-        right: -10px;
-        color: var(--card-accent);
-        opacity: 0.05;
-        pointer-events: none;
-        z-index: 1;
-        transition:
-            opacity 0.4s ease,
-            transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .watermark-svg {
-        width: 96px;
-        height: 96px;
-    }
-
-    .animated-tool-card.active .card-watermark {
-        opacity: 0.08;
-        transform: scale(1.04) rotate(-2deg);
-    }
-
-    .tool-info {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        position: relative;
-        z-index: 2;
-        width: 100%;
-    }
-
-    .card-title {
-        font-size: 1.25rem;
-        font-weight: 750;
-        margin: 0 0 4px 0;
-        color: var(--text-main);
-        letter-spacing: -0.015em;
-        line-height: 1.3;
-    }
-
-    .card-desc {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        margin: 0;
-        line-height: 1.4;
-        max-width: 90%;
-    }
-
     .cta-wrapper {
         display: flex;
         justify-content: flex-start;
     }
-
-    .mobile-only {
-        display: none;
-    }
-
-    /* --- DEVANAGARI ALIGNMENT OPTIMIZATIONS --- */
     :lang(hi) .section-title {
         line-height: 1.35;
     }
-    :lang(hi) .card-title {
-        line-height: 1.45;
-    }
-    :lang(hi) .card-desc {
-        line-height: 1.5;
-    }
 
-    /* --- RESPONSIVE CONTROLS --- */
     @media (max-height: 740px) {
-        .text-col {
-            margin-bottom: var(--space-sm);
-        }
         .body-text {
             display: none;
-        }
-        .stack-stage-container {
-            margin-bottom: var(--space-sm);
         }
         .stage-frame {
             height: 96px;
         }
     }
-
     @media (max-width: 768px) {
-        .mobile-only {
-            display: block;
-        }
         .stage-frame {
             max-width: 100%;
         }

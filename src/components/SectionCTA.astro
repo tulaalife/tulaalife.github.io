@@ -7,17 +7,14 @@ const label = currentLang === "hi" ? labelHi : labelEn;
 
 const getLink = (path: string) => {
     if (currentLang === "en") return path;
-
     if (path === "/") return "/hi";
-
     if (path.startsWith("/hi/") || path === "/hi") return path;
-
     return `/hi${path}`;
 };
 ---
 
 <a href={getLink(href)} class:list={["cta-link", className]}>
-    <div class="cta-glow"></div>
+    <div class="cta-shimmer"></div>
 
     <div class="cta-label-container">
         <span class="cta-text">{label}</span>
@@ -44,24 +41,27 @@ const getLink = (path: string) => {
         display: inline-flex;
         align-items: center;
         justify-content: space-between;
-        gap: 12px;
+        gap: 16px;
         margin-top: 40px;
-        padding: 12px 28px;
+        padding: 14px 32px;
         background: var(--primary);
-        color: var(--bg-main);
+        color: oklch(
+            100% 0 0
+        ); /* Force crisp white text on primary background fill */
         border-radius: 99px;
         font-family: var(--font-sans-en);
-        font-weight: var(
-            --fw-bold
-        ); /* Tapped cleanly into shared typography variable */
+        font-weight: var(--fw-bold);
         font-size: 1.1rem;
-        letter-spacing: -0.01em;
+        letter-spacing: -0.015em;
         text-decoration: none;
-        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        box-shadow: var(--shadow);
+        border: 1px solid rgba(255, 255, 255, 0.15);
         isolation: isolate;
-        max-width: 100%;
         overflow: hidden;
+        width: fit-content;
+        max-width: 100%;
+        will-change: transform;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     :global(:lang(hi)) .cta-link {
@@ -87,22 +87,23 @@ const getLink = (path: string) => {
     }
 
     :global(:lang(hi)) .cta-text {
-        line-height: 1.5;
-        font-size: 1rem;
+        line-height: 1.4;
+        font-size: 1.05rem;
     }
 
-    .cta-glow {
+    /* 🌟 Smooth, high-performance specular shine sheen effect */
+    .cta-shimmer {
         position: absolute;
         inset: 0;
-        border-radius: 99px;
-        background: linear-gradient(90deg, var(--primary), #a855f7);
-        filter: blur(20px);
-        opacity: 0;
-        z-index: -1;
-        transition:
-            opacity 0.5s ease,
-            transform 0.5s ease;
-        transform: scale(0.8);
+        background: linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0) 0%,
+            rgba(255, 255, 255, 0.2) 50%,
+            rgba(255, 255, 255, 0) 100%
+        );
+        transform: translateX(-100%) skewX(-15deg);
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 1;
     }
 
     .icon-circle {
@@ -114,55 +115,66 @@ const getLink = (path: string) => {
         height: 32px;
         background: rgba(255, 255, 255, 0.15);
         border-radius: 50%;
-        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        z-index: 2;
+        transition:
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            background-color 0.3s ease;
     }
 
     .cta-link svg {
-        width: 16px;
-        height: 16px;
-        stroke: var(--bg-main);
+        width: 14px;
+        height: 14px;
+        stroke: oklch(100% 0 0);
         transition:
-            stroke 0.4s ease,
-            transform 0.5s ease;
+            stroke 0.3s ease,
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* --- INTERACTIONS --- */
     .cta-link:hover {
-        transform: translateY(-4px);
-        filter: brightness(1.08);
-        box-shadow: var(--shadow); /* Standardized shadow utilization metric */
+        transform: translateY(-3px);
     }
 
-    .cta-link:hover .cta-glow {
-        opacity: 0.6;
-        transform: scale(1.1);
+    .cta-link:hover .cta-shimmer {
+        transform: translateX(100%) skewX(-15deg);
     }
 
     .cta-link:hover .icon-circle {
-        background: var(--bg-main);
-        transform: scale(1.1);
+        background: oklch(100% 0 0);
+        transform: scale(1.05);
     }
 
     .cta-link:hover svg {
         stroke: var(--primary);
-        transform: translateX(2px);
+        transform: translateX(1px);
     }
 
+    .cta-link:active {
+        transform: translateY(-1px) scale(0.98);
+    }
+
+    /* --- RESPONSIVE OPTIMIZATIONS --- */
     @media (max-width: 768px) {
         .cta-link {
-            padding: 10px 20px;
+            padding: 12px 24px;
             font-size: 1rem;
             margin-top: 24px;
-            max-width: 300px;
+            gap: 12px;
         }
 
         :global(:lang(hi)) .cta-link {
-            padding-top: 11px;
-            padding-bottom: 9px;
+            padding-top: 13px;
+            padding-bottom: 11px;
         }
 
         .icon-circle {
-            width: 28px;
-            height: 28px;
+            width: 26px;
+            height: 26px;
+        }
+
+        .cta-link svg {
+            width: 12px;
+            height: 12px;
         }
     }
 </style>

@@ -7,34 +7,124 @@ const ui = {
         authorLabel: "Yoga Therapist",
         author: "Latika Bissa",
         authorFounder: "Founder Tulaa, YogaWithLatika",
-        cred1: "🧘‍♀️ 12+ Years of Experience",
-        cred2: "🏅 Gold Medalist, M.Sc Yoga Therapy",
-        cred3: "⭐ 5 Star rating on Google",
-        cred4: "👀 50 lakh views on social media",
-        cred5: "🔬 Expert in Pain relief, Pregnancy",
+        creds: [
+            { text: "12+ Years of Experience", icon: "user-switch" },
+            { text: "Gold Medalist, M.Sc Yoga Therapy", icon: "medal" },
+            { text: "5 Star rating on Google", icon: "star" },
+            { text: "50 lakh views on social media", icon: "trend-up" },
+            { text: "Expert in Pain relief, Pregnancy", icon: "microscope" },
+        ],
     },
     hi: {
         sectionLabel: "अपने इंस्ट्रक्टर से मिलें",
         authorLabel: "योग चिकित्सक",
         author: "लतिका बिस्सा",
         authorFounder: "संस्थापक Tulaa, YogaWithLatika",
-        cred1: "🧘‍♀️ 12+ वर्षों का अनुभव",
-        cred2: "🏅 स्वर्ण पदक विजेता, M.Sc योग थेरेपी",
-        cred3: "⭐ 5-स्टार रेटिंग गूगल पर",
-        cred4: "👀 सोशल मीडिया पर 50 लाख व्यूज़",
-        cred5: "🔬 दर्द प्रबंधन और गर्भावस्था के विशेषज्ञ",
+        creds: [
+            { text: "12+ वर्षों का अनुभव", icon: "user-switch" },
+            { text: "स्वर्ण पदक विजेता, M.Sc योग थेरेपी", icon: "medal" },
+            { text: "5-स्टार रेटिंग गूगल पर", icon: "star" },
+            { text: "सोशल मीडिया पर 50 लाख व्यूज़", icon: "trend-up" },
+            {
+                text: "दर्द प्रबंधन और गर्भावस्था के विशेषज्ञ",
+                icon: "microscope",
+            },
+        ],
     },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
-const authorImg = "/images/latika.png"; // Your existing image works perfectly as it will be cleanly cropped inside the avatar circle frame
+const authorImg = "/images/latika.png";
 ---
 
 <section class="scroll-section author-section">
     <div class="container layout-wrapper">
         <div class="instructor-minimal-profile animate-on-scroll">
-            <!-- 1. Top Centered High-Trust Headshot Avatar -->
-            <div class="avatar-container">
+            <!-- Left Grid: Content and Credentials Meta Blocks -->
+            <div class="profile-details-column">
+                <div class="profile-header-meta">
+                    <span class="section-label-banner">{t.sectionLabel}</span>
+                    <span class="author-label">{t.authorLabel}</span>
+                    <h2 class="author-name">{t.author}</h2>
+                    <p class="author-founder-title">{t.authorFounder}</p>
+                </div>
+
+                <div class="compact-creds-box">
+                    {
+                        t.creds.map((cred) => (
+                            <div class:list={["cred-line-item"]}>
+                                <div class="icon-wrapper">
+                                    {cred.icon === "user-switch" && (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="32"
+                                            height="32"
+                                            fill="#000000"
+                                            viewBox="0 0 256 256"
+                                        >
+                                            <path d="M245.83,121.63a15.53,15.53,0,0,0-9.52-7.33,73.51,73.51,0,0,0-22.17-2.22c4-19.85,1-35.55-2.06-44.86a16.15,16.15,0,0,0-18.79-10.88,85.53,85.53,0,0,0-28.55,12.12,94.58,94.58,0,0,0-27.11-33.25,16.05,16.05,0,0,0-19.26,0A94.48,94.48,0,0,0,91.26,68.46,85.53,85.53,0,0,0,62.71,56.34,16.15,16.15,0,0,0,43.92,67.22c-3,9.31-6,25-2.06,44.86a73.51,73.51,0,0,0-22.17,2.22,15.53,15.53,0,0,0-9.52,7.33,16,16,0,0,0-1.6,12.27c3.39,12.57,13.8,36.48,45.33,55.32S113.13,208,128.05,208s42.67,0,74-18.78c31.53-18.84,41.94-42.75,45.33-55.32A16,16,0,0,0,245.83,121.63ZM59.14,72.14a.2.2,0,0,1,.23-.15A70.43,70.43,0,0,1,85.18,83.66,118.65,118.65,0,0,0,80,119.17c0,18.74,3.77,34,9.11,46.28A123.59,123.59,0,0,1,69.57,140C51.55,108.62,55.3,84,59.14,72.14Zm3,103.35C35.47,159.57,26.82,140.05,24,129.7a59.82,59.82,0,0,1,22.5-1.17,129.08,129.08,0,0,0,9.15,19.41,142.28,142.28,0,0,0,34,39.56A114.92,114.92,0,0,1,62.1,175.49ZM128,190.4c-9.33-6.94-32-28.23-32-71.23C96,76.7,118.38,55.24,128,48c9.62,7.26,32,28.72,32,71.19C160,162.17,137.33,183.46,128,190.4ZM170.82,83.66A70.43,70.43,0,0,1,196.63,72a.2.2,0,0,1,.23.15C200.7,84,204.45,108.62,186.43,140a123.32,123.32,0,0,1-19.54,25.48c5.34-12.26,9.11-27.54,9.11-46.28A118.65,118.65,0,0,0,170.82,83.66ZM232,129.72c-2.77,10.25-11.4,29.81-38.09,45.77a114.92,114.92,0,0,1-27.55,12,142.28,142.28,0,0,0,34-39.56,129.08,129.08,0,0,0,9.15-19.41A59.69,59.69,0,0,1,232,129.71Z" />
+                                        </svg>
+                                    )}
+                                    {cred.icon === "medal" && (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="32"
+                                            height="32"
+                                            fill="#000000"
+                                            viewBox="0 0 256 256"
+                                        >
+                                            <path d="M216,96A88,88,0,1,0,72,163.83V240a8,8,0,0,0,11.58,7.16L128,225l44.43,22.21A8.07,8.07,0,0,0,176,248a8,8,0,0,0,8-8V163.83A87.85,87.85,0,0,0,216,96ZM56,96a72,72,0,1,1,72,72A72.08,72.08,0,0,1,56,96ZM168,227.06l-36.43-18.21a8,8,0,0,0-7.16,0L88,227.06V174.37a87.89,87.89,0,0,0,80,0ZM128,152A56,56,0,1,0,72,96,56.06,56.06,0,0,0,128,152Zm0-96A40,40,0,1,1,88,96,40,40,0,0,1,128,56Z" />
+                                        </svg>
+                                    )}
+                                    {cred.icon === "star" && (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 256 256"
+                                            fill="currentColor"
+                                        >
+                                            <path d="M239.2,97.29a16,16,0,0,0-13.81-11L166,77.94,141.51,23.34a16,16,0,0,0-29,0L88,77.94,28.58,86.28a16,16,0,0,0-8.87,27.31L63,155.51,51.24,214.23a16,16,0,0,0,23.46,17L128,201.67l53.3,28a16,16,0,0,0,23.46-17L193,155.51l41.25-41.92A16,16,0,0,0,239.2,97.29Zm-52.5,49A16,16,0,0,0,182,161l13,64.62L138,195.12a16,16,0,0,0-14.88,0L66,225.66l13-64.62a16,16,0,0,0-4.64-14.28L27.1,100l65.41-9.51a16,16,0,0,0,12.11-8.74L133,22l28.38,59.73a16,16,0,0,0,12.11,8.74L239,100Z" />
+                                        </svg>
+                                    )}
+                                    {cred.icon === "trend-up" && (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="32"
+                                            height="32"
+                                            fill="#000000"
+                                            viewBox="0 0 256 256"
+                                        >
+                                            <path
+                                                d="M232,56v64L168,56Z"
+                                                opacity="0.2"
+                                            />
+                                            <path d="M232,48H168a8,8,0,0,0-5.66,13.66L188.69,88,136,140.69l-34.34-34.35a8,8,0,0,0-11.32,0l-72,72a8,8,0,0,0,11.32,11.32L96,123.31l34.34,34.35a8,8,0,0,0,11.32,0L200,99.31l26.34,26.35A8,8,0,0,0,240,120V56A8,8,0,0,0,232,48Zm-8,52.69L187.31,64H224Z" />
+                                        </svg>
+                                    )}
+                                    {cred.icon === "microscope" && (
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            width="32"
+                                            height="32"
+                                            fill="#000000"
+                                            viewBox="0 0 256 256"
+                                        >
+                                            <path
+                                                d="M136,32V136a8,8,0,0,1-8,8H80a8,8,0,0,1-8-8V32a8,8,0,0,1,8-8h48A8,8,0,0,1,136,32Z"
+                                                opacity="0.2"
+                                            />
+                                            <path d="M224,208H203.94A88.05,88.05,0,0,0,144,64.37V32a16,16,0,0,0-16-16H80A16,16,0,0,0,64,32V136a16,16,0,0,0,16,16h48a16,16,0,0,0,16-16V80.46A72,72,0,0,1,181.25,208H32a8,8,0,0,0,0,16H224a8,8,0,0,0,0-16Zm-96-72H80V32h48V136ZM72,184a8,8,0,0,1,0-16h64a8,8,0,0,1,0,16Z" />
+                                        </svg>
+                                    )}
+                                </div>
+                                <span class="cred-text">{cred.text}</span>
+                            </div>
+                        ))
+                    }
+                </div>
+            </div>
+
+            <!-- Right Grid: Top Centered High-Trust Headshot Avatar -->
+            <div class="avatar-container premium-gloss-surface">
                 <img
                     src={authorImg}
                     alt="Latika Bissa"
@@ -42,23 +132,6 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
                     loading="lazy"
                     decoding="async"
                 />
-            </div>
-
-            <!-- 2. Central Editorial Content Block -->
-            <div class="profile-header-meta">
-                <span class="section-label-banner">{t.sectionLabel}</span>
-                <span class="author-label">{t.authorLabel}</span>
-                <h2 class="author-name">{t.author}</h2>
-                <p class="author-founder-title">{t.authorFounder}</p>
-            </div>
-
-            <!-- 3. High-Density Compact Line Item Credentials -->
-            <div class="compact-creds-box">
-                <div class="cred-line-item trust-highlight">{t.cred1}</div>
-                <div class="cred-line-item">{t.cred2}</div>
-                <div class="cred-line-item">{t.cred3}</div>
-                <div class="cred-line-item">{t.cred4}</div>
-                <div class="cred-line-item">{t.cred5}</div>
             </div>
         </div>
     </div>
@@ -76,35 +149,41 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
 
     .layout-wrapper {
         width: 100%;
-        display: flex;
-        justify-content: flex-start;
     }
 
-    /* Asymmetric Left-Aligned Row Setup */
     .instructor-minimal-profile {
         width: 100%;
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: center; /* Vertically balances the avatar center axis cleanly against text content blocks */
         justify-content: space-between;
         gap: var(--space-xl);
     }
 
-    /* --- 1. HEADSHOT FRAME GRAPHIC --- */
+    .profile-details-column {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        max-width: 680px; /* Rigid structural constraint layout ceiling prevents content from over-stretching horizontally */
+    }
+
+    /* --- 1. HEADSHOT FRAME GRAPHIC WITH PREMIUM GLOSS --- */
     .avatar-container {
         position: relative;
-        width: 140px; /* Enhanced slightly to fill side-profile layout nicely */
-        height: 140px;
+        width: 164px; /* Scaled up layout proportion footprint slightly on standard viewports */
+        height: 164px;
         border-radius: 50%;
-        background: var(--bg-sub);
-        border: 2px solid var(--border);
         overflow: hidden;
-        box-shadow: var(--shadow);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        order: 2; /* Shifts avatar to the right side on desktop layout viewports */
+        will-change: transform;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .avatar-container:hover {
+        transform: scale(1.03);
     }
 
     .instructor-headshot {
@@ -120,7 +199,6 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
     .profile-header-meta {
         display: flex;
         flex-direction: column;
-        flex: 1;
         text-align: left;
     }
 
@@ -131,7 +209,7 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
         font-weight: 700;
         letter-spacing: 0.12em;
         display: block;
-        margin-bottom: 2px;
+        margin-bottom: 4px;
     }
 
     .author-label {
@@ -145,7 +223,7 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
     }
 
     .author-name {
-        font-size: clamp(2.2rem, 5vw, 3.2rem);
+        font-size: clamp(2.4rem, 5vw, 3.4rem);
         color: var(--text-main);
         margin: 0 0 4px 0;
         font-weight: var(--fw-bold);
@@ -157,35 +235,52 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
         font-size: clamp(1.05rem, 2vw, 1.25rem);
         font-weight: 600;
         color: var(--text-muted);
-        margin: 0 0 var(--space-md) 0;
+        margin: 0 0 var(--space-lg) 0;
         line-height: 1.4;
     }
 
-    /* --- 3. HIGH-DENSITY COMPACT CREDENTIALS LIST --- */
+    /* --- 3. HIGH-DENSITY EDITORIAL GRID LAYOUT --- */
     .compact-creds-box {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
+        display: grid;
+        /* Reconfigured grid metrics from auto-fit to explicit column balances */
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-md) var(--space-lg);
         width: 100%;
-        max-width: 520px;
-        align-items: flex-start;
         padding-top: var(--space-md);
-        border-top: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+        border-top: 1px solid var(--border);
     }
 
     .cred-line-item {
-        font-size: 0.98rem;
+        font-size: 0.95rem; /* Cleaned sizing parameters down marginally to protect column tracking boundaries */
         color: var(--text-main);
         font-weight: 500;
         line-height: 1.4;
         display: flex;
-        align-items: flex-start;
-        gap: 12px;
+        align-items: flex-start; /* Keeps multi-line wrapped cells aligned perfectly up to the icon center matrix */
+        gap: 10px;
         text-align: left;
     }
 
-    .trust-highlight {
-        font-weight: 650;
+    /* Phosphor Vector Uniform Layout Structure */
+    .icon-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 18px;
+        height: 18px;
+        color: var(--text-muted);
+        flex-shrink: 0;
+        margin-top: 2px; /* Fine positioning correction */
+    }
+
+    .icon-wrapper svg {
+        width: 100%;
+        height: 100%;
+        fill: currentColor;
+    }
+
+    .cred-text {
+        flex: 1;
     }
 
     /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
@@ -204,7 +299,6 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
         font-size: 0.82rem;
         margin-bottom: 4px;
     }
-
     :lang(hi) .author-label {
         letter-spacing: normal;
         text-transform: none;
@@ -212,35 +306,39 @@ const authorImg = "/images/latika.png"; // Your existing image works perfectly a
     }
 
     /* --- RESPONSIVE ADAPTATIONS --- */
+    @media (max-width: 900px) {
+        /* Drop to a 2 column matrix layout strategy on medium viewport breakpoints */
+        .compact-creds-box {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
     @media (max-width: 768px) {
         .instructor-minimal-profile {
-            flex-direction: column; /* Stack vertically on mobile screen devices */
+            flex-direction: column;
             align-items: flex-start;
             gap: var(--space-md);
+        }
+
+        .profile-details-column {
+            width: 100%;
+            max-width: 100%;
         }
 
         .avatar-container {
             width: 120px;
             height: 120px;
-            order: -1; /* Pushes the headshot to the very top frame block on mobile */
+            order: -1;
             margin-bottom: var(--space-xs);
         }
 
         .author-name {
             font-size: 2.2rem;
         }
-    }
 
-    @media (max-height: 740px) and (min-width: 769px) {
-        .avatar-container {
-            width: 110px;
-            height: 110px;
-        }
-        .author-name {
-            font-size: 2rem;
-        }
         .compact-creds-box {
-            gap: 8px;
+            grid-template-columns: 1fr;
+            gap: 12px;
         }
     }
 </style>

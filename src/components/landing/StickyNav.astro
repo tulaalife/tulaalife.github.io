@@ -37,23 +37,28 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
 <style>
     .sticky-nav {
         position: fixed;
-        top: -80px;
+        top: 0;
         left: 0;
         right: 0;
-        background: color-mix(in srgb, var(--bg-main), transparent 20%);
+        height: var(--header-height);
+        background: color-mix(in srgb, var(--bg-main) 85%, transparent);
         backdrop-filter: blur(12px);
         -webkit-backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--border);
         z-index: 99;
+
+        /* Hardware accelerated translation toggling */
+        transform: translateY(-100%);
+        will-change: transform;
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .sticky-nav.visible {
-        transform: translateY(80px);
+        transform: translateY(0);
     }
 
     .sticky-inner {
-        height: 64px;
+        height: 100%;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -72,7 +77,9 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
 
     .btn-sm {
         background: var(--primary);
-        color: #ffffff;
+        color: oklch(
+            100% 0 0
+        ); /* Force clear text contrast over solid button fill */
         padding: 10px 20px;
         border-radius: 99px;
         font-size: 0.85rem;
@@ -80,12 +87,22 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
         border: none;
         cursor: pointer;
         box-shadow: var(--shadow);
-        transition: all 0.2s ease;
+        will-change: transform;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .btn-sm:hover {
         transform: translateY(-1px);
-        filter: brightness(1.1);
+    }
+
+    .btn-sm:active {
+        transform: translateY(0) scale(0.97); /* Tactile interface feedback */
+    }
+
+    /* Devanagari structural padding adjustments */
+    :global(:lang(hi)) .btn-sm {
+        padding-top: 11px;
+        padding-bottom: 9px;
     }
 </style>
 

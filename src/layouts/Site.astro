@@ -1,7 +1,8 @@
 ---
+// src/layouts/Site.astro
 import FooterCard from "../components/FooterCard.astro";
 import { ClientRouter } from "astro:transitions";
-import "../styles/global.css"; // Driving global design and typography variables tokens from our common CSS file
+import "../styles/global.css";
 
 interface Props {
     title: string;
@@ -93,7 +94,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         <link rel="icon" type="image/webp" href="/assets/icons/logo_64.webp" />
         <ClientRouter />
 
-        <!-- Google Fonts for Hindi (Noto Sans Devanagari) -->
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
         <link
@@ -178,14 +178,12 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         </style>
 
         <style is:global>
-            /* ONLY lock scrolling if on the landing page layout view */
             html.is-landing,
             html.is-landing body {
                 height: 100%;
                 overflow: hidden;
             }
 
-            /* Optical adjustments for buttons dependent on layout context */
             :lang(hi) .btn-pill,
             :lang(hi) .btn-sm,
             :lang(hi) .filter-btn {
@@ -215,10 +213,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 height: 100dvh;
                 width: 100%;
                 scroll-snap-align: start;
-
-                /* ADD THIS LINE 👇 */
                 scroll-snap-stop: always;
-
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -257,7 +252,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 transform: translateY(0);
             }
 
-            /* Header Specific Layout Styling */
+            /* Header Layout Alignment Fixes */
             header {
                 position: fixed;
                 top: 0;
@@ -274,6 +269,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 align-items: center;
                 justify-content: space-between;
                 height: 100%;
+                padding: 0 24px; /* Matches layout boundaries cleanly */
             }
             .logo {
                 display: flex;
@@ -326,18 +322,36 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 background: var(--bg-sub);
             }
 
-            /* Footer Card Sub-actions & Toast System */
+            /* --- RE-ENGINEERED LEGAL FOOTER SYSTEM --- */
+            .legal-wrapper {
+                font-family: var(--font-sans-en);
+            }
+            :global(:lang(hi)) .legal-wrapper {
+                font-family: var(--font-sans-hi);
+            }
+
+            .legal-link,
+            .contact-btn {
+                font-size: 0.95rem;
+                font-weight: 500;
+                color: var(--text-muted);
+                transition:
+                    color 0.3s ease,
+                    opacity 0.3s ease;
+                cursor: pointer;
+            }
+
             .contact-btn {
                 background: none;
                 border: none;
-                font: inherit;
-                color: var(--text-muted);
-                cursor: pointer;
-                transition: color 0.2s ease;
+                padding: 0;
+                font-family: inherit; /* Fixes font weight fallback inheritance */
             }
+
+            .legal-link:hover,
             .contact-btn:hover {
                 color: var(--text-main);
-                text-decoration: underline;
+                opacity: 0.85;
             }
 
             .copy-toast {
@@ -399,10 +413,12 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                             stroke-width="2"
                             stroke-linecap="round"
                             stroke-linejoin="round"
-                            ><circle cx="12" cy="12" r="5"></circle><path
-                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
-                            ></path></svg
                         >
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <path
+                                d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                            ></path>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -412,49 +428,64 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             <slot />
 
             {
-    !hideFooter && (
-        <section
-            class={
-                isLandingPage ? "scroll-section" : "normal-footer"
-            }
-            style={
-                isLandingPage
-                    /* Added position: relative and removed top/bottom padding */
-                    ? "min-height: 100dvh; padding: 0; scroll-snap-align: center; scroll-snap-stop: always; position: relative;"
-                    : "position: relative;"
-            }
-        >
-            <div 
-                class="container" 
-                style={isLandingPage ? "display: flex; align-items: center; justify-content: center; height: 100%;" : ""}
-            >
-                <FooterCard />
-                
-                <!-- Pin to bottom on landing page, flow normally on other pages -->
-                <div 
-                    class="legal-wrapper" 
-                    style={isLandingPage ? "position: absolute; bottom: 32px; left: 0; right: 0; width: 100%;" : "margin-top: 48px;"}
-                >
-                    <div
-                        class="legal"
-                        style="display:flex; gap:24px; justify-content:center;"
+                !hideFooter && (
+                    <section
+                        class={
+                            isLandingPage ? "scroll-section" : "normal-footer"
+                        }
+                        style={
+                            isLandingPage
+                                ? "min-height: 100dvh; padding: 0; scroll-snap-align: center; scroll-snap-stop: always; position: relative;"
+                                : "position: relative;"
+                        }
                     >
-                        <a href={getLink("/legal/privacy")}>
-                            {t.privacy}
-                        </a>
-                        <a href={getLink("/legal/terms")}>{t.terms}</a>
-                        <button class="contact-btn" id="contactBtn">
-                            {t.contact}
-                        </button>
-                    </div>
-                    <p style="text-align: center; font-size: 0.8rem; margin-top: 16px; color: var(--text-muted);">
-                        © {new Date().getFullYear()} Tulaalife Wellness Private Limited
-                    </p>
-                </div>
-            </div>
-        </section>
-    )
-}
+                        <div
+                            class="container"
+                            style={
+                                isLandingPage
+                                    ? "display: flex; align-items: center; justify-content: center; height: 100%;"
+                                    : ""
+                            }
+                        >
+                            <FooterCard />
+
+                            <div
+                                class="legal-wrapper"
+                                style={
+                                    isLandingPage
+                                        ? "position: absolute; bottom: 32px; left: 0; right: 0; width: 100%;"
+                                        : "margin-top: 48px;"
+                                }
+                            >
+                                <div
+                                    class="legal"
+                                    style="display:flex; gap:28px; justify-content:center; align-items: center;"
+                                >
+                                    <a
+                                        href={getLink("/legal/privacy")}
+                                        class="legal-link"
+                                    >
+                                        {t.privacy}
+                                    </a>
+                                    <a
+                                        href={getLink("/legal/terms")}
+                                        class="legal-link"
+                                    >
+                                        {t.terms}
+                                    </a>
+                                    <button class="contact-btn" id="contactBtn">
+                                        {t.contact}
+                                    </button>
+                                </div>
+                                <p style="text-align: center; font-size: 0.8rem; margin-top: 14px; color: var(--text-muted);">
+                                    © {new Date().getFullYear()} Tulaalife
+                                    Wellness Private Limited
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+                )
+            }
         </main>
 
         <script>

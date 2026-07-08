@@ -107,20 +107,25 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         flex-direction: column;
     }
 
-    /* Polished Premium Pill Badge */
+    /* Polished Premium Pill Badge aligned to global design tokens */
     .badge-pill {
         display: inline-flex;
         padding: 6px 14px;
         border-radius: 999px;
-        background: color-mix(in srgb, var(--primary) 6%, transparent);
+        background: var(--bg-sub);
         color: var(--primary);
         font-weight: 600;
         font-size: 0.8rem;
         letter-spacing: 0.03em;
         margin-bottom: var(--space-md);
-        border: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
-        backdrop-filter: blur(8px);
+        border: 1px solid var(--border);
         align-self: flex-start;
+        will-change: transform;
+        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .badge-pill:active {
+        transform: scale(0.97);
     }
 
     .hero-title {
@@ -131,16 +136,15 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         color: var(--text-main);
     }
 
-    /* Enhanced contrast readability for the subtitle */
+    /* Enhanced contrast readability matching standard line metrics */
     .hero-sub {
         font-size: clamp(1.1rem, 2vw, 1.25rem);
         line-height: 1.65;
         color: var(--text-muted);
         margin-bottom: var(--space-lg);
-        max-width: 640px;
+        max-width: 54ch; /* Restricts long sentences cleanly for digital reading comfort */
     }
 
-    /* Makes the inline-bold elements truly pop out from muted prose */
     .hero-sub :global(strong) {
         color: var(--text-main);
         font-weight: 700;
@@ -154,7 +158,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         width: 100%;
     }
 
-    /* Polished label styling */
     .cta-lead {
         font-weight: 700;
         font-size: 0.75rem;
@@ -164,7 +167,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         margin-bottom: 2px;
     }
 
-    /* --- FIXED PROOF SLIDER CONTAINER --- */
+    /* --- HIGH-PERFORMANCE PROOF SLIDER CONTAINER --- */
     .proof-slider {
         position: relative;
         margin-top: var(--space-md);
@@ -181,25 +184,24 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         font-weight: 500;
         color: var(--text-muted);
         opacity: 0;
-        transform: scale(0.98);
-        filter: blur(4px);
+        transform: translateY(
+            4px
+        ); /* Swapped blur logic out for GPU friendly offsets */
         pointer-events: none;
+        will-change: transform, opacity;
         transition:
-            opacity 0.5s ease-in-out,
-            transform 0.5s ease-in-out,
-            filter 0.5s ease-in-out;
+            opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         padding: 4px 0;
         line-height: 1.4;
     }
 
     .social-proof-item.active {
         opacity: 1;
-        transform: scale(1);
-        filter: blur(0);
+        transform: translateY(0);
         pointer-events: auto;
     }
 
-    /* Keep native Hindi layout loose and beautiful */
     :lang(hi) .social-proof-item {
         line-height: 1.5;
         font-size: 1rem;
