@@ -1,6 +1,7 @@
 ---
 // src/components/landing/WellnessTools.astro
 import SectionCTA from "../SectionCTA.astro";
+import AnimatedFeatureCard from "./AnimatedFeatureCard.astro";
 
 const currentLang = Astro.currentLocale || "en";
 
@@ -98,28 +99,29 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 <section class="scroll-section section-tools">
     <div class="content-wrapper">
-        <!-- 1. Header Container -->
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
                 <h2 class="section-title">
-                    {t.titleTop}
-                    <br />
+                    {t.titleTop}<br />
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
                 <p class="body-text" set:html={t.body} />
             </div>
         </div>
 
-        <!-- 2. Single Feature Animation Display Frame -->
         <div class="container stack-stage-container animate-on-scroll delay-1">
             <div class="stage-frame" id="animation-stage-frame">
                 {
                     t.tools.map((tool, index) => (
-                        <div
-                            class={`animated-tool-card premium-gloss-surface ${index === 0 ? "active" : ""}`}
-                            style={`--card-accent: ${tool.color}`}
+                        <AnimatedFeatureCard
+                            title={tool.title}
+                            desc={tool.desc}
+                            color={tool.color}
+                            type={tool.type}
+                            index={index}
+                            activeClass="active"
                         >
-                            <div class="card-watermark">
+                            <Fragment slot="watermark">
                                 {tool.type === "cycle" && (
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
@@ -210,19 +212,13 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                                         <path d="M232,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H24a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h72a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48ZM96,192H32V64H96a24,24,0,0,1,24,24V200A39.81,39.81,0,0,0,96,192Zm128,0H160a39.81,39.81,0,0,0-24,8V88a24,24,0,0,1,24-24h64ZM160,88h40a8,8,0,0,1,0,16H160a8,8,0,0,1,0-16Zm48,40a8,8,0,0,1-8,8H160a8,8,0,0,1,0-16h40A8,8,0,0,1,208,128Zm0,32a8,8,0,0,1-8,8H160a8,8,0,0,1,0-16h40A8,8,0,0,1,208,160Z" />
                                     </svg>
                                 )}
-                            </div>
-
-                            <div class="tool-info">
-                                <h3 class="card-title">{tool.title}</h3>
-                                <p class="card-desc">{tool.desc}</p>
-                            </div>
-                        </div>
+                            </Fragment>
+                        </AnimatedFeatureCard>
                     ))
                 }
             </div>
         </div>
 
-        <!-- 3. Bottom Button Line -->
         <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/blog"
@@ -237,11 +233,9 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     document.addEventListener("astro:page-load", () => {
         const stage = document.getElementById("animation-stage-frame");
         if (!stage) return;
-
-        const cards = stage.querySelectorAll(".animated-tool-card");
-        if (cards.length === 0) return;
-
+        const cards = stage.querySelectorAll(".animated-feature-card");
         let activeIndex = 0;
+        if (cards.length === 0) return;
 
         setInterval(() => {
             cards[activeIndex].classList.remove("active");
@@ -259,194 +253,63 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         padding-top: var(--section-v-padding);
         padding-bottom: var(--section-v-padding);
     }
-
     .content-wrapper {
         display: flex;
         flex-direction: column;
         width: 100%;
         margin: 0 auto;
     }
-
     .text-col {
         margin-bottom: var(--space-md);
         text-align: left;
         width: 100%;
     }
-
     .section-title {
         font-size: clamp(2.2rem, 5.5vw, 3.8rem);
         letter-spacing: -0.035em;
         line-height: 1.1;
-        text-align: left;
         color: var(--text-main);
     }
-
     .body-text {
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        max-width: 54ch; /* Aligned ceiling layout bounds */
-        text-align: left;
+        max-width: 54ch;
         line-height: 1.6;
         margin-top: var(--space-xs);
     }
-
     .body-text :global(strong) {
         color: var(--text-main);
         font-weight: 700;
     }
-
-    /* --- SEQUENTIAL FADE CONTEXT DISPLAY --- */
     .stack-stage-container {
         width: 100%;
         margin-bottom: var(--space-lg);
     }
-
     .stage-frame {
         position: relative;
         width: 100%;
         max-width: 480px;
-        height: 114px; /* Locked frame height baseline layout */
+        height: 114px;
         display: grid;
         grid-template-columns: 1fr;
     }
-
-    .animated-tool-card {
-        grid-area: 1 / 1 / 2 / 2;
-        padding: var(--space-md) var(--space-xl) var(--space-md) var(--space-md);
-        border-radius: var(--radius-lg);
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-
-        /* High-fidelity Cinematic Fade transition system targeting composited steps */
-        opacity: 0;
-        transform: translateY(6px) scale(0.98);
-        pointer-events: none;
-        will-change: transform, opacity;
-        transition:
-            opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-            transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    /* Top decorative color bar accent indicator */
-    .animated-tool-card::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: var(--card-accent);
-        opacity: 0.8;
-        z-index: 3;
-    }
-
-    .animated-tool-card.active {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-        pointer-events: auto;
-    }
-
-    /* --- RE-ARCHITECTED WATERMARK MARKUP --- */
-    .card-watermark {
-        position: absolute;
-        /* Pin tightly to the inside vertical center layout edge */
-        top: 50%;
-        right: 20px;
-        transform: translateY(-50%);
-        color: var(--card-accent);
-        opacity: 0.05;
-        pointer-events: none;
-        z-index: 1;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        will-change: transform, opacity;
-        transition:
-            opacity 0.4s ease,
-            transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .card-watermark svg {
-        width: 64px;
-        height: 64px;
-        display: block;
-        fill: currentColor;
-    }
-
-    .animated-tool-card.active .card-watermark {
-        opacity: 0.12; /* Subtle contrast elevation to look luxurious */
-        transform: translateY(-50%) scale(1.06) rotate(-4deg);
-    }
-
-    .tool-info {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        position: relative;
-        z-index: 2;
-        width: 100%;
-        padding-right: 70px; /* Prevents long paragraph descriptions from colliding or rendering over the icon */
-    }
-
-    .card-title {
-        font-size: 1.25rem;
-        font-weight: 750;
-        margin: 0 0 2px 0;
-        color: var(--text-main);
-        letter-spacing: -0.015em;
-        line-height: 1.3;
-    }
-
-    .card-desc {
-        font-size: 0.95rem;
-        color: var(--text-muted);
-        margin: 0;
-        line-height: 1.4;
-    }
-
     .cta-wrapper {
         display: flex;
         justify-content: flex-start;
     }
-
-    .mobile-only {
-        display: none;
-    }
-
-    /* --- DEVANAGARI ALIGNMENT OPTIMIZATIONS --- */
     :lang(hi) .section-title {
         line-height: 1.35;
     }
-    :lang(hi) .card-title {
-        line-height: 1.45;
-    }
-    :lang(hi) .card-desc {
-        line-height: 1.5;
-    }
 
-    /* --- RESPONSIVE CONTROLS --- */
     @media (max-height: 740px) {
-        .text-col {
-            margin-bottom: var(--space-sm);
-        }
         .body-text {
             display: none;
-        }
-        .stack-stage-container {
-            margin-bottom: var(--space-sm);
         }
         .stage-frame {
             height: 96px;
         }
     }
-
     @media (max-width: 768px) {
-        .mobile-only {
-            display: block;
-        }
         .stage-frame {
             max-width: 100%;
         }
