@@ -18,13 +18,13 @@ const ui = {
             },
             {
                 title: "Habit Rhythm",
-                desc: "Build consistent healthy streaks.",
+                desc: "Build healthy habits.",
                 type: "habit",
                 color: "oklch(75% 0.15 90)",
             },
             {
                 title: "Hydration",
-                desc: "Monitor daily water intake.",
+                desc: "Monitor water intake.",
                 type: "water",
                 color: "oklch(62% 0.14 220)",
             },
@@ -36,13 +36,13 @@ const ui = {
             },
             {
                 title: "Health Tips",
-                desc: "Research-backed daily guidance.",
+                desc: "Research-backed guidance.",
                 type: "tips",
                 color: "oklch(78% 0.13 60)",
             },
             {
-                title: "Care Blog",
-                desc: "Learn expert care routines.",
+                title: "Wellness Blog",
+                desc: "Learn care routines.",
                 type: "blog",
                 color: "oklch(64% 0.12 150)",
             },
@@ -394,7 +394,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     .card-title {
         font-size: 1.25rem;
         font-weight: 750;
-        margin: 0 0 4px 0;
+        margin: 0 0 2px 0;
         color: var(--text-main);
         letter-spacing: -0.015em;
         line-height: 1.3;
@@ -405,7 +405,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         color: var(--text-muted);
         margin: 0;
         line-height: 1.4;
-        max-width: 90%;
     }
 
     .cta-wrapper {

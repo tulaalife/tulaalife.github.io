@@ -155,7 +155,7 @@ const authorImg = "/images/latika.png";
         width: 100%;
         display: flex;
         flex-direction: row;
-        align-items: center;
+        align-items: center; /* Vertically balances the avatar center axis cleanly against text content blocks */
         justify-content: space-between;
         gap: var(--space-xl);
     }
@@ -164,12 +164,14 @@ const authorImg = "/images/latika.png";
         display: flex;
         flex-direction: column;
         flex: 1;
+        max-width: 680px; /* Rigid structural constraint layout ceiling prevents content from over-stretching horizontally */
     }
 
-    /* --- Headshot Container --- */
+    /* --- 1. HEADSHOT FRAME GRAPHIC WITH PREMIUM GLOSS --- */
     .avatar-container {
-        width: 154px;
-        height: 154px;
+        position: relative;
+        width: 164px; /* Scaled up layout proportion footprint slightly on standard viewports */
+        height: 164px;
         border-radius: 50%;
         overflow: hidden;
         display: flex;
@@ -193,7 +195,7 @@ const authorImg = "/images/latika.png";
         transform: translateX(-50%);
     }
 
-    /* --- Metadata --- */
+    /* --- 2. EDITORIAL METADATA HOLDER --- */
     .profile-header-meta {
         display: flex;
         flex-direction: column;
@@ -237,24 +239,25 @@ const authorImg = "/images/latika.png";
         line-height: 1.4;
     }
 
-    /* --- High-Quality Vector Grid List --- */
+    /* --- 3. HIGH-DENSITY EDITORIAL GRID LAYOUT --- */
     .compact-creds-box {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 16px var(--space-md);
+        /* Reconfigured grid metrics from auto-fit to explicit column balances */
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-md) var(--space-lg);
         width: 100%;
         padding-top: var(--space-md);
         border-top: 1px solid var(--border);
     }
 
     .cred-line-item {
-        font-size: 0.98rem;
+        font-size: 0.95rem; /* Cleaned sizing parameters down marginally to protect column tracking boundaries */
         color: var(--text-main);
         font-weight: 500;
         line-height: 1.4;
         display: flex;
-        align-items: center;
-        gap: 12px;
+        align-items: flex-start; /* Keeps multi-line wrapped cells aligned perfectly up to the icon center matrix */
+        gap: 10px;
         text-align: left;
     }
 
@@ -263,15 +266,17 @@ const authorImg = "/images/latika.png";
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 20px;
-        height: 20px;
+        width: 18px;
+        height: 18px;
         color: var(--text-muted);
         flex-shrink: 0;
+        margin-top: 2px; /* Fine positioning correction */
     }
 
     .icon-wrapper svg {
         width: 100%;
         height: 100%;
+        fill: currentColor;
     }
 
     .cred-text {
@@ -301,6 +306,13 @@ const authorImg = "/images/latika.png";
     }
 
     /* --- RESPONSIVE ADAPTATIONS --- */
+    @media (max-width: 900px) {
+        /* Drop to a 2 column matrix layout strategy on medium viewport breakpoints */
+        .compact-creds-box {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
     @media (max-width: 768px) {
         .instructor-minimal-profile {
             flex-direction: column;
@@ -310,6 +322,7 @@ const authorImg = "/images/latika.png";
 
         .profile-details-column {
             width: 100%;
+            max-width: 100%;
         }
 
         .avatar-container {
@@ -325,19 +338,6 @@ const authorImg = "/images/latika.png";
 
         .compact-creds-box {
             grid-template-columns: 1fr;
-            gap: 12px;
-        }
-    }
-
-    @media (max-height: 740px) and (min-width: 769px) {
-        .avatar-container {
-            width: 120px;
-            height: 120px;
-        }
-        .author-name {
-            font-size: 2rem;
-        }
-        .compact-creds-box {
             gap: 12px;
         }
     }
