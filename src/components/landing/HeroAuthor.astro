@@ -8,11 +8,7 @@ const ui = {
         author: "Latika Bissa",
         authorFounder: "Founder Tulaa, YogaWithLatika",
         creds: [
-            {
-                text: "12+ Years of Experience",
-                icon: "user-switch",
-                highlight: true,
-            },
+            { text: "12+ Years of Experience", icon: "user-switch" },
             { text: "Gold Medalist, M.Sc Yoga Therapy", icon: "medal" },
             { text: "5 Star rating on Google", icon: "star" },
             { text: "50 lakh views on social media", icon: "trend-up" },
@@ -25,11 +21,7 @@ const ui = {
         author: "लतिका बिस्सा",
         authorFounder: "संस्थापक Tulaa, YogaWithLatika",
         creds: [
-            {
-                text: "12+ वर्षों का अनुभव",
-                icon: "user-switch",
-                highlight: true,
-            },
+            { text: "12+ वर्षों का अनुभव", icon: "user-switch" },
             { text: "स्वर्ण पदक विजेता, M.Sc योग थेरेपी", icon: "medal" },
             { text: "5-स्टार रेटिंग गूगल पर", icon: "star" },
             { text: "सोशल मीडिया पर 50 लाख व्यूज़", icon: "trend-up" },
@@ -60,12 +52,7 @@ const authorImg = "/images/latika.png";
                 <div class="compact-creds-box">
                     {
                         t.creds.map((cred) => (
-                            <div
-                                class:list={[
-                                    "cred-line-item",
-                                    { "trust-highlight": cred.highlight },
-                                ]}
-                            >
+                            <div class:list={["cred-line-item"]}>
                                 <div class="icon-wrapper">
                                     {cred.icon === "user-switch" && (
                                         <svg
@@ -285,15 +272,6 @@ const authorImg = "/images/latika.png";
     .icon-wrapper svg {
         width: 100%;
         height: 100%;
-    }
-
-    .trust-highlight {
-        font-weight: 650;
-    }
-
-    /* Primary Accent POP context on the key trust highlight row */
-    .trust-highlight .icon-wrapper {
-        color: var(--primary);
     }
 
     .cred-text {
