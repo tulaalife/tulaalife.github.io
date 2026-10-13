@@ -2,71 +2,49 @@
 
 **Version 1.0 · Effective 2025-09-16**
 
-> **Short version:** Tulaa supports wellbeing with yoga, meditation, journaling, water tracking,
-> reminders, and tips. It’s not medical advice. Your logs stay on your device. Analytics and crash
-> reports are optional, anonymous, and never include your personal data. No ads.
+> **Short version:** Tulaa supports your wellbeing through yoga, meditation, and other wellness features. We do not provide medical advice. Your personal logs stay safely on your device. Analytics and crash reports are strictly optional, anonymous, and never include your personal data. No ads.
 
 ## 1) Purpose
-
-Tulaa is a wellbeing companion. It does not diagnose, treat, or prevent disease.
+Tulaa is a wellbeing tool designed to support a healthy lifestyle. It is not a medical device and does not diagnose, treat, cure, or prevent any disease or medical condition.
 
 ## 2) Health & Safety
+Your health is your responsibility.
+* **Not medical advice:** Always consult a qualified healthcare professional before starting any new fitness, fasting, or wellness routine.
+* **Listen to your body:** Stop immediately if you experience pain, dizziness, exhaustion, or discomfort.
+* **Not for emergencies:** Do not use Tulaa for medical emergencies or urgent health concerns.
 
-* Not a medical service. Consult a qualified professional before starting any new routine.
-* Stop if you feel pain, dizziness, or discomfort.
-* Not for emergencies.
+## 3) Who Can Use the App
+You must be at least 18 years old to use Tulaa independently. Teens aged 16–18 may use the app only with the guidance and consent of a parent or guardian. Tulaa is not intended for children under 16.
 
-## 3) Who Can Use
-
-Designed for adults 18+. Teens 16–18 may use with parental guidance. Not for children under 16.
-
-## 4) Your Data
-
-Yoga logs, water logs, moments/journals, rhythms, and period data are stored only on your device.
-You can export or delete them any time. If you uninstall or reset your device, your local data may
-be lost.
+## 4) Your Data & Storage
+Your personal logs (yoga, water, mood, rhythms, period tracking, and fasting) are stored strictly on your local device. You own this data. **Because we do not store your data on our servers, we cannot recover it for you.** If you lose your device, uninstall the app, or perform a factory reset, your local data will be permanently lost unless you regularly back up your device.
 
 ## 5) Analytics & Crash Reporting
+By default, Tulaa collects zero analytics. If you choose to opt-in, we use [PostHog](https://posthog.com/privacy) to securely track anonymous feature usage and [Sentry](https://sentry.io/privacy) to catch app crashes. These reports **never** include your mood logs, health records, or personal identity. You can disable this in your settings at any time.
 
-By default, nothing is collected. If you opt in, we may use [PostHog](https://posthog.com/privacy)
-for anonymous feature analytics, and [Sentry](https://sentry.io/privacy) for anonymous crash
-reports. These never include journals, health logs, or personal data. You can disable them anytime.
-
-## 6) Permissions
-
-Notifications are used only if you set up Rhythms. No camera, contact, or location access.
+## 6) App Permissions
+Tulaa only asks for the permissions it strictly needs to function. We request Notification access only if you explicitly set up Reminders or Rhythms. We never ask for access to your camera, contacts, microphone, or location.
 
 ## 7) Content & Ownership
-
-All yoga, audio, text, visuals, and designs belong to Tulaa. Your logs and entries belong to you. Do
-not copy or redistribute Tulaa content without permission.
+All app content (yoga plans, audio, text, visuals, and designs) is owned by Tulaa. You may use it for your personal wellbeing, but you may not copy, modify, or redistribute our content without permission. Your personal entries and logs belong entirely to you.
 
 ## 8) Free & Paid Features
-
-The core app is free. Premium features or memberships may launch in future, always shown clearly
-before purchase.
+Tulaa's core app experience is free. We may introduce premium features or subscriptions in the future, but we will always clearly explain any costs before asking you to make a purchase.
 
 ## 9) Acceptable Use
+Please treat the app and its content with respect. Do not interfere with the app's security, attempt to reverse engineer its code, or use Tulaa for any unlawful purposes.
 
-Do not misuse, interfere with, reverse engineer, or use Tulaa for unlawful purposes.
-
-## 10) Availability & Changes
-
-Features may change or be removed. Tulaa is offline-first but continuous uptime is not guaranteed.
+## 10) Availability & Updates
+We constantly strive to improve Tulaa, meaning features may be added, changed, or removed over time. While Tulaa is built to work offline, we do not guarantee the app will always be error-free or uninterrupted.
 
 ## 11) Warranty & Liability
-
-Tulaa is provided “as is”. To the maximum extent permitted by law, we are not liable for indirect or
-consequential losses. Where liability cannot be excluded, it is limited to INR ₹1,000.
+Tulaa is provided "as is" without warranties of any kind. To the fullest extent permitted by law, we are not liable for any direct, indirect, or accidental damages (including data loss or physical injury) arising from your use of the app. Where liability cannot be completely excluded by law, our maximum total liability is limited to INR ₹1,000.
 
 ## 12) Governing Law
+These Terms are governed by the laws of India. Any legal disputes will be handled exclusively in the courts of Nashik, Maharashtra.
 
-These Terms are governed by the laws of India, State of Karnataka. Courts in Bengaluru have
-exclusive jurisdiction.
-
-## 13) Updates
-
-If these Terms change, we’ll show a notice in the app and ask you to accept the new version.
+## 13) Changes to these Terms
+If we make significant changes to these Terms in the future, we will notify you within the app and ask you to review and accept the updated version.
 
 ---
-**Need help?** [contact@tulaalife.com](mailto:contact@tulaalife.com)
+**Need help?** Contact us at [contact@tulaalife.com](mailto:contact@tulaalife.com)
