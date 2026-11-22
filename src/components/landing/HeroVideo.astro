@@ -325,16 +325,22 @@ const videoMp4 =
     @media (max-width: 860px) {
         .video-grid {
             grid-template-columns: 1fr;
+            gap: 2rem;
         }
 
         .phone-frame-wrapper {
-            height: 64dvh;
-            border-radius: 36px;
+            height: 58dvh;
+            max-height: 520px;
+            border-radius: 32px;
+        }
+
+        .visual-backlightstage {
+            padding: 0.5rem 0;
         }
 
         .visual-backlightstage::before {
-            width: 350px;
-            height: 350px;
+            width: 320px;
+            height: 320px;
         }
     }
 </style>

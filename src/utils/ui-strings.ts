@@ -60,6 +60,12 @@ export interface FinderBranch {
     hiSub: string;
     enPrompt: string;
     hiPrompt: string;
+    enTitleTop: string;
+    enTitleBottom: string;
+    hiTitleTop: string;
+    hiTitleBottom: string;
+    enHighlights: readonly string[];
+    hiHighlights: readonly string[];
     options: readonly FinderOption[];
 }
 
@@ -72,6 +78,20 @@ export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
         hiSub: "कमर, गर्दन, घुटने और जोड़ों का दर्द",
         enPrompt: "Where do you feel pain or stiffness?",
         hiPrompt: "आपको कहाँ दर्द या जकड़न महसूस होती है?",
+        enTitleTop: "Where do you feel",
+        enTitleBottom: "pain or stiffness?",
+        hiTitleTop: "आपको कहाँ दर्द या",
+        hiTitleBottom: "जकड़न महसूस होती है?",
+        enHighlights: [
+            "10-Min Desk & Posture Relief",
+            "Step-by-Step Video & Timers",
+            "Download Once, Practice Offline",
+        ],
+        hiHighlights: [
+            "10-मिनट डेस्क और पोस्चर राहत",
+            "स्टेप-बाय-स्टेप वीडियो और टाइमर",
+            "एक बार डाउनलोड, ऑफलाइन अभ्यास",
+        ],
         options: [
             { key: "pain:lower_back", en: "Lower Back & Tailbone", hi: "निचली कमर और टेलबोन" },
             { key: "pain:neck", en: "Neck Stiffness", hi: "गर्दन की जकड़न" },
@@ -100,6 +120,20 @@ export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
         hiSub: "PCOS, थायरॉइड, डायबिटीज, हाई BP आदि",
         enPrompt: "Which condition would you like therapeutic support for?",
         hiPrompt: "आप किस स्वास्थ्य स्थिति के लिए योग थेरेपी चाहते हैं?",
+        enTitleTop: "Which condition needs",
+        enTitleBottom: "therapeutic support?",
+        hiTitleTop: "किस स्वास्थ्य स्थिति के लिए",
+        hiTitleBottom: "योग थेरेपी चाहिए?",
+        enHighlights: [
+            "Science-Backed Yoga Therapy",
+            "Built-in Safety Cautions",
+            "100% On-Device Health Privacy",
+        ],
+        hiHighlights: [
+            "विज्ञान-आधारित योग थेरेपी",
+            "सुरक्षा सावधानियां शामिल",
+            "100% ऑन-डिवाइस डेटा प्राइवेसी",
+        ],
         options: [
             { key: "medical:pcos", en: "PCOS & Hormonal Balance", hi: "PCOS और हार्मोन संतुलन" },
             { key: "medical:thyroid", en: "Thyroid Care", hi: "थायरॉइड केयर" },
@@ -120,6 +154,20 @@ export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
         hiSub: "तिमाही के अनुसार सुरक्षित प्रसव-पूर्व और पोस्टनेटल योग",
         enPrompt: "Select your current stage for safe, guided care:",
         hiPrompt: "सुरक्षित अभ्यास के लिए अपना वर्तमान चरण चुनें:",
+        enTitleTop: "Which stage of",
+        enTitleBottom: "motherhood are you in?",
+        hiTitleTop: "मातृत्व के किस चरण के लिए",
+        hiTitleBottom: "सुरक्षित योग चुनें?",
+        enHighlights: [
+            "Trimester-Safe Gentle Flows",
+            "100% Private Period & Cycle Log",
+            "No Login, No Ads, Zero Tracking",
+        ],
+        hiHighlights: [
+            "तिमाही के अनुसार सुरक्षित अभ्यास",
+            "100% निजी पीरियड व साइकिल लॉग",
+            "कोई लॉगिन नहीं, कोई विज्ञापन नहीं",
+        ],
         options: [
             { key: "pregnancy:trimester_1", en: "1st Trimester (Months 1–3)", hi: "पहली तिमाही (1–3 महीने)" },
             { key: "pregnancy:trimester_2", en: "2nd Trimester (Months 4–6)", hi: "दूसरी तिमाही (4–6 महीने)" },
@@ -135,6 +183,20 @@ export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
         hiSub: "तनाव मुक्ति, वेट लॉस, गहरी नींद और फोकस",
         enPrompt: "What is your main daily wellness goal?",
         hiPrompt: "आपका मुख्य दैनिक स्वास्थ्य लक्ष्य क्या है?",
+        enTitleTop: "What is your main",
+        enTitleBottom: "daily wellness goal?",
+        hiTitleTop: "आपका मुख्य दैनिक",
+        hiTitleBottom: "स्वास्थ्य लक्ष्य क्या है?",
+        enHighlights: [
+            "Pranayama, Vedic Chants & Deep Sleep",
+            "Fasting, Hydration & Mood Trackers",
+            "Zero Paywalls • Offline-First",
+        ],
+        hiHighlights: [
+            "प्राणायाम, वैदिक मंत्र और गहरी नींद",
+            "फास्टिंग, वॉटर और मूड ट्रैकर्स",
+            "बिना सब्सक्रिप्शन • 100% ऑफलाइन",
+        ],
         options: [
             { key: "general:general_relaxation_relief", en: "Stress, Anxiety & Deep Sleep", hi: "तनाव मुक्ति और गहरी नींद" },
             { key: "general:general_weight_loss", en: "Weight Loss & Metabolism", hi: "वजन घटाना और मेटाबॉलिज्म" },
@@ -151,6 +213,20 @@ export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
         hiSub: "कुर्सी पर बैठकर किए जाने वाले सुरक्षित और आसान अभ्यास",
         enPrompt: "Gentle, supported movement for every age:",
         hiPrompt: "हर उम्र के लिए कोमल और सुरक्षित गतिशीलता:",
+        enTitleTop: "Gentle seated mobility",
+        enTitleBottom: "for every age.",
+        hiTitleTop: "हर उम्र के लिए सुरक्षित",
+        hiTitleBottom: "चेयर योग और गतिशीलता।",
+        enHighlights: [
+            "Seated & Joint-Safe Movements",
+            "Clear Voice & Video Guidance",
+            "No Sign-Up or Phone Number Needed",
+        ],
+        hiHighlights: [
+            "कुर्सी पर बैठकर सुरक्षित अभ्यास",
+            "स्पष्ट ऑडियो और वीडियो मार्गदर्शन",
+            "बिना मोबाइल नंबर या लॉगिन",
+        ],
         options: [
             { key: "mobility:mobility", en: "Chair Yoga & Joint Mobility", hi: "चेयर योग और जोड़ों की गतिशीलता" },
         ],

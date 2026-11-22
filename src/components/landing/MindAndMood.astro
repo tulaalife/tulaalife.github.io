@@ -321,9 +321,6 @@ const displayAudios = guidedAudios
         .text-col {
             margin-bottom: var(--space-sm);
         }
-        .body-text {
-            display: none;
-        }
         .carousel-card {
             flex: 0 0 250px;
         }
@@ -332,9 +329,13 @@ const displayAudios = guidedAudios
         }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 680px) {
+        .section-title {
+            font-size: clamp(1.85rem, 6vw, 2.4rem);
+        }
         .carousel-card {
-            flex: 0 0 290px;
+            flex: 0 0 245px;
+            min-height: 225px;
         }
     }
 </style>

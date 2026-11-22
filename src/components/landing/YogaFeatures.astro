@@ -371,14 +371,21 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         .text-col {
             margin-bottom: var(--space-sm);
         }
-        .body-text {
-            display: none;
-        }
         .carousel-card {
             flex: 0 0 250px;
         }
         .card-content {
             padding: var(--space-sm);
+        }
+    }
+
+    @media (max-width: 680px) {
+        .section-title {
+            font-size: clamp(1.85rem, 6vw, 2.4rem);
+        }
+        .carousel-card {
+            flex: 0 0 245px;
+            min-height: 225px;
         }
     }
 </style>

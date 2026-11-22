@@ -8,24 +8,28 @@ const currentLang = (Astro.currentLocale || "en") as "en" | "hi";
 const ui = {
     en: {
         badge: "NO LOGIN • NO ADS • 100% ON-DEVICE PRIVACY",
-        titleTop: "How does your body",
-        titleBottom: "feel today?",
-        subtitle:
-            "Take a deep breath. Answer two quick questions to find your science-backed therapeutic yoga plan—curated by Latika Bissa (MSc Yoga Therapy).",
-        step1Title: "1. What would you like relief or support with?",
+        step1TitleTop: "How does your body",
+        step1TitleBottom: "feel today?",
+        step1Sub: "Select your primary need for a science-backed therapeutic yoga plan.",
+        step3TitleTop: "Your Therapeutic",
+        step3TitleBottom: "Yoga Plan is Ready.",
+        step3Highlights: [
+            "No Sign-Up or Phone Number Needed",
+            "Download Once, Practice Offline",
+            "100% Free & Ad-Free Sanctuary",
+        ],
         backToStep1: "← Change focus area",
         backToStep2: "← Choose a different symptom",
         startOver: "Start over",
-        matchBadge: "Your Therapeutic Plan",
+        matchBadge: "Recommended Plan",
         altHeader: "Also recommended:",
         viewDetails: "Read full plan guide →",
-        appPrompt: "Download once, practice offline—no sign-up or phone number needed:",
+        appPrompt: "Open in Tulaa—no phone number, email, or login required:",
         browseAll: "Explore all 30+ therapeutic yoga plans →",
-        trustPills: [
-            "No Phone Number or Email",
-            "Works 100% Offline",
-            "12+ Yrs Clinical Yoga Therapy",
-        ],
+        authorName: "Curated by Latika Bissa",
+        authorCreds: "Gold Medalist, M.Sc. Yoga Therapy • 12+ Yrs Clinical Exp",
+        authorStats: "★ 5.0 Rated • 5,000+ Lives Transformed • 50L+ Views",
+        authorSiteLabel: "yogawithlatika.com",
         intensityMap: {
             beginner: "Beginner Safe",
             intermediate: "Intermediate",
@@ -40,24 +44,28 @@ const ui = {
     },
     hi: {
         badge: "बिना लॉगिन • बिना विज्ञापन • 100% फोन में सुरक्षित",
-        titleTop: "आज आपका शरीर",
-        titleBottom: "कैसा महसूस कर रहा है?",
-        subtitle:
-            "एक गहरी सांस लें। लतिका बिस्सा (MSc योग थेरेपी) द्वारा तैयार अपना सही और वैज्ञानिक योग प्लान जानने के लिए दो छोटे सवालों के जवाब दें।",
-        step1Title: "1. आज आप किस चीज़ में आराम या सहयोग चाहते हैं?",
+        step1TitleTop: "आज आपका शरीर",
+        step1TitleBottom: "कैसा महसूस कर रहा है?",
+        step1Sub: "अपने लिए सही और वैज्ञानिक योग थेरेपी प्लान जानने के लिए अपनी मुख्य ज़रूरत चुनें।",
+        step3TitleTop: "आपके लिए सुझाया गया",
+        step3TitleBottom: "योग थेरेपी प्लान।",
+        step3Highlights: [
+            "न कोई साइन-अप, न मोबाइल नंबर",
+            "एक बार डाउनलोड, ऑफलाइन अभ्यास",
+            "100% फ्री और विज्ञापन-मुक्त",
+        ],
         backToStep1: "← मुख्य श्रेणी बदलें",
         backToStep2: "← दूसरा विकल्प चुनें",
         startOver: "फिर से शुरू करें",
-        matchBadge: "आपके लिए सुझाया गया प्लान",
+        matchBadge: "सर्वश्रेष्ठ सुझाव",
         altHeader: "अन्य उपयोगी प्लान:",
         viewDetails: "प्लान की पूरी जानकारी पढ़ें →",
-        appPrompt: "एक बार डाउनलोड करें, बिना इंटरनेट और बिना लॉगिन अभ्यास करें:",
+        appPrompt: "बिना मोबाइल नंबर या लॉगिन के Tulaa ऐप में अभ्यास शुरू करें:",
         browseAll: "सभी 30+ योग थेरेपी प्लान्स देखें →",
-        trustPills: [
-            "न साइन-अप, न मोबाइल नंबर",
-            "100% ऑफलाइन अभ्यास",
-            "12+ वर्षों का योग थेरेपी अनुभव",
-        ],
+        authorName: "लतिका बिस्सा द्वारा तैयार",
+        authorCreds: "स्वर्ण पदक विजेता, M.Sc. योग थेरेपी • 12+ वर्षों का अनुभव",
+        authorStats: "★ 5.0 रेटिंग • 5,000+ स्वस्थ जीवन • 50 लाख+ व्यूज़",
+        authorSiteLabel: "yogawithlatika.com",
         intensityMap: {
             beginner: "शुरुआती (Beginner Safe)",
             intermediate: "मध्यम (Intermediate)",
@@ -140,10 +148,11 @@ const initialAlts = defaultPlanIds
     <div class="container hero-centered-shell">
         <div class="hero-intro">
             <span class="badge-small">{t.badge}</span>
-            <h1 class="hero-title" lang={currentLang}>
-                {t.titleTop} <span class="text-gradient">{t.titleBottom}</span>
+            <h1 class="hero-title" lang={currentLang} id="dynamic-hero-title">
+                <span id="hero-title-top">{t.step1TitleTop}</span>{" "}
+                <span class="text-gradient" id="hero-title-bottom">{t.step1TitleBottom}</span>
             </h1>
-            <p class="hero-sub body-text">{t.subtitle}</p>
+            <p class="hero-sub body-text" id="hero-step1-sub">{t.step1Sub}</p>
         </div>
 
         <div
@@ -153,6 +162,11 @@ const initialAlts = defaultPlanIds
             data-plans={JSON.stringify(clientPlansMap)}
             data-branches={JSON.stringify(PLAN_FINDER_BRANCHES)}
             data-lang={currentLang}
+            data-step1-top={t.step1TitleTop}
+            data-step1-bottom={t.step1TitleBottom}
+            data-step3-top={t.step3TitleTop}
+            data-step3-bottom={t.step3TitleBottom}
+            data-step3-highlights={JSON.stringify(t.step3Highlights)}
         >
             <div class="step-dots" aria-hidden="true">
                 <span class="step-dot active" data-dot="1"></span>
@@ -162,7 +176,6 @@ const initialAlts = defaultPlanIds
 
             <!-- STEP 1: Pick 1 of 5 Branches -->
             <div class="wizard-step active" id="wizard-step-1">
-                <h2 class="step-question">{t.step1Title}</h2>
                 <div class="branch-grid">
                     {
                         PLAN_FINDER_BRANCHES.map((branch) => (
@@ -193,9 +206,6 @@ const initialAlts = defaultPlanIds
                         {t.backToStep1}
                     </button>
                 </div>
-                <h2 class="step-question" id="finder-step2-prompt">
-                    {currentLang === "hi" ? defaultBranch.hiPrompt : defaultBranch.enPrompt}
-                </h2>
                 <div class="sub-pills-wrap" id="finder-sub-options">
                     {
                         defaultBranch.options.map((opt) => (
@@ -244,11 +254,11 @@ const initialAlts = defaultPlanIds
                                     <span id="rec-frequency">{initialPrimary.frequency}</span>
                                 </div>
 
-                                <h3 class="result-title">
+                                <h2 class="result-title">
                                     <a href={initialPrimary.href} id="rec-title-link">
                                         {initialPrimary.title}
                                     </a>
-                                </h3>
+                                </h2>
 
                                 <p class="result-subtitle" id="rec-subtitle">
                                     {initialPrimary.subtitle}
@@ -289,10 +299,41 @@ const initialAlts = defaultPlanIds
             }
         </div>
 
-        <div class="hero-footer-links">
-            <div class="trust-row">
-                {t.trustPills.map((pill) => <span class="trust-chip">✓ {pill}</span>)}
+        <!-- Contextual Trust Slot Below Card: Latika Bio on Step 1, High-CVR App Highlights on Step 2 & 3 -->
+        <div class="context-trust-slot">
+            <div class="latika-bio-card premium-gloss-surface" id="hero-latika-bio">
+                <div class="latika-avatar-wrap">
+                    <img
+                        src="/images/latika.png"
+                        alt="Latika Bissa"
+                        width="56"
+                        height="56"
+                        loading="eager"
+                    />
+                </div>
+                <div class="latika-bio-content">
+                    <div class="latika-bio-top">
+                        <strong class="latika-bio-name">{t.authorName}</strong>
+                        <a
+                            href="https://yogawithlatika.com"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="latika-site-link"
+                        >
+                            {t.authorSiteLabel} ↗
+                        </a>
+                    </div>
+                    <p class="latika-bio-creds">{t.authorCreds}</p>
+                    <p class="latika-bio-stats">{t.authorStats}</p>
+                </div>
             </div>
+
+            <div class="conversion-highlights-bar" id="hero-conversion-highlights" hidden>
+                <div class="highlights-pills" id="dynamic-highlights-list"></div>
+            </div>
+        </div>
+
+        <div class="hero-footer-links">
             <a href={basePlanHref} class="explore-all-link">{t.browseAll}</a>
         </div>
     </div>
@@ -308,13 +349,27 @@ const initialAlts = defaultPlanIds
         const branches = JSON.parse(root.getAttribute("data-branches") || "[]");
         const lang = root.getAttribute("data-lang") || "en";
 
+        const step1Top = root.getAttribute("data-step1-top") || "";
+        const step1Bottom = root.getAttribute("data-step1-bottom") || "";
+        const step3Top = root.getAttribute("data-step3-top") || "";
+        const step3Bottom = root.getAttribute("data-step3-bottom") || "";
+        const step3Highlights: string[] = JSON.parse(
+            root.getAttribute("data-step3-highlights") || "[]",
+        );
+
+        const titleTopEl = document.getElementById("hero-title-top");
+        const titleBottomEl = document.getElementById("hero-title-bottom");
+        const step1SubEl = document.getElementById("hero-step1-sub");
+        const latikaBioEl = document.getElementById("hero-latika-bio");
+        const highlightsWrapEl = document.getElementById("hero-conversion-highlights");
+        const highlightsListEl = document.getElementById("dynamic-highlights-list");
+
         const step1 = document.getElementById("wizard-step-1");
         const step2 = document.getElementById("wizard-step-2");
         const step3 = document.getElementById("wizard-step-3");
         const dots = root.querySelectorAll(".step-dot");
 
         const subOptionsContainer = document.getElementById("finder-sub-options");
-        const step2Prompt = document.getElementById("finder-step2-prompt");
 
         const recImg = document.getElementById("rec-img") as HTMLImageElement | null;
         const recImgLink = document.getElementById("rec-img-link") as HTMLAnchorElement | null;
@@ -327,7 +382,19 @@ const initialAlts = defaultPlanIds
         const recAltSection = document.getElementById("rec-alt-section");
         const recAltList = document.getElementById("rec-alt-list");
 
+        let currentBranch: any = branches[0];
         let activeBranchHasSingleOption = false;
+
+        function renderHighlightsPills(items: string[]) {
+            if (!highlightsListEl) return;
+            highlightsListEl.innerHTML = "";
+            items.forEach((txt) => {
+                const span = document.createElement("span");
+                span.className = "cvr-highlight-pill";
+                span.textContent = `✓ ${txt}`;
+                highlightsListEl.appendChild(span);
+            });
+        }
 
         function setStep(stepNumber: 1 | 2 | 3) {
             [step1, step2, step3].forEach((el, idx) => {
@@ -339,6 +406,40 @@ const initialAlts = defaultPlanIds
             dots.forEach((dot, idx) => {
                 dot.classList.toggle("active", idx + 1 <= stepNumber);
             });
+
+            if (stepNumber === 1) {
+                if (titleTopEl) titleTopEl.textContent = step1Top;
+                if (titleBottomEl) titleBottomEl.textContent = step1Bottom;
+                if (step1SubEl) step1SubEl.hidden = false;
+                if (latikaBioEl) latikaBioEl.hidden = false;
+                if (highlightsWrapEl) highlightsWrapEl.hidden = true;
+            } else if (stepNumber === 2 && currentBranch) {
+                if (titleTopEl) {
+                    titleTopEl.textContent =
+                        lang === "hi" ? currentBranch.hiTitleTop : currentBranch.enTitleTop;
+                }
+                if (titleBottomEl) {
+                    titleBottomEl.textContent =
+                        lang === "hi" ? currentBranch.hiTitleBottom : currentBranch.enTitleBottom;
+                }
+                if (step1SubEl) step1SubEl.hidden = true;
+                if (latikaBioEl) latikaBioEl.hidden = true;
+                if (highlightsWrapEl) {
+                    highlightsWrapEl.hidden = false;
+                    const branchHighlights =
+                        lang === "hi" ? currentBranch.hiHighlights : currentBranch.enHighlights;
+                    renderHighlightsPills(branchHighlights || step3Highlights);
+                }
+            } else if (stepNumber === 3) {
+                if (titleTopEl) titleTopEl.textContent = step3Top;
+                if (titleBottomEl) titleBottomEl.textContent = step3Bottom;
+                if (step1SubEl) step1SubEl.hidden = true;
+                if (latikaBioEl) latikaBioEl.hidden = true;
+                if (highlightsWrapEl) {
+                    highlightsWrapEl.hidden = false;
+                    renderHighlightsPills(step3Highlights);
+                }
+            }
         }
 
         function renderRecommendation(overrideKey: string) {
@@ -408,15 +509,12 @@ const initialAlts = defaultPlanIds
                 const branch = branches.find((b: any) => b.id === branchId);
                 if (!branch || !subOptionsContainer) return;
 
+                currentBranch = branch;
                 activeBranchHasSingleOption = branch.options.length === 1;
 
                 if (activeBranchHasSingleOption && branch.options[0]) {
                     renderRecommendation(branch.options[0].key);
                     return;
-                }
-
-                if (step2Prompt) {
-                    step2Prompt.textContent = lang === "hi" ? branch.hiPrompt : branch.enPrompt;
                 }
 
                 subOptionsContainer.innerHTML = "";
@@ -458,8 +556,8 @@ const initialAlts = defaultPlanIds
     .hero-conversational {
         position: relative;
         overflow: hidden;
-        padding-top: clamp(2.5rem, 6vh, 4.5rem);
-        padding-bottom: clamp(3rem, 7vh, 5.5rem);
+        padding-top: clamp(1.25rem, 3.5vh, 2.75rem);
+        padding-bottom: clamp(1.75rem, 5vh, 3.5rem);
     }
 
     .ambient-orb {
@@ -471,16 +569,16 @@ const initialAlts = defaultPlanIds
     }
 
     .orb-1 {
-        width: 480px;
-        height: 480px;
+        width: 420px;
+        height: 420px;
         top: -120px;
         left: 5%;
         background: var(--ambient-glow-1);
     }
 
     .orb-2 {
-        width: 420px;
-        height: 420px;
+        width: 380px;
+        height: 380px;
         bottom: -100px;
         right: 5%;
         background: var(--ambient-glow-2);
@@ -489,43 +587,47 @@ const initialAlts = defaultPlanIds
     .hero-centered-shell {
         position: relative;
         z-index: 2;
-        max-width: 820px;
+        max-width: 780px;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: var(--space-lg);
+        gap: clamp(1rem, 2.2vh, 1.5rem);
     }
 
     .hero-intro {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 14px;
-        max-width: 640px;
+        gap: 10px;
+        max-width: 650px;
     }
 
     .hero-title {
-        font-size: clamp(2.4rem, 5.2vw, 3.9rem);
-        line-height: 1.1;
-        letter-spacing: -0.032em;
+        font-size: clamp(1.85rem, 4.8vw, 3.35rem);
+        line-height: 1.12;
+        letter-spacing: -0.03em;
     }
 
     .hero-sub {
-        font-size: clamp(1.05rem, 1.8vw, 1.18rem);
+        font-size: clamp(0.95rem, 1.7vw, 1.1rem);
         color: var(--text-muted);
+        line-height: 1.5;
+    }
+
+    .hero-sub[hidden] {
+        display: none !important;
     }
 
     .dialogue-card {
         width: 100%;
         border-radius: var(--radius-lg);
-        padding: clamp(1.5rem, 4vw, 2.75rem);
+        padding: clamp(1.15rem, 3vw, 2rem);
         display: flex;
         flex-direction: column;
-        gap: 20px;
+        gap: 16px;
         text-align: left;
-        transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .step-dots {
@@ -536,7 +638,7 @@ const initialAlts = defaultPlanIds
     }
 
     .step-dot {
-        width: 24px;
+        width: 22px;
         height: 4px;
         border-radius: 99px;
         background: var(--border);
@@ -545,14 +647,14 @@ const initialAlts = defaultPlanIds
 
     .step-dot.active {
         background: var(--primary);
-        width: 36px;
+        width: 34px;
     }
 
     .wizard-step {
         display: flex;
         flex-direction: column;
-        gap: 20px;
-        animation: fadeSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+        gap: 14px;
+        animation: fadeSlideIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .wizard-step[hidden] {
@@ -562,7 +664,7 @@ const initialAlts = defaultPlanIds
     @keyframes fadeSlideIn {
         from {
             opacity: 0;
-            transform: translateY(8px);
+            transform: translateY(6px);
         }
         to {
             opacity: 1;
@@ -570,26 +672,18 @@ const initialAlts = defaultPlanIds
         }
     }
 
-    .step-question {
-        font-size: clamp(1.25rem, 2.4vw, 1.55rem);
-        text-align: center;
-        color: var(--text-main);
-        font-weight: 650;
-        letter-spacing: -0.015em;
-    }
-
     .branch-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-        gap: 12px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
     }
 
     .branch-choice {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        gap: 14px;
-        padding: 18px 20px;
+        gap: 12px;
+        padding: 15px 18px;
         border-radius: var(--radius-md);
         background: var(--bg-main);
         border: 1px solid var(--border);
@@ -597,9 +691,13 @@ const initialAlts = defaultPlanIds
         font-family: inherit;
         text-align: left;
         transition:
-            transform 0.22s ease,
-            border-color 0.22s ease,
-            box-shadow 0.22s ease;
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .branch-choice:last-child:nth-child(odd) {
+        grid-column: 1 / -1;
     }
 
     .branch-choice:hover {
@@ -611,23 +709,24 @@ const initialAlts = defaultPlanIds
     .branch-choice-text {
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 3px;
+        min-width: 0;
     }
 
     .branch-title {
-        font-size: 1.02rem;
+        font-size: 0.98rem;
         font-weight: 650;
         color: var(--text-main);
     }
 
     .branch-desc {
-        font-size: 0.84rem;
+        font-size: 0.81rem;
         color: var(--text-muted);
         line-height: 1.35;
     }
 
     .branch-arrow {
-        font-size: 1.1rem;
+        font-size: 1.05rem;
         color: var(--primary);
         transition: transform 0.2s ease;
         flex-shrink: 0;
@@ -649,7 +748,7 @@ const initialAlts = defaultPlanIds
         border: none;
         padding: 4px 0;
         font-family: inherit;
-        font-size: 0.88rem;
+        font-size: 0.86rem;
         font-weight: 600;
         color: var(--text-muted);
         cursor: pointer;
@@ -665,29 +764,29 @@ const initialAlts = defaultPlanIds
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 10px;
-        padding: 4px 0 8px;
+        gap: 8px;
+        padding: 4px 0;
     }
 
     :global(.sub-choice-pill) {
-        padding: 11px 20px;
+        padding: 10px 18px;
         border-radius: 999px;
         background: var(--bg-main);
         border: 1px solid var(--border);
         color: var(--text-main);
         font-family: inherit;
-        font-size: 0.95rem;
+        font-size: 0.9rem;
         font-weight: 550;
         cursor: pointer;
         transition:
-            transform 0.18s ease,
-            background-color 0.18s ease,
-            border-color 0.18s ease,
-            color 0.18s ease;
+            transform 0.16s ease,
+            background-color 0.16s ease,
+            border-color 0.16s ease,
+            color 0.16s ease;
     }
 
     :global(.sub-choice-pill:hover) {
-        transform: translateY(-2px);
+        transform: translateY(-1px);
         background: var(--primary);
         color: oklch(100% 0 0);
         border-color: var(--primary);
@@ -695,8 +794,8 @@ const initialAlts = defaultPlanIds
 
     .result-spotlight {
         display: grid;
-        grid-template-columns: 280px 1fr;
-        gap: 28px;
+        grid-template-columns: 250px 1fr;
+        gap: 22px;
         align-items: center;
     }
 
@@ -705,7 +804,7 @@ const initialAlts = defaultPlanIds
         display: block;
         border-radius: var(--radius-md);
         overflow: hidden;
-        aspect-ratio: 4 / 3;
+        aspect-ratio: 16 / 10;
         border: 1px solid var(--border);
         background: var(--bg-main);
     }
@@ -724,29 +823,30 @@ const initialAlts = defaultPlanIds
 
     .match-tag {
         position: absolute;
-        top: 12px;
-        left: 12px;
+        top: 10px;
+        left: 10px;
         background: var(--primary);
         color: oklch(100% 0 0);
-        font-size: 0.72rem;
+        font-size: 0.7rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.05em;
-        padding: 5px 12px;
+        padding: 4px 10px;
         border-radius: 999px;
     }
 
     .result-info {
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 6px;
+        min-width: 0;
     }
 
     .result-meta {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.05em;
@@ -754,7 +854,7 @@ const initialAlts = defaultPlanIds
     }
 
     .result-title {
-        font-size: clamp(1.45rem, 2.5vw, 1.85rem);
+        font-size: clamp(1.3rem, 2.4vw, 1.7rem);
         line-height: 1.2;
     }
 
@@ -763,7 +863,7 @@ const initialAlts = defaultPlanIds
     }
 
     .result-subtitle {
-        font-size: 0.98rem;
+        font-size: 0.94rem;
         color: var(--text-muted);
         margin: 0;
     }
@@ -771,29 +871,32 @@ const initialAlts = defaultPlanIds
     .result-highlights {
         list-style: none;
         padding: 0;
-        margin: 6px 0;
+        margin: 4px 0;
         display: flex;
         flex-direction: column;
-        gap: 5px;
+        gap: 4px;
     }
 
     :global(.result-highlights li) {
-        font-size: 0.9rem;
+        font-size: 0.88rem;
         color: var(--text-main);
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         gap: 8px;
+        line-height: 1.4;
     }
 
     :global(.result-highlights li::before) {
         content: "✦";
         color: var(--primary);
-        font-size: 0.78rem;
+        font-size: 0.76rem;
+        margin-top: 2px;
+        flex-shrink: 0;
     }
 
     .result-download-box {
-        margin-top: 8px;
-        padding-top: 14px;
+        margin-top: 6px;
+        padding-top: 12px;
         border-top: 1px solid var(--border);
         display: flex;
         flex-direction: column;
@@ -801,13 +904,13 @@ const initialAlts = defaultPlanIds
     }
 
     .download-label {
-        font-size: 0.84rem;
+        font-size: 0.82rem;
         font-weight: 600;
         color: var(--text-muted);
     }
 
     .plan-guide-link {
-        font-size: 0.88rem;
+        font-size: 0.86rem;
         font-weight: 600;
         color: var(--primary);
         align-self: flex-start;
@@ -819,16 +922,16 @@ const initialAlts = defaultPlanIds
     }
 
     .alt-suggestions {
-        padding-top: 14px;
+        padding-top: 12px;
         border-top: 1px solid var(--border);
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        gap: 10px;
+        gap: 8px;
     }
 
     .alt-label {
-        font-size: 0.82rem;
+        font-size: 0.8rem;
         font-weight: 600;
         color: var(--text-muted);
     }
@@ -836,13 +939,13 @@ const initialAlts = defaultPlanIds
     .alt-pills {
         display: flex;
         flex-wrap: wrap;
-        gap: 8px;
+        gap: 6px;
     }
 
     :global(.alt-link-pill) {
-        font-size: 0.84rem;
+        font-size: 0.81rem;
         font-weight: 600;
-        padding: 6px 14px;
+        padding: 5px 12px;
         border-radius: 999px;
         background: var(--bg-main);
         border: 1px solid var(--border);
@@ -855,31 +958,128 @@ const initialAlts = defaultPlanIds
         color: var(--primary);
     }
 
-    .hero-footer-links {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 14px;
+    /* Contextual Trust Slot: Latika Bio Card & Dynamic Conversion Highlights */
+    .context-trust-slot {
+        width: 100%;
     }
 
-    .trust-row {
+    .latika-bio-card {
+        width: 100%;
+        border-radius: var(--radius-md);
+        padding: 14px 18px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        text-align: left;
+    }
+
+    .latika-bio-card[hidden],
+    .conversion-highlights-bar[hidden] {
+        display: none !important;
+    }
+
+    .latika-avatar-wrap {
+        width: 54px;
+        height: 54px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 2px solid color-mix(in srgb, var(--primary) 35%, var(--border));
+        background: var(--bg-sub);
+        position: relative;
+    }
+
+    .latika-avatar-wrap img {
+        position: absolute;
+        width: 145%;
+        height: auto;
+        left: 50%;
+        top: 18%;
+        transform: translateX(-50%);
+    }
+
+    .latika-bio-content {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        flex: 1;
+    }
+
+    .latika-bio-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 6px 12px;
+    }
+
+    .latika-bio-name {
+        font-size: 0.96rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    .latika-site-link {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--primary);
+        text-decoration: none;
+    }
+
+    .latika-site-link:hover {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+    }
+
+    .latika-bio-creds {
+        margin: 0;
+        font-size: 0.83rem;
+        font-weight: 550;
+        color: var(--text-main);
+        line-height: 1.35;
+    }
+
+    .latika-bio-stats {
+        margin: 0;
+        font-size: 0.78rem;
+        color: var(--text-muted);
+        line-height: 1.35;
+    }
+
+    .conversion-highlights-bar {
+        width: 100%;
+        padding: 4px 0;
+    }
+
+    .highlights-pills {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 10px 18px;
+        gap: 8px 12px;
     }
 
-    .trust-chip {
-        font-size: 0.84rem;
-        font-weight: 600;
-        color: var(--text-muted);
+    :global(.cvr-highlight-pill) {
+        display: inline-flex;
+        align-items: center;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-size: 0.82rem;
+        font-weight: 650;
+        border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
+    }
+
+    .hero-footer-links {
+        display: flex;
+        justify-content: center;
     }
 
     .explore-all-link {
-        font-size: 0.92rem;
+        font-size: 0.9rem;
         font-weight: 600;
         color: var(--primary);
-        transition: opacity 0.2s ease;
     }
 
     .explore-all-link:hover {
@@ -887,9 +1087,49 @@ const initialAlts = defaultPlanIds
         text-underline-offset: 3px;
     }
 
-    @media (max-width: 720px) {
+    @media (max-width: 680px) {
+        .hero-conversational {
+            padding-top: 1rem;
+            padding-bottom: 2rem;
+        }
+
+        .branch-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .branch-choice {
+            padding: 13px 16px;
+        }
+
         .result-spotlight {
             grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .result-visual {
+            aspect-ratio: 16 / 9;
+            max-height: 200px;
+        }
+
+        .sub-pills-wrap {
+            justify-content: flex-start;
+        }
+
+        :global(.sub-choice-pill) {
+            padding: 9px 14px;
+            font-size: 0.85rem;
+        }
+
+        .latika-bio-card {
+            padding: 12px 14px;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .latika-avatar-wrap {
+            width: 48px;
+            height: 48px;
         }
     }
 </style>

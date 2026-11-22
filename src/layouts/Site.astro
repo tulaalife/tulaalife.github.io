@@ -209,8 +209,16 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                padding-top: clamp(3rem, 8vh, 6rem);
-                padding-bottom: clamp(3rem, 8vh, 6rem);
+                padding-top: clamp(2.5rem, 7vh, 5.5rem);
+                padding-bottom: clamp(2.5rem, 7vh, 5.5rem);
+            }
+
+            @media (max-width: 768px) {
+                .scroll-section {
+                    min-height: auto;
+                    padding-top: 2.25rem;
+                    padding-bottom: 2.25rem;
+                }
             }
 
             .normal-footer {
