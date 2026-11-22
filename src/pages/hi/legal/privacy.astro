@@ -1,15 +1,11 @@
 ---
 import { marked } from "marked";
-
-// Import the local markdown files as raw text strings
 import privacyEn from "/src/data/legal/privacy_en.md?raw";
 import privacyHi from "/src/data/legal/privacy_hi.md?raw";
 import Site from "../../../layouts/Site.astro";
 
-// 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dynamic Dictionary
 const ui = {
     en: {
         title: "Tulaa — Privacy Policy",
@@ -38,7 +34,6 @@ const contentHtml = await marked.parse(rawMarkdown);
     canonicalPath="/legal/privacy"
     hideFooter={true}
 >
-    <!-- Standardized layout tracking frame explicitly set to match our left-aligned readable grid -->
     <main class="section-header-left legal-wrap">
         <div class="markdown-body" set:html={contentHtml} />
 
@@ -51,7 +46,7 @@ const contentHtml = await marked.parse(rawMarkdown);
 
 <style>
     .legal-wrap {
-        max-width: 760px; /* Slimmed typography reading comfort margins */
+        max-width: 760px;
         margin: 0 auto;
         padding: 60px 24px 80px;
         text-align: left;

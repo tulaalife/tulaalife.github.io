@@ -1,11 +1,8 @@
 ---
-// src/components/FooterCard.astro
 import StoreButtons from "./StoreButtons.astro";
 
-// 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dynamic Dictionary - Punchier, High-Conversion Copy
 const ui = {
     en: {
         titleTop: "Ready to",
@@ -32,7 +29,6 @@ const { subline = t.subline } = Astro.props;
 ---
 
 <section class="footer-card-container">
-    <!-- Integrated premium, performant specular gloss styling layers natively -->
     <div class="footer-card premium-gloss-surface">
         <div class="section-header-center content">
             <h2 class="section-title">
@@ -65,8 +61,6 @@ const { subline = t.subline } = Astro.props;
         padding: clamp(2.5rem, 6vh, 4.5rem) var(--space-md);
         border-radius: var(--radius-lg);
         overflow: hidden;
-
-        /* Re-engineered theme-adaptive flat mesh using explicit % steps */
         background: linear-gradient(
             135deg,
             color-mix(in srgb, var(--bg-main), var(--text-main) 1%) 0%,
@@ -74,7 +68,6 @@ const { subline = t.subline } = Astro.props;
         );
     }
 
-    /* Seamless dark-mode overrides using matching token primitives */
     :global([data-theme="dark"]) .footer-card {
         background: linear-gradient(
             135deg,
@@ -106,7 +99,7 @@ const { subline = t.subline } = Astro.props;
         font-size: clamp(1.05rem, 2vw, 1.25rem);
         line-height: 1.65;
         margin-bottom: var(--space-lg);
-        max-width: 54ch; /* Standardized to match global character comfort bounds */
+        max-width: 54ch;
         margin-left: auto;
         margin-right: auto;
         color: var(--text-muted);
@@ -133,7 +126,6 @@ const { subline = t.subline } = Astro.props;
         transform: translateY(-1px) scale(0.99);
     }
 
-    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
     :lang(hi) .section-title {
         line-height: 1.35;
     }
@@ -141,7 +133,6 @@ const { subline = t.subline } = Astro.props;
         line-height: 1.65;
     }
 
-    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
     @media (max-height: 740px) {
         .footer-card-container {
             padding-top: var(--space-md);

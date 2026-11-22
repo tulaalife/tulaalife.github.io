@@ -1,5 +1,4 @@
 ---
-// src/components/YogaPlanListing.astro
 import Site from "../layouts/Site.astro";
 import type { Page } from "astro";
 import { CATEGORY_MAP } from "../utils/ui-strings";
@@ -34,7 +33,6 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
 <Site title={title} description={description} canonicalPath={canonicalPath}>
     <main class="listing-container">
-        <!-- Enforced consistent center header alignment pattern across grid indexes -->
         <div class="section-header-center listing-header">
             <h1 class="page-title hero-title">{labels.title}</h1>
             <p class="page-subtitle body-text" style="margin-top: 12px;">
@@ -214,7 +212,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
 
     .card-image {
         position: relative;
-        aspect-ratio: 16 / 10; /* Unified premium widescreen format constraint metrics */
+        aspect-ratio: 16 / 10;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
     }
@@ -235,7 +233,7 @@ const { page, title, description, canonicalPath, lang, labels } = Astro.props;
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        text-align: left; /* Lock internal descriptions left-flush */
+        text-align: left;
     }
 
     .card-title {

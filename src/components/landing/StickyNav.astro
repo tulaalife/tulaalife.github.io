@@ -46,8 +46,6 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
         -webkit-backdrop-filter: blur(12px);
         border-bottom: 1px solid var(--border);
         z-index: 99;
-
-        /* Hardware accelerated translation toggling */
         transform: translateY(-100%);
         will-change: transform;
         transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -77,9 +75,7 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
 
     .btn-sm {
         background: var(--primary);
-        color: oklch(
-            100% 0 0
-        ); /* Force clear text contrast over solid button fill */
+        color: oklch(100% 0 0);
         padding: 10px 20px;
         border-radius: 99px;
         font-size: 0.85rem;
@@ -96,10 +92,9 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
     }
 
     .btn-sm:active {
-        transform: translateY(0) scale(0.97); /* Tactile interface feedback */
+        transform: translateY(0) scale(0.97);
     }
 
-    /* Devanagari structural padding adjustments */
     :global(:lang(hi)) .btn-sm {
         padding-top: 11px;
         padding-bottom: 9px;

@@ -1,24 +1,15 @@
-/* --- 1. BASE VARIABLES & TOKENS --- */
 :root {
     --container-width: 1120px;
     --header-height: 64px;
 
-    /* Centralized Spacing System */
     --space-xs: 0.5rem;
-    /* 8px */
     --space-sm: 0.75rem;
-    /* 12px */
     --space-md: 1.25rem;
-    /* 20px */
     --space-lg: 2rem;
-    /* 32px */
     --space-xl: 3rem;
-    /* 48px */
 
-    /* Dynamic section padding that shrinks on small-height screens */
     --section-v-padding: clamp(1.5rem, 5vh, 4rem);
 
-    /* Typography */
     --font-sans-en: "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
     --font-sans-hi: "Noto Sans Devanagari", sans-serif;
     --fw-bold: 750;
@@ -27,33 +18,24 @@
 
 :root[data-theme="light"] {
     --bg-main: oklch(99% 0.002 240);
-    /* Soft silk finish instead of harsh pure white */
     --bg-sub: oklch(96.5% 0.005 240);
 
-    /* 🌟 Premium Gloss Hack: Specular Highlights */
     --glass-surface: rgba(255, 255, 255, 0.65);
     --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.1) 100%);
 
     --primary: oklch(52% 0.14 250);
-    /* Deep sapphire royal finish */
     --accent-warm: oklch(72% 0.15 40);
-    /* Rich terracotta/gold blend */
     --text-main: oklch(22% 0.02 250);
     --text-muted: oklch(46% 0.02 250);
     --border: oklch(91% 0.01 240);
-    /* Micro-thin hairline border token */
 
-    /* Simplified, unified high-performance shadow using a single layer */
     --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
 }
 
 :root[data-theme="dark"] {
     --bg-main: oklch(13% 0.006 250);
-    /* Deep obsidian slate */
     --bg-sub: oklch(16% 0.008 250);
-    /* Elevated card finish */
 
-    /* 🌟 Premium Gloss Hack: Dark Specular Reflection */
     --glass-surface: rgba(25, 25, 30, 0.45);
     --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
 
@@ -66,7 +48,6 @@
     --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 
-/* --- 2. GLOBAL RESET & TYPOGRAPHY --- */
 *,
 *::before,
 *::after {
@@ -84,7 +65,6 @@ body {
     font-family: var(--font-sans-en);
     color: var(--text-main);
     background: var(--bg-main);
-    /* Fixed undefined broken token from --body-bg */
     background-attachment: fixed;
     transition: color 0.3s ease, background-color 0.3s ease;
     text-rendering: optimizeLegibility;
@@ -93,7 +73,6 @@ body {
     line-height: 1.6;
 }
 
-/* Optimization: Replaced dynamic computing loop noise canvas with smooth fallback asset layer */
 body::before {
     content: "";
     position: fixed;
@@ -102,7 +81,6 @@ body::before {
     height: 100vh;
     z-index: 9999;
     pointer-events: none;
-    /* Crucial: ensures clicks pass right through to buttons */
     background-image: url("/assets/textures/noise.svg");
     background-repeat: repeat;
     opacity: 0.3;
@@ -118,7 +96,6 @@ body:lang(hi) {
     line-height: 1.7;
 }
 
-/* --- 3. PREMIUM TYPOGRAPHY UTILITIES --- */
 h1,
 h2,
 h3,
@@ -147,7 +124,6 @@ h3,
     line-height: 1.6;
     color: var(--text-muted);
     max-width: 54ch;
-    /* Restricts line-length layouts cleanly for readability rules */
     margin: 0;
 }
 
@@ -162,7 +138,6 @@ h3,
     border: 1px solid var(--border);
 }
 
-/* Hindi Overrides */
 :lang(hi) h1,
 :lang(hi) h2,
 :lang(hi) h3,
@@ -179,7 +154,6 @@ h3,
     line-height: 1.6;
 }
 
-/* --- 4. LAYOUT & ALIGNMENT UTILITIES --- */
 .container {
     max-width: var(--container-width);
     margin: 0 auto;
@@ -201,7 +175,6 @@ h3,
     align-items: center;
 }
 
-/* --- 5. HIGH-PERFORMANCE FAUX GLASS CLASS --- */
 .premium-gloss-surface {
     position: relative;
     background: var(--bg-sub);

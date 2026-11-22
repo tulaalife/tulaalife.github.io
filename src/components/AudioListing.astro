@@ -1,5 +1,4 @@
 ---
-// src/components/AudioListing.astro
 import Site from "../layouts/Site.astro";
 
 interface Props {
@@ -20,7 +19,6 @@ const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
     hasTranslation={true}
 >
     <main class="listing-container">
-        <!-- Replaced explicit text centering with standard global layout tokens -->
         <div class="section-header-center listing-header">
             <h1 class="page-title hero-title">{title}</h1>
             <p class="page-subtitle body-text" style="margin-top: 12px;">
@@ -190,7 +188,7 @@ const baseHref = lang === "hi" ? "/hi/audio" : "/audio";
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        text-align: left; /* Ensures descriptive layout info inside the cards remains left-flush */
+        text-align: left;
     }
 
     .audio-title {

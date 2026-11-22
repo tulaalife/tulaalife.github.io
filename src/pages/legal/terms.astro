@@ -1,15 +1,11 @@
 ---
 import Site from "../../layouts/Site.astro";
 import { marked } from "marked";
-
-// Import the local markdown files as raw text strings
 import termsEn from "../../data/legal/terms_en.md?raw";
 import termsHi from "../../data/legal/terms_hi.md?raw";
 
-// 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dynamic Dictionary
 const ui = {
     en: {
         title: "Tulaa — Terms of Use",
@@ -26,13 +22,9 @@ const ui = {
 };
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 
-// Helper to keep links in the correct language
 const getLink = (path: string) => (currentLang === "en" ? path : `/hi${path}`);
 
-// 3. Use the local markdown based on the current language
 const rawMarkdown = currentLang === "hi" ? termsHi : termsEn;
-
-// 4. Process the markdown
 const contentHtml = await marked.parse(rawMarkdown);
 ---
 
@@ -42,7 +34,6 @@ const contentHtml = await marked.parse(rawMarkdown);
     canonicalPath="/legal/terms"
     hideFooter={true}
 >
-    <!-- Combined layout tracking under premium left alignment container system rules -->
     <main class="section-header-left legal-wrap">
         <div class="markdown-body" set:html={contentHtml} />
 
@@ -65,7 +56,7 @@ const contentHtml = await marked.parse(rawMarkdown);
 
 <style is:global>
     .legal-wrap {
-        max-width: 760px; /* Optimized container width for smooth long-form tracking comfort */
+        max-width: 760px;
         margin: 0 auto;
         padding: 60px 24px 80px;
         font-family: var(--font-sans-en);

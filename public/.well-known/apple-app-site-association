@@ -7,26 +7,21 @@
                 ],
                 "components": [
                     {
-                        "comment": "--- Localized Routes (Yoga Only) ---",
                         "/": "/*/yoga/*"
                     },
                     {
-                        "comment": "--- Standard/Legacy Routes ---",
                         "/": "/yoga/*"
                     },
                     {
-                        "comment": "Audio",
                         "/": "/audio/*"
                     },
                     {
-                        "comment": "Blog",
                         "/": "/blog*"
                     },
                     {
                         "/": "/blogs*"
                     },
                     {
-                        "comment": "Tips",
                         "/": "/tips/*"
                     },
                     {

@@ -1,5 +1,3 @@
-// src/utils/ui-strings.ts
-
 export const YOGA_UI = {
     en: {
         title: "Yoga Plans",
@@ -14,7 +12,6 @@ export const YOGA_UI = {
         prev: "Previous",
         next: "Next",
         metaPage: "Page",
-        // Marketing Section
         heroTitleTop: "Yoga for Every Body,",
         heroTitleBottom: "At Every Stage.",
         heroBody: "Scientifically designed yoga for every age & every need.",
@@ -33,7 +30,6 @@ export const YOGA_UI = {
         prev: "पिछला",
         next: "अगला",
         metaPage: "पेज",
-        // Marketing Section
         heroTitleTop: "हर शरीर के लिए योग,",
         heroTitleBottom: "जीवन के हर पड़ाव पर।",
         heroBody: "हर उम्र और ज़रूरत के लिए विज्ञान-आधारित योग।",
@@ -43,9 +39,6 @@ export const YOGA_UI = {
 
 export type SupportedLang = keyof typeof YOGA_UI;
 
-/**
- * Shared mapping for filtering logic (Internal IDs to Goal IDs)
- */
 export const CATEGORY_MAP: Record<string, string[]> = {
     general: ["pain_relief", "stress_relief", "fitness_posture"],
     seniors: ["seniors", "pain_relief"],

@@ -1,5 +1,4 @@
 ---
-// src/components/TipsListing.astro
 import CTAButton from "../../components/CTAButton.astro";
 import { tips } from "../../data/generated";
 import Site from "../../layouts/Site.astro";
@@ -15,7 +14,6 @@ const description = "Daily insights, self-care reminders, and health rhythms.";
     hasTranslation={false}
 >
     <main class="listing-container">
-        <!-- Integrated our layout structure center-alignment configuration utility framework -->
         <div class="section-header-center listing-header">
             <h1 class="page-title hero-title">{title}</h1>
             <p class="page-subtitle body-text" style="margin-top: 12px;">
@@ -56,9 +54,6 @@ const description = "Daily insights, self-care reminders, and health rhythms.";
 </Site>
 
 <style>
-    /* =========================================
-       SHARED LISTING LAYOUT
-    ========================================= */
     .listing-container {
         max-width: var(--container-width);
         margin: 0 auto;
@@ -78,9 +73,6 @@ const description = "Daily insights, self-care reminders, and health rhythms.";
         color: var(--text-muted);
     }
 
-    /* =========================================
-       GRID
-    ========================================= */
     .tips-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -88,9 +80,6 @@ const description = "Daily insights, self-care reminders, and health rhythms.";
         margin-bottom: 60px;
     }
 
-    /* =========================================
-       CARD
-    ========================================= */
     .tip-card {
         display: flex;
         flex-direction: column;
@@ -114,7 +103,6 @@ const description = "Daily insights, self-care reminders, and health rhythms.";
         border-color: var(--primary);
     }
 
-    /* Icon */
     .tip-icon {
         width: 48px;
         height: 48px;
@@ -127,12 +115,11 @@ const description = "Daily insights, self-care reminders, and health rhythms.";
         border: 1px solid var(--border);
     }
 
-    /* Content */
     .tip-content {
         display: flex;
         flex-direction: column;
         flex-grow: 1;
-        text-align: left; /* Lock internal metadata alignment left-flush */
+        text-align: left;
     }
 
     .tip-heading {
@@ -165,9 +152,6 @@ const description = "Daily insights, self-care reminders, and health rhythms.";
         color: var(--primary);
     }
 
-    /* =========================================
-       FOOTER CTA
-    ========================================= */
     .tips-footer-cta {
         text-align: center;
         padding-top: 40px;
@@ -185,9 +169,6 @@ const description = "Daily insights, self-care reminders, and health rhythms.";
         margin: 0;
     }
 
-    /* =========================================
-       MOBILE
-    ========================================= */
     @media (max-width: 600px) {
         .listing-container {
             padding: 40px 16px 60px;

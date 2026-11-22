@@ -1,4 +1,4 @@
-export type Locale = 'en' | 'hi'; // keep for future, we're not setting it yet
+export type Locale = 'en' | 'hi';
 
 export interface YogaPlanPreview {
     slug: string;
@@ -20,7 +20,7 @@ export interface GuidedAudioPreview {
     subtitle: string;
     description: string;
     image: string;
-    deeplink: string;    // tulaa://audio/{slug}
+    deeplink: string;
     locale?: Locale;
 }
 
@@ -30,8 +30,8 @@ export interface TipPreview {
     benefit: string;
     precaution?: string;
     category?: string;
-    icon?: string;       // emoji or URL
-    deeplink: string;    // tulaa://tips/{slug}
+    icon?: string;
+    deeplink: string;
     locale?: Locale;
 }
 

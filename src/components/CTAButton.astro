@@ -2,10 +2,10 @@
 interface Props {
     href: string;
     label: string;
-    icon?: string; // e.g. "↗", "→", or "✨"
+    icon?: string;
     variant?: "solid" | "soft" | "ghost";
     size?: "md" | "lg";
-    class?: string; // Allow external classes for positioning
+    class?: string;
 }
 
 const {
@@ -35,16 +35,15 @@ const {
 </a>
 
 <style>
-    /* ---- Base Structure ---- */
     .cta {
         display: inline-flex;
         align-items: center;
         justify-content: center;
         text-decoration: none;
         font-family: var(--font-sans-en);
-        font-weight: 600; /* Medium weight for premium UI look inside compact buttons */
+        font-weight: 600;
         letter-spacing: 0.01em;
-        border-radius: 99px; /* Pill shape */
+        border-radius: 99px;
         border: 1px solid transparent;
         cursor: pointer;
         position: relative;
@@ -61,17 +60,15 @@ const {
         z-index: 2;
     }
 
-    /* ---- Native Hindi Optical Correction ---- */
     :global(:lang(hi)) .cta {
         font-family: var(--font-sans-hi);
         letter-spacing: normal;
     }
 
-    /* ---- Sizes ---- */
     .cta--md {
         padding: 8px 20px;
         font-size: 0.94rem;
-        min-height: 40px; /* Touch target accessibility */
+        min-height: 40px;
     }
 
     :global(:lang(hi)) .cta--md {
@@ -90,9 +87,6 @@ const {
         padding-bottom: 9px;
     }
 
-    /* ---- Variants ---- */
-
-    /* 1. Solid: The Primary Action */
     .cta--solid {
         background: var(--text-main);
         color: var(--bg-main);
@@ -110,7 +104,6 @@ const {
         filter: brightness(1.1);
     }
 
-    /* 2. Soft: The Secondary Action (Glassy) */
     .cta--soft {
         background: var(--bg-sub);
         color: var(--text-main);
@@ -126,7 +119,6 @@ const {
         box-shadow: var(--shadow);
     }
 
-    /* 3. Ghost: Minimal Action */
     .cta--ghost {
         background: transparent;
         color: var(--text-muted);
@@ -139,7 +131,6 @@ const {
         background: color-mix(in srgb, var(--primary), transparent 95%);
     }
 
-    /* ---- Icon Animation (The Polish) ---- */
     .cta__icon {
         display: inline-block;
         font-size: 1.1em;
@@ -147,18 +138,15 @@ const {
         will-change: transform;
     }
 
-    /* On hover, move the arrow up-right */
     .cta:hover .cta__icon {
         transform: translate(3px, -3px);
     }
 
-    /* ---- Active State (Tactile Click) ---- */
     .cta:active {
         transform: translateY(0) scale(0.98);
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
-    /* ---- Accessibility ---- */
     .cta:focus-visible {
         outline: none;
         box-shadow: 0 0 0 4px

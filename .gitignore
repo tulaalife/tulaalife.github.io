@@ -1,31 +1,24 @@
-# build output
+# Build output
 dist/
-# generated types
-.astro/
 
-# dependencies
+# Generated types & build-time modules
+.astro/
+src/data/generated.ts
+
+# Dependencies
 node_modules/
 
-# logs
+# Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
-
-# environment variables
+# Environment variables
 .env
-.env.production
+.env.*
 
-# macOS-specific files
+# OS & IDE files
 .DS_Store
-
-# jetbrains setting folder
 .idea/
-node_modules/
-dist/
-.env
-
-# build-time generated module
-src/data/generated.ts
 

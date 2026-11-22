@@ -20,9 +20,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        # If you ever use git metadata in scripts, uncomment:
-        # with:
-        #   fetch-depth: 0
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,7 +31,6 @@ jobs:
         run: npm ci
 
       - name: Generate content module
-        # Fails fast if secrets are missing (your script already handles this)
         run: node scripts/fetch-content.mjs
         env:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
@@ -58,5 +54,3 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        # Optional: guard against cancelled build jobs
-        # if: ${{ !cancelled() }}

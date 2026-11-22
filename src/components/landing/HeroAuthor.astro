@@ -40,7 +40,6 @@ const authorImg = "/images/latika.png";
 <section class="scroll-section author-section">
     <div class="container layout-wrapper">
         <div class="instructor-minimal-profile animate-on-scroll">
-            <!-- Left Grid: Content and Credentials Meta Blocks -->
             <div class="profile-details-column">
                 <div class="profile-header-meta">
                     <span class="section-label-banner">{t.sectionLabel}</span>
@@ -123,7 +122,6 @@ const authorImg = "/images/latika.png";
                 </div>
             </div>
 
-            <!-- Right Grid: Top Centered High-Trust Headshot Avatar -->
             <div class="avatar-container premium-gloss-surface">
                 <img
                     src={authorImg}
@@ -155,7 +153,7 @@ const authorImg = "/images/latika.png";
         width: 100%;
         display: flex;
         flex-direction: row;
-        align-items: center; /* Vertically balances the avatar center axis cleanly against text content blocks */
+        align-items: center;
         justify-content: space-between;
         gap: var(--space-xl);
     }
@@ -164,13 +162,12 @@ const authorImg = "/images/latika.png";
         display: flex;
         flex-direction: column;
         flex: 1;
-        max-width: 680px; /* Rigid structural constraint layout ceiling prevents content from over-stretching horizontally */
+        max-width: 680px;
     }
 
-    /* --- 1. HEADSHOT FRAME GRAPHIC WITH PREMIUM GLOSS --- */
     .avatar-container {
         position: relative;
-        width: 164px; /* Scaled up layout proportion footprint slightly on standard viewports */
+        width: 164px;
         height: 164px;
         border-radius: 50%;
         overflow: hidden;
@@ -195,7 +192,6 @@ const authorImg = "/images/latika.png";
         transform: translateX(-50%);
     }
 
-    /* --- 2. EDITORIAL METADATA HOLDER --- */
     .profile-header-meta {
         display: flex;
         flex-direction: column;
@@ -239,10 +235,8 @@ const authorImg = "/images/latika.png";
         line-height: 1.4;
     }
 
-    /* --- 3. HIGH-DENSITY EDITORIAL GRID LAYOUT --- */
     .compact-creds-box {
         display: grid;
-        /* Reconfigured grid metrics from auto-fit to explicit column balances */
         grid-template-columns: repeat(3, 1fr);
         gap: var(--space-md) var(--space-lg);
         width: 100%;
@@ -251,17 +245,16 @@ const authorImg = "/images/latika.png";
     }
 
     .cred-line-item {
-        font-size: 0.95rem; /* Cleaned sizing parameters down marginally to protect column tracking boundaries */
+        font-size: 0.95rem;
         color: var(--text-main);
         font-weight: 500;
         line-height: 1.4;
         display: flex;
-        align-items: flex-start; /* Keeps multi-line wrapped cells aligned perfectly up to the icon center matrix */
+        align-items: flex-start;
         gap: 10px;
         text-align: left;
     }
 
-    /* Phosphor Vector Uniform Layout Structure */
     .icon-wrapper {
         display: flex;
         align-items: center;
@@ -270,7 +263,7 @@ const authorImg = "/images/latika.png";
         height: 18px;
         color: var(--text-muted);
         flex-shrink: 0;
-        margin-top: 2px; /* Fine positioning correction */
+        margin-top: 2px;
     }
 
     .icon-wrapper svg {
@@ -283,7 +276,6 @@ const authorImg = "/images/latika.png";
         flex: 1;
     }
 
-    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
     :lang(hi) .author-name {
         line-height: 1.35;
     }
@@ -305,9 +297,7 @@ const authorImg = "/images/latika.png";
         font-size: 0.92rem;
     }
 
-    /* --- RESPONSIVE ADAPTATIONS --- */
     @media (max-width: 900px) {
-        /* Drop to a 2 column matrix layout strategy on medium viewport breakpoints */
         .compact-creds-box {
             grid-template-columns: repeat(2, 1fr);
         }
