@@ -1,9 +1,33 @@
 ---
+import StoreButtons from "../StoreButtons.astro";
+
 const currentLang = Astro.currentLocale || "en";
 
 const ui = {
-    en: { basePoster: "poster" },
-    hi: { basePoster: "poster-hindi" },
+    en: {
+        basePoster: "poster",
+        badge: "Download Once • Practice Offline",
+        titleTop: "Simple Sessions,",
+        titleBottom: "Visible Results.",
+        body: "Follow step-by-step video demonstrations and self-paced practice timers—with zero ad interruptions, zero OTP prompts, and no internet needed.",
+        points: [
+            "Beginner-safe poses with clear posture cues & cautions",
+            "10 to 15 minute targeted routines for busy schedules",
+            "Save sessions to your phone and practice offline anywhere",
+        ],
+    },
+    hi: {
+        basePoster: "poster-hindi",
+        badge: "एक बार डाउनलोड करें • ऑफलाइन अभ्यास करें",
+        titleTop: "आसान, सुरक्षित अभ्यास,",
+        titleBottom: "असरदार परिणाम।",
+        body: "स्पष्ट वीडियो डेमो और इन-बिल्ट प्रैक्टिस टाइमर के साथ योग सीखें — बिना किसी विज्ञापन, बिना OTP और बिना इंटरनेट की ज़रूरत के।",
+        points: [
+            "नए अभ्यासियों के लिए सुरक्षित आसन और स्पष्ट सावधानियां",
+            "व्यस्त दिनचर्या के लिए 10 से 15 मिनट के आसान सत्र",
+            "वीडियो एक बार फोन में सेव करें और कहीं भी ऑफलाइन अभ्यास करें",
+        ],
+    },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
@@ -22,7 +46,22 @@ const videoMp4 =
 ---
 
 <section class="scroll-section video-section">
-    <div class="container visual-centered">
+    <div class="container video-grid">
+        <div class="video-copy animate-on-scroll">
+            <span class="badge-small">{t.badge}</span>
+            <h2 class="section-title">
+                {t.titleTop}<br />
+                <span class="text-gradient">{t.titleBottom}</span>
+            </h2>
+            <p class="body-text">{t.body}</p>
+            <ul class="video-points">
+                {t.points.map((pt) => <li>{pt}</li>)}
+            </ul>
+            <div class="video-cta">
+                <StoreButtons />
+            </div>
+        </div>
+
         <div class="visual-backlightstage">
             <div
                 class="phone-frame-wrapper animate-on-scroll"
@@ -136,12 +175,63 @@ const videoMp4 =
         justify-content: center;
     }
 
-    .visual-centered {
-        display: flex;
-        justify-content: center;
+    .video-grid {
+        display: grid;
+        grid-template-columns: 1.1fr 0.9fr;
+        gap: clamp(2rem, 5vw, 4rem);
         align-items: center;
+    }
+
+    .video-copy {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: var(--space-sm);
+    }
+
+    .video-copy .section-title {
+        font-size: clamp(2rem, 4.5vw, 3.4rem);
+        line-height: 1.12;
+        letter-spacing: -0.03em;
+    }
+
+    .video-points {
+        list-style: none;
+        padding: 0;
+        margin: var(--space-xs) 0 var(--space-sm);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .video-points li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1rem;
+        font-weight: 500;
+        color: var(--text-main);
+    }
+
+    .video-points li::before {
+        content: "✓";
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: color-mix(in srgb, var(--primary) 14%, transparent);
+        color: var(--primary);
+        font-size: 0.78rem;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .video-cta {
         width: 100%;
-        height: 100%;
+        margin-top: var(--space-xs);
     }
 
     .visual-backlightstage {
@@ -150,7 +240,7 @@ const videoMp4 =
         justify-content: center;
         align-items: center;
         width: 100%;
-        padding: 2rem 0;
+        padding: 1rem 0;
     }
 
     .visual-backlightstage::before {
@@ -232,17 +322,14 @@ const videoMp4 =
         }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 860px) {
+        .video-grid {
+            grid-template-columns: 1fr;
+        }
+
         .phone-frame-wrapper {
-            height: 66dvh;
+            height: 64dvh;
             border-radius: 36px;
-            border: 1px solid
-                color-mix(in srgb, var(--text-main) 10%, transparent);
-            box-shadow:
-                0 0 0 6px color-mix(in srgb, var(--bg-sub) 60%, transparent),
-                0 12px 40px -8px
-                    color-mix(in srgb, var(--text-main) 12%, transparent);
-            backdrop-filter: blur(16px);
         }
 
         .visual-backlightstage::before {

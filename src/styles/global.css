@@ -1,51 +1,60 @@
 :root {
     --container-width: 1120px;
-    --header-height: 64px;
+    --header-height: 68px;
 
     --space-xs: 0.5rem;
-    --space-sm: 0.75rem;
-    --space-md: 1.25rem;
-    --space-lg: 2rem;
-    --space-xl: 3rem;
+    --space-sm: 0.875rem;
+    --space-md: 1.5rem;
+    --space-lg: 2.5rem;
+    --space-xl: 4rem;
 
-    --section-v-padding: clamp(1.5rem, 5vh, 4rem);
+    --section-v-padding: clamp(2rem, 6vh, 4.5rem);
 
     --font-sans-en: "Inter Var", -apple-system, BlinkMacSystemFont, sans-serif;
     --font-sans-hi: "Noto Sans Devanagari", sans-serif;
-    --fw-bold: 750;
-    --radius-lg: 24px;
+    --fw-bold: 700;
+    --radius-lg: 28px;
+    --radius-md: 18px;
 }
 
 :root[data-theme="light"] {
-    --bg-main: oklch(99% 0.002 240);
-    --bg-sub: oklch(96.5% 0.005 240);
+    --bg-main: oklch(97.5% 0.011 85);
+    --bg-sub: oklch(94.8% 0.015 82);
+    --bg-elevated: rgba(255, 253, 249, 0.78);
 
-    --glass-surface: rgba(255, 255, 255, 0.65);
-    --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(255, 255, 255, 0.1) 100%);
+    --glass-surface: rgba(255, 252, 247, 0.72);
+    --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.15) 100%);
 
-    --primary: oklch(52% 0.14 250);
-    --accent-warm: oklch(72% 0.15 40);
-    --text-main: oklch(22% 0.02 250);
-    --text-muted: oklch(46% 0.02 250);
-    --border: oklch(91% 0.01 240);
+    --primary: oklch(44% 0.085 156);
+    --primary-soft: oklch(92% 0.03 156);
+    --accent-warm: oklch(62% 0.125 50);
+    --text-main: oklch(24% 0.02 150);
+    --text-muted: oklch(46% 0.02 140);
+    --border: oklch(88.5% 0.016 82);
 
-    --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04);
+    --shadow: 0 12px 36px -8px rgba(36, 48, 40, 0.06), 0 2px 8px -2px rgba(36, 48, 40, 0.03);
+    --ambient-glow-1: oklch(91% 0.04 155 / 0.55);
+    --ambient-glow-2: oklch(91% 0.045 65 / 0.45);
 }
 
 :root[data-theme="dark"] {
-    --bg-main: oklch(13% 0.006 250);
-    --bg-sub: oklch(16% 0.008 250);
+    --bg-main: oklch(16.5% 0.014 155);
+    --bg-sub: oklch(20.5% 0.016 155);
+    --bg-elevated: rgba(24, 31, 27, 0.75);
 
-    --glass-surface: rgba(25, 25, 30, 0.45);
-    --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0) 100%);
+    --glass-surface: rgba(24, 31, 27, 0.65);
+    --glass-shine: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.01) 100%);
 
-    --primary: oklch(68% 0.12 250);
-    --accent-warm: oklch(75% 0.13 45);
-    --text-main: oklch(97% 0.002 240);
-    --text-muted: oklch(65% 0.01 250);
-    --border: oklch(23% 0.01 250);
+    --primary: oklch(74% 0.095 154);
+    --primary-soft: oklch(26% 0.035 154);
+    --accent-warm: oklch(76% 0.115 58);
+    --text-main: oklch(95.5% 0.008 85);
+    --text-muted: oklch(71% 0.015 145);
+    --border: oklch(27.5% 0.018 155);
 
-    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    --shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.42);
+    --ambient-glow-1: oklch(26% 0.05 155 / 0.45);
+    --ambient-glow-2: oklch(25% 0.05 55 / 0.3);
 }
 
 *,
@@ -64,7 +73,10 @@ body {
 body {
     font-family: var(--font-sans-en);
     color: var(--text-main);
-    background: var(--bg-main);
+    background-color: var(--bg-main);
+    background-image:
+        radial-gradient(circle at 12% 18%, var(--ambient-glow-1) 0%, transparent 48%),
+        radial-gradient(circle at 88% 82%, var(--ambient-glow-2) 0%, transparent 52%);
     background-attachment: fixed;
     transition: color 0.3s ease, background-color 0.3s ease;
     text-rendering: optimizeLegibility;
@@ -83,11 +95,11 @@ body::before {
     pointer-events: none;
     background-image: url("/assets/textures/noise.svg");
     background-repeat: repeat;
-    opacity: 0.3;
+    opacity: 0.22;
 }
 
 :root[data-theme="dark"] body::before {
-    opacity: 0.3;
+    opacity: 0.18;
     mix-blend-mode: screen;
 }
 
@@ -103,39 +115,42 @@ h3,
 .section-title {
     margin: 0;
     font-weight: var(--fw-bold);
-    line-height: 1.15;
-    letter-spacing: -0.02em;
+    line-height: 1.14;
+    letter-spacing: -0.028em;
 }
 
 .text-gradient {
-    background: linear-gradient(135deg, var(--accent-warm), var(--primary));
+    background: linear-gradient(135deg, var(--primary) 0%, var(--accent-warm) 100%);
     -webkit-background-clip: text;
     background-clip: text;
     -webkit-text-fill-color: transparent;
     display: inline-block;
-    padding-top: 0.1em;
-    padding-bottom: 0.1em;
-    margin-top: -0.1em;
-    margin-bottom: -0.1em;
+    padding-top: 0.08em;
+    padding-bottom: 0.08em;
+    margin-top: -0.08em;
+    margin-bottom: -0.08em;
 }
 
 .body-text {
-    font-size: 1.15rem;
-    line-height: 1.6;
+    font-size: 1.125rem;
+    line-height: 1.65;
     color: var(--text-muted);
-    max-width: 54ch;
+    max-width: 52ch;
     margin: 0;
 }
 
 .badge-small {
     display: inline-flex;
+    align-items: center;
+    gap: 6px;
     padding: 6px 14px;
-    border-radius: 100px;
-    background: var(--bg-sub);
+    border-radius: 999px;
+    background: var(--primary-soft);
     color: var(--primary);
     font-weight: 600;
-    font-size: 0.85rem;
-    border: 1px solid var(--border);
+    font-size: 0.8rem;
+    letter-spacing: 0.02em;
+    border: 1px solid color-mix(in srgb, var(--primary) 18%, transparent);
 }
 
 :lang(hi) h1,
@@ -151,7 +166,7 @@ h3,
 }
 
 :lang(hi) .hero-sub {
-    line-height: 1.6;
+    line-height: 1.65;
 }
 
 .container {
@@ -177,7 +192,9 @@ h3,
 
 .premium-gloss-surface {
     position: relative;
-    background: var(--bg-sub);
+    background: var(--bg-elevated);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
     border: 1px solid var(--border);
     box-shadow: var(--shadow);
     z-index: 1;

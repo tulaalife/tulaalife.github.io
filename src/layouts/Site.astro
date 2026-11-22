@@ -6,6 +6,7 @@ import "../styles/global.css";
 interface Props {
     title: string;
     description?: string;
+    keywords?: string;
     canonicalPath?: string;
     ogImage?: string;
     hideFooter?: boolean;
@@ -15,7 +16,8 @@ interface Props {
 
 const {
     title,
-    description = "Your private sanctuary for holistic wellness. Yoga, meditation, and tracking—offline and free.",
+    description = "Expert-led therapeutic yoga, guided pranayama & bedtime meditation, plus 100% private on-device cycle, fasting, and hydration trackers. No sign-up, no ads, offline-ready.",
+    keywords = "therapeutic yoga, yoga for back pain, sciatica, neck pain, PCOS yoga, prenatal yoga, thyroid yoga, pranayama, sleep meditation, private period tracker, intermittent fasting timer, offline yoga app",
     canonicalPath = "/",
     ogImage = "https://images.tulaa.life/logo.webp",
     hideFooter = false,
@@ -68,9 +70,10 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
-        <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
+        <meta name="theme-color" content="#f9f6f0" id="theme-color-meta" />
         <title>{title}</title>
         <meta name="description" content={description} />
+        {keywords && <meta name="keywords" content={keywords} />}
         <link rel="canonical" href={currentUrl} />
         <meta name="robots" content="index,follow" />
 
@@ -85,10 +88,15 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         }
 
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Tulaa" />
         <meta property="og:url" content={currentUrl} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={socialImage} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={socialImage} />
 
         <link rel="icon" type="image/webp" href="/assets/icons/logo_64.webp" />
         <ClientRouter />
@@ -104,7 +112,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             (() => {
                 const root = document.documentElement;
                 const metaColor = document.getElementById("theme-color-meta");
-                const bgColors = { light: "#ffffff", dark: "#18181b" };
+                const bgColors = { light: "#f9f6f0", dark: "#111613" };
 
                 function getSystemTheme() {
                     return window.matchMedia("(prefers-color-scheme: dark)")
@@ -177,12 +185,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         </style>
 
         <style is:global>
-            html.is-landing,
-            html.is-landing body {
-                height: 100%;
-                overflow: hidden;
-            }
-
             :lang(hi) .btn-pill,
             :lang(hi) .btn-sm,
             :lang(hi) .filter-btn {
@@ -195,52 +197,39 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 text-decoration: none;
             }
 
-            html.is-landing .scroll-container {
-                height: 100dvh;
-                width: 100%;
-                overflow-y: scroll;
-                scroll-snap-type: y mandatory;
-                scroll-behavior: smooth;
-                scrollbar-width: none;
-            }
-            html.is-landing .scroll-container::-webkit-scrollbar {
-                display: none;
+            .scroll-container {
+                padding-top: var(--header-height);
+                min-height: 100vh;
             }
 
-            html.is-landing .scroll-section {
-                height: 100dvh;
+            .scroll-section {
                 width: 100%;
-                scroll-snap-align: start;
-                scroll-snap-stop: always;
+                min-height: calc(100dvh - var(--header-height));
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 position: relative;
-                overflow: hidden;
-                padding-top: var(--header-height);
+                padding-top: clamp(3rem, 8vh, 6rem);
+                padding-bottom: clamp(3rem, 8vh, 6rem);
             }
 
-            html:not(.is-landing) .scroll-container {
-                padding-top: var(--header-height);
-                min-height: 100vh;
-            }
-            html:not(.is-landing) .normal-footer {
-                margin-top: 60px;
-                padding-bottom: 40px;
+            .normal-footer {
+                margin-top: 40px;
+                padding-bottom: 48px;
             }
 
             .animate-on-scroll {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(20px);
                 transition:
-                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
             }
             .delay-1 {
-                transition-delay: 0.15s;
+                transition-delay: 0.12s;
             }
             .delay-2 {
-                transition-delay: 0.3s;
+                transition-delay: 0.24s;
             }
 
             .is-visible .animate-on-scroll {
@@ -248,7 +237,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 transform: translateY(0);
             }
 
-            header {
+            .site-header {
                 position: fixed;
                 top: 0;
                 left: 0;
@@ -257,9 +246,10 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 z-index: 50;
                 background: color-mix(in srgb, var(--bg-main), transparent 15%);
                 backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
                 border-bottom: 1px solid var(--border);
             }
-            header .inner {
+            .site-header .inner {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
@@ -320,7 +310,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             .legal-wrapper {
                 font-family: var(--font-sans-en);
             }
-            :global(:lang(hi)) .legal-wrapper {
+            :lang(hi) .legal-wrapper {
                 font-family: var(--font-sans-hi);
             }
 
@@ -374,7 +364,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
     </head>
 
     <body>
-        <header>
+        <header class="site-header">
             <div class="container inner">
                 <a href={getLink("/")} class="logo">
                     <img
@@ -424,32 +414,15 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             {
                 !hideFooter && (
                     <section
-                        class={
-                            isLandingPage ? "scroll-section" : "normal-footer"
-                        }
-                        style={
-                            isLandingPage
-                                ? "min-height: 100dvh; padding: 0; scroll-snap-align: center; scroll-snap-stop: always; position: relative;"
-                                : "position: relative;"
-                        }
+                        class="normal-footer"
+                        style="position: relative;"
                     >
-                        <div
-                            class="container"
-                            style={
-                                isLandingPage
-                                    ? "display: flex; align-items: center; justify-content: center; height: 100%;"
-                                    : ""
-                            }
-                        >
+                        <div class="container">
                             <FooterCard />
 
                             <div
                                 class="legal-wrapper"
-                                style={
-                                    isLandingPage
-                                        ? "position: absolute; bottom: 32px; left: 0; right: 0; width: 100%;"
-                                        : "margin-top: 48px;"
-                                }
+                                style="margin-top: 40px;"
                             >
                                 <div
                                     class="legal"
@@ -537,8 +510,8 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 }
 
                 const observerOptions = {
-                    root: document.getElementById("main-scroll-container"),
-                    threshold: 0.2,
+                    root: null,
+                    threshold: 0.15,
                 };
 
                 const observer = new IntersectionObserver((entries) => {

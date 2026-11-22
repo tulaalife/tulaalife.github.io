@@ -6,88 +6,90 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        titleTop: "Replace 5 Apps",
-        titleBottom: "With One.",
-        body: "Simplify your digital wellness. Tulaa brings your essential health tools into one secure, offline-first ecosystem. <strong>No data mining. No subscriptions.</strong>",
+        badge: "100% On-Device Health Suite",
+        titleTop: "Private & Holistic",
+        titleBottom: "Wellness Trackers.",
+        body: "Replace cluttered single-purpose apps with one calm space. Track your cycle, intermittent fasting windows, hydration, mood, and daily rhythms—stored <strong>100% locally on your phone</strong>.",
         tools: [
             {
-                title: "Cycle Tracker",
-                desc: "Predict periods & symptoms.",
+                title: "Private Period & Cycle Diary",
+                desc: "Log monthly cycles, flow & symptoms locally.",
                 type: "cycle",
-                color: "oklch(65% 0.18 350)",
+                color: "oklch(58% 0.12 20)",
             },
             {
-                title: "Habit Rhythm",
-                desc: "Build healthy habits.",
-                type: "habit",
-                color: "oklch(75% 0.15 90)",
-            },
-            {
-                title: "Hydration",
-                desc: "Monitor water intake.",
-                type: "water",
-                color: "oklch(62% 0.14 220)",
-            },
-            {
-                title: "Fast Tracker",
-                desc: "Track intermittent fasting.",
+                title: "Fasting Interval Timer",
+                desc: "Clean, distraction-free fasting windows.",
                 type: "fast",
-                color: "oklch(60% 0.12 280)",
+                color: "oklch(52% 0.09 156)",
             },
             {
-                title: "Health Tips",
-                desc: "Research-backed guidance.",
+                title: "Daily Hydration Tracker",
+                desc: "Log water intake with quiet reminders.",
+                type: "water",
+                color: "oklch(54% 0.09 215)",
+            },
+            {
+                title: "Mood & Gratitude Journal",
+                desc: "Reflect on emotional & energy patterns.",
+                type: "habit",
+                color: "oklch(62% 0.11 85)",
+            },
+            {
+                title: "Rhythm Habit Builder",
+                desc: "Build healthy streaks without spam.",
                 type: "tips",
-                color: "oklch(78% 0.13 60)",
+                color: "oklch(62% 0.12 55)",
             },
             {
-                title: "Wellness Blog",
-                desc: "Learn care routines.",
+                title: "Therapy Wisdom & Blog",
+                desc: "In-depth guides by Latika Bissa.",
                 type: "blog",
-                color: "oklch(64% 0.12 150)",
+                color: "oklch(48% 0.09 156)",
             },
         ],
     },
     hi: {
-        titleTop: "5 अलग ऐप्स की जगह",
-        titleBottom: "अब सिर्फ एक।",
-        body: "अपने डिजिटल वेलनेस को सरल बनाएं। Tulaa आपके ज़रूरी स्वास्थ्य टूल्स को एक सुरक्षित, ऑफ़लाइन-फर्स्ट ऐप में लाता है। <strong>कोई डेटा माइनिंग नहीं। कोई सब्सक्रिप्शन नहीं।</strong>",
+        badge: "100% ऑन-डिवाइस हेल्थ ट्रैकर्स",
+        titleTop: "100% सुरक्षित, पूरी सेहत के लिए",
+        titleBottom: "निजी वेलनेस ट्रैकर्स।",
+        body: "अलग-अलग ऐप्स की जगह एक ही शांत ऐप में पीरियड डायरी, इंटरमिटेंट फास्टिंग टाइमर, वॉटर गोल, मूड जर्नल और स्वस्थ आदतें ट्रैक करें — <strong>सारा डेटा केवल आपके फोन में रहता है</strong>।",
         tools: [
             {
-                title: "पीरियड ट्रैकर",
-                desc: "पीरियड्स और लक्षणों का अनुमान।",
+                title: "निजी पीरियड व साइकिल डायरी",
+                desc: "मासिक चक्र और लक्षणों का 100% लोकल रिकॉर्ड।",
                 type: "cycle",
-                color: "oklch(65% 0.18 350)",
+                color: "oklch(58% 0.12 20)",
             },
             {
-                title: "आदत रिदम",
-                desc: "स्वस्थ आदतों की निरंतरता।",
-                type: "habit",
-                color: "oklch(75% 0.15 90)",
-            },
-            {
-                title: "हाइड्रेशन",
-                desc: "पानी पीने पर नज़र रखें।",
-                type: "water",
-                color: "oklch(62% 0.14 220)",
-            },
-            {
-                title: "फास्टिंग",
-                desc: "उपवास का समय ट्रैक करें।",
+                title: "इंटरमिटेंट फास्टिंग टाइमर",
+                desc: "उपवास और भोजन के समय का सरल टाइमर।",
                 type: "fast",
-                color: "oklch(60% 0.12 280)",
+                color: "oklch(52% 0.09 156)",
             },
             {
-                title: "हेल्थ टिप्स",
-                desc: "रिसर्च आधारित सुझाव।",
+                title: "दैनिक वॉटर ट्रैकर",
+                desc: "पर्याप्त पानी पीने की सहज आदत बनाएं।",
+                type: "water",
+                color: "oklch(54% 0.09 215)",
+            },
+            {
+                title: "मूड और आभार जर्नल",
+                desc: "अपनी भावनाओं और विचारों को सुरक्षित लिखें।",
+                type: "habit",
+                color: "oklch(62% 0.11 85)",
+            },
+            {
+                title: "रिदम (हैबिट बिल्डर)",
+                desc: "बिना स्पैम नोटिफिकेशन के स्वस्थ आदतें बनाएं।",
                 type: "tips",
-                color: "oklch(78% 0.13 60)",
+                color: "oklch(62% 0.12 55)",
             },
             {
-                title: "थेरेपी ब्लॉग",
-                desc: "विशेषज्ञ देखभाल लेख।",
+                title: "योग थेरेपी ब्लॉग",
+                desc: "लतिका बिस्सा द्वारा स्वास्थ्य प्रबंधन लेख।",
                 type: "blog",
-                color: "oklch(64% 0.12 150)",
+                color: "oklch(48% 0.09 156)",
             },
         ],
     },
@@ -100,6 +102,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     <div class="content-wrapper">
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
+                <span class="badge-small" style="margin-bottom: 12px;">{t.badge}</span>
                 <h2 class="section-title">
                     {t.titleTop}<br />
                     <span class="text-gradient">{t.titleBottom}</span>

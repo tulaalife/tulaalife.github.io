@@ -9,14 +9,45 @@ import MindAndMood from "../components/landing/MindAndMood.astro";
 import PrivacyTrust from "../components/landing/PrivacyTrust.astro";
 import HeroVideo from "../components/landing/HeroVideo.astro";
 
-const title = "Tulaa — Your Private Sanctuary for Holistic Wellness";
+const title = "Tulaa: Therapeutic Yoga, Sleep & Private Cycle Tracker";
 const description =
-  "Free, offline, expert-led yoga and wellness tools. No login required. No tracking. Just you and your practice.";
+  "Expert-led therapeutic yoga for back pain, sciatica, neck stiffness, PCOS, prenatal care, and thyroid—plus guided pranayama, bedtime meditation, and 100% private on-device cycle & fasting trackers. No sign-up, no ads, works offline.";
+const keywords =
+  "therapeutic yoga, yoga for back pain, sciatica relief, neck stiffness, desk yoga, PCOS yoga, prenatal yoga, thyroid yoga, pranayama, Nadi Shodhana, Bhramari, sleep meditation, Vedic chants, private period tracker, intermittent fasting timer, offline yoga app, no login wellness app, Latika Bissa";
+
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "Tulaa: Yoga & Wellness",
+  operatingSystem: "iOS, Android",
+  applicationCategory: "HealthApplication",
+  description,
+  keywords,
+  url: "https://tulaalife.com",
+  featureList: [
+    "Therapeutic Yoga for Back Pain, Sciatica, Neck Stiffness, PCOS, Prenatal & Thyroid",
+    "Guided Pranayama Breathwork, Vedic Chants & Bedtime Sleep Meditations",
+    "100% Private On-Device Period & Cycle Diary",
+    "Intermittent Fasting Interval Timer & Daily Hydration Tracker",
+    "Offline-First Video Sessions with No Sign-Up and Zero Ads",
+  ],
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+  author: {
+    "@type": "Organization",
+    name: "Tulaalife Wellness Private Limited",
+    url: "https://tulaalife.com",
+  },
+};
 ---
 
 <Layout
   title={title}
   description={description}
+  keywords={keywords}
   canonicalPath="/"
   isLandingPage={true}
 >
@@ -28,4 +59,8 @@ const description =
   <MindAndMood />
   <WellnessTools />
   <PrivacyTrust />
+  <script
+    type="application/ld+json"
+    set:html={JSON.stringify(structuredData)}
+  />
 </Layout>

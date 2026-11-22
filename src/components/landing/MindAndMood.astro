@@ -6,17 +6,17 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        titleTop: "Calm Your Mind.",
-        titleBottom: "Understand Your Emotions.",
-        body: "From traditional chanting to anxiety relief. Listen to guided audio and journal your thoughts in a private, safe space.",
+        titleTop: "Quiet the Mind,",
+        titleBottom: "Sleep Deeper Tonight.",
+        body: "Reset an overworked nervous system in 5 minutes. Practice Nadi Shodhana, Bhramari pranayama, authentic Vedic chants, and bedtime relaxations—ad-free by design.",
         ctaEn: "Explore Audio Sessions",
         ctaHi: "ऑडियो सेशन देखें",
         play: "Listen Now",
     },
     hi: {
-        titleTop: "अपने मन को शांत करें।",
-        titleBottom: "अपनी भावनाओं को समझें।",
-        body: "पारंपरिक मंत्रोच्चार से लेकर चिंता से राहत तक। निर्देशित ऑडियो सुनें और एक सुरक्षित, निजी स्थान पर अपने विचार लिखें।",
+        titleTop: "मन को दें गहरी शांति,",
+        titleBottom: "पाएं सुकून भरी नींद।",
+        body: "सिर्फ़ 5 मिनट में दिनभर का तनाव घटाएं। नाड़ी शोधन, भ्रामरी प्राणायाम, वैदिक मंत्र और बेडटाइम मेडिटेशन के साथ बेचैन मन को शांत करें।",
         ctaEn: "Explore Audio Sessions",
         ctaHi: "ऑडियो सेशन देखें",
         play: "अभी सुनें",
@@ -35,6 +35,9 @@ const displayAudios = guidedAudios
     <div class="content-wrapper">
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
+                <span class="badge-small" style="margin-bottom: 12px;">
+                    {currentLang === "hi" ? "गाइडेड ऑडियो और ध्यान" : "Guided Audio & Breathwork"}
+                </span>
                 <h2 class="section-title">
                     {t.titleTop}
                     <br />

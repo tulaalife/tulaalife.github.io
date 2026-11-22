@@ -6,56 +6,88 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        titleTop: "100% Private.",
-        titleBottom: "Truly Yours.",
+        badge: "No Sign-Up • No Phone Number",
+        titleTop: "No Login, No Ads.",
+        titleBottom: "100% On-Device.",
         descTop:
-            "Wellness shouldn't come with hidden costs or tracking pixels.",
-        descBottom: "Tulaa is designed to be your safe, personal sanctuary.",
+            "Open Tulaa and start immediately—without sharing your email or phone number.",
+        descBottom: "Your cycle logs, fasting windows, and mood notes never leave your phone.",
         features: [
             {
-                title: "Privacy First",
-                desc: "No account needed. Export or delete it anytime.",
+                title: "No Sign-Up Required",
+                desc: "Zero OTP prompts. Export or wipe your data anytime.",
                 type: "privacy",
-                color: "oklch(65% 0.13 250)",
+                color: "oklch(48% 0.085 156)",
             },
             {
-                title: "Free & Offline",
-                desc: "No ads, no tracking, no subscriptions, works offline.",
+                title: "Download Once, Practice Offline",
+                desc: "Save routines locally and practice without internet.",
                 type: "offline",
-                color: "oklch(72% 0.15 140)",
+                color: "oklch(58% 0.11 65)",
             },
             {
-                title: "Make it Yours",
-                desc: "Choose from 30+ themes and fonts.",
+                title: "30+ Serene Themes",
+                desc: "Personalize fonts and calming palettes to match your mood.",
                 type: "customize",
-                color: "oklch(68% 0.17 350)",
+                color: "oklch(55% 0.1 25)",
+            },
+        ],
+        reviewsLabel: "Loved for daily calm & privacy",
+        reviews: [
+            {
+                text: "Finally a period tracker and gentle yoga app that does not ask for my phone number or push paid plans. Truly calming.",
+                author: "Ananya M. · Play Store",
+            },
+            {
+                text: "I love the app's meditations. I listen to them during bedtime, and they help me go to sleep within 5 minutes.",
+                author: "Sneha R. · Play Store",
+            },
+            {
+                text: "The app is very easy to use and it's great to have an app without ads and only peaceful yoga to practice anytime.",
+                author: "Prerna1407 · App Store",
             },
         ],
     },
     hi: {
-        titleTop: "100% प्राइवेट।",
-        titleBottom: "आपकी अपनी।",
+        badge: "न कोई साइन-अप • न मोबाइल नंबर",
+        titleTop: "कोई लॉगिन नहीं,",
+        titleBottom: "100% फोन में सुरक्षित।",
         descTop:
-            "सेहत की देखभाल—बिना किसी गुप्त कीमत या प्राइवेसी से समझौते के।",
-        descBottom: "Tulaa आपकी अपनी सुरक्षित और निजी जगह है।",
+            "बिना मोबाइल नंबर या ईमेल डाले तुरंत योग और ध्यान शुरू करें।",
+        descBottom: "आपका पीरियड लॉग, फास्टिंग टाइमर और मूड नोट्स कभी आपके फोन से बाहर नहीं जाते।",
         features: [
             {
-                title: "प्राइवेसी सबसे पहले",
-                desc: "किसी अकाउंट की ज़रूरत नहीं।",
+                title: "न साइन-अप, न OTP",
+                desc: "बिना फोन नंबर या ईमेल के तुरंत अभ्यास शुरू करें।",
                 type: "privacy",
-                color: "oklch(65% 0.13 250)",
+                color: "oklch(48% 0.085 156)",
             },
             {
-                title: "फ्री और ऑफलाइन",
-                desc: "कोई विज्ञापन नहीं, कोई ट्रैकिंग नहीं।",
+                title: "एक बार डाउनलोड, ऑफलाइन अभ्यास",
+                desc: "वीडियो फोन में सेव करें और बिना इंटरनेट अभ्यास करें।",
                 type: "offline",
-                color: "oklch(72% 0.15 140)",
+                color: "oklch(58% 0.11 65)",
             },
             {
-                title: "इसे अपना बनाएं",
-                desc: "30+ थीम्स और फ़ॉन्ट्स में से चुनें।",
+                title: "30+ शांत और सुंदर थीम्स",
+                desc: "अपनी पसंद के रंग और फॉन्ट चुनें।",
                 type: "customize",
-                color: "oklch(68% 0.17 350)",
+                color: "oklch(55% 0.1 25)",
+            },
+        ],
+        reviewsLabel: "हमारे यूज़र्स को क्या पसंद है",
+        reviews: [
+            {
+                text: "आख़िरकार एक ऐसा पीरियड ट्रैकर और योग ऐप मिला जो न फोन नंबर मांगता है और न कोई सब्सक्रिप्शन। बहुत ही शांत और भरोसेमंद।",
+                author: "अनन्या एम · Play Store",
+            },
+            {
+                text: "मुझे इस ऐप के मेडिटेशन बहुत पसंद हैं। मैं इन्हें सोने से पहले सुनती हूँ और ये मुझे 5 मिनट के अंदर सुला देते हैं।",
+                author: "स्नेहा आर · Play Store",
+            },
+            {
+                text: "यह ऐप इस्तेमाल करने में बहुत आसान है और बिना विज्ञापनों वाला ऐसा ऐप होना बहुत अच्छा है, जिसमें आप कभी भी शांति से योग कर सकते हैं।",
+                author: "प्रेरणा1407 · App Store",
             },
         ],
     },
@@ -68,6 +100,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     <div style="width: 100%;">
         <div class="container">
             <div class="section-header-left header-content animate-on-scroll">
+                <span class="badge-small" style="margin-bottom: 12px;">{t.badge}</span>
                 <h2 class="section-title">
                     <span class="title-main">{t.titleTop}</span><br />
                     <span class="text-gradient">{t.titleBottom}</span>
@@ -143,6 +176,20 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             </div>
         </div>
 
+        <div class="container reviews-container animate-on-scroll delay-1">
+            <span class="reviews-eyebrow">{t.reviewsLabel}</span>
+            <div class="reviews-grid">
+                {
+                    t.reviews.map((rev) => (
+                        <blockquote class="review-card premium-gloss-surface">
+                            <p class="review-text">“{rev.text}”</p>
+                            <footer class="review-author">— {rev.author}</footer>
+                        </blockquote>
+                    ))
+                }
+            </div>
+        </div>
+
         <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href="/faq"
@@ -211,6 +258,45 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     .cta-wrapper {
         display: flex;
         justify-content: flex-start;
+    }
+    .reviews-container {
+        margin-bottom: var(--space-md);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        text-align: left;
+    }
+    .reviews-eyebrow {
+        font-size: 0.78rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+    }
+    .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+    }
+    .review-card {
+        margin: 0;
+        padding: 20px 22px;
+        border-radius: var(--radius-md);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 12px;
+    }
+    .review-text {
+        margin: 0;
+        font-size: 0.94rem;
+        line-height: 1.55;
+        color: var(--text-main);
+    }
+    .review-author {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--primary);
     }
     .hidden-mobile {
         display: inline;

@@ -63,7 +63,7 @@ const contentHtml = await marked.parse(rawMarkdown);
         text-align: left;
     }
 
-    :global(:lang(hi)) .legal-wrap {
+    :lang(hi) .legal-wrap {
         font-family: var(--font-sans-hi);
     }
 
@@ -114,8 +114,8 @@ const contentHtml = await marked.parse(rawMarkdown);
         text-align: left;
     }
 
-    :global(:lang(hi)) .markdown-body p,
-    :global(:lang(hi)) .markdown-body li {
+    :lang(hi) .markdown-body p,
+    :lang(hi) .markdown-body li {
         line-height: 1.75;
     }
 

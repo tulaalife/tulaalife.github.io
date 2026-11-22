@@ -9,14 +9,39 @@ import MindAndMood from "../../components/landing/MindAndMood.astro";
 import PrivacyTrust from "../../components/landing/PrivacyTrust.astro";
 import HeroVideo from "../../components/landing/HeroVideo.astro";
 
-const title = "Tulaa - संपूर्ण स्वास्थ्य और एक्सपर्ट योग थेरेपी";
+const title = "Tulaa (तुला): योग थेरेपी, ध्यान, नींद व निजी हेल्थ ट्रैकर";
 const description =
-    "फ्री, ऑफलाइन और एक्सपर्ट-गाइडेड योग। किसी लॉगिन या ट्रैकिंग की ज़रूरत नहीं। 100% प्राइवेट वेलनेस टूल्स।";
+    "कमर दर्द, साइटिका, गर्दन दर्द, PCOS, प्रेगनेंसी और थायरॉइड के लिए विशेषज्ञ-निर्देशित योग — साथ ही प्राणायाम, गहरी नींद के लिए ध्यान और 100% निजी पीरियड व फास्टिंग ट्रैकर। बिना लॉगिन, बिना विज्ञापन और ऑफलाइन।";
+const keywords =
+    "योग थेरेपी, कमर दर्द योग, साइटिका, गर्दन दर्द, PCOS योग, प्रेगनेंसी योग, थायरॉइड योग, प्राणायाम, ध्यान, गहरी नींद, पीरियड ट्रैकर, फास्टिंग टाइमर, ऑफलाइन योग ऐप, लतिका बिस्सा, dhyan, pranayama, kamar dard, neend, tanav";
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Tulaa: योग और स्वास्थ्य",
+    operatingSystem: "iOS, Android",
+    applicationCategory: "HealthApplication",
+    inLanguage: "hi-IN",
+    description,
+    keywords,
+    url: "https://tulaalife.com/hi",
+    offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "INR",
+    },
+    author: {
+        "@type": "Organization",
+        name: "Tulaalife Wellness Private Limited",
+        url: "https://tulaalife.com",
+    },
+};
 ---
 
 <Layout
     title={title}
     description={description}
+    keywords={keywords}
     canonicalPath="/"
     isLandingPage={true}
 >
@@ -28,4 +53,8 @@ const description =
     <MindAndMood />
     <WellnessTools />
     <PrivacyTrust />
+    <script
+        type="application/ld+json"
+        set:html={JSON.stringify(structuredData)}
+    />
 </Layout>

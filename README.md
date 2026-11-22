@@ -1,18 +1,12 @@
-# 🌸 Tulaa — Gentle Wellness for Every Body
+# Tulaa — Yoga & Wellness
 
-Welcome to the official website of **[Tulaa](https://tulaalife.com)** —  
-a privacy-first, ad-free wellness app designed to help you find balance in body and mind.
+Official website for **[Tulaa](https://tulaalife.com)** — a private, offline-first sanctuary for therapeutic yoga, mindful breathwork, and daily health tracking.
 
-Tulaa brings together:
-- 🧘‍♀️ Guided Yoga and Meditation  
-- 💧 Hydration and Wellness Tracking  
-- 🩸 Period and Mood Tracking  
-- 🔔 Rhythms and Daily Reminders  
-- 🌿 Curated Health Tips
+- **Therapeutic Yoga:** Expert-led sequences for back & neck relief, PCOS, prenatal/postnatal care, thyroid, and mobility curated by Latika Bissa (M.Sc. Yoga Therapy, Gold Medalist).
+- **Mindfulness & Sleep:** Guided pranayama, traditional Vedic chants, and bedtime relaxations.
+- **On-Device Health Trackers:** Private period & cycle diary, intermittent fasting timer, hydration log, mood journal, and daily habit rhythms.
+- **Privacy by Design:** No sign-up, no phone number, zero ads, and 100% on-device storage.
 
-Everything is designed to work **offline**, respect your **privacy**,  
-and support your personal journey toward gentle, consistent wellbeing.
+Download on the **[App Store](https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498)** and **[Google Play](https://play.google.com/store/apps/details?id=life.tulaa)**.
 
-Learn more at 👉 [tulaa.app](https://tulaalife.com)
-
-© 2026 TULAALIFE WELLNESS PRIVATE LIMITED. All rights reserved.
+© 2026 Tulaalife Wellness Private Limited. All rights reserved.

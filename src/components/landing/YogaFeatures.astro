@@ -17,6 +17,9 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
     <div class="content-wrapper">
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
+                <span class="badge-small" style="margin-bottom: 12px;">
+                    {currentLang === "hi" ? "30+ योग थेरेपी प्लान्स" : "30+ Therapeutic Yoga Plans"}
+                </span>
                 <h2 class="section-title">
                     <span class="title-main">{t.heroTitleTop}</span>
                     <br />

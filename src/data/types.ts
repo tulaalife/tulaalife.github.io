@@ -1,15 +1,39 @@
 export type Locale = 'en' | 'hi';
 
+export interface PlanTags {
+    body_parts?: string[];
+    wellness_focus?: string[];
+    pregnancy_stages?: string[];
+    medical_conditions?: string[];
+}
+
 export interface YogaPlanPreview {
+    id: string;
     slug: string;
     language: string;
     title: string;
     subtitle: string;
     description: string;
     benefits: string;
+    cautions?: string;
     image: string;
     deeplink: string;
     goals: string[];
+    category?: string;
+    tags?: PlanTags;
+    intensity?: string;
+    practiceFrequency?: string;
+    suitableTimeOfDay?: string[];
+    minMealGap?: string;
+    contraindications?: string[];
+}
+
+export type RecommendationOverrides = Record<string, readonly string[]>;
+
+export interface ManualRecommendations {
+    version: string;
+    updated_at: string;
+    overrides: RecommendationOverrides;
 }
 
 export interface GuidedAudioPreview {

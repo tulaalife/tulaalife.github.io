@@ -5,16 +5,18 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        titleTop: "Ready to",
-        titleBottom: "Transform Your Life?",
+        badge: "No OTP • No Ads • No Subscriptions",
+        titleTop: "Your Daily",
+        titleBottom: "Health Sanctuary.",
         subline:
-            "Get expert yoga therapy and daily wellness tracking. <strong>100% Free, Private, and Offline.</strong> No accounts, no tracking.",
+            "Open Tulaa and start practicing immediately. <strong>100% Free, Offline-First, and On-Device Private</strong>—no phone number or email required.",
     },
     hi: {
-        titleTop: "क्या आप तैयार हैं",
-        titleBottom: "बदलाव के लिए?",
+        badge: "बिना OTP • बिना विज्ञापन • बिना सब्सक्रिप्शन",
+        titleTop: "आपका दैनिक",
+        titleBottom: "स्वास्थ्य और योग साथी।",
         subline:
-            "एक्सपर्ट योग थेरेपी और डेली सेहत ट्रैकिंग। <strong>100% फ्री, सुरक्षित और ऑफलाइन।</strong> बिना किसी अकाउंट या ट्रैकिंग के।",
+            "बिना मोबाइल नंबर या ईमेल के तुरंत योग व ध्यान शुरू करें। <strong>100% फ्री, ऑफलाइन और आपके फोन में सुरक्षित।</strong>",
     },
 };
 
@@ -31,6 +33,7 @@ const { subline = t.subline } = Astro.props;
 <section class="footer-card-container">
     <div class="footer-card premium-gloss-surface">
         <div class="section-header-center content">
+            <span class="badge-small" style="margin-bottom: 14px;">{t.badge}</span>
             <h2 class="section-title">
                 <span class="title-main">{t.titleTop}</span>
                 <br />
