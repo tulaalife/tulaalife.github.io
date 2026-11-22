@@ -25,6 +25,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 interface Props {
     centered?: boolean;
     inverted?: boolean;
+    compact?: boolean;
     iosHref?: string;
     androidHref?: string;
     class?: string;
@@ -33,6 +34,7 @@ interface Props {
 const {
     centered = false,
     inverted = false,
+    compact = false,
     iosHref = "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
     class: className,
@@ -42,7 +44,7 @@ const iosIconSrc = "/assets/icons/appstore.svg";
 const androidIconSrc = "/assets/icons/playstore.svg";
 ---
 
-<div class:list={["store-buttons", { centered }, className]}>
+<div class:list={["store-buttons", { centered, compact }, className]}>
     <a
         href={iosHref}
         class:list={["store-btn", { inverted }]}
@@ -54,8 +56,8 @@ const androidIconSrc = "/assets/icons/playstore.svg";
             src={iosIconSrc}
             alt=""
             class="store-btn__icon"
-            width="24"
-            height="24"
+            width="22"
+            height="22"
             aria-hidden="true"
         />
         <span class="store-btn__text">
@@ -75,8 +77,8 @@ const androidIconSrc = "/assets/icons/playstore.svg";
             src={androidIconSrc}
             alt=""
             class="store-btn__icon"
-            width="24"
-            height="24"
+            width="22"
+            height="22"
             aria-hidden="true"
         />
         <span class="store-btn__text">
@@ -89,7 +91,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
 <style>
     .store-buttons {
         display: flex;
-        gap: 12px;
+        gap: 10px;
         flex-wrap: wrap;
         width: 100%;
     }
@@ -99,34 +101,57 @@ const androidIconSrc = "/assets/icons/playstore.svg";
     }
 
     .store-btn {
-        --btn-h: 52px;
+        --btn-h: 48px;
         height: var(--btn-h);
         border-radius: 99px;
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         gap: 10px;
         padding: 0 18px;
         text-decoration: none;
         white-space: nowrap;
         font-family: var(--font-sans-en);
         transition:
-            transform 0.14s ease,
-            box-shadow 0.14s ease,
-            border-color 0.2s ease;
-        flex: 1 1 145px;
-        max-width: 175px;
-        background: linear-gradient(180deg, #121314, #0f0f10 60%);
+            transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.2s ease,
+            border-color 0.2s ease,
+            background 0.2s ease;
+        flex: 1 1 138px;
+        max-width: 176px;
+        background: linear-gradient(180deg, #1b241f 0%, #111714 100%);
         color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.22);
+        box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.25);
+    }
+
+    :global([data-theme="dark"]) .store-btn {
+        background: linear-gradient(
+            180deg,
+            rgba(48, 68, 57, 0.95) 0%,
+            rgba(31, 45, 38, 0.95) 100%
+        );
+        border: 1px solid rgba(155, 225, 185, 0.35);
+        box-shadow:
+            0 6px 20px -4px rgba(0, 0, 0, 0.45),
+            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+    }
+
+    .store-buttons.compact .store-btn {
+        --btn-h: 44px;
+        padding: 0 16px;
     }
 
     @media (min-width: 769px) {
         .store-btn {
             flex: initial;
             max-width: none;
-            padding: 0 22px;
-            --btn-h: 54px;
+            padding: 0 20px;
+            --btn-h: 50px;
+        }
+        .store-buttons.compact .store-btn {
+            --btn-h: 46px;
+            padding: 0 18px;
         }
     }
 
@@ -137,13 +162,22 @@ const androidIconSrc = "/assets/icons/playstore.svg";
     .store-btn.inverted {
         background: linear-gradient(180deg, var(--bg-main), var(--bg-sub) 60%);
         color: var(--text-main);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow);
+        border: 1px solid var(--border-strong);
+        box-shadow: var(--shadow-sm);
     }
 
     .store-btn:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px -4px rgba(0, 0, 0, 0.28);
+        border-color: var(--primary);
+    }
+
+    :global([data-theme="dark"]) .store-btn:hover {
+        background: linear-gradient(
+            180deg,
+            rgba(60, 86, 72, 1) 0%,
+            rgba(38, 56, 47, 1) 100%
+        );
         border-color: var(--primary);
     }
 
@@ -152,9 +186,10 @@ const androidIconSrc = "/assets/icons/playstore.svg";
     }
 
     .store-btn__icon {
-        width: 22px;
-        height: 22px;
+        width: 20px;
+        height: 20px;
         object-fit: contain;
+        flex-shrink: 0;
     }
 
     :global([data-theme="light"]) .store-btn.inverted .store-btn__icon {
@@ -169,9 +204,9 @@ const androidIconSrc = "/assets/icons/playstore.svg";
     }
 
     .store-btn__text small {
-        font-size: 10px;
+        font-size: 9.5px;
         text-transform: none;
-        opacity: 0.8;
+        opacity: 0.85;
     }
 
     :global(:lang(hi)) .store-btn__text small {
@@ -179,8 +214,8 @@ const androidIconSrc = "/assets/icons/playstore.svg";
     }
 
     .store-btn__text strong {
-        font-size: 14px;
-        font-weight: 600;
+        font-size: 13.5px;
+        font-weight: 650;
         letter-spacing: -0.01em;
     }
 </style>

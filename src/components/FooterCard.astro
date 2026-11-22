@@ -5,18 +5,28 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "No OTP • No Ads • No Subscriptions",
+        badge: "Begin Today • 100% Free Sanctuary",
         titleTop: "Your Daily",
-        titleBottom: "Health Sanctuary.",
+        titleBottom: "Wellness Sanctuary.",
         subline:
-            "Open Tulaa and start practicing immediately. <strong>100% Free, Offline-First, and On-Device Private</strong>—no phone number or email required.",
+            "Heal pain naturally, sleep deeper, and track your body's rhythms in peace—guided by <strong>Gold Medalist Yoga Therapist Latika Bissa</strong>.",
+        pills: [
+            "✦ 30+ Therapeutic Plans",
+            "✦ Offline Video & Audio",
+            "✦ Zero Login or Ads",
+        ],
     },
     hi: {
-        badge: "बिना OTP • बिना विज्ञापन • बिना सब्सक्रिप्शन",
+        badge: "आज ही शुरू करें • 100% फ्री",
         titleTop: "आपका दैनिक",
         titleBottom: "स्वास्थ्य और योग साथी।",
         subline:
-            "बिना मोबाइल नंबर या ईमेल के तुरंत योग व ध्यान शुरू करें। <strong>100% फ्री, ऑफलाइन और आपके फोन में सुरक्षित।</strong>",
+            "प्राकृतिक रूप से दर्द से राहत पाएं, गहरी नींद सोएं और अपनी सेहत को ट्रैक करें — <strong>स्वर्ण पदक विजेता लतिका बिस्सा</strong> के मार्गदर्शन में।",
+        pills: [
+            "✦ 30+ योग थेरेपी प्लान्स",
+            "✦ ऑफलाइन वीडियो व ऑडियो",
+            "✦ बिना लॉगिन व विज्ञापन",
+        ],
     },
 };
 
@@ -30,67 +40,105 @@ interface Props {
 const { subline = t.subline } = Astro.props;
 ---
 
-<section class="footer-card-container">
+<div class="footer-card-container">
     <div class="footer-card premium-gloss-surface">
+        <div class="footer-glow-orb" aria-hidden="true"></div>
         <div class="section-header-center content">
-            <span class="badge-small" style="margin-bottom: 14px;">{t.badge}</span>
+            <div class="sanctuary-emblem">
+                <img
+                    src="/assets/icons/logo_64.webp"
+                    alt="Tulaa"
+                    width="44"
+                    height="44"
+                />
+            </div>
+            <span class="badge-small">{t.badge}</span>
             <h2 class="section-title">
-                <span class="title-main">{t.titleTop}</span>
-                <br />
+                <span class="title-main">{t.titleTop}</span>{" "}
                 <span class="text-gradient">{t.titleBottom}</span>
             </h2>
 
             <p class="sub body-text" set:html={subline} />
+
+            <div class="sanctuary-pills">
+                {t.pills.map((pill) => <span class="s-pill">{pill}</span>)}
+            </div>
 
             <div class="button-container">
                 <StoreButtons centered={true} />
             </div>
         </div>
     </div>
-</section>
+</div>
 
 <style>
     .footer-card-container {
         width: 100%;
         display: flex;
         justify-content: center;
-        padding-top: var(--section-v-padding);
-        padding-bottom: var(--section-v-padding);
     }
 
     .footer-card {
+        position: relative;
         width: 100%;
         max-width: var(--container-width);
-        padding: clamp(2.5rem, 6vh, 4.5rem) var(--space-md);
+        padding: clamp(1.75rem, 4.5vh, 3.25rem) var(--space-md);
         border-radius: var(--radius-lg);
         overflow: hidden;
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--bg-main), var(--text-main) 1%) 0%,
-            color-mix(in srgb, var(--bg-sub), transparent 30%) 100%
-        );
     }
 
-    :global([data-theme="dark"]) .footer-card {
-        background: linear-gradient(
-            135deg,
-            color-mix(in srgb, var(--bg-sub), var(--text-main) 2%) 0%,
-            var(--bg-main) 100%
+    .footer-glow-orb {
+        position: absolute;
+        width: 380px;
+        height: 380px;
+        border-radius: 50%;
+        top: -160px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: radial-gradient(
+            circle,
+            var(--primary-glow) 0%,
+            transparent 70%
         );
+        pointer-events: none;
+        z-index: 0;
     }
 
     .content {
-        max-width: 700px;
+        position: relative;
+        z-index: 2;
+        max-width: 680px;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 10px;
+    }
+
+    .sanctuary-emblem {
+        width: 52px;
+        height: 52px;
+        border-radius: 16px;
+        padding: 4px;
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border-strong);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 2px;
+    }
+
+    .sanctuary-emblem img {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        object-fit: cover;
     }
 
     .section-title {
-        font-size: clamp(2.2rem, 5.5vw, 3.6rem);
-        margin-bottom: var(--space-sm);
-        letter-spacing: -0.035em;
+        font-size: clamp(1.9rem, 4.6vw, 3.2rem);
+        letter-spacing: -0.03em;
         line-height: 1.12;
     }
 
@@ -99,65 +147,60 @@ const { subline = t.subline } = Astro.props;
     }
 
     .sub {
-        font-size: clamp(1.05rem, 2vw, 1.25rem);
-        line-height: 1.65;
-        margin-bottom: var(--space-lg);
-        max-width: 54ch;
-        margin-left: auto;
-        margin-right: auto;
+        font-size: clamp(0.92rem, 1.6vw, 1.08rem);
+        line-height: 1.55;
+        max-width: 52ch;
+        margin: 0 auto;
         color: var(--text-muted);
     }
 
     .sub :global(strong) {
         color: var(--text-main);
-        font-weight: 750;
+        font-weight: 700;
+    }
+
+    .sanctuary-pills {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        margin: 4px 0 6px;
+    }
+
+    .s-pill {
+        font-size: 0.78rem;
+        font-weight: 650;
+        padding: 5px 12px;
+        border-radius: 999px;
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border);
+        color: var(--text-main);
     }
 
     .button-container {
         width: 100%;
-        max-width: 370px;
-        margin: 0 auto;
-        will-change: transform;
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        max-width: 380px;
+        margin: 4px auto 0;
     }
 
-    .button-container:hover {
-        transform: translateY(-3px);
-    }
-
-    .button-container:active {
-        transform: translateY(-1px) scale(0.99);
-    }
-
-    :lang(hi) .section-title {
-        line-height: 1.35;
-    }
-    :lang(hi) .sub {
-        line-height: 1.65;
-    }
-
-    @media (max-height: 740px) {
-        .footer-card-container {
-            padding-top: var(--space-md);
-            padding-bottom: var(--space-md);
-        }
+    @media (max-width: 680px) {
         .footer-card {
-            padding: var(--space-lg) var(--space-md);
+            padding: 1.5rem 1rem;
         }
+
+        .sanctuary-emblem {
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+        }
+
         .section-title {
-            font-size: 2rem;
-            margin-bottom: var(--space-xs);
+            font-size: clamp(1.6rem, 6vw, 2.15rem);
         }
-        .sub {
-            font-size: 1rem;
-            margin-bottom: var(--space-md);
-        }
-    }
 
-    @media (max-width: 768px) {
-        .footer-card {
-            padding: var(--space-xl) var(--space-sm);
-            border-radius: var(--radius-lg);
+        .s-pill {
+            font-size: 0.72rem;
+            padding: 4px 10px;
         }
     }
 </style>

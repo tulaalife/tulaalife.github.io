@@ -1,6 +1,5 @@
 ---
 import SectionCTA from "../SectionCTA.astro";
-import AnimatedFeatureCard from "./AnimatedFeatureCard.astro";
 
 const currentLang = Astro.currentLocale || "en";
 
@@ -9,42 +8,43 @@ const ui = {
         badge: "No Sign-Up • No Phone Number",
         titleTop: "No Login, No Ads.",
         titleBottom: "100% On-Device.",
-        descTop:
-            "Open Tulaa and start immediately—without sharing your email or phone number.",
-        descBottom: "Your cycle logs, fasting windows, and mood notes never leave your phone.",
-        features: [
+        desc: "Open Tulaa and start immediately. Your cycle logs, fasting windows, and mood notes never leave your phone.",
+        pillars: [
             {
-                title: "No Sign-Up Required",
-                desc: "Zero OTP prompts. Export or wipe your data anytime.",
-                type: "privacy",
-                color: "oklch(48% 0.085 156)",
+                id: "nosignup",
+                tag: "01 • Instant Access",
+                title: "No Sign-Up or OTP",
+                desc: "Start practicing without sharing your email or phone number.",
             },
             {
-                title: "Download Once, Practice Offline",
-                desc: "Save routines locally and practice without internet.",
-                type: "offline",
-                color: "oklch(58% 0.11 65)",
+                id: "vault",
+                tag: "02 • Local Storage",
+                title: "100% On-Device Vault",
+                desc: "Encrypted locally on your phone. Export or wipe anytime.",
             },
             {
-                title: "30+ Serene Themes",
-                desc: "Personalize fonts and calming palettes to match your mood.",
-                type: "customize",
-                color: "oklch(55% 0.1 25)",
+                id: "calm",
+                tag: "03 • Pure Sanctuary",
+                title: "Zero Ads & 30+ Themes",
+                desc: "No pop-ups, no paywalls, and calming botanical palettes.",
             },
         ],
-        reviewsLabel: "Loved for daily calm & privacy",
+        reviewsLabel: "★★★★★ Loved on App Store & Google Play",
         reviews: [
             {
-                text: "Finally a period tracker and gentle yoga app that does not ask for my phone number or push paid plans. Truly calming.",
-                author: "Ananya M. · Play Store",
+                text: "Finally a period tracker and gentle yoga app that never asks for my phone number or pushes paid plans.",
+                author: "Ananya M.",
+                source: "Google Play",
             },
             {
-                text: "I love the app's meditations. I listen to them during bedtime, and they help me go to sleep within 5 minutes.",
-                author: "Sneha R. · Play Store",
+                text: "The bedtime meditations help me fall asleep within 5 minutes. Truly peaceful and distraction-free.",
+                author: "Sneha R.",
+                source: "Google Play",
             },
             {
-                text: "The app is very easy to use and it's great to have an app without ads and only peaceful yoga to practice anytime.",
-                author: "Prerna1407 · App Store",
+                text: "So refreshing to open an app with zero ads and practice therapeutic yoga offline anytime.",
+                author: "Prerna1407",
+                source: "App Store",
             },
         ],
     },
@@ -52,42 +52,43 @@ const ui = {
         badge: "न कोई साइन-अप • न मोबाइल नंबर",
         titleTop: "कोई लॉगिन नहीं,",
         titleBottom: "100% फोन में सुरक्षित।",
-        descTop:
-            "बिना मोबाइल नंबर या ईमेल डाले तुरंत योग और ध्यान शुरू करें।",
-        descBottom: "आपका पीरियड लॉग, फास्टिंग टाइमर और मूड नोट्स कभी आपके फोन से बाहर नहीं जाते।",
-        features: [
+        desc: "बिना मोबाइल नंबर या ईमेल डाले तुरंत योग और ध्यान शुरू करें। आपका डेटा कभी आपके फोन से बाहर नहीं जाता।",
+        pillars: [
             {
+                id: "nosignup",
+                tag: "01 • तुरंत शुरुआत",
                 title: "न साइन-अप, न OTP",
                 desc: "बिना फोन नंबर या ईमेल के तुरंत अभ्यास शुरू करें।",
-                type: "privacy",
-                color: "oklch(48% 0.085 156)",
             },
             {
-                title: "एक बार डाउनलोड, ऑफलाइन अभ्यास",
-                desc: "वीडियो फोन में सेव करें और बिना इंटरनेट अभ्यास करें।",
-                type: "offline",
-                color: "oklch(58% 0.11 65)",
+                id: "vault",
+                tag: "02 • लोकल स्टोरेज",
+                title: "100% ऑन-डिवाइस सुरक्षा",
+                desc: "सारा हेल्थ डेटा केवल आपके फोन में सुरक्षित रहता है।",
             },
             {
-                title: "30+ शांत और सुंदर थीम्स",
-                desc: "अपनी पसंद के रंग और फॉन्ट चुनें।",
-                type: "customize",
-                color: "oklch(55% 0.1 25)",
+                id: "calm",
+                tag: "03 • शांत अनुभव",
+                title: "बिना विज्ञापन व 30+ थीम्स",
+                desc: "कोई पॉप-अप नहीं, कोई सब्सक्रिप्शन नहीं और सुंदर शांत रंग।",
             },
         ],
-        reviewsLabel: "हमारे यूज़र्स को क्या पसंद है",
+        reviewsLabel: "★★★★★ App Store और Play Store पर सराहा गया",
         reviews: [
             {
-                text: "आख़िरकार एक ऐसा पीरियड ट्रैकर और योग ऐप मिला जो न फोन नंबर मांगता है और न कोई सब्सक्रिप्शन। बहुत ही शांत और भरोसेमंद।",
-                author: "अनन्या एम · Play Store",
+                text: "आख़िरकार एक ऐसा पीरियड ट्रैकर और योग ऐप मिला जो न फोन नंबर मांगता है और न कोई सब्सक्रिप्शन।",
+                author: "अनन्या एम.",
+                source: "Google Play",
             },
             {
-                text: "मुझे इस ऐप के मेडिटेशन बहुत पसंद हैं। मैं इन्हें सोने से पहले सुनती हूँ और ये मुझे 5 मिनट के अंदर सुला देते हैं।",
-                author: "स्नेहा आर · Play Store",
+                text: "सोने से पहले इसके मेडिटेशन सुनने से मुझे 5 मिनट में गहरी नींद आ जाती है। बहुत ही शांत ऐप।",
+                author: "स्नेहा आर.",
+                source: "Google Play",
             },
             {
-                text: "यह ऐप इस्तेमाल करने में बहुत आसान है और बिना विज्ञापनों वाला ऐसा ऐप होना बहुत अच्छा है, जिसमें आप कभी भी शांति से योग कर सकते हैं।",
-                author: "प्रेरणा1407 · App Store",
+                text: "बिना विज्ञापनों के कभी भी ऑफलाइन योग अभ्यास करने के लिए यह सबसे सरल और भरोसेमंद ऐप है।",
+                author: "प्रेरणा1407",
+                source: "App Store",
             },
         ],
     },
@@ -96,81 +97,92 @@ const ui = {
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
-<section class="scroll-section section-privacy">
-    <div style="width: 100%;">
+<section id="privacy-trust" class="scroll-section section-privacy">
+    <div class="content-wrapper">
         <div class="container">
             <div class="section-header-left header-content animate-on-scroll">
-                <span class="badge-small" style="margin-bottom: 12px;">{t.badge}</span>
+                <span class="badge-small">{t.badge}</span>
                 <h2 class="section-title">
-                    <span class="title-main">{t.titleTop}</span><br />
+                    <span class="title-main">{t.titleTop}</span>{" "}
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
-                <p class="body-text">
-                    {t.descTop}<br class="hidden-mobile" />{t.descBottom}
-                </p>
+                <p class="body-text">{t.desc}</p>
             </div>
         </div>
 
-        <div class="container stack-stage-container animate-on-scroll delay-1">
-            <div class="privacy-stage-frame" id="privacy-stage-frame">
+        <div class="container pillars-container animate-on-scroll delay-1">
+            <div class="pillars-grid">
                 {
-                    t.features.map((feature, index) => (
-                        <AnimatedFeatureCard
-                            title={feature.title}
-                            desc={feature.desc}
-                            color={feature.color}
-                            type={feature.type}
-                            index={index}
-                            activeClass="active"
-                        >
-                            <Fragment slot="watermark">
-                                {feature.type === "privacy" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M216,96V208a8,8,0,0,1-8,8H48a8,8,0,0,1-8-8V96a8,8,0,0,1,8-8H208A8,8,0,0,1,216,96Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M208,80H176V56a48,48,0,0,0-96,0V80H48A16,16,0,0,0,32,96V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V96A16,16,0,0,0,208,80ZM96,56a32,32,0,0,1,64,0V80H96ZM208,208H48V96H208V208Zm-68-56a12,12,0,1,1-12-12A12,12,0,0,1,140,152Z" />
-                                    </svg>
-                                )}
-                                {feature.type === "offline" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M229.06,108.79l-48.7,42,14.88,62.79a8.4,8.4,0,0,1-12.52,9.17L128,189.09,73.28,222.74a8.4,8.4,0,0,1-12.52-9.17l14.88-62.79-48.7-42A8.46,8.46,0,0,1,31.73,94L95.64,88.8l24.62-59.6a8.36,8.36,0,0,1,15.48,0l24.62,59.6L224.27,94A8.46,8.46,0,0,1,229.06,108.79Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M239.18,97.26A16.38,16.38,0,0,0,224.92,86l-59-4.76L143.14,26.15a16.36,16.36,0,0,0-30.27,0L90.11,81.23,31.08,86a16.46,16.46,0,0,0-9.37,28.86l45,38.83L53,211.75a16.38,16.38,0,0,0,24.5,17.82L128,198.49l50.53,31.08A16.4,16.4,0,0,0,203,211.75l-13.76-58.07,45-38.83A16.43,16.43,0,0,0,239.18,97.26Zm-15.34,5.47-48.7,42a8,8,0,0,0-2.56,7.91l14.88,62.8a.37.37,0,0,1-.17.48c-.18.14-.23.11-.38,0l-54.72-33.65a8,8,0,0,0-8.38,0L69.09,215.94c-.15.09-.19.12-.38,0a.37.37,0,0,1-.17-.48l14.88-62.8a8,8,0,0,0-2.56-7.91l-48.7-42c-.12-.1-.23-.19-.13-.5s.18-.27.33-.29l63.92-5.16A8,8,0,0,0,103,91.86l24.62-59.61c.08-.17.11-.25.35-.25s.27.08.35.25L153,91.86a8,8,0,0,0,6.75,4.92l63.92,5.16c.15,0,.24,0,.33.29S224,102.63,223.84,102.73Z" />
-                                    </svg>
-                                )}
-                                {feature.type === "customize" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M176,112,74.34,213.66a8,8,0,0,1-11.31,0L42.34,193a8,8,0,0,1,0-11.31L144,80Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M248,152a8,8,0,0,1-8,8H224v16a8,8,0,0,1-16,0V160H192a8,8,0,0,1,0-16h16V128a8,8,0,0,1,16,0v16h16A8,8,0,0,1,248,152ZM56,72H72V88a8,8,0,0,0,16,0V72h16a8,8,0,0,0,0-16H88V40a8,8,0,0,0-16,0V56H56a8,8,0,0,0,0,16ZM184,192h-8v-8a8,8,0,0,0-16,0v8h-8a8,8,0,0,0,0,16h8v8a8,8,0,0,0,16,0v-8h8a8,8,0,0,0,0-16ZM219.31,80,80,219.31a16,16,0,0,1-22.62,0L36.68,198.63a16,16,0,0,1,0-22.63L176,36.69a16,16,0,0,1,22.63,0l20.68,20.68A16,16,0,0,1,219.31,80Zm-54.63,32L144,91.31l-96,96L68.68,208ZM208,68.69,187.31,48l-32,32L176,100.69Z" />
-                                    </svg>
-                                )}
-                            </Fragment>
-                        </AnimatedFeatureCard>
+                    t.pillars.map((pillar) => (
+                        <div class="pillar-card premium-gloss-surface">
+                            <div class="pillar-top">
+                                <div class="pillar-icon" aria-hidden="true">
+                                    {pillar.id === "nosignup" && (
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                            <path d="m9 12 2 2 4-4" />
+                                        </svg>
+                                    )}
+                                    {pillar.id === "vault" && (
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <rect
+                                                width="18"
+                                                height="11"
+                                                x="3"
+                                                y="11"
+                                                rx="2"
+                                                ry="2"
+                                            />
+                                            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                                        </svg>
+                                    )}
+                                    {pillar.id === "calm" && (
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <circle cx="12" cy="12" r="10" />
+                                            <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                                            <line
+                                                x1="9"
+                                                x2="9.01"
+                                                y1="9"
+                                                y2="9"
+                                            />
+                                            <line
+                                                x1="15"
+                                                x2="15.01"
+                                                y1="9"
+                                                y2="9"
+                                            />
+                                        </svg>
+                                    )}
+                                </div>
+                                <span class="pillar-tag">{pillar.tag}</span>
+                            </div>
+                            <div class="pillar-copy">
+                                <h3 class="pillar-title">{pillar.title}</h3>
+                                <p class="pillar-desc">{pillar.desc}</p>
+                            </div>
+                        </div>
                     ))
                 }
             </div>
@@ -178,12 +190,15 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
         <div class="container reviews-container animate-on-scroll delay-1">
             <span class="reviews-eyebrow">{t.reviewsLabel}</span>
-            <div class="reviews-grid">
+            <div class="reviews-track">
                 {
                     t.reviews.map((rev) => (
                         <blockquote class="review-card premium-gloss-surface">
                             <p class="review-text">“{rev.text}”</p>
-                            <footer class="review-author">— {rev.author}</footer>
+                            <footer class="review-author">
+                                <strong>{rev.author}</strong>
+                                <span>· {rev.source}</span>
+                            </footer>
                         </blockquote>
                     ))
                 }
@@ -200,133 +215,243 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     </div>
 </section>
 
-<script>
-    document.addEventListener("astro:page-load", () => {
-        const stage = document.getElementById("privacy-stage-frame");
-        if (!stage) return;
-        const cards = stage.querySelectorAll(".animated-feature-card");
-        let activeIndex = 0;
-        if (cards.length === 0) return;
-
-        setInterval(() => {
-            cards[activeIndex].classList.remove("active");
-            activeIndex = (activeIndex + 1) % cards.length;
-            cards[activeIndex].classList.add("active");
-        }, 4500);
-    });
-</script>
-
 <style>
     .section-privacy {
         width: 100%;
-        display: flex;
-        align-items: center;
-        padding-top: var(--section-v-padding);
-        padding-bottom: var(--section-v-padding);
     }
-    .header-content {
-        max-width: 720px;
-        margin-bottom: var(--space-md);
-        text-align: left;
-        width: 100%;
-    }
-    .section-title {
-        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
-        letter-spacing: -0.035em;
-        line-height: 1.1;
-        color: var(--text-main);
-    }
-    .body-text {
-        font-size: clamp(1.05rem, 2vw, 1.2rem);
-        color: var(--text-muted);
-        line-height: 1.6;
-        max-width: 54ch;
-        margin-top: var(--space-xs);
-    }
-    .stack-stage-container {
-        width: 100%;
-        margin-bottom: var(--space-lg);
-    }
-    .privacy-stage-frame {
-        position: relative;
-        width: 100%;
-        max-width: 480px;
-        height: 114px;
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-    .cta-wrapper {
-        display: flex;
-        justify-content: flex-start;
-    }
-    .reviews-container {
-        margin-bottom: var(--space-md);
+
+    .content-wrapper {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        width: 100%;
+        margin: 0 auto;
+        gap: clamp(0.75rem, 2vh, 1.35rem);
+    }
+
+    .header-content {
+        max-width: 740px;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .section-title {
+        font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+        letter-spacing: -0.03em;
+        line-height: 1.12;
+        color: var(--text-main);
+    }
+
+    .body-text {
+        font-size: clamp(0.92rem, 1.6vw, 1.05rem);
+        color: var(--text-muted);
+        line-height: 1.5;
+        max-width: 58ch;
+    }
+
+    .pillars-container {
+        width: 100%;
+    }
+
+    .pillars-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+    }
+
+    .pillar-card {
+        border-radius: var(--radius-lg);
+        padding: clamp(1rem, 1.8vw, 1.3rem);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        transition:
+            transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.25s ease;
+    }
+
+    .pillar-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--primary);
+    }
+
+    .pillar-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .pillar-icon {
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+    }
+
+    .pillar-icon svg {
+        width: 19px;
+        height: 19px;
+    }
+
+    .pillar-tag {
+        font-size: 0.72rem;
+        font-weight: 700;
+        color: var(--primary);
+        letter-spacing: 0.03em;
+        text-transform: uppercase;
+    }
+
+    .pillar-copy {
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .pillar-title {
+        font-size: 1.02rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin: 0;
+        line-height: 1.25;
+    }
+
+    .pillar-desc {
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        margin: 0;
+        line-height: 1.38;
+    }
+
+    .reviews-container {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
         text-align: left;
     }
+
     .reviews-eyebrow {
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         font-weight: 700;
+        letter-spacing: 0.04em;
+        color: var(--accent-warm);
         text-transform: uppercase;
-        letter-spacing: 0.06em;
-        color: var(--text-muted);
     }
-    .reviews-grid {
+
+    .reviews-track {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 16px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
     }
+
     .review-card {
         margin: 0;
-        padding: 20px 22px;
+        padding: 14px 16px;
         border-radius: var(--radius-md);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
-        gap: 12px;
-    }
-    .review-text {
-        margin: 0;
-        font-size: 0.94rem;
-        line-height: 1.55;
-        color: var(--text-main);
-    }
-    .review-author {
-        font-size: 0.8rem;
-        font-weight: 600;
-        color: var(--primary);
-    }
-    .hidden-mobile {
-        display: inline;
-    }
-    :lang(hi) .section-title {
-        line-height: 1.35;
+        gap: 8px;
+        background: var(--bg-card-inner);
     }
 
-    @media (max-height: 740px) {
-        .privacy-stage-frame {
-            height: 104px;
-        }
+    .review-text {
+        margin: 0;
+        font-size: 0.84rem;
+        line-height: 1.45;
+        color: var(--text-main);
     }
+
+    .review-author {
+        font-size: 0.76rem;
+        color: var(--text-muted);
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+
+    .review-author strong {
+        color: var(--primary);
+        font-weight: 700;
+    }
+
+    .cta-wrapper {
+        display: flex;
+        justify-content: flex-start;
+    }
+
+    .cta-wrapper :global(.cta-link) {
+        margin-top: 0;
+        padding: 11px 24px;
+        font-size: 0.95rem;
+    }
+
     @media (max-width: 768px) {
         .section-title {
-            font-size: clamp(1.85rem, 6vw, 2.4rem);
+            font-size: clamp(1.6rem, 6vw, 2.1rem);
         }
-        .hidden-mobile {
+
+        .pillars-grid {
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .pillar-card {
+            flex-direction: row;
+            align-items: center;
+            padding: 10px 12px;
+            gap: 12px;
+            border-radius: var(--radius-md);
+        }
+
+        .pillar-top {
+            flex-shrink: 0;
+        }
+
+        .pillar-tag {
             display: none;
         }
-        .privacy-stage-frame {
-            max-width: 100%;
-            height: 110px;
+
+        .pillar-icon {
+            width: 34px;
+            height: 34px;
         }
-        .reviews-grid {
-            grid-template-columns: 1fr;
-            gap: 12px;
+
+        .pillar-title {
+            font-size: 0.9rem;
         }
+
+        .pillar-desc {
+            font-size: 0.76rem;
+            line-height: 1.3;
+        }
+
+        .reviews-track {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 10px;
+            padding-bottom: 4px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .reviews-track::-webkit-scrollbar {
+            display: none;
+        }
+
         .review-card {
-            padding: 16px 18px;
+            flex: 0 0 265px;
+            scroll-snap-align: start;
+            padding: 12px 14px;
+        }
+
+        .review-text {
+            font-size: 0.8rem;
         }
     }
 </style>
