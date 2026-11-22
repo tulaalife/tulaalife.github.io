@@ -10,7 +10,8 @@ const ui = {
         badge: "NO LOGIN • NO ADS • 100% ON-DEVICE PRIVACY",
         step1TitleTop: "How does your body",
         step1TitleBottom: "feel today?",
-        step1Sub: "Select your primary need for a science-backed therapeutic yoga plan.",
+        step1Sub:
+            "Select your primary need for a science-backed therapeutic yoga plan.",
         step3TitleTop: "Your Therapeutic",
         step3TitleBottom: "Yoga Plan is Ready.",
         step3Highlights: [
@@ -27,8 +28,8 @@ const ui = {
         appPrompt: "Open in Tulaa—no phone number, email, or login required:",
         browseAll: "Explore all 30+ therapeutic yoga plans →",
         authorName: "Curated by Latika Bissa",
-        authorCreds: "Gold Medalist, M.Sc. Yoga Therapy • 12+ Yrs Clinical Exp",
-        authorStats: "★ 5.0 Rated • 5,000+ Lives Transformed • 50L+ Views",
+        authorCreds: "Gold Medalist, M.Sc. Yoga Therapy",
+        authorStats: "★ 5.0 Rated • 12+ Yrs Clinical Exp • 50L+ Views",
         authorSiteLabel: "yogawithlatika.com",
         intensityMap: {
             beginner: "Beginner Safe",
@@ -46,7 +47,8 @@ const ui = {
         badge: "बिना लॉगिन • बिना विज्ञापन • 100% फोन में सुरक्षित",
         step1TitleTop: "आज आपका शरीर",
         step1TitleBottom: "कैसा महसूस कर रहा है?",
-        step1Sub: "अपने लिए सही और वैज्ञानिक योग थेरेपी प्लान जानने के लिए अपनी मुख्य ज़रूरत चुनें।",
+        step1Sub:
+            "अपने लिए सही और वैज्ञानिक योग थेरेपी प्लान जानने के लिए अपनी मुख्य ज़रूरत चुनें।",
         step3TitleTop: "आपके लिए सुझाया गया",
         step3TitleBottom: "योग थेरेपी प्लान।",
         step3Highlights: [
@@ -63,8 +65,8 @@ const ui = {
         appPrompt: "बिना मोबाइल नंबर या लॉगिन के Tulaa ऐप में अभ्यास शुरू करें:",
         browseAll: "सभी 30+ योग थेरेपी प्लान्स देखें →",
         authorName: "लतिका बिस्सा द्वारा तैयार",
-        authorCreds: "स्वर्ण पदक विजेता, M.Sc. योग थेरेपी • 12+ वर्षों का अनुभव",
-        authorStats: "★ 5.0 रेटिंग • 5,000+ स्वस्थ जीवन • 50 लाख+ व्यूज़",
+        authorCreds: "स्वर्ण पदक विजेता, M.Sc. योग थेरेपी",
+        authorStats: "★ 5.0 रेटिंग • 12+ वर्षों का अनुभव • 50 लाख+ व्यूज़",
         authorSiteLabel: "yogawithlatika.com",
         intensityMap: {
             beginner: "शुरुआती (Beginner Safe)",
@@ -124,8 +126,12 @@ Object.values(planById).forEach((p) => {
         subtitle: p.subtitle,
         benefits: benefitsArr,
         image: p.image,
-        intensity: p.intensity ? t.intensityMap[p.intensity] || p.intensity : t.intensityMap.beginner,
-        frequency: p.practiceFrequency ? t.freqMap[p.practiceFrequency] || p.practiceFrequency : t.freqMap.daily,
+        intensity: p.intensity
+            ? t.intensityMap[p.intensity] || p.intensity
+            : t.intensityMap.beginner,
+        frequency: p.practiceFrequency
+            ? t.freqMap[p.practiceFrequency] || p.practiceFrequency
+            : t.freqMap.daily,
         href: `${basePlanHref}/${p.slug}`,
     };
 });
@@ -134,7 +140,9 @@ const overrides = manualRecommendations.overrides;
 const defaultBranch = PLAN_FINDER_BRANCHES[0];
 const defaultOptionKey = defaultBranch.options[0].key;
 const defaultPlanIds = overrides[defaultOptionKey] || [];
-const initialPrimary = defaultPlanIds[0] ? clientPlansMap[defaultPlanIds[0]] : Object.values(clientPlansMap)[0];
+const initialPrimary = defaultPlanIds[0]
+    ? clientPlansMap[defaultPlanIds[0]]
+    : Object.values(clientPlansMap)[0];
 const initialAlts = defaultPlanIds
     .slice(1)
     .map((id) => clientPlansMap[id])
@@ -150,9 +158,13 @@ const initialAlts = defaultPlanIds
             <span class="badge-small">{t.badge}</span>
             <h1 class="hero-title" lang={currentLang} id="dynamic-hero-title">
                 <span id="hero-title-top">{t.step1TitleTop}</span>{" "}
-                <span class="text-gradient" id="hero-title-bottom">{t.step1TitleBottom}</span>
+                <span class="text-gradient" id="hero-title-bottom">
+                    {t.step1TitleBottom}
+                </span>
             </h1>
-            <p class="hero-sub body-text" id="hero-step1-sub">{t.step1Sub}</p>
+            <p class="hero-sub body-text" id="hero-step1-sub">
+                {t.step1Sub}
+            </p>
         </div>
 
         <div
@@ -177,131 +189,163 @@ const initialAlts = defaultPlanIds
             <!-- STEP 1: Pick 1 of 5 Branches -->
             <div class="wizard-step active" id="wizard-step-1">
                 <div class="branch-grid">
-                    {
-                        PLAN_FINDER_BRANCHES.map((branch) => (
-                            <button
-                                type="button"
-                                class="branch-choice"
-                                data-branch-id={branch.id}
-                            >
-                                <div class="branch-choice-text">
-                                    <strong class="branch-title">
-                                        {currentLang === "hi" ? branch.hiLabel : branch.enLabel}
-                                    </strong>
-                                    <span class="branch-desc">
-                                        {currentLang === "hi" ? branch.hiSub : branch.enSub}
-                                    </span>
-                                </div>
-                                <span class="branch-arrow" aria-hidden="true">→</span>
-                            </button>
-                        ))
-                    }
+                    {PLAN_FINDER_BRANCHES.map((branch) => (
+                        <button
+                            type="button"
+                            class="branch-choice"
+                            data-branch-id={branch.id}
+                        >
+                            <div class="branch-choice-text">
+                                <strong class="branch-title">
+                                    {currentLang === "hi"
+                                        ? branch.hiLabel
+                                        : branch.enLabel}
+                                </strong>
+                                <span class="branch-desc">
+                                    {currentLang === "hi"
+                                        ? branch.hiSub
+                                        : branch.enSub}
+                                </span>
+                            </div>
+                            <span class="branch-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
                 </div>
             </div>
 
             <!-- STEP 2: Pick specific area / condition -->
             <div class="wizard-step" id="wizard-step-2" hidden>
                 <div class="step-topbar">
-                    <button type="button" class="back-step-btn" id="back-to-step-1">
+                    <button
+                        type="button"
+                        class="back-step-btn"
+                        id="back-to-step-1"
+                    >
                         {t.backToStep1}
                     </button>
                 </div>
                 <div class="sub-pills-wrap" id="finder-sub-options">
-                    {
-                        defaultBranch.options.map((opt) => (
-                            <button
-                                type="button"
-                                class="sub-choice-pill"
-                                data-override-key={opt.key}
-                            >
-                                {currentLang === "hi" ? opt.hi : opt.en}
-                            </button>
-                        ))
-                    }
+                    {defaultBranch.options.map((opt) => (
+                        <button
+                            type="button"
+                            class="sub-choice-pill"
+                            data-override-key={opt.key}
+                        >
+                            {currentLang === "hi" ? opt.hi : opt.en}
+                        </button>
+                    ))}
                 </div>
             </div>
 
             <!-- STEP 3: Personalized Result Card -->
-            {
-                initialPrimary && (
-                    <div class="wizard-step" id="wizard-step-3" hidden>
-                        <div class="step-topbar">
-                            <button type="button" class="back-step-btn" id="back-to-step-2">
-                                {t.backToStep2}
-                            </button>
-                            <button type="button" class="reset-step-btn" id="reset-wizard">
-                                {t.startOver}
-                            </button>
-                        </div>
-
-                        <div class="result-spotlight">
-                            <a href={initialPrimary.href} id="rec-img-link" class="result-visual">
-                                <img
-                                    id="rec-img"
-                                    src={initialPrimary.image}
-                                    alt={initialPrimary.title}
-                                    width="600"
-                                    height="380"
-                                    loading="eager"
-                                />
-                                <span class="match-tag">{t.matchBadge}</span>
-                            </a>
-
-                            <div class="result-info">
-                                <div class="result-meta">
-                                    <span id="rec-intensity">{initialPrimary.intensity}</span>
-                                    <span>•</span>
-                                    <span id="rec-frequency">{initialPrimary.frequency}</span>
-                                </div>
-
-                                <h2 class="result-title">
-                                    <a href={initialPrimary.href} id="rec-title-link">
-                                        {initialPrimary.title}
-                                    </a>
-                                </h2>
-
-                                <p class="result-subtitle" id="rec-subtitle">
-                                    {initialPrimary.subtitle}
-                                </p>
-
-                                <ul class="result-highlights" id="rec-benefits">
-                                    {initialPrimary.benefits.map((b) => (
-                                        <li>{b}</li>
-                                    ))}
-                                </ul>
-
-                                <div class="result-download-box">
-                                    <span class="download-label">{t.appPrompt}</span>
-                                    <StoreButtons />
-                                    <a href={initialPrimary.href} id="rec-detail-link" class="plan-guide-link">
-                                        {t.viewDetails}
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            class="alt-suggestions"
-                            id="rec-alt-section"
-                            style={initialAlts.length === 0 ? "display: none;" : ""}
+            {initialPrimary && (
+                <div class="wizard-step" id="wizard-step-3" hidden>
+                    <div class="step-topbar">
+                        <button
+                            type="button"
+                            class="back-step-btn"
+                            id="back-to-step-2"
                         >
-                            <span class="alt-label">{t.altHeader}</span>
-                            <div class="alt-pills" id="rec-alt-list">
-                                {initialAlts.map((alt) => (
-                                    <a href={alt.href} class="alt-link-pill">
-                                        {alt.title} →
-                                    </a>
+                            {t.backToStep2}
+                        </button>
+                        <button
+                            type="button"
+                            class="reset-step-btn"
+                            id="reset-wizard"
+                        >
+                            {t.startOver}
+                        </button>
+                    </div>
+
+                    <div class="result-spotlight">
+                        <a
+                            href={initialPrimary.href}
+                            id="rec-img-link"
+                            class="result-visual"
+                        >
+                            <img
+                                id="rec-img"
+                                src={initialPrimary.image}
+                                alt={initialPrimary.title}
+                                width="600"
+                                height="380"
+                                loading="eager"
+                            />
+                            <span class="match-tag">{t.matchBadge}</span>
+                        </a>
+
+                        <div class="result-info">
+                            <div class="result-meta">
+                                <span id="rec-intensity">
+                                    {initialPrimary.intensity}
+                                </span>
+                                <span>•</span>
+                                <span id="rec-frequency">
+                                    {initialPrimary.frequency}
+                                </span>
+                            </div>
+
+                            <h2 class="result-title">
+                                <a
+                                    href={initialPrimary.href}
+                                    id="rec-title-link"
+                                >
+                                    {initialPrimary.title}
+                                </a>
+                            </h2>
+
+                            <p class="result-subtitle" id="rec-subtitle">
+                                {initialPrimary.subtitle}
+                            </p>
+
+                            <ul class="result-highlights" id="rec-benefits">
+                                {initialPrimary.benefits.map((b) => (
+                                    <li>{b}</li>
                                 ))}
+                            </ul>
+
+                            <div class="result-download-box">
+                                <span class="download-label">
+                                    {t.appPrompt}
+                                </span>
+                                <StoreButtons />
+                                <a
+                                    href={initialPrimary.href}
+                                    id="rec-detail-link"
+                                    class="plan-guide-link"
+                                >
+                                    {t.viewDetails}
+                                </a>
                             </div>
                         </div>
                     </div>
-                )
-            }
+
+                    <div
+                        class="alt-suggestions"
+                        id="rec-alt-section"
+                        style={initialAlts.length === 0 ? "display: none;" : ""}
+                    >
+                        <span class="alt-label">{t.altHeader}</span>
+                        <div class="alt-pills" id="rec-alt-list">
+                            {initialAlts.map((alt) => (
+                                <a href={alt.href} class="alt-link-pill">
+                                    {alt.title} →
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
 
         <!-- Contextual Trust Slot Below Card: Latika Bio on Step 1, High-CVR App Highlights on Step 2 & 3 -->
         <div class="context-trust-slot">
-            <div class="latika-bio-card premium-gloss-surface" id="hero-latika-bio">
+            <div
+                class="latika-bio-card premium-gloss-surface"
+                id="hero-latika-bio"
+            >
                 <div class="latika-avatar-wrap">
                     <img
                         src="/images/latika.png"
@@ -328,13 +372,22 @@ const initialAlts = defaultPlanIds
                 </div>
             </div>
 
-            <div class="conversion-highlights-bar" id="hero-conversion-highlights" hidden>
-                <div class="highlights-pills" id="dynamic-highlights-list"></div>
+            <div
+                class="conversion-highlights-bar"
+                id="hero-conversion-highlights"
+                hidden
+            >
+                <div
+                    class="highlights-pills"
+                    id="dynamic-highlights-list"
+                ></div>
             </div>
         </div>
 
         <div class="hero-footer-links">
-            <a href={basePlanHref} class="explore-all-link">{t.browseAll}</a>
+            <a href={basePlanHref} class="explore-all-link">
+                {t.browseAll}
+            </a>
         </div>
     </div>
 </section>
@@ -344,7 +397,9 @@ const initialAlts = defaultPlanIds
         const root = document.getElementById("plan-finder-app");
         if (!root) return;
 
-        const overrides = JSON.parse(root.getAttribute("data-overrides") || "{}");
+        const overrides = JSON.parse(
+            root.getAttribute("data-overrides") || "{}",
+        );
         const plans = JSON.parse(root.getAttribute("data-plans") || "{}");
         const branches = JSON.parse(root.getAttribute("data-branches") || "[]");
         const lang = root.getAttribute("data-lang") || "en";
@@ -361,24 +416,37 @@ const initialAlts = defaultPlanIds
         const titleBottomEl = document.getElementById("hero-title-bottom");
         const step1SubEl = document.getElementById("hero-step1-sub");
         const latikaBioEl = document.getElementById("hero-latika-bio");
-        const highlightsWrapEl = document.getElementById("hero-conversion-highlights");
-        const highlightsListEl = document.getElementById("dynamic-highlights-list");
+        const highlightsWrapEl = document.getElementById(
+            "hero-conversion-highlights",
+        );
+        const highlightsListEl = document.getElementById(
+            "dynamic-highlights-list",
+        );
 
         const step1 = document.getElementById("wizard-step-1");
         const step2 = document.getElementById("wizard-step-2");
         const step3 = document.getElementById("wizard-step-3");
         const dots = root.querySelectorAll(".step-dot");
 
-        const subOptionsContainer = document.getElementById("finder-sub-options");
+        const subOptionsContainer =
+            document.getElementById("finder-sub-options");
 
-        const recImg = document.getElementById("rec-img") as HTMLImageElement | null;
-        const recImgLink = document.getElementById("rec-img-link") as HTMLAnchorElement | null;
-        const recTitleLink = document.getElementById("rec-title-link") as HTMLAnchorElement | null;
+        const recImg = document.getElementById(
+            "rec-img",
+        ) as HTMLImageElement | null;
+        const recImgLink = document.getElementById(
+            "rec-img-link",
+        ) as HTMLAnchorElement | null;
+        const recTitleLink = document.getElementById(
+            "rec-title-link",
+        ) as HTMLAnchorElement | null;
         const recSubtitle = document.getElementById("rec-subtitle");
         const recIntensity = document.getElementById("rec-intensity");
         const recFrequency = document.getElementById("rec-frequency");
         const recBenefits = document.getElementById("rec-benefits");
-        const recDetailLink = document.getElementById("rec-detail-link") as HTMLAnchorElement | null;
+        const recDetailLink = document.getElementById(
+            "rec-detail-link",
+        ) as HTMLAnchorElement | null;
         const recAltSection = document.getElementById("rec-alt-section");
         const recAltList = document.getElementById("rec-alt-list");
 
@@ -416,18 +484,24 @@ const initialAlts = defaultPlanIds
             } else if (stepNumber === 2 && currentBranch) {
                 if (titleTopEl) {
                     titleTopEl.textContent =
-                        lang === "hi" ? currentBranch.hiTitleTop : currentBranch.enTitleTop;
+                        lang === "hi"
+                            ? currentBranch.hiTitleTop
+                            : currentBranch.enTitleTop;
                 }
                 if (titleBottomEl) {
                     titleBottomEl.textContent =
-                        lang === "hi" ? currentBranch.hiTitleBottom : currentBranch.enTitleBottom;
+                        lang === "hi"
+                            ? currentBranch.hiTitleBottom
+                            : currentBranch.enTitleBottom;
                 }
                 if (step1SubEl) step1SubEl.hidden = true;
                 if (latikaBioEl) latikaBioEl.hidden = true;
                 if (highlightsWrapEl) {
                     highlightsWrapEl.hidden = false;
                     const branchHighlights =
-                        lang === "hi" ? currentBranch.hiHighlights : currentBranch.enHighlights;
+                        lang === "hi"
+                            ? currentBranch.hiHighlights
+                            : currentBranch.enHighlights;
                     renderHighlightsPills(branchHighlights || step3Highlights);
                 }
             } else if (stepNumber === 3) {
@@ -494,7 +568,8 @@ const initialAlts = defaultPlanIds
 
         function attachSubChipListeners() {
             if (!subOptionsContainer) return;
-            const chips = subOptionsContainer.querySelectorAll(".sub-choice-pill");
+            const chips =
+                subOptionsContainer.querySelectorAll(".sub-choice-pill");
             chips.forEach((chip) => {
                 chip.addEventListener("click", () => {
                     const key = chip.getAttribute("data-override-key");
@@ -532,21 +607,27 @@ const initialAlts = defaultPlanIds
             });
         });
 
-        document.getElementById("back-to-step-1")?.addEventListener("click", () => {
-            setStep(1);
-        });
-
-        document.getElementById("back-to-step-2")?.addEventListener("click", () => {
-            if (activeBranchHasSingleOption) {
+        document
+            .getElementById("back-to-step-1")
+            ?.addEventListener("click", () => {
                 setStep(1);
-            } else {
-                setStep(2);
-            }
-        });
+            });
 
-        document.getElementById("reset-wizard")?.addEventListener("click", () => {
-            setStep(1);
-        });
+        document
+            .getElementById("back-to-step-2")
+            ?.addEventListener("click", () => {
+                if (activeBranchHasSingleOption) {
+                    setStep(1);
+                } else {
+                    setStep(2);
+                }
+            });
+
+        document
+            .getElementById("reset-wizard")
+            ?.addEventListener("click", () => {
+                setStep(1);
+            });
 
         attachSubChipListeners();
     });
