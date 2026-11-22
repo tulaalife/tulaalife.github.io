@@ -3,7 +3,6 @@ import { guidedAudios } from "../../data/generated";
 import AudioPageTemplate from "../../components/AudioPageTemplate.astro";
 
 export async function getStaticPaths() {
-    // Only generate for English
     return guidedAudios
         .filter((a) => a.language === "en")
         .map((a) => ({

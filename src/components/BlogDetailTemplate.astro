@@ -70,7 +70,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
     ogImage={post.image}
     hasTranslation={false}
 >
-    <!-- Reading Progress Indicator Bar -->
     <div class="reading-progress"></div>
 
     <div class="content-shell">
@@ -94,7 +93,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
                 />
             </div>
 
-            <!-- Standardized to left-alignment to eliminate scrolling layout friction -->
             <div class="section-header-left article-header">
                 <h1 class="article-title section-title">{post.title}</h1>
 
@@ -133,7 +131,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
                     <a
                         href={author.websiteUrl}
                         target="_blank"
-                        rel="noopener"
+                        rel="noopener noreferrer"
                         class="author-link"
                     >
                         {author.websiteDisplay}
@@ -257,14 +255,13 @@ const primaryLabel = post.cta?.text || t.appLabel;
     .article-body {
         max-width: 62ch;
         width: 100%;
-        margin: 0 0; /* Left flush placement */
+        margin: 0;
         font-size: 1.125rem;
         line-height: 1.9;
         letter-spacing: 0.01em;
         text-align: left;
     }
 
-    /* ✨ Premium Rich Content Settings */
     .rich-text :global(p) {
         margin-bottom: 1.6em;
         color: var(--text-main);
@@ -303,7 +300,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
         font-weight: 600;
     }
 
-    /* Elegant Drop-cap setup */
     .rich-text :global(p:first-of-type::first-letter) {
         font-size: 3rem;
         float: left;
@@ -313,7 +309,6 @@ const primaryLabel = post.cta?.text || t.appLabel;
         color: var(--primary);
     }
 
-    /* Author Profile Layout Structure */
     .author-bio {
         margin-top: 56px;
         padding: 20px;
@@ -404,7 +399,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
         display: flex;
         gap: 14px;
         flex-wrap: wrap;
-        justify-content: flex-start; /* Kept clean and left aligned */
+        justify-content: flex-start;
         margin-top: 24px;
     }
 

@@ -11,13 +11,6 @@ const ui = {
         subtitle:
             "Science-backed plans for <strong>Back Pain, PCOS, Thyroid, and 30+ health needs.</strong> Reduce stress, heal naturally, and reclaim your vitality through Yoga Therapy.",
         ctaLead: "Start your free journey today",
-        socialProofs: [
-            "Science-backed yoga for 30+ health needs",
-            "100% Private: No accounts, no data mining",
-            "Guided audio for deep sleep and anxiety",
-            "Built-in trackers for cycles, moods, and fasting",
-            "Completely free. No hidden paywalls.",
-        ],
     },
     hi: {
         badge: "कोई लॉगिन नहीं • कोई विज्ञापन नहीं • 100% फ्री",
@@ -26,13 +19,6 @@ const ui = {
         subtitle:
             "<strong>कमर दर्द, PCOS, थायरॉइड</strong> और 30+ स्वास्थ्य समस्याओं के लिए वैज्ञानिक योग। प्राकृतिक रूप से स्वस्थ बनें—आपका डेटा आपके ही फोन में 100% सुरक्षित है।",
         ctaLead: "आज ही अपनी फ्री शुरुआत करें",
-        socialProofs: [
-            "30+ बीमारियों के लिए वैज्ञानिक योग प्लान",
-            "100% सुरक्षित: कोई अकाउंट या डेटा ट्रैकिंग नहीं",
-            "बेहतर नींद और तनाव-मुक्ति के लिए गाइडेड ऑडियो",
-            "पीरियड, मूड और फास्टिंग के लिए वेलनेस ट्रैकर्स",
-            "पूरी तरह फ्री। कोई छिपा हुआ शुल्क नहीं।",
-        ],
     },
 };
 
@@ -59,37 +45,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             <div class="cta-wrapper animate-on-scroll delay-2">
                 <p class="cta-lead">{t.ctaLead}</p>
                 <StoreButtons />
-
-                <!-- <div class="proof-slider">
-                    {
-                        t.socialProofs.map((proof, index) => (
-                            <p
-                                class={`social-proof-item ${index === 0 ? "active" : ""}`}
-                            >
-                                {proof}
-                            </p>
-                        ))
-                    }
-                </div> -->
             </div>
         </div>
     </div>
 </section>
-
-<script>
-    document.addEventListener("astro:page-load", () => {
-        const proofs = document.querySelectorAll(".social-proof-item");
-        let currentProof = 0;
-
-        if (proofs.length > 0) {
-            setInterval(() => {
-                proofs[currentProof].classList.remove("active");
-                currentProof = (currentProof + 1) % proofs.length;
-                proofs[currentProof].classList.add("active");
-            }, 8000);
-        }
-    });
-</script>
 
 <style>
     .hero-section {
@@ -107,7 +66,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         flex-direction: column;
     }
 
-    /* Polished Premium Pill Badge aligned to global design tokens */
     .badge-pill {
         display: inline-flex;
         padding: 6px 14px;
@@ -136,13 +94,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         color: var(--text-main);
     }
 
-    /* Enhanced contrast readability matching standard line metrics */
     .hero-sub {
         font-size: clamp(1.1rem, 2vw, 1.25rem);
         line-height: 1.65;
         color: var(--text-muted);
         margin-bottom: var(--space-lg);
-        max-width: 54ch; /* Restricts long sentences cleanly for digital reading comfort */
+        max-width: 54ch;
     }
 
     .hero-sub :global(strong) {
@@ -167,47 +124,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         margin-bottom: 2px;
     }
 
-    /* --- HIGH-PERFORMANCE PROOF SLIDER CONTAINER --- */
-    .proof-slider {
-        position: relative;
-        margin-top: var(--space-md);
-        width: 100%;
-        min-height: 2rem;
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-
-    .social-proof-item {
-        grid-area: 1 / 1 / 2 / 2;
-        text-align: left;
-        font-size: 0.95rem;
-        font-weight: 500;
-        color: var(--text-muted);
-        opacity: 0;
-        transform: translateY(
-            4px
-        ); /* Swapped blur logic out for GPU friendly offsets */
-        pointer-events: none;
-        will-change: transform, opacity;
-        transition:
-            opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        padding: 4px 0;
-        line-height: 1.4;
-    }
-
-    .social-proof-item.active {
-        opacity: 1;
-        transform: translateY(0);
-        pointer-events: auto;
-    }
-
-    :lang(hi) .social-proof-item {
-        line-height: 1.5;
-        font-size: 1rem;
-    }
-
-    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
     @media (max-height: 740px) {
         .badge-pill {
             margin-bottom: var(--space-xs);
@@ -221,9 +137,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         .hero-sub {
             font-size: 1.05rem;
             margin-bottom: var(--space-md);
-        }
-        .proof-slider {
-            margin-top: var(--space-xs);
         }
     }
 

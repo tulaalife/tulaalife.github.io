@@ -1,5 +1,4 @@
 ---
-// src/components/YogaPlanDetail.astro
 import Site from "../layouts/Site.astro";
 import CTAButton from "./CTAButton.astro";
 import type { YogaPlanPreview } from "../data/types";
@@ -52,7 +51,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 >
     <div class="content-shell">
         <article class="plan-card">
-            <!-- Back Navigation -->
             <nav class="plan-nav">
                 <a href={finalBackLink} class="back-link">
                     <svg
@@ -72,7 +70,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                 </a>
             </nav>
 
-            <!-- Hero Image -->
             <div class="image-hero">
                 <div class="image-frame">
                     <img
@@ -85,7 +82,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                 </div>
             </div>
 
-            <!-- Standardized to left-alignment structural format rules for effortless readability -->
             <div class="section-header-left plan-header">
                 <h1 class="plan-title section-title">{plan.title}</h1>
                 {
@@ -100,7 +96,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                 }
             </div>
 
-            <!-- Body -->
             <div class="plan-body">
                 {
                     plan.description && (
@@ -122,7 +117,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                 }
             </div>
 
-            <!-- Footer -->
             <footer class="plan-footer">
                 <div class="button-group">
                     <CTAButton
@@ -146,7 +140,7 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
 <style>
     .content-shell {
-        max-width: 760px; /* Aligned container geometry to match dynamic content modules */
+        max-width: 760px;
         margin: 0 auto;
         padding: 40px 24px 80px;
     }
@@ -157,7 +151,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         gap: 32px;
     }
 
-    /* --- NAV --- */
     .plan-nav {
         display: flex;
     }
@@ -177,7 +170,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         transform: translateX(-2px);
     }
 
-    /* --- HERO IMAGE --- */
     .image-hero {
         margin-top: 4px;
     }
@@ -193,8 +185,8 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
     .image-frame img {
         width: 100%;
-        aspect-ratio: 16 / 10; /* Clean cinematic look for desktop layouts */
-        max-height: 420px; /* Prevents it from scaling too massive on ultra-wide desktop monitors */
+        aspect-ratio: 16 / 10;
+        max-height: 420px;
         object-fit: cover;
         display: block;
         transition: transform 0.6s ease;
@@ -204,7 +196,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         transform: scale(1.02);
     }
 
-    /* --- TITLE SECTION --- */
     .plan-header {
         width: 100%;
         text-align: left;
@@ -220,7 +211,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         text-align: left;
     }
 
-    /* --- BODY --- */
     .plan-body {
         width: 100%;
         display: flex;
@@ -233,7 +223,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         text-align: left;
     }
 
-    /* --- BENEFITS MODULE --- */
     .benefits-module {
         background: var(--bg-sub);
         border: 1px solid var(--border);
@@ -278,7 +267,6 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         flex-shrink: 0;
     }
 
-    /* --- FOOTER / CTA --- */
     .plan-footer {
         margin-top: 16px;
         padding-top: 32px;

@@ -13,15 +13,12 @@ const { page } = Astro.props;
 const lang = "en";
 const labels = YOGA_UI.en;
 
-// --- SERVER-SIDE SORTING LOGIC ---
-// Get the goal from the URL (e.g., ?goal=medical)
 const url = new URL(Astro.request.url);
 const currentGoal = url.searchParams.get("goal");
 
 if (currentGoal && CATEGORY_MAP[currentGoal]) {
     const targetGoals = CATEGORY_MAP[currentGoal];
 
-    // Sort the existing page data so matches appear at the top of the initial HTML
     page.data.sort((a, b) => {
         const aMatch = targetGoals.some((g) => a.goals?.includes(g));
         const bMatch = targetGoals.some((g) => b.goals?.includes(g));
@@ -31,7 +28,6 @@ if (currentGoal && CATEGORY_MAP[currentGoal]) {
         return 0;
     });
 }
-// ---------------------------------
 
 const pageTitle = `${labels.title} · ${labels.metaPage} ${page.currentPage}`;
 const canonical =

@@ -1,5 +1,4 @@
 ---
-// src/layouts/Site.astro
 import FooterCard from "../components/FooterCard.astro";
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
@@ -196,7 +195,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 text-decoration: none;
             }
 
-            /* --- SCOPED SNAP SCROLLING ARCHITECTURE --- */
             html.is-landing .scroll-container {
                 height: 100dvh;
                 width: 100%;
@@ -222,7 +220,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 padding-top: var(--header-height);
             }
 
-            /* --- FALLBACK FOR NORMAL PAGES --- */
             html:not(.is-landing) .scroll-container {
                 padding-top: var(--header-height);
                 min-height: 100vh;
@@ -232,7 +229,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 padding-bottom: 40px;
             }
 
-            /* --- SCROLL DRIVEN LAYOUT ANIMATIONS --- */
             .animate-on-scroll {
                 opacity: 0;
                 transform: translateY(30px);
@@ -252,7 +248,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 transform: translateY(0);
             }
 
-            /* Header Layout Alignment Fixes */
             header {
                 position: fixed;
                 top: 0;
@@ -269,7 +264,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 align-items: center;
                 justify-content: space-between;
                 height: 100%;
-                padding: 0 24px; /* Matches layout boundaries cleanly */
+                padding: 0 24px;
             }
             .logo {
                 display: flex;
@@ -322,7 +317,6 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 background: var(--bg-sub);
             }
 
-            /* --- RE-ENGINEERED LEGAL FOOTER SYSTEM --- */
             .legal-wrapper {
                 font-family: var(--font-sans-en);
             }
@@ -345,7 +339,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 background: none;
                 border: none;
                 padding: 0;
-                font-family: inherit; /* Fixes font weight fallback inheritance */
+                font-family: inherit;
             }
 
             .legal-link:hover,

@@ -1,5 +1,4 @@
 ---
-// src/components/SectionCTA.astro
 const { href, labelEn, labelHi, class: className } = Astro.props;
 
 const currentLang = Astro.currentLocale || "en";
@@ -45,9 +44,7 @@ const getLink = (path: string) => {
         margin-top: 40px;
         padding: 14px 32px;
         background: var(--primary);
-        color: oklch(
-            100% 0 0
-        ); /* Force crisp white text on primary background fill */
+        color: oklch(100% 0 0);
         border-radius: 99px;
         font-family: var(--font-sans-en);
         font-weight: var(--fw-bold);
@@ -91,7 +88,6 @@ const getLink = (path: string) => {
         font-size: 1.05rem;
     }
 
-    /* 🌟 Smooth, high-performance specular shine sheen effect */
     .cta-shimmer {
         position: absolute;
         inset: 0;
@@ -130,7 +126,6 @@ const getLink = (path: string) => {
             transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* --- INTERACTIONS --- */
     .cta-link:hover {
         transform: translateY(-3px);
     }
@@ -153,7 +148,6 @@ const getLink = (path: string) => {
         transform: translateY(-1px) scale(0.98);
     }
 
-    /* --- RESPONSIVE OPTIMIZATIONS --- */
     @media (max-width: 768px) {
         .cta-link {
             padding: 12px 24px;

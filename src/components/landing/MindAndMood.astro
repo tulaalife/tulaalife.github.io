@@ -1,5 +1,4 @@
 ---
-// src/components/MindSection.astro
 import SectionCTA from "../SectionCTA.astro";
 import { guidedAudios } from "../../data/generated";
 
@@ -34,7 +33,6 @@ const displayAudios = guidedAudios
 
 <section class="scroll-section section-mind">
     <div class="content-wrapper">
-        <!-- 1. Pure Header Container Grid Alignment Module -->
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
                 <h2 class="section-title">
@@ -46,7 +44,6 @@ const displayAudios = guidedAudios
             </div>
         </div>
 
-        <!-- 2. Full Width Horizontal Carousel Container Track -->
         <div class="container carousel-wrapper animate-on-scroll delay-1">
             <div class="carousel-track" id="audio-plans-track">
                 {
@@ -90,7 +87,6 @@ const displayAudios = guidedAudios
             </div>
         </div>
 
-        <!-- 3. Standardised Unified Left Button Alignment Module -->
         <div class="container cta-wrapper animate-on-scroll delay-2">
             <SectionCTA
                 href={baseAudioHref}
@@ -133,13 +129,12 @@ const displayAudios = guidedAudios
     .body-text {
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        max-width: 54ch; /* Restricts layout width for premium legibility proportions */
+        max-width: 54ch;
         text-align: left;
         line-height: 1.6;
         margin-top: var(--space-xs);
     }
 
-    /* --- CAROUSEL STRUCTURE --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
@@ -198,7 +193,7 @@ const displayAudios = guidedAudios
     }
 
     .carousel-card:active {
-        transform: translateY(-2px) scale(0.98); /* Premium app-like tap bounce */
+        transform: translateY(-2px) scale(0.98);
     }
 
     .card-image {
@@ -221,7 +216,6 @@ const displayAudios = guidedAudios
         transform: scale(1.02);
     }
 
-    /* High-fidelity Glassmorphic Play button */
     .play-overlay {
         position: absolute;
         top: 50%;
@@ -257,9 +251,7 @@ const displayAudios = guidedAudios
     }
 
     .carousel-card:hover .play-icon {
-        color: oklch(
-            100% 0 0
-        ); /* Ensures flawless visual tone contrast against the color primary layer */
+        color: oklch(100% 0 0);
     }
 
     .card-content {
@@ -314,7 +306,6 @@ const displayAudios = guidedAudios
         margin-top: var(--space-xs);
     }
 
-    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
     :lang(hi) .section-title {
         line-height: 1.35;
     }
@@ -323,7 +314,6 @@ const displayAudios = guidedAudios
         min-height: calc(1.45em * 2);
     }
 
-    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
     @media (max-height: 740px) {
         .text-col {
             margin-bottom: var(--space-sm);

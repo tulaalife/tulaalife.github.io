@@ -87,7 +87,6 @@ const canonical = `/audio/${audio.slug}`;
                 </div>
             </div>
 
-            <!-- Standardized to left-alignment to keep tracking architecture consistent -->
             <div class="section-header-left audio-header">
                 <span class="tag-pill">{t.tag}</span>
                 <h1 class="audio-title section-title">{audio.title}</h1>
@@ -129,7 +128,7 @@ const canonical = `/audio/${audio.slug}`;
 
 <style>
     .content-shell {
-        max-width: 760px; /* Slimmed container parameters for optimal tracking read-lengths */
+        max-width: 760px;
         margin: 0 auto;
         padding: 40px 24px 80px;
     }
@@ -140,7 +139,6 @@ const canonical = `/audio/${audio.slug}`;
         gap: 32px;
     }
 
-    /* --- NAV --- */
     .audio-nav {
         display: flex;
     }
@@ -159,7 +157,6 @@ const canonical = `/audio/${audio.slug}`;
         transform: translateX(-2px);
     }
 
-    /* --- HERO STAGE --- */
     .image-stage {
         display: flex;
         width: 100%;
@@ -234,7 +231,6 @@ const canonical = `/audio/${audio.slug}`;
         margin-left: 2px;
     }
 
-    /* --- HEADER --- */
     .audio-header {
         width: 100%;
         display: flex;
@@ -266,7 +262,6 @@ const canonical = `/audio/${audio.slug}`;
         margin-top: 8px;
     }
 
-    /* --- BODY --- */
     .audio-body {
         width: 100%;
         text-align: left;
@@ -277,14 +272,13 @@ const canonical = `/audio/${audio.slug}`;
         text-align: left;
     }
 
-    /* --- FOOTER --- */
     .audio-footer {
         margin-top: 16px;
         padding-top: 32px;
         border-top: 1px solid var(--border);
         display: flex;
         flex-direction: column;
-        align-items: flex-start; /* Kept left aligned with layout copy flow rules */
+        align-items: flex-start;
         gap: 20px;
         text-align: left;
     }

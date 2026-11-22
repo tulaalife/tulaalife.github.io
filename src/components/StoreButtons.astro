@@ -1,10 +1,6 @@
 ---
-// src/components/StoreButtons.astro
-
-// 1. Get current language
 const currentLang = Astro.currentLocale || "en";
 
-// 2. Dynamic Dictionary
 const ui = {
     en: {
         iosSmall: "Download on",
@@ -51,7 +47,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         href={iosHref}
         class:list={["store-btn", { inverted }]}
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         aria-label={t.ariaIos}
     >
         <img
@@ -72,7 +68,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         href={androidHref}
         class:list={["store-btn", { inverted }]}
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         aria-label={t.ariaAndroid}
     >
         <img
@@ -103,15 +99,13 @@ const androidIconSrc = "/assets/icons/playstore.svg";
     }
 
     .store-btn {
-        /* Increased height to make the action prominent */
         --btn-h: 52px;
-
         height: var(--btn-h);
         border-radius: 99px;
         display: inline-flex;
         align-items: center;
         gap: 10px;
-        padding: 0 18px; /* Reduced internal side padding for a tighter fit */
+        padding: 0 18px;
         text-decoration: none;
         white-space: nowrap;
         font-family: var(--font-sans-en);
@@ -119,18 +113,14 @@ const androidIconSrc = "/assets/icons/playstore.svg";
             transform 0.14s ease,
             box-shadow 0.14s ease,
             border-color 0.2s ease;
-
-        /* Restricts layout footprint so they always fit perfectly in a single row */
         flex: 1 1 145px;
         max-width: 175px;
-
         background: linear-gradient(180deg, #121314, #0f0f10 60%);
         color: #ffffff;
         border: 1px solid rgba(255, 255, 255, 0.15);
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     }
 
-    /* Maintain distinct desktop tracking proportions */
     @media (min-width: 769px) {
         .store-btn {
             flex: initial;
@@ -140,12 +130,10 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         }
     }
 
-    /* Native script overrides */
     :global(:lang(hi)) .store-btn {
         font-family: var(--font-sans-hi);
     }
 
-    /* Inverted state for placement against contrasting card panels */
     .store-btn.inverted {
         background: linear-gradient(180deg, var(--bg-main), var(--bg-sub) 60%);
         color: var(--text-main);

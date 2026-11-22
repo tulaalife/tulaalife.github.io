@@ -1,5 +1,4 @@
 ---
-// src/components/YogaSection.astro
 import SectionCTA from "../SectionCTA.astro";
 import {
     YOGA_UI,
@@ -165,13 +164,12 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
     .body-text {
         font-size: clamp(1.05rem, 2vw, 1.2rem);
         color: var(--text-muted);
-        max-width: 54ch; /* Restricts long paragraphs for higher reading fidelity */
+        max-width: 54ch;
         text-align: left;
         line-height: 1.6;
         margin-top: var(--space-xs);
     }
 
-    /* --- FILTER NAVIGATION (CLEAN CHIPS) --- */
     .filter-container {
         display: flex;
         align-items: center;
@@ -221,7 +219,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         transform: scale(0.96);
     }
 
-    /* --- HORIZONTAL CAROUSEL --- */
     .carousel-wrapper {
         position: relative;
         width: 100%;
@@ -355,7 +352,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         margin-top: var(--space-xs);
     }
 
-    /* --- GLOBAL LOCALE OPTIMIZATIONS FOR DEVANAGARI --- */
     :lang(hi) .section-title {
         line-height: 1.35;
     }
@@ -368,7 +364,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         min-height: calc(1.45em * 2);
     }
 
-    /* --- RESPONSIVE OPTIMIZATIONS FOR SMALL HEIGHT DEVICES --- */
     @media (max-height: 740px) {
         .text-col {
             margin-bottom: var(--space-sm);

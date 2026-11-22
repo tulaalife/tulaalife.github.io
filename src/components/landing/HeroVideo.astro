@@ -144,7 +144,6 @@ const videoMp4 =
         height: 100%;
     }
 
-    /* Polished ambient backlight that dynamically adapts to themes */
     .visual-backlightstage {
         position: relative;
         display: flex;
@@ -168,12 +167,11 @@ const videoMp4 =
         pointer-events: none;
     }
 
-    /* Full-size high-fidelity hardware frame emulation */
     .phone-frame-wrapper {
         position: relative;
         z-index: 2;
         width: auto;
-        height: 72dvh; /* Retained full viewing height as requested */
+        height: 72dvh;
         max-height: 760px;
         aspect-ratio: 540 / 1174;
         background-color: var(--bg-sub);
@@ -236,7 +234,7 @@ const videoMp4 =
 
     @media (max-width: 768px) {
         .phone-frame-wrapper {
-            height: 66dvh; /* Nicely padded look for standard smartphones */
+            height: 66dvh;
             border-radius: 36px;
             border: 1px solid
                 color-mix(in srgb, var(--text-main) 10%, transparent);
