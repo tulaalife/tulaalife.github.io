@@ -542,31 +542,6 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
         <header class="site-header">
             <div class="container inner">
                 <div class="header-left">
-                    {
-                        !isLandingPage && (
-                            <a
-                                href={getLink("/")}
-                                class="header-back-btn"
-                                data-smart-back="true"
-                                aria-label={t.back}
-                            >
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    width="14"
-                                    height="14"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    stroke-width="2.2"
-                                    stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    aria-hidden="true"
-                                >
-                                    <path d="m15 18-6-6 6-6" />
-                                </svg>
-                                <span>{t.back}</span>
-                            </a>
-                        )
-                    }
                     <a href={getLink("/")} class="logo">
                         <img
                             src="/assets/icons/logo_64.webp"
@@ -949,13 +924,15 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                         } else if (/android/.test(ua) && androidUrl) {
                             window.location.href = androidUrl;
                         }
-                    } else if (scrollContainer && isLanding) {
-                        scrollContainer.scrollTo({
-                            top: 0,
-                            behavior: "smooth",
-                        });
                     } else {
-                        window.scrollTo({ top: 0, behavior: "smooth" });
+                        const footerEl =
+                            document.getElementById("sanctuary-footer");
+                        if (footerEl) {
+                            footerEl.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start",
+                            });
+                        }
                     }
                 });
             });

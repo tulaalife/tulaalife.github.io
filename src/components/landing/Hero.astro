@@ -92,21 +92,11 @@ const ui = {
         backToRegion: "← Change body area",
         backToStep2: "← Change selection",
         startOver: "Start over",
-        matchBadge: "Free Recommended Plan",
+        permanentMeta: "Beginner Safe • 3–5x / Week",
+        footerPromptPrefix: "Select an option to",
+        footerPromptHighlight: "get your free yoga plan",
         cvrNote: "100% Free in Tulaa App • No Login or Sign-Up • Zero Ads",
-        altHeader: "Also helpful:",
-        viewDetails: "Plan details →",
-        intensityMap: {
-            beginner: "Beginner Safe",
-            intermediate: "Intermediate",
-            advanced: "Advanced",
-        } as Record<string, string>,
-        freqMap: {
-            daily: "Daily • 15 Min",
-            weekly_3_5: "3–5x / Week",
-            weekly_1_2: "1–2x / Week",
-            as_needed: "As Needed",
-        } as Record<string, string>,
+        viewDetails: "View plan details →",
     },
     hi: {
         badge: "100% फ्री • बिना लॉगिन • बिना विज्ञापन",
@@ -121,21 +111,11 @@ const ui = {
         backToRegion: "← शरीर का हिस्सा बदलें",
         backToStep2: "← विकल्प बदलें",
         startOver: "फिर से चुनें",
-        matchBadge: "100% फ्री सुझाया गया प्लान",
+        permanentMeta: "शुरुआती के लिए सुरक्षित • सप्ताह में 3–5 बार",
+        footerPromptPrefix: "अपना विकल्प चुनें और",
+        footerPromptHighlight: "अपना फ्री योग प्लान पाएं",
         cvrNote: "Tulaa ऐप में 100% फ्री • बिना लॉगिन या साइन-अप • बिना विज्ञापन",
-        altHeader: "अन्य उपयोगी प्लान:",
-        viewDetails: "पूरी जानकारी →",
-        intensityMap: {
-            beginner: "शुरुआती (Beginner)",
-            intermediate: "मध्यम (Intermediate)",
-            advanced: "उन्नत (Advanced)",
-        } as Record<string, string>,
-        freqMap: {
-            daily: "प्रतिदिन • 15 मिनट",
-            weekly_3_5: "सप्ताह में 3–5 बार",
-            weekly_1_2: "सप्ताह में 1–2 बार",
-            as_needed: "आवश्यकतानुसार",
-        } as Record<string, string>,
+        viewDetails: "प्लान की जानकारी →",
     },
 };
 
@@ -162,8 +142,6 @@ const clientPlansMap: Record<
         subtitle: string;
         benefits: string[];
         image: string;
-        intensity: string;
-        frequency: string;
         href: string;
     }
 > = {};
@@ -183,12 +161,6 @@ Object.values(planById).forEach((p) => {
         subtitle: p.subtitle,
         benefits: benefitsArr,
         image: p.image,
-        intensity: p.intensity
-            ? t.intensityMap[p.intensity] || p.intensity
-            : t.intensityMap.beginner,
-        frequency: p.practiceFrequency
-            ? t.freqMap[p.practiceFrequency] || p.practiceFrequency
-            : t.freqMap.daily,
         href: `${basePlanHref}/${p.slug}`,
     };
 });
@@ -200,10 +172,6 @@ const defaultPlanIds = overrides[defaultOptionKey] || [];
 const initialPrimary = defaultPlanIds[0]
     ? clientPlansMap[defaultPlanIds[0]]
     : Object.values(clientPlansMap)[0];
-const initialAlts = defaultPlanIds
-    .slice(1, 3)
-    .map((id) => clientPlansMap[id])
-    .filter(Boolean);
 ---
 
 <section id="hero" class="scroll-section hero-conversational">
@@ -247,9 +215,9 @@ const initialAlts = defaultPlanIds
                 <span class="step-dot" data-dot="3"></span>
             </div>
 
-            <!-- STEP 1: Pick 1 of 4 Symmetrical Visual Branches -->
+            <!-- STEP 1: Pick 1 of 4 Focus Areas (Vertical List since count <= 4) -->
             <div class="wizard-step active" id="wizard-step-1">
-                <div class="branch-grid">
+                <div class="branch-list-vertical">
                     {
                         PLAN_FINDER_BRANCHES.map((branch) => (
                             <button
@@ -414,7 +382,7 @@ const initialAlts = defaultPlanIds
                 </div>
             </div>
 
-            <!-- STEP 1B: Body Region Sub-Step (2x2 Grid including Seniors & Chair Mobility) -->
+            <!-- STEP 1B: Body Region Sub-Step (Vertical List since count is 4) -->
             <div class="wizard-step" id="wizard-step-region" hidden>
                 <div class="step-topbar">
                     <button
@@ -425,7 +393,7 @@ const initialAlts = defaultPlanIds
                         {t.backToStep1}
                     </button>
                 </div>
-                <div class="branch-grid">
+                <div class="branch-list-vertical">
                     {
                         painSubGroups.map((rg) => (
                             <button
@@ -538,7 +506,7 @@ const initialAlts = defaultPlanIds
                 </div>
             </div>
 
-            <!-- STEP 2: Pick specific symptom / goal -->
+            <!-- STEP 2: Pick specific symptom / goal (Vertical if <= 4 options, 2-column grid if > 4) -->
             <div class="wizard-step" id="wizard-step-2" hidden>
                 <div class="step-topbar">
                     <button
@@ -557,14 +525,19 @@ const initialAlts = defaultPlanIds
                                 class="sub-choice-pill"
                                 data-override-key={opt.key}
                             >
-                                {currentLang === "hi" ? opt.hi : opt.en}
+                                <span>
+                                    {currentLang === "hi" ? opt.hi : opt.en}
+                                </span>
+                                <span class="pill-arrow" aria-hidden="true">
+                                    →
+                                </span>
                             </button>
                         ))
                     }
                 </div>
             </div>
 
-            <!-- STEP 3: Personalized Result Card -->
+            <!-- STEP 3: Clean, Uncluttered Personalized Result Card -->
             {
                 initialPrimary && (
                     <div class="wizard-step" id="wizard-step-3" hidden>
@@ -602,29 +575,9 @@ const initialAlts = defaultPlanIds
                             </a>
 
                             <div class="result-info">
-                                <div class="result-meta-row">
-                                    <div class="result-meta-badges">
-                                        <span class="match-inline-pill">
-                                            ✦ {t.matchBadge}
-                                        </span>
-                                        <span class="result-meta">
-                                            <span id="rec-intensity">
-                                                {initialPrimary.intensity}
-                                            </span>
-                                            <span>•</span>
-                                            <span id="rec-frequency">
-                                                {initialPrimary.frequency}
-                                            </span>
-                                        </span>
-                                    </div>
-                                    <a
-                                        href={initialPrimary.href}
-                                        id="rec-detail-link"
-                                        class="plan-guide-link"
-                                    >
-                                        {t.viewDetails}
-                                    </a>
-                                </div>
+                                <span class="permanent-meta-pill">
+                                    ✦ {t.permanentMeta}
+                                </span>
 
                                 <h2 class="result-title">
                                     <a
@@ -645,47 +598,48 @@ const initialAlts = defaultPlanIds
                                     ))}
                                 </ul>
 
-                                <div class="result-download-box">
-                                    <div class="free-cvr-banner">
-                                        <svg
-                                            viewBox="0 0 20 20"
-                                            width="14"
-                                            height="14"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2.2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            aria-hidden="true"
-                                        >
-                                            <path d="M16.5 5.5 8 14l-4.5-4.5" />
-                                        </svg>
-                                        <span>{t.cvrNote}</span>
-                                    </div>
+                                <div class="result-actions-row">
                                     <StoreButtons compact={true} />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            class="alt-suggestions"
-                            id="rec-alt-section"
-                            style={
-                                initialAlts.length === 0 ? "display: none;" : ""
-                            }
-                        >
-                            <span class="alt-label">{t.altHeader}</span>
-                            <div class="alt-pills" id="rec-alt-list">
-                                {initialAlts.map((alt) => (
-                                    <a href={alt.href} class="alt-link-pill">
-                                        {alt.title} →
+                                    <a
+                                        href={initialPrimary.href}
+                                        id="rec-detail-link"
+                                        class="plan-guide-link"
+                                    >
+                                        {t.viewDetails}
                                     </a>
-                                ))}
+                                </div>
                             </div>
                         </div>
                     </div>
                 )
             }
+
+            <!-- Card Footer Strip: Highlighted "Get your free yoga plan" on Question Steps, and "100% Free in Tulaa App" on Final Step -->
+            <div class="card-footer-strip">
+                <p class="footer-prompt-text" id="footer-question-prompt">
+                    <span class="sparkle-icon" aria-hidden="true">✦</span>
+                    <span>{t.footerPromptPrefix}</span>{" "}
+                    <strong class="text-gradient"
+                        >{t.footerPromptHighlight}</strong
+                    >
+                </p>
+                <p class="footer-cvr-text" id="footer-step3-cvr" hidden>
+                    <svg
+                        viewBox="0 0 20 20"
+                        width="14"
+                        height="14"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path d="M16.5 5.5 8 14l-4.5-4.5"></path>
+                    </svg>
+                    <span>{t.cvrNote}</span>
+                </p>
+            </div>
         </div>
     </div>
 </section>
@@ -728,6 +682,11 @@ const initialAlts = defaultPlanIds
         const backToStep2Btn = document.getElementById("back-to-step-2");
         const dots = root.querySelectorAll(".step-dot");
 
+        const footerQuestionPrompt = document.getElementById(
+            "footer-question-prompt",
+        );
+        const footerStep3Cvr = document.getElementById("footer-step3-cvr");
+
         const subOptionsContainer =
             document.getElementById("finder-sub-options");
 
@@ -741,14 +700,10 @@ const initialAlts = defaultPlanIds
             "rec-title-link",
         ) as HTMLAnchorElement | null;
         const recSubtitle = document.getElementById("rec-subtitle");
-        const recIntensity = document.getElementById("rec-intensity");
-        const recFrequency = document.getElementById("rec-frequency");
         const recBenefits = document.getElementById("rec-benefits");
         const recDetailLink = document.getElementById(
             "rec-detail-link",
         ) as HTMLAnchorElement | null;
-        const recAltSection = document.getElementById("rec-alt-section");
-        const recAltList = document.getElementById("rec-alt-list");
 
         let currentBranch: any = branches[0];
         let currentRegion: any = null;
@@ -803,6 +758,11 @@ const initialAlts = defaultPlanIds
             dots.forEach((dot, idx) => {
                 dot.classList.toggle("active", idx + 1 <= dotLevel);
             });
+
+            const isFinalStep = view === "step3";
+            if (footerQuestionPrompt)
+                footerQuestionPrompt.hidden = isFinalStep;
+            if (footerStep3Cvr) footerStep3Cvr.hidden = !isFinalStep;
 
             if (view === "step1") {
                 if (titleTopEl) titleTopEl.textContent = step1Top;
@@ -866,7 +826,6 @@ const initialAlts = defaultPlanIds
 
             currentOverrideKey = overrideKey;
             const primary = matchedPlans[0];
-            const alts = matchedPlans.slice(1, 3);
 
             if (recImg) {
                 recImg.src = primary.image;
@@ -878,8 +837,6 @@ const initialAlts = defaultPlanIds
                 recTitleLink.href = primary.href;
             }
             if (recSubtitle) recSubtitle.textContent = primary.subtitle;
-            if (recIntensity) recIntensity.textContent = primary.intensity;
-            if (recFrequency) recFrequency.textContent = primary.frequency;
             if (recDetailLink) recDetailLink.href = primary.href;
 
             if (recBenefits) {
@@ -891,34 +848,33 @@ const initialAlts = defaultPlanIds
                 });
             }
 
-            if (recAltSection && recAltList) {
-                if (alts.length === 0) {
-                    recAltSection.style.display = "none";
-                } else {
-                    recAltSection.style.display = "flex";
-                    recAltList.innerHTML = "";
-                    alts.forEach((alt) => {
-                        const a = document.createElement("a");
-                        a.href = alt.href;
-                        a.className = "alt-link-pill";
-                        a.textContent = `${alt.title} →`;
-                        recAltList.appendChild(a);
-                    });
-                }
-            }
-
             setView("step3", pushHistory);
         }
 
         function populateSubOptions(optionsList: any[]) {
             if (!subOptionsContainer) return;
             subOptionsContainer.innerHTML = "";
+            const isVertical = optionsList.length <= 4;
+            subOptionsContainer.classList.toggle("is-vertical", isVertical);
+
             optionsList.forEach((opt: any) => {
                 const pill = document.createElement("button");
                 pill.type = "button";
                 pill.className = "sub-choice-pill";
                 pill.setAttribute("data-override-key", opt.key);
-                pill.textContent = lang === "hi" ? opt.hi : opt.en;
+
+                const labelSpan = document.createElement("span");
+                labelSpan.textContent = lang === "hi" ? opt.hi : opt.en;
+                pill.appendChild(labelSpan);
+
+                if (isVertical) {
+                    const arrowSpan = document.createElement("span");
+                    arrowSpan.className = "pill-arrow";
+                    arrowSpan.setAttribute("aria-hidden", "true");
+                    arrowSpan.textContent = "→";
+                    pill.appendChild(arrowSpan);
+                }
+
                 pill.addEventListener("click", () => {
                     jumpedDirectlyFromRegion = false;
                     renderRecommendation(opt.key, true);
@@ -1084,14 +1040,14 @@ const initialAlts = defaultPlanIds
     .hero-centered-shell {
         position: relative;
         z-index: 2;
-        max-width: 760px;
+        max-width: 680px;
         width: 100%;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: clamp(0.9rem, 2.2vh, 1.45rem);
+        gap: clamp(0.85rem, 2vh, 1.35rem);
     }
 
     .hero-intro {
@@ -1099,18 +1055,18 @@ const initialAlts = defaultPlanIds
         flex-direction: column;
         align-items: center;
         gap: 8px;
-        max-width: 640px;
+        max-width: 620px;
         width: 100%;
     }
 
     .hero-title {
-        font-size: clamp(1.85rem, 4.4vw, 3.15rem);
+        font-size: clamp(1.85rem, 4.4vw, 3.1rem);
         line-height: 1.1;
         letter-spacing: -0.03em;
     }
 
     .hero-sub {
-        font-size: clamp(0.9rem, 1.5vw, 1.02rem);
+        font-size: clamp(0.88rem, 1.45vw, 1rem);
         color: var(--text-muted);
         line-height: 1.45;
     }
@@ -1125,7 +1081,7 @@ const initialAlts = defaultPlanIds
         box-sizing: border-box;
         overflow: hidden;
         border-radius: var(--radius-lg);
-        padding: clamp(1.1rem, 2.5vw, 1.75rem);
+        padding: clamp(1rem, 2.2vw, 1.6rem);
         display: flex;
         flex-direction: column;
         gap: 12px;
@@ -1158,7 +1114,7 @@ const initialAlts = defaultPlanIds
     .wizard-step {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
         width: 100%;
         min-width: 0;
         animation: fadeSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1179,10 +1135,11 @@ const initialAlts = defaultPlanIds
         }
     }
 
-    .branch-grid {
-        display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+    /* Vertical list for <= 4 options */
+    .branch-list-vertical {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
         width: 100%;
         min-width: 0;
     }
@@ -1190,8 +1147,8 @@ const initialAlts = defaultPlanIds
     .branch-choice {
         display: flex;
         align-items: center;
-        gap: 12px;
-        padding: 13px 15px;
+        gap: 13px;
+        padding: 12px 15px;
         width: 100%;
         min-width: 0;
         max-width: 100%;
@@ -1210,16 +1167,16 @@ const initialAlts = defaultPlanIds
     }
 
     .branch-choice:hover {
-        transform: translateY(-2px);
+        transform: translateY(-1px);
         background: var(--bg-card-hover);
         border-color: var(--primary);
         box-shadow: var(--shadow-sm);
     }
 
     .branch-icon-badge {
-        width: 42px;
-        height: 42px;
-        border-radius: 13px;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -1238,12 +1195,12 @@ const initialAlts = defaultPlanIds
     }
 
     .branch-choice:hover .branch-icon-badge {
-        transform: scale(1.06);
+        transform: scale(1.05);
     }
 
     .branch-icon-badge svg {
-        width: 22px;
-        height: 22px;
+        width: 21px;
+        height: 21px;
     }
 
     .branch-choice-text {
@@ -1260,7 +1217,6 @@ const initialAlts = defaultPlanIds
         font-weight: 650;
         color: var(--text-main);
         line-height: 1.25;
-        overflow-wrap: break-word;
     }
 
     .branch-desc {
@@ -1294,9 +1250,9 @@ const initialAlts = defaultPlanIds
     .reset-step-btn {
         background: none;
         border: none;
-        padding: 4px 0;
+        padding: 2px 0;
         font-family: inherit;
-        font-size: 0.84rem;
+        font-size: 0.83rem;
         font-weight: 650;
         color: var(--text-muted);
         cursor: pointer;
@@ -1310,15 +1266,20 @@ const initialAlts = defaultPlanIds
 
     .sub-pills-wrap {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 9px;
-        padding: 4px 0;
+        padding: 2px 0;
         width: 100%;
         min-width: 0;
     }
 
+    /* When count <= 4, show as a clean vertical list */
+    .sub-pills-wrap.is-vertical {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
     :global(.sub-choice-pill) {
-        padding: 11px 16px;
+        padding: 12px 16px;
         border-radius: var(--radius-md);
         background: var(--bg-card-inner);
         border: 1px solid var(--border);
@@ -1327,6 +1288,9 @@ const initialAlts = defaultPlanIds
         font-size: 0.88rem;
         font-weight: 600;
         text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         width: 100%;
         min-width: 0;
@@ -1339,18 +1303,34 @@ const initialAlts = defaultPlanIds
             box-shadow 0.16s ease;
     }
 
+    .sub-pills-wrap.is-vertical :global(.sub-choice-pill) {
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    :global(.pill-arrow) {
+        color: var(--primary);
+        font-size: 0.92rem;
+        transition: transform 0.2s ease;
+    }
+
     :global(.sub-choice-pill:hover) {
-        transform: translateY(-2px);
+        transform: translateY(-1px);
         background: var(--bg-card-hover);
         border-color: var(--primary);
         color: var(--primary);
         box-shadow: var(--shadow-sm);
     }
 
+    :global(.sub-choice-pill:hover .pill-arrow) {
+        transform: translateX(3px);
+    }
+
+    /* Step 3 Result Spotlight */
     .result-spotlight {
         display: grid;
-        grid-template-columns: 230px minmax(0, 1fr);
-        gap: 18px;
+        grid-template-columns: 220px minmax(0, 1fr);
+        gap: 20px;
         align-items: center;
         width: 100%;
         min-width: 0;
@@ -1381,52 +1361,28 @@ const initialAlts = defaultPlanIds
     .result-info {
         display: flex;
         flex-direction: column;
+        align-items: flex-start;
         gap: 6px;
         min-width: 0;
     }
 
-    .result-meta-row {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .result-meta-badges {
-        display: flex;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .match-inline-pill {
+    .permanent-meta-pill {
         display: inline-flex;
         align-items: center;
         padding: 3px 10px;
         border-radius: 999px;
         background: var(--primary-soft);
         color: var(--primary);
-        font-size: 0.7rem;
+        font-size: 0.72rem;
         font-weight: 700;
         letter-spacing: 0.03em;
         border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
     }
 
-    .result-meta {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.72rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        color: var(--text-muted);
-    }
-
     .result-title {
-        font-size: clamp(1.2rem, 2.2vw, 1.55rem);
+        font-size: clamp(1.25rem, 2.3vw, 1.6rem);
         line-height: 1.2;
+        margin-top: 2px;
     }
 
     .result-title a:hover {
@@ -1437,6 +1393,7 @@ const initialAlts = defaultPlanIds
         font-size: 0.88rem;
         color: var(--text-muted);
         margin: 0;
+        line-height: 1.4;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -1446,10 +1403,10 @@ const initialAlts = defaultPlanIds
     .result-highlights {
         list-style: none;
         padding: 0;
-        margin: 2px 0;
+        margin: 2px 0 4px;
         display: flex;
         flex-direction: column;
-        gap: 3px;
+        gap: 4px;
     }
 
     :global(.result-highlights li) {
@@ -1469,28 +1426,24 @@ const initialAlts = defaultPlanIds
         flex-shrink: 0;
     }
 
-    .result-download-box {
-        margin-top: 4px;
-        padding-top: 10px;
-        border-top: 1px solid var(--border);
+    .result-actions-row {
         display: flex;
-        flex-direction: column;
-        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 4px;
+        width: 100%;
     }
 
-    .free-cvr-banner {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: 0.78rem;
-        font-weight: 650;
-        color: var(--primary);
+    .result-actions-row :global(.store-buttons) {
+        width: auto;
     }
 
     .plan-guide-link {
-        font-size: 0.8rem;
+        font-size: 0.84rem;
         font-weight: 650;
         color: var(--primary);
+        white-space: nowrap;
     }
 
     .plan-guide-link:hover {
@@ -1498,41 +1451,46 @@ const initialAlts = defaultPlanIds
         text-underline-offset: 3px;
     }
 
-    .alt-suggestions {
+    /* Card Footer Strip */
+    .card-footer-strip {
         padding-top: 10px;
         border-top: 1px solid var(--border);
         display: flex;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 6px;
+        justify-content: center;
+        text-align: center;
     }
 
-    .alt-label {
-        font-size: 0.76rem;
+    .footer-prompt-text,
+    .footer-cvr-text {
+        margin: 0;
+        font-size: 0.81rem;
         font-weight: 600;
         color: var(--text-muted);
-    }
-
-    .alt-pills {
-        display: flex;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
         flex-wrap: wrap;
-        gap: 6px;
+        gap: 5px;
     }
 
-    :global(.alt-link-pill) {
-        font-size: 0.76rem;
-        font-weight: 600;
-        padding: 4px 10px;
-        border-radius: 999px;
-        background: var(--bg-card-inner);
-        border: 1px solid var(--border);
-        color: var(--text-main);
-        transition: all 0.2s ease;
+    .footer-prompt-text[hidden],
+    .footer-cvr-text[hidden] {
+        display: none !important;
     }
 
-    :global(.alt-link-pill:hover) {
-        border-color: var(--primary);
+    .footer-prompt-text strong {
+        font-weight: 750;
+    }
+
+    .sparkle-icon {
         color: var(--primary);
+        font-size: 0.78rem;
+    }
+
+    .footer-cvr-text {
+        color: var(--primary);
+        font-weight: 650;
     }
 
     @media (max-width: 680px) {
@@ -1553,25 +1511,24 @@ const initialAlts = defaultPlanIds
             gap: 10px;
         }
 
-        .branch-grid {
-            grid-template-columns: minmax(0, 1fr);
-            gap: 8px;
+        .branch-list-vertical {
+            gap: 7px;
         }
 
         .branch-choice {
-            padding: 11px 12px;
+            padding: 10px 12px;
             gap: 10px;
         }
 
         .branch-icon-badge {
-            width: 36px;
-            height: 36px;
+            width: 35px;
+            height: 35px;
             border-radius: 10px;
         }
 
         .branch-icon-badge svg {
-            width: 19px;
-            height: 19px;
+            width: 18px;
+            height: 18px;
         }
 
         .branch-title {
@@ -1588,8 +1545,8 @@ const initialAlts = defaultPlanIds
         }
 
         :global(.sub-choice-pill) {
-            padding: 9px 10px;
-            font-size: 0.8rem;
+            padding: 10px 12px;
+            font-size: 0.81rem;
         }
 
         .result-spotlight {
@@ -1599,11 +1556,12 @@ const initialAlts = defaultPlanIds
 
         .result-visual {
             aspect-ratio: 16 / 9;
-            max-height: 138px;
+            max-height: 140px;
         }
 
-        .free-cvr-banner {
-            font-size: 0.72rem;
+        .footer-prompt-text,
+        .footer-cvr-text {
+            font-size: 0.74rem;
         }
     }
 </style>

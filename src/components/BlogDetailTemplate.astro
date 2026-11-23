@@ -1,6 +1,7 @@
 ---
 import Site from "../layouts/Site.astro";
 import CTAButton from "./CTAButton.astro";
+import StoreButtons from "./StoreButtons.astro";
 import type { BlogPost } from "../data/types";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 
@@ -78,8 +79,9 @@ const primaryLabel = post.cta?.text || t.appLabel;
                 <a
                     href={lang === "hi" ? "/hi/blog" : "/blog"}
                     class="back-link"
+                    data-smart-back="true"
                 >
-                    ← {t.back}
+                    ← {lang === "hi" ? "वापस जाएं" : "Back"}
                 </a>
             </nav>
 
@@ -156,12 +158,7 @@ const primaryLabel = post.cta?.text || t.appLabel;
 
             <footer class="article-footer">
                 <div class="button-group">
-                    <CTAButton
-                        href={primaryLink}
-                        label={primaryLabel}
-                        variant="solid"
-                        size="md"
-                    />
+                    <StoreButtons />
                     <CTAButton
                         href={lang === "hi" ? "/hi/blog" : "/blog"}
                         label={t.browse}

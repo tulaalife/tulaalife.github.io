@@ -3,6 +3,7 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
+        singleLabel: "Download Tulaa App",
         iosSmall: "Download on",
         iosStrong: "App Store",
         androidSmall: "Get it on",
@@ -11,6 +12,7 @@ const ui = {
         ariaAndroid: "Get it on Google Play",
     },
     hi: {
+        singleLabel: "Tulaa ऐप डाउनलोड करें",
         iosSmall: "डाउनलोड करें",
         iosStrong: "App Store",
         androidSmall: "डाउनलोड करें",
@@ -26,6 +28,8 @@ interface Props {
     centered?: boolean;
     inverted?: boolean;
     compact?: boolean;
+    showBoth?: boolean;
+    label?: string;
     iosHref?: string;
     androidHref?: string;
     class?: string;
@@ -35,6 +39,8 @@ const {
     centered = false,
     inverted = false,
     compact = false,
+    showBoth = false,
+    label = t.singleLabel,
     iosHref = "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
     class: className,
@@ -44,58 +50,129 @@ const iosIconSrc = "/assets/icons/appstore.svg";
 const androidIconSrc = "/assets/icons/playstore.svg";
 ---
 
-<div class:list={["store-buttons", { centered, compact }, className]}>
-    <a
-        href={iosHref}
-        data-store="ios"
-        class:list={["store-btn", { inverted }]}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={t.ariaIos}
-    >
-        <img
-            src={iosIconSrc}
-            alt=""
-            class="store-btn__icon store-icon-ios"
-            width="20"
-            height="20"
-            aria-hidden="true"
-        />
-        <span class="store-btn__text">
-            <small>{t.iosSmall}</small>
-            <strong>{t.iosStrong}</strong>
-        </span>
-    </a>
+<div
+    class:list={[
+        "store-buttons",
+        { centered, compact, "is-dual": showBoth },
+        className,
+    ]}
+>
+    {
+        showBoth ? (
+            <>
+                <a
+                    href={iosHref}
+                    data-store="ios"
+                    class:list={["store-btn", { inverted }]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t.ariaIos}
+                >
+                    <img
+                        src={iosIconSrc}
+                        alt=""
+                        class="store-btn__icon store-icon-ios"
+                        width="20"
+                        height="20"
+                        aria-hidden="true"
+                    />
+                    <span class="store-btn__text">
+                        <small>{t.iosSmall}</small>
+                        <strong>{t.iosStrong}</strong>
+                    </span>
+                </a>
 
-    <a
-        href={androidHref}
-        data-store="android"
-        class:list={["store-btn", { inverted }]}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={t.ariaAndroid}
-    >
-        <img
-            src={androidIconSrc}
-            alt=""
-            class="store-btn__icon store-icon-android"
-            width="20"
-            height="20"
-            aria-hidden="true"
-        />
-        <span class="store-btn__text">
-            <small>{t.androidSmall}</small>
-            <strong>{t.androidStrong}</strong>
-        </span>
-    </a>
+                <a
+                    href={androidHref}
+                    data-store="android"
+                    class:list={["store-btn", { inverted }]}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={t.ariaAndroid}
+                >
+                    <img
+                        src={androidIconSrc}
+                        alt=""
+                        class="store-btn__icon store-icon-android"
+                        width="20"
+                        height="20"
+                        aria-hidden="true"
+                    />
+                    <span class="store-btn__text">
+                        <small>{t.androidSmall}</small>
+                        <strong>{t.androidStrong}</strong>
+                    </span>
+                </a>
+            </>
+        ) : (
+            <button
+                type="button"
+                class="single-download-cta"
+                data-single-download="true"
+                data-ios={iosHref}
+                data-android={androidHref}
+            >
+                <span class="cta-label">{label}</span>
+                <span class="cta-arrow" aria-hidden="true">
+                    <svg
+                        viewBox="0 0 24 24"
+                        width="15"
+                        height="15"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M5 12h14" />
+                        <path d="m12 5 7 7-7 7" />
+                    </svg>
+                </span>
+            </button>
+        )
+    }
 </div>
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        document
+            .querySelectorAll('[data-single-download="true"]')
+            .forEach((btn) => {
+                btn.addEventListener("click", () => {
+                    const ua = navigator.userAgent.toLowerCase();
+                    const iosUrl = btn.getAttribute("data-ios");
+                    const androidUrl = btn.getAttribute("data-android");
+
+                    if (/iphone|ipad|ipod/.test(ua) && iosUrl) {
+                        window.location.href = iosUrl;
+                    } else if (/android/.test(ua) && androidUrl) {
+                        window.location.href = androidUrl;
+                    } else {
+                        const footerEl =
+                            document.getElementById("sanctuary-footer");
+                        if (footerEl) {
+                            footerEl.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start",
+                            });
+                        }
+                    }
+                });
+            });
+    });
+</script>
 
 <style>
     .store-buttons {
-        display: flex;
+        display: inline-flex;
         gap: 10px;
         flex-wrap: wrap;
         align-items: center;
+        width: auto;
+    }
+
+    .store-buttons.is-dual {
+        display: flex;
         width: 100%;
     }
 
@@ -103,7 +180,63 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         justify-content: center;
     }
 
-    /* Base Primary Store Button style */
+    /* Single Smart Download CTA Button */
+    .single-download-cta {
+        --btn-h: 48px;
+        height: var(--btn-h);
+        border-radius: 99px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0 24px;
+        background: var(--primary);
+        color: #ffffff;
+        border: 1px solid color-mix(in srgb, var(--primary) 85%, #ffffff 15%);
+        box-shadow: 0 8px 20px -4px var(--primary-glow);
+        font-family: inherit;
+        font-size: 0.94rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        white-space: nowrap;
+        transition:
+            transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.2s ease,
+            background 0.2s ease;
+    }
+
+    :global([data-theme="dark"]) .single-download-cta {
+        color: oklch(14% 0.02 155);
+    }
+
+    .store-buttons.compact .single-download-cta {
+        --btn-h: 44px;
+        padding: 0 20px;
+        font-size: 0.9rem;
+    }
+
+    .single-download-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px -4px var(--primary-glow);
+    }
+
+    .single-download-cta:active {
+        transform: translateY(0);
+    }
+
+    .cta-arrow {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.2s ease;
+    }
+
+    .single-download-cta:hover .cta-arrow {
+        transform: translateX(3px);
+    }
+
+    /* Dual Store Buttons (Footer) */
     .store-btn {
         --btn-h: 48px;
         height: var(--btn-h);
@@ -156,7 +289,6 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         order: -1;
     }
 
-    /* Apple icon contrast when iOS button is secondary in light mode */
     :global(html[data-theme="light"][data-platform="android"])
         .store-btn[data-store="ios"]
         .store-icon-ios,
@@ -175,21 +307,12 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         filter: none;
     }
 
-    .store-buttons.compact .store-btn {
-        --btn-h: 44px;
-        padding: 0 16px;
-    }
-
     @media (min-width: 769px) {
         .store-btn {
             flex: initial;
             max-width: none;
             padding: 0 22px;
             --btn-h: 50px;
-        }
-        .store-buttons.compact .store-btn {
-            --btn-h: 46px;
-            padding: 0 18px;
         }
     }
 
