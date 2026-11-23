@@ -161,6 +161,14 @@ const videoMp4 =
 
         if (!wrapper || !video) return;
 
+        video.loop = true;
+        video.muted = true;
+
+        const playLoop = () => {
+            video.loop = true;
+            video.play().catch(() => {});
+        };
+
         const initVideo = () => {
             const webmSrc = wrapper.getAttribute("data-webm");
             const mp4Src = wrapper.getAttribute("data-mp4");
@@ -198,6 +206,12 @@ const videoMp4 =
                 { once: true },
             );
 
+            // Guarantee seamless restart at frame 0 if a browser ever stops at `ended`
+            video.addEventListener("ended", () => {
+                video.currentTime = 0;
+                playLoop();
+            });
+
             video.load();
             video.play().catch(() => {
                 if (loader) loader.style.display = "none";
@@ -219,8 +233,11 @@ const videoMp4 =
         observer.observe(wrapper);
 
         document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                video.play().catch(() => {});
+            if (
+                document.visibilityState === "visible" &&
+                video.readyState >= 2
+            ) {
+                playLoop();
             }
         });
     });
