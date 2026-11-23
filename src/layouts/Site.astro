@@ -369,24 +369,14 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 font-weight: 700;
                 border: none;
                 cursor: pointer;
-                opacity: 0;
-                pointer-events: none;
-                transform: translateY(-4px) scale(0.96);
                 transition:
-                    opacity 0.28s ease,
-                    transform 0.28s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
                     background-color 0.2s ease;
                 white-space: nowrap;
             }
 
             :root[data-theme="light"] .header-download-btn {
                 color: #ffffff;
-            }
-
-            .header-download-btn.visible {
-                opacity: 1;
-                pointer-events: auto;
-                transform: translateY(0) scale(1);
             }
 
             .header-download-btn:hover {
@@ -889,27 +879,7 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                         observer.observe(section);
                     });
 
-                const hero = document.getElementById("hero");
                 const dlBtn = document.getElementById("nav-download-btn");
-                if (dlBtn && hero) {
-                    const heroObserver = new IntersectionObserver(
-                        (entries) => {
-                            entries.forEach((entry) => {
-                                dlBtn.classList.toggle(
-                                    "visible",
-                                    !entry.isIntersecting,
-                                );
-                            });
-                        },
-                        {
-                            root: isLanding ? scrollContainer : null,
-                            threshold: 0.2,
-                        },
-                    );
-                    heroObserver.observe(hero);
-                } else if (dlBtn && !hero) {
-                    dlBtn.classList.add("visible");
-                }
 
                 dlBtn?.addEventListener("click", () => {
                     const ua = navigator.userAgent.toLowerCase();

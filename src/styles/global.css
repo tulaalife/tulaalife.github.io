@@ -263,3 +263,30 @@ h3,
     pointer-events: none;
     z-index: 2;
 }
+
+/* Subtle theme-harmonizing image overlay */
+.themed-media {
+    position: relative;
+}
+
+.themed-media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--primary) 7%, transparent) 0%,
+        color-mix(in srgb, var(--primary) 16%, transparent) 100%
+    );
+    pointer-events: none;
+    z-index: 2;
+    transition: opacity 0.3s ease;
+}
+
+:root[data-theme="dark"] .themed-media::after {
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--bg-main) 14%, transparent) 0%,
+        color-mix(in srgb, var(--primary) 14%, transparent) 100%
+    );
+}

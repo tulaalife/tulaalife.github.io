@@ -562,7 +562,7 @@ const initialPrimary = defaultPlanIds[0]
                             <a
                                 href={initialPrimary.href}
                                 id="rec-img-link"
-                                class="result-visual"
+                                class="result-visual themed-media"
                             >
                                 <img
                                     id="rec-img"
@@ -599,7 +599,6 @@ const initialPrimary = defaultPlanIds[0]
                                 </ul>
 
                                 <div class="result-actions-row">
-                                    <StoreButtons compact={true} />
                                     <a
                                         href={initialPrimary.href}
                                         id="rec-detail-link"
@@ -607,6 +606,7 @@ const initialPrimary = defaultPlanIds[0]
                                     >
                                         {t.viewDetails}
                                     </a>
+                                    <StoreButtons compact={true} />
                                 </div>
                             </div>
                         </div>
@@ -1185,13 +1185,6 @@ const initialPrimary = defaultPlanIds[0]
         color: var(--primary);
         border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .branch-icon-badge.icon-medical,
-    .branch-icon-badge.icon-pregnancy {
-        background: var(--accent-warm-soft);
-        color: var(--accent-warm);
-        border-color: color-mix(in srgb, var(--accent-warm) 26%, transparent);
     }
 
     .branch-choice:hover .branch-icon-badge {

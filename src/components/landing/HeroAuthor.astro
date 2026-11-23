@@ -78,7 +78,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         <div class="author-card premium-gloss-surface animate-on-scroll">
             <div class="author-top">
                 <div class="avatar-frame">
-                    <div class="avatar-ring">
+                    <div class="avatar-ring themed-media">
                         <img
                             src="/images/latika.png"
                             alt={t.name}
@@ -373,11 +373,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         transition:
             transform 0.2s ease,
             border-color 0.2s ease;
-    }
-
-    .cred-item.tone-warm {
-        --cred-color: var(--accent-warm);
-        --cred-soft: var(--accent-warm-soft);
     }
 
     .cred-item:hover {
