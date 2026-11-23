@@ -95,8 +95,7 @@ const ui = {
         permanentMeta: "Beginner Safe • 3–5x / Week",
         footerPromptPrefix: "Select an option to",
         footerPromptHighlight: "get your free yoga plan",
-        cvrNote: "100% Free in Tulaa App • No Login or Sign-Up • Zero Ads",
-        viewDetails: "View plan details →",
+        step3FooterNote: "Guided step-by-step routines in the Tulaa app",
     },
     hi: {
         badge: "100% फ्री • बिना लॉगिन • बिना विज्ञापन",
@@ -114,8 +113,7 @@ const ui = {
         permanentMeta: "शुरुआती के लिए सुरक्षित • सप्ताह में 3–5 बार",
         footerPromptPrefix: "अपना विकल्प चुनें और",
         footerPromptHighlight: "अपना फ्री योग प्लान पाएं",
-        cvrNote: "Tulaa ऐप में 100% फ्री • बिना लॉगिन या साइन-अप • बिना विज्ञापन",
-        viewDetails: "प्लान की जानकारी →",
+        step3FooterNote: "Tulaa ऐप में चरण-दर-चरण निर्देशित अभ्यास",
     },
 };
 
@@ -215,174 +213,172 @@ const initialPrimary = defaultPlanIds[0]
                 <span class="step-dot" data-dot="3"></span>
             </div>
 
-            <!-- STEP 1: Pick 1 of 4 Focus Areas (Vertical List since count <= 4) -->
+            <!-- STEP 1: Pick 1 of 4 Focus Areas -->
             <div class="wizard-step active" id="wizard-step-1">
                 <div class="branch-list-vertical">
-                    {
-                        PLAN_FINDER_BRANCHES.map((branch) => (
-                            <button
-                                type="button"
-                                class="branch-choice"
-                                data-branch-id={branch.id}
+                    {PLAN_FINDER_BRANCHES.map((branch) => (
+                        <button
+                            type="button"
+                            class="branch-choice"
+                            data-branch-id={branch.id}
+                        >
+                            <div
+                                class:list={[
+                                    "branch-icon-badge",
+                                    `icon-${branch.id}`,
+                                ]}
+                                aria-hidden="true"
                             >
-                                <div
-                                    class:list={[
-                                        "branch-icon-badge",
-                                        `icon-${branch.id}`,
-                                    ]}
-                                    aria-hidden="true"
-                                >
-                                    {branch.id === "pain" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <ellipse
-                                                cx="14"
-                                                cy="14"
-                                                rx="9"
-                                                ry="11"
-                                                fill="currentColor"
-                                                fill-opacity="0.14"
-                                            />
-                                            <path
-                                                d="M14 4v20"
-                                                stroke="currentColor"
-                                                stroke-width="2.2"
-                                                stroke-linecap="round"
-                                            />
-                                            <rect
-                                                x="8.5"
-                                                y="6.5"
-                                                width="11"
-                                                height="3"
-                                                rx="1.5"
-                                                fill="currentColor"
-                                                fill-opacity="0.32"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                            />
-                                            <rect
-                                                x="7"
-                                                y="12.5"
-                                                width="14"
-                                                height="3"
-                                                rx="1.5"
-                                                fill="currentColor"
-                                                fill-opacity="0.32"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                            />
-                                            <rect
-                                                x="9"
-                                                y="18.5"
-                                                width="10"
-                                                height="3"
-                                                rx="1.5"
-                                                fill="currentColor"
-                                                fill-opacity="0.32"
-                                                stroke="currentColor"
-                                                stroke-width="1.5"
-                                            />
-                                        </svg>
-                                    )}
-                                    {branch.id === "medical" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <path
-                                                d="M22.5 15.8c1.7-1.7 3.5-3.7 3.5-6.4A6.4 6.4 0 0 0 19.6 3c-2 0-3.5.6-5.6 2.4C11.9 3.6 10.4 3 8.4 3A6.4 6.4 0 0 0 2 9.4c0 2.7 1.8 4.7 3.5 6.4L14 24l8.5-8.2Z"
-                                                fill="currentColor"
-                                                fill-opacity="0.18"
-                                                stroke="currentColor"
-                                                stroke-width="1.9"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M5.5 13.5h4.8l1.2-2.5 2.4 5.5 2.2-7 1.5 4h4.9"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            />
-                                        </svg>
-                                    )}
-                                    {branch.id === "pregnancy" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <path
-                                                d="M14 5C17 10 17 16 14 21C11 16 11 10 14 5Z"
-                                                fill="currentColor"
-                                                fill-opacity="0.26"
-                                                stroke="currentColor"
-                                                stroke-width="1.8"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M14 21C18.5 17 22.5 16 24.5 11.5C19.5 11 16 13.5 14 21Z"
-                                                fill="currentColor"
-                                                fill-opacity="0.16"
-                                                stroke="currentColor"
-                                                stroke-width="1.8"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M14 21C9.5 17 5.5 16 3.5 11.5C8.5 11 12 13.5 14 21Z"
-                                                fill="currentColor"
-                                                fill-opacity="0.16"
-                                                stroke="currentColor"
-                                                stroke-width="1.8"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M7 23.5c4.5 1.5 9.5 1.5 14 0"
-                                                stroke="currentColor"
-                                                stroke-width="1.8"
-                                                stroke-linecap="round"
-                                            />
-                                        </svg>
-                                    )}
-                                    {branch.id === "general" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <path
-                                                d="M14.5 4.5a7.5 7.5 0 0 0 9.5 9.5 9.5 9.5 0 1 1-9.5-9.5Z"
-                                                fill="currentColor"
-                                                fill-opacity="0.22"
-                                                stroke="currentColor"
-                                                stroke-width="1.9"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M21 4v5M23.5 6.5h-5"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                            />
-                                            <circle
-                                                cx="17.5"
-                                                cy="11.5"
-                                                r="1.2"
-                                                fill="currentColor"
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
-                                <div class="branch-choice-text">
-                                    <strong class="branch-title">
-                                        {currentLang === "hi"
-                                            ? branch.hiLabel
-                                            : branch.enLabel}
-                                    </strong>
-                                    <span class="branch-desc">
-                                        {currentLang === "hi"
-                                            ? branch.hiSub
-                                            : branch.enSub}
-                                    </span>
-                                </div>
-                                <span class="branch-arrow" aria-hidden="true">
-                                    →
+                                {branch.id === "pain" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <ellipse
+                                            cx="14"
+                                            cy="14"
+                                            rx="9"
+                                            ry="11"
+                                            fill="currentColor"
+                                            fill-opacity="0.14"
+                                        />
+                                        <path
+                                            d="M14 4v20"
+                                            stroke="currentColor"
+                                            stroke-width="2.2"
+                                            stroke-linecap="round"
+                                        />
+                                        <rect
+                                            x="8.5"
+                                            y="6.5"
+                                            width="11"
+                                            height="3"
+                                            rx="1.5"
+                                            fill="currentColor"
+                                            fill-opacity="0.32"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        />
+                                        <rect
+                                            x="7"
+                                            y="12.5"
+                                            width="14"
+                                            height="3"
+                                            rx="1.5"
+                                            fill="currentColor"
+                                            fill-opacity="0.32"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        />
+                                        <rect
+                                            x="9"
+                                            y="18.5"
+                                            width="10"
+                                            height="3"
+                                            rx="1.5"
+                                            fill="currentColor"
+                                            fill-opacity="0.32"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        />
+                                    </svg>
+                                )}
+                                {branch.id === "medical" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M22.5 15.8c1.7-1.7 3.5-3.7 3.5-6.4A6.4 6.4 0 0 0 19.6 3c-2 0-3.5.6-5.6 2.4C11.9 3.6 10.4 3 8.4 3A6.4 6.4 0 0 0 2 9.4c0 2.7 1.8 4.7 3.5 6.4L14 24l8.5-8.2Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.18"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M5.5 13.5h4.8l1.2-2.5 2.4 5.5 2.2-7 1.5 4h4.9"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                )}
+                                {branch.id === "pregnancy" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M14 5C17 10 17 16 14 21C11 16 11 10 14 5Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.26"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M14 21C18.5 17 22.5 16 24.5 11.5C19.5 11 16 13.5 14 21Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M14 21C9.5 17 5.5 16 3.5 11.5C8.5 11 12 13.5 14 21Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M7 23.5c4.5 1.5 9.5 1.5 14 0"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                                {branch.id === "general" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M14.5 4.5a7.5 7.5 0 0 0 9.5 9.5 9.5 9.5 0 1 1-9.5-9.5Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.22"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M21 4v5M23.5 6.5h-5"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                        <circle
+                                            cx="17.5"
+                                            cy="11.5"
+                                            r="1.2"
+                                            fill="currentColor"
+                                        />
+                                    </svg>
+                                )}
+                            </div>
+                            <div class="branch-choice-text">
+                                <strong class="branch-title">
+                                    {currentLang === "hi"
+                                        ? branch.hiLabel
+                                        : branch.enLabel}
+                                </strong>
+                                <span class="branch-desc">
+                                    {currentLang === "hi"
+                                        ? branch.hiSub
+                                        : branch.enSub}
                                 </span>
-                            </button>
-                        ))
-                    }
+                            </div>
+                            <span class="branch-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            <!-- STEP 1B: Body Region Sub-Step (Vertical List since count is 4) -->
+            <!-- STEP 1B: Body Region Sub-Step -->
             <div class="wizard-step" id="wizard-step-region" hidden>
                 <div class="step-topbar">
                     <button
@@ -394,119 +390,112 @@ const initialPrimary = defaultPlanIds[0]
                     </button>
                 </div>
                 <div class="branch-list-vertical">
-                    {
-                        painSubGroups.map((rg) => (
-                            <button
-                                type="button"
-                                class="branch-choice region-choice"
-                                data-region-id={rg.id}
-                            >
-                                <div
-                                    class="branch-icon-badge"
-                                    aria-hidden="true"
-                                >
-                                    {rg.id === "upper_spine" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <circle
-                                                cx="14"
-                                                cy="14"
-                                                r="10"
-                                                fill="currentColor"
-                                                fill-opacity="0.16"
-                                            />
-                                            <path
-                                                d="M14 5v18M9 9h10M8 14h12M10 19h8"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                            />
-                                        </svg>
-                                    )}
-                                    {rg.id === "lower_body" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <circle
-                                                cx="14"
-                                                cy="14"
-                                                r="10"
-                                                fill="currentColor"
-                                                fill-opacity="0.16"
-                                            />
-                                            <path
-                                                d="M10 7l-1.5 7L10 22M18 7l1.5 7L18 22M10 12h8"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            />
-                                        </svg>
-                                    )}
-                                    {rg.id === "head_full" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <circle
-                                                cx="14"
-                                                cy="14"
-                                                r="10"
-                                                fill="currentColor"
-                                                fill-opacity="0.16"
-                                            />
-                                            <circle
-                                                cx="14"
-                                                cy="10"
-                                                r="3.2"
-                                                fill="currentColor"
-                                                fill-opacity="0.3"
-                                                stroke="currentColor"
-                                                stroke-width="1.8"
-                                            />
-                                            <path
-                                                d="M8 20c1.5-3 4-4 6-4s4.5 1 6 4"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                            />
-                                        </svg>
-                                    )}
-                                    {rg.id === "senior_chair" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <path
-                                                d="M13 22.5A8 8 0 0 1 11.5 6.8C18 5.5 19.8 4.8 22 2c1.2 2.3 2.3 4.8 2.3 9.2 0 6.3-5.4 11.3-11.3 11.3Z"
-                                                fill="currentColor"
-                                                fill-opacity="0.22"
-                                                stroke="currentColor"
-                                                stroke-width="1.9"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M3.5 23.5c0-3.5 2.1-6.2 5.8-6.9 3-.6 5.8-2.3 7-3.5"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
-                                <div class="branch-choice-text">
-                                    <strong class="branch-title">
-                                        {currentLang === "hi"
-                                            ? rg.hiLabel
-                                            : rg.enLabel}
-                                    </strong>
-                                    <span class="branch-desc">
-                                        {currentLang === "hi"
-                                            ? rg.hiSub
-                                            : rg.enSub}
-                                    </span>
-                                </div>
-                                <span class="branch-arrow" aria-hidden="true">
-                                    →
+                    {painSubGroups.map((rg) => (
+                        <button
+                            type="button"
+                            class="branch-choice region-choice"
+                            data-region-id={rg.id}
+                        >
+                            <div class="branch-icon-badge" aria-hidden="true">
+                                {rg.id === "upper_spine" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                        />
+                                        <path
+                                            d="M14 5v18M9 9h10M8 14h12M10 19h8"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                                {rg.id === "lower_body" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                        />
+                                        <path
+                                            d="M10 7l-1.5 7L10 22M18 7l1.5 7L18 22M10 12h8"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                )}
+                                {rg.id === "head_full" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                        />
+                                        <circle
+                                            cx="14"
+                                            cy="10"
+                                            r="3.2"
+                                            fill="currentColor"
+                                            fill-opacity="0.3"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                        />
+                                        <path
+                                            d="M8 20c1.5-3 4-4 6-4s4.5 1 6 4"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                                {rg.id === "senior_chair" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M13 22.5A8 8 0 0 1 11.5 6.8C18 5.5 19.8 4.8 22 2c1.2 2.3 2.3 4.8 2.3 9.2 0 6.3-5.4 11.3-11.3 11.3Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.22"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M3.5 23.5c0-3.5 2.1-6.2 5.8-6.9 3-.6 5.8-2.3 7-3.5"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                            </div>
+                            <div class="branch-choice-text">
+                                <strong class="branch-title">
+                                    {currentLang === "hi"
+                                        ? rg.hiLabel
+                                        : rg.enLabel}
+                                </strong>
+                                <span class="branch-desc">
+                                    {currentLang === "hi" ? rg.hiSub : rg.enSub}
                                 </span>
-                            </button>
-                        ))
-                    }
+                            </div>
+                            <span class="branch-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            <!-- STEP 2: Pick specific symptom / goal (Vertical if <= 4 options, 2-column grid if > 4) -->
+            <!-- STEP 2: Pick specific symptom / goal -->
             <div class="wizard-step" id="wizard-step-2" hidden>
                 <div class="step-topbar">
                     <button
@@ -518,126 +507,95 @@ const initialPrimary = defaultPlanIds[0]
                     </button>
                 </div>
                 <div class="sub-pills-wrap" id="finder-sub-options">
-                    {
-                        defaultBranch.options.slice(0, 6).map((opt) => (
-                            <button
-                                type="button"
-                                class="sub-choice-pill"
-                                data-override-key={opt.key}
-                            >
-                                <span>
-                                    {currentLang === "hi" ? opt.hi : opt.en}
-                                </span>
-                                <span class="pill-arrow" aria-hidden="true">
-                                    →
-                                </span>
-                            </button>
-                        ))
-                    }
+                    {defaultBranch.options.slice(0, 6).map((opt) => (
+                        <button
+                            type="button"
+                            class="sub-choice-pill"
+                            data-override-key={opt.key}
+                        >
+                            <span>
+                                {currentLang === "hi" ? opt.hi : opt.en}
+                            </span>
+                            <span class="pill-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            <!-- STEP 3: Clean, Uncluttered Personalized Result Card -->
-            {
-                initialPrimary && (
-                    <div class="wizard-step" id="wizard-step-3" hidden>
-                        <div class="step-topbar">
-                            <button
-                                type="button"
-                                class="back-step-btn"
-                                id="back-to-step-2"
-                            >
-                                {t.backToStep2}
-                            </button>
-                            <button
-                                type="button"
-                                class="reset-step-btn"
-                                id="reset-wizard"
-                            >
-                                {t.startOver}
-                            </button>
+            <!-- STEP 3: Clean Personalized Result Card -->
+            {initialPrimary && (
+                <div class="wizard-step" id="wizard-step-3" hidden>
+                    <div class="step-topbar">
+                        <button
+                            type="button"
+                            class="back-step-btn"
+                            id="back-to-step-2"
+                        >
+                            {t.backToStep2}
+                        </button>
+                        <button
+                            type="button"
+                            class="reset-step-btn"
+                            id="reset-wizard"
+                        >
+                            {t.startOver}
+                        </button>
+                    </div>
+
+                    <div class="result-spotlight">
+                        <div class="result-visual themed-media">
+                            <img
+                                id="rec-img"
+                                src={initialPrimary.image}
+                                alt={initialPrimary.title}
+                                width="520"
+                                height="320"
+                                loading="eager"
+                            />
                         </div>
 
-                        <div class="result-spotlight">
-                            <a
-                                href={initialPrimary.href}
-                                id="rec-img-link"
-                                class="result-visual themed-media"
-                            >
-                                <img
-                                    id="rec-img"
-                                    src={initialPrimary.image}
-                                    alt={initialPrimary.title}
-                                    width="520"
-                                    height="320"
-                                    loading="eager"
-                                />
-                            </a>
+                        <div class="result-info">
+                            <span class="permanent-meta-pill">
+                                ✦ {t.permanentMeta}
+                            </span>
 
-                            <div class="result-info">
-                                <span class="permanent-meta-pill">
-                                    ✦ {t.permanentMeta}
-                                </span>
+                            <h2 class="result-title" id="rec-title">
+                                {initialPrimary.title}
+                            </h2>
 
-                                <h2 class="result-title">
-                                    <a
-                                        href={initialPrimary.href}
-                                        id="rec-title-link"
-                                    >
-                                        {initialPrimary.title}
-                                    </a>
-                                </h2>
+                            <p class="result-subtitle" id="rec-subtitle">
+                                {initialPrimary.subtitle}
+                            </p>
 
-                                <p class="result-subtitle" id="rec-subtitle">
-                                    {initialPrimary.subtitle}
-                                </p>
+                            <ul class="result-highlights" id="rec-benefits">
+                                {initialPrimary.benefits.map((b) => (
+                                    <li>{b}</li>
+                                ))}
+                            </ul>
 
-                                <ul class="result-highlights" id="rec-benefits">
-                                    {initialPrimary.benefits.map((b) => (
-                                        <li>{b}</li>
-                                    ))}
-                                </ul>
-
-                                <div class="result-actions-row">
-                                    <a
-                                        href={initialPrimary.href}
-                                        id="rec-detail-link"
-                                        class="plan-guide-link"
-                                    >
-                                        {t.viewDetails}
-                                    </a>
-                                    <StoreButtons compact={true} />
-                                </div>
+                            <div class="result-actions-row">
+                                <StoreButtons compact={true} />
                             </div>
                         </div>
                     </div>
-                )
-            }
+                </div>
+            )}
 
-            <!-- Card Footer Strip: Highlighted "Get your free yoga plan" on Question Steps, and "100% Free in Tulaa App" on Final Step -->
+            <!-- Card Footer Strip -->
             <div class="card-footer-strip">
                 <p class="footer-prompt-text" id="footer-question-prompt">
-                    <span class="sparkle-icon" aria-hidden="true">✦</span>
+                    <span class="sparkle-icon" aria-hidden="true">
+                        ✦
+                    </span>
                     <span>{t.footerPromptPrefix}</span>{" "}
-                    <strong class="text-gradient"
-                        >{t.footerPromptHighlight}</strong
-                    >
+                    <strong class="text-gradient">
+                        {t.footerPromptHighlight}
+                    </strong>
                 </p>
-                <p class="footer-cvr-text" id="footer-step3-cvr" hidden>
-                    <svg
-                        viewBox="0 0 20 20"
-                        width="14"
-                        height="14"
-                        fill="none"
-                        stroke="currentColor"
-                        stroke-width="2.3"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        aria-hidden="true"
-                    >
-                        <path d="M16.5 5.5 8 14l-4.5-4.5"></path>
-                    </svg>
-                    <span>{t.cvrNote}</span>
+                <p class="footer-step3-text" id="footer-step3-note" hidden>
+                    <span>{t.step3FooterNote}</span>
                 </p>
             </div>
         </div>
@@ -685,7 +643,7 @@ const initialPrimary = defaultPlanIds[0]
         const footerQuestionPrompt = document.getElementById(
             "footer-question-prompt",
         );
-        const footerStep3Cvr = document.getElementById("footer-step3-cvr");
+        const footerStep3Note = document.getElementById("footer-step3-note");
 
         const subOptionsContainer =
             document.getElementById("finder-sub-options");
@@ -693,17 +651,9 @@ const initialPrimary = defaultPlanIds[0]
         const recImg = document.getElementById(
             "rec-img",
         ) as HTMLImageElement | null;
-        const recImgLink = document.getElementById(
-            "rec-img-link",
-        ) as HTMLAnchorElement | null;
-        const recTitleLink = document.getElementById(
-            "rec-title-link",
-        ) as HTMLAnchorElement | null;
+        const recTitle = document.getElementById("rec-title");
         const recSubtitle = document.getElementById("rec-subtitle");
         const recBenefits = document.getElementById("rec-benefits");
-        const recDetailLink = document.getElementById(
-            "rec-detail-link",
-        ) as HTMLAnchorElement | null;
 
         let currentBranch: any = branches[0];
         let currentRegion: any = null;
@@ -760,9 +710,8 @@ const initialPrimary = defaultPlanIds[0]
             });
 
             const isFinalStep = view === "step3";
-            if (footerQuestionPrompt)
-                footerQuestionPrompt.hidden = isFinalStep;
-            if (footerStep3Cvr) footerStep3Cvr.hidden = !isFinalStep;
+            if (footerQuestionPrompt) footerQuestionPrompt.hidden = isFinalStep;
+            if (footerStep3Note) footerStep3Note.hidden = !isFinalStep;
 
             if (view === "step1") {
                 if (titleTopEl) titleTopEl.textContent = step1Top;
@@ -816,10 +765,7 @@ const initialPrimary = defaultPlanIds[0]
             saveFinderState(view, pushHistory);
         }
 
-        function renderRecommendation(
-            overrideKey: string,
-            pushHistory = true,
-        ) {
+        function renderRecommendation(overrideKey: string, pushHistory = true) {
             const planIds: string[] = overrides[overrideKey] || [];
             const matchedPlans = planIds.map((id) => plans[id]).filter(Boolean);
             if (matchedPlans.length === 0) return;
@@ -831,13 +777,10 @@ const initialPrimary = defaultPlanIds[0]
                 recImg.src = primary.image;
                 recImg.alt = primary.title;
             }
-            if (recImgLink) recImgLink.href = primary.href;
-            if (recTitleLink) {
-                recTitleLink.textContent = primary.title;
-                recTitleLink.href = primary.href;
+            if (recTitle) {
+                recTitle.textContent = primary.title;
             }
             if (recSubtitle) recSubtitle.textContent = primary.subtitle;
-            if (recDetailLink) recDetailLink.href = primary.href;
 
             if (recBenefits) {
                 recBenefits.innerHTML = "";
@@ -913,27 +856,27 @@ const initialPrimary = defaultPlanIds[0]
             }
         }
 
-        root.querySelectorAll(
-            "#wizard-step-1 .branch-choice",
-        ).forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const branchId = btn.getAttribute("data-branch-id");
-                const branch = branches.find((b: any) => b.id === branchId);
-                if (!branch) return;
+        root.querySelectorAll("#wizard-step-1 .branch-choice").forEach(
+            (btn) => {
+                btn.addEventListener("click", () => {
+                    const branchId = btn.getAttribute("data-branch-id");
+                    const branch = branches.find((b: any) => b.id === branchId);
+                    if (!branch) return;
 
-                currentBranch = branch;
-                currentRegion = null;
-                jumpedDirectlyFromRegion = false;
+                    currentBranch = branch;
+                    currentRegion = null;
+                    jumpedDirectlyFromRegion = false;
 
-                if (branch.id === "pain") {
-                    setView("region", true);
-                    return;
-                }
+                    if (branch.id === "pain") {
+                        setView("region", true);
+                        return;
+                    }
 
-                populateSubOptions(branch.options);
-                setView("step2", true);
-            });
-        });
+                    populateSubOptions(branch.options);
+                    setView("step2", true);
+                });
+            },
+        );
 
         root.querySelectorAll(".region-choice").forEach((btn) => {
             btn.addEventListener("click", () => {
@@ -994,7 +937,6 @@ const initialPrimary = defaultPlanIds[0]
             }
         });
 
-        // Restore previous wizard state if user navigated back from a Plan Detail page
         try {
             const raw = sessionStorage.getItem(STORAGE_KEY);
             if (raw) {
@@ -1040,14 +982,14 @@ const initialPrimary = defaultPlanIds[0]
     .hero-centered-shell {
         position: relative;
         z-index: 2;
-        max-width: 680px;
+        max-width: 780px;
         width: 100%;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: clamp(0.85rem, 2vh, 1.35rem);
+        gap: clamp(1rem, 2.4vh, 1.65rem);
     }
 
     .hero-intro {
@@ -1055,20 +997,20 @@ const initialPrimary = defaultPlanIds[0]
         flex-direction: column;
         align-items: center;
         gap: 8px;
-        max-width: 620px;
+        max-width: 640px;
         width: 100%;
     }
 
     .hero-title {
-        font-size: clamp(1.85rem, 4.4vw, 3.1rem);
+        font-size: clamp(1.85rem, 4.4vw, 3.15rem);
         line-height: 1.1;
         letter-spacing: -0.03em;
     }
 
     .hero-sub {
-        font-size: clamp(0.88rem, 1.45vw, 1rem);
+        font-size: clamp(0.92rem, 1.5vw, 1.04rem);
         color: var(--text-muted);
-        line-height: 1.45;
+        line-height: 1.5;
     }
 
     .hero-sub[hidden] {
@@ -1081,14 +1023,13 @@ const initialPrimary = defaultPlanIds[0]
         box-sizing: border-box;
         overflow: hidden;
         border-radius: var(--radius-lg);
-        padding: clamp(1rem, 2.2vw, 1.6rem);
+        padding: clamp(1.25rem, 2.8vw, 2rem);
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 16px;
         text-align: left;
     }
 
-    /* Ultra-subtle Step Indicator Dots */
     .step-dots {
         display: flex;
         align-items: center;
@@ -1114,7 +1055,7 @@ const initialPrimary = defaultPlanIds[0]
     .wizard-step {
         display: flex;
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
         width: 100%;
         min-width: 0;
         animation: fadeSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
@@ -1135,11 +1076,10 @@ const initialPrimary = defaultPlanIds[0]
         }
     }
 
-    /* Vertical list for <= 4 options */
     .branch-list-vertical {
         display: flex;
         flex-direction: column;
-        gap: 9px;
+        gap: 11px;
         width: 100%;
         min-width: 0;
     }
@@ -1147,8 +1087,8 @@ const initialPrimary = defaultPlanIds[0]
     .branch-choice {
         display: flex;
         align-items: center;
-        gap: 13px;
-        padding: 12px 15px;
+        gap: 14px;
+        padding: 13px 16px;
         width: 100%;
         min-width: 0;
         max-width: 100%;
@@ -1174,8 +1114,8 @@ const initialPrimary = defaultPlanIds[0]
     }
 
     .branch-icon-badge {
-        width: 40px;
-        height: 40px;
+        width: 42px;
+        height: 42px;
         border-radius: 12px;
         display: flex;
         align-items: center;
@@ -1206,16 +1146,16 @@ const initialPrimary = defaultPlanIds[0]
     }
 
     .branch-title {
-        font-size: 0.94rem;
+        font-size: 0.98rem;
         font-weight: 650;
         color: var(--text-main);
         line-height: 1.25;
     }
 
     .branch-desc {
-        font-size: 0.78rem;
+        font-size: 0.81rem;
         color: var(--text-muted);
-        line-height: 1.3;
+        line-height: 1.35;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
@@ -1237,6 +1177,7 @@ const initialPrimary = defaultPlanIds[0]
         display: flex;
         align-items: center;
         justify-content: space-between;
+        gap: 8px;
     }
 
     .back-step-btn,
@@ -1245,7 +1186,7 @@ const initialPrimary = defaultPlanIds[0]
         border: none;
         padding: 2px 0;
         font-family: inherit;
-        font-size: 0.83rem;
+        font-size: 0.86rem;
         font-weight: 650;
         color: var(--text-muted);
         cursor: pointer;
@@ -1260,25 +1201,24 @@ const initialPrimary = defaultPlanIds[0]
     .sub-pills-wrap {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 9px;
+        gap: 10px;
         padding: 2px 0;
         width: 100%;
         min-width: 0;
     }
 
-    /* When count <= 4, show as a clean vertical list */
     .sub-pills-wrap.is-vertical {
         grid-template-columns: minmax(0, 1fr);
     }
 
     :global(.sub-choice-pill) {
-        padding: 12px 16px;
+        padding: 13px 16px;
         border-radius: var(--radius-md);
         background: var(--bg-card-inner);
         border: 1px solid var(--border);
         color: var(--text-main);
         font-family: inherit;
-        font-size: 0.88rem;
+        font-size: 0.92rem;
         font-weight: 600;
         text-align: center;
         display: flex;
@@ -1322,20 +1262,26 @@ const initialPrimary = defaultPlanIds[0]
     /* Step 3 Result Spotlight */
     .result-spotlight {
         display: grid;
-        grid-template-columns: 220px minmax(0, 1fr);
-        gap: 20px;
+        grid-template-columns: 245px minmax(0, 1fr);
+        gap: 24px;
         align-items: center;
+        padding: 18px;
+        border-radius: var(--radius-md);
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border);
         width: 100%;
         min-width: 0;
+        box-sizing: border-box;
     }
 
     .result-visual {
         position: relative;
         display: block;
-        border-radius: var(--radius-md);
+        width: 100%;
+        border-radius: 14px;
         overflow: hidden;
         aspect-ratio: 16 / 10;
-        border: 1px solid var(--border);
+        border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
         background: var(--bg-sub);
     }
 
@@ -1344,49 +1290,43 @@ const initialPrimary = defaultPlanIds[0]
         height: 100%;
         object-fit: cover;
         display: block;
-        transition: transform 0.4s ease;
-    }
-
-    .result-visual:hover img {
-        transform: scale(1.03);
     }
 
     .result-info {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 6px;
+        gap: 8px;
         min-width: 0;
     }
 
     .permanent-meta-pill {
         display: inline-flex;
         align-items: center;
-        padding: 3px 10px;
+        padding: 4px 11px;
         border-radius: 999px;
         background: var(--primary-soft);
         color: var(--primary);
-        font-size: 0.72rem;
+        font-size: 0.78rem;
         font-weight: 700;
-        letter-spacing: 0.03em;
+        letter-spacing: 0.02em;
         border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
     }
 
     .result-title {
-        font-size: clamp(1.25rem, 2.3vw, 1.6rem);
-        line-height: 1.2;
-        margin-top: 2px;
-    }
-
-    .result-title a:hover {
-        color: var(--primary);
+        font-size: clamp(1.38rem, 2.5vw, 1.8rem);
+        font-weight: 750;
+        letter-spacing: -0.02em;
+        line-height: 1.18;
+        color: var(--text-main);
+        margin: 0;
     }
 
     .result-subtitle {
-        font-size: 0.88rem;
+        font-size: 0.96rem;
         color: var(--text-muted);
         margin: 0;
-        line-height: 1.4;
+        line-height: 1.45;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
@@ -1396,25 +1336,26 @@ const initialPrimary = defaultPlanIds[0]
     .result-highlights {
         list-style: none;
         padding: 0;
-        margin: 2px 0 4px;
+        margin: 2px 0;
         display: flex;
         flex-direction: column;
-        gap: 4px;
+        gap: 6px;
     }
 
     :global(.result-highlights li) {
-        font-size: 0.83rem;
+        font-size: 0.91rem;
+        font-weight: 550;
         color: var(--text-main);
         display: flex;
         align-items: flex-start;
-        gap: 6px;
-        line-height: 1.35;
+        gap: 7px;
+        line-height: 1.38;
     }
 
     :global(.result-highlights li::before) {
         content: "✦";
         color: var(--primary);
-        font-size: 0.72rem;
+        font-size: 0.78rem;
         margin-top: 2px;
         flex-shrink: 0;
     }
@@ -1423,8 +1364,8 @@ const initialPrimary = defaultPlanIds[0]
         display: flex;
         align-items: center;
         flex-wrap: wrap;
-        gap: 14px;
-        margin-top: 4px;
+        gap: 12px;
+        margin-top: 6px;
         width: 100%;
     }
 
@@ -1432,21 +1373,9 @@ const initialPrimary = defaultPlanIds[0]
         width: auto;
     }
 
-    .plan-guide-link {
-        font-size: 0.84rem;
-        font-weight: 650;
-        color: var(--primary);
-        white-space: nowrap;
-    }
-
-    .plan-guide-link:hover {
-        text-decoration: underline;
-        text-underline-offset: 3px;
-    }
-
     /* Card Footer Strip */
     .card-footer-strip {
-        padding-top: 10px;
+        padding-top: 12px;
         border-top: 1px solid var(--border);
         display: flex;
         align-items: center;
@@ -1455,9 +1384,9 @@ const initialPrimary = defaultPlanIds[0]
     }
 
     .footer-prompt-text,
-    .footer-cvr-text {
+    .footer-step3-text {
         margin: 0;
-        font-size: 0.81rem;
+        font-size: 0.85rem;
         font-weight: 600;
         color: var(--text-muted);
         display: inline-flex;
@@ -1465,10 +1394,11 @@ const initialPrimary = defaultPlanIds[0]
         justify-content: center;
         flex-wrap: wrap;
         gap: 5px;
+        line-height: 1.35;
     }
 
     .footer-prompt-text[hidden],
-    .footer-cvr-text[hidden] {
+    .footer-step3-text[hidden] {
         display: none !important;
     }
 
@@ -1478,34 +1408,36 @@ const initialPrimary = defaultPlanIds[0]
 
     .sparkle-icon {
         color: var(--primary);
-        font-size: 0.78rem;
-    }
-
-    .footer-cvr-text {
-        color: var(--primary);
-        font-weight: 650;
+        font-size: 0.8rem;
     }
 
     @media (max-width: 680px) {
         .hero-centered-shell {
-            gap: 0.65rem;
+            gap: 0.7rem;
         }
 
         .hero-title {
-            font-size: clamp(1.55rem, 6.2vw, 2.1rem);
+            font-size: clamp(1.5rem, 5.8vw, 1.95rem);
+            line-height: 1.12;
         }
 
         .hero-sub {
-            font-size: 0.84rem;
+            font-size: 0.85rem;
+            line-height: 1.4;
         }
 
         .dialogue-card {
-            padding: 12px;
+            padding: 14px 12px;
+            gap: 10px;
+            border-radius: 20px;
+        }
+
+        .wizard-step {
             gap: 10px;
         }
 
         .branch-list-vertical {
-            gap: 7px;
+            gap: 8px;
         }
 
         .branch-choice {
@@ -1514,8 +1446,8 @@ const initialPrimary = defaultPlanIds[0]
         }
 
         .branch-icon-badge {
-            width: 35px;
-            height: 35px;
+            width: 36px;
+            height: 36px;
             border-radius: 10px;
         }
 
@@ -1525,36 +1457,84 @@ const initialPrimary = defaultPlanIds[0]
         }
 
         .branch-title {
-            font-size: 0.88rem;
+            font-size: 0.92rem;
         }
 
         .branch-desc {
-            font-size: 0.74rem;
+            font-size: 0.76rem;
         }
 
         .sub-pills-wrap {
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 7px;
+            gap: 8px;
         }
 
         :global(.sub-choice-pill) {
             padding: 10px 12px;
-            font-size: 0.81rem;
+            font-size: 0.85rem;
         }
 
+        /* Clean single-column stack on mobile with un-squished full-width 16:10 image */
         .result-spotlight {
             grid-template-columns: minmax(0, 1fr);
-            gap: 10px;
+            gap: 12px;
+            padding: 12px;
+            align-items: stretch;
         }
 
         .result-visual {
-            aspect-ratio: 16 / 9;
-            max-height: 140px;
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            max-height: none;
+            border-radius: 12px;
+        }
+
+        .result-info {
+            align-items: flex-start;
+            text-align: left;
+            gap: 6px;
+        }
+
+        .permanent-meta-pill {
+            padding: 3px 10px;
+            font-size: 0.75rem;
+        }
+
+        .result-title {
+            font-size: 1.32rem;
+            line-height: 1.2;
+        }
+
+        .result-subtitle {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .result-highlights {
+            gap: 4px;
+            margin: 2px 0;
+        }
+
+        :global(.result-highlights li) {
+            font-size: 0.86rem;
+            line-height: 1.35;
+        }
+
+        .result-actions-row {
+            margin-top: 4px;
+        }
+
+        .result-actions-row :global(.store-buttons) {
+            width: 100%;
+        }
+
+        .card-footer-strip {
+            padding-top: 10px;
         }
 
         .footer-prompt-text,
-        .footer-cvr-text {
-            font-size: 0.74rem;
+        .footer-step3-text {
+            font-size: 0.78rem;
         }
     }
 </style>
