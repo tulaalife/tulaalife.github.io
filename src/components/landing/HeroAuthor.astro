@@ -1,0 +1,457 @@
+---
+const currentLang = Astro.currentLocale || "en";
+
+const ui = {
+    en: {
+        badge: "Meet Your Yoga Therapist",
+        role: "Founder of Tulaa & YogaWithLatika",
+        name: "Latika Bissa",
+        bio: "Every routine in Tulaa is clinically designed by Latika to help you relieve pain, balance hormones, and restore calm—safely at home.",
+        siteLabel: "yogawithlatika.com",
+        creds: [
+            {
+                metric: "Gold Medalist",
+                label: "M.Sc. in Yoga Therapy",
+                icon: "medal",
+            },
+            {
+                metric: "12+ Years",
+                label: "Clinical Therapy Experience",
+                icon: "exp",
+            },
+            {
+                metric: "50 Lakh+ Views",
+                label: "★ 5.0 Rated on Google",
+                icon: "star",
+            },
+            {
+                metric: "Specialist",
+                label: "Pain, PCOS & Prenatal Care",
+                icon: "heart",
+            },
+        ],
+    },
+    hi: {
+        badge: "आपकी योग थेरेपिस्ट से मिलें",
+        role: "संस्थापक — Tulaa और YogaWithLatika",
+        name: "लतिका बिस्सा",
+        bio: "Tulaa का हर योग प्लान लतिका द्वारा वैज्ञानिक रूप से तैयार किया गया है, ताकि आप घर बैठे दर्द, हार्मोनल असंतुलन और तनाव से सुरक्षित राहत पा सकें।",
+        siteLabel: "yogawithlatika.com",
+        creds: [
+            {
+                metric: "स्वर्ण पदक विजेता",
+                label: "M.Sc. योग थेरेपी",
+                icon: "medal",
+            },
+            {
+                metric: "12+ वर्ष अनुभव",
+                label: "क्लिनिकल योग चिकित्सा",
+                icon: "exp",
+            },
+            {
+                metric: "50 लाख+ व्यूज़",
+                label: "★ 5.0 गूगल रेटिंग",
+                icon: "star",
+            },
+            {
+                metric: "विशेषज्ञता",
+                label: "दर्द निवारण, PCOS व प्रेगनेंसी",
+                icon: "heart",
+            },
+        ],
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+---
+
+<section id="therapist" class="scroll-section author-section">
+    <div class="container author-shell">
+        <div class="author-card premium-gloss-surface animate-on-scroll">
+            <div class="author-glow" aria-hidden="true"></div>
+
+            <div class="author-top">
+                <div class="avatar-frame">
+                    <div class="avatar-ring">
+                        <img
+                            src="/images/latika.png"
+                            alt={t.name}
+                            width="140"
+                            height="140"
+                            loading="lazy"
+                            decoding="async"
+                        />
+                    </div>
+                </div>
+
+                <div class="author-intro">
+                    <span class="badge-small">{t.badge}</span>
+                    <h2 class="author-name">
+                        {t.name}
+                    </h2>
+                    <p class="author-role">{t.role}</p>
+                    <p class="author-bio body-text">{t.bio}</p>
+
+                    <a
+                        href="https://yogawithlatika.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="author-website-pill"
+                    >
+                        <svg
+                            viewBox="0 0 24 24"
+                            width="14"
+                            height="14"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            aria-hidden="true"
+                        >
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path
+                                d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"
+                            ></path>
+                            <path d="M2 12h20"></path>
+                        </svg>
+                        <span>{t.siteLabel}</span>
+                        <span class="ext-arrow" aria-hidden="true">↗</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="creds-grid">
+                {
+                    t.creds.map((c) => (
+                        <div class="cred-item">
+                            <div class="cred-icon" aria-hidden="true">
+                                {c.icon === "medal" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <circle cx="12" cy="8" r="6" />
+                                        <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+                                    </svg>
+                                )}
+                                {c.icon === "exp" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M12 2v20" />
+                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                    </svg>
+                                )}
+                                {c.icon === "star" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    </svg>
+                                )}
+                                {c.icon === "heart" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                    </svg>
+                                )}
+                            </div>
+                            <div class="cred-copy">
+                                <strong class="cred-metric">{c.metric}</strong>
+                                <span class="cred-label">{c.label}</span>
+                            </div>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .author-section {
+        width: 100%;
+    }
+
+    .author-shell {
+        max-width: 880px;
+        margin: 0 auto;
+    }
+
+    .author-card {
+        position: relative;
+        border-radius: var(--radius-lg);
+        padding: clamp(1.35rem, 3.2vw, 2.5rem);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(1.1rem, 2.5vh, 1.85rem);
+        overflow: hidden;
+    }
+
+    .author-glow {
+        position: absolute;
+        width: 340px;
+        height: 340px;
+        border-radius: 50%;
+        top: -120px;
+        right: -80px;
+        background: radial-gradient(
+            circle,
+            var(--primary-glow) 0%,
+            transparent 70%
+        );
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .author-top {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        gap: clamp(1.25rem, 3.5vw, 2.5rem);
+    }
+
+    .avatar-frame {
+        flex-shrink: 0;
+    }
+
+    .avatar-ring {
+        position: relative;
+        width: 144px;
+        height: 144px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid color-mix(in srgb, var(--primary) 45%, var(--border));
+        background: var(--bg-sub);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .avatar-ring img {
+        position: absolute;
+        width: 148%;
+        height: auto;
+        left: 50%;
+        top: 18%;
+        transform: translateX(-50%);
+    }
+
+    .author-intro {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 6px;
+        min-width: 0;
+    }
+
+    .author-name {
+        font-size: clamp(1.85rem, 4vw, 2.75rem);
+        letter-spacing: -0.03em;
+        line-height: 1.1;
+        color: var(--text-main);
+        margin-top: 2px;
+    }
+
+    .author-role {
+        font-size: 0.92rem;
+        font-weight: 650;
+        color: var(--primary);
+        margin: 0;
+    }
+
+    .author-bio {
+        font-size: clamp(0.88rem, 1.5vw, 1rem);
+        line-height: 1.52;
+        color: var(--text-muted);
+        margin-top: 2px;
+    }
+
+    .author-website-pill {
+        margin-top: 6px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        padding: 7px 14px;
+        border-radius: 999px;
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border-strong);
+        color: var(--text-main);
+        font-size: 0.82rem;
+        font-weight: 650;
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease,
+            color 0.2s ease;
+    }
+
+    .author-website-pill:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+
+    .ext-arrow {
+        color: var(--primary);
+        font-size: 0.88rem;
+    }
+
+    .creds-grid {
+        position: relative;
+        z-index: 2;
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 10px;
+        padding-top: clamp(0.9rem, 2vh, 1.35rem);
+        border-top: 1px solid var(--border);
+    }
+
+    .cred-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 12px;
+        border-radius: var(--radius-md);
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border);
+        min-width: 0;
+    }
+
+    .cred-icon {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .cred-icon svg {
+        width: 17px;
+        height: 17px;
+    }
+
+    .cred-copy {
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        min-width: 0;
+    }
+
+    .cred-metric {
+        font-size: 0.88rem;
+        font-weight: 750;
+        color: var(--text-main);
+        line-height: 1.2;
+    }
+
+    .cred-label {
+        font-size: 0.74rem;
+        color: var(--text-muted);
+        line-height: 1.25;
+    }
+
+    @media (max-width: 820px) {
+        .creds-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    @media (max-width: 640px) {
+        .author-card {
+            padding: 1.15rem 1rem;
+            gap: 0.9rem;
+        }
+
+        .author-top {
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.75rem;
+        }
+
+        .avatar-ring {
+            width: 92px;
+            height: 92px;
+        }
+
+        .author-intro {
+            align-items: center;
+            text-align: center;
+            gap: 4px;
+        }
+
+        .author-name {
+            font-size: 1.55rem;
+        }
+
+        .author-role {
+            font-size: 0.82rem;
+        }
+
+        .author-bio {
+            font-size: 0.82rem;
+            line-height: 1.42;
+        }
+
+        .author-website-pill {
+            padding: 6px 12px;
+            font-size: 0.78rem;
+            margin-top: 4px;
+        }
+
+        .creds-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            padding-top: 0.75rem;
+        }
+
+        .cred-item {
+            padding: 8px 10px;
+            gap: 8px;
+        }
+
+        .cred-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+        }
+
+        .cred-icon svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .cred-metric {
+            font-size: 0.78rem;
+        }
+
+        .cred-label {
+            font-size: 0.68rem;
+        }
+    }
+</style>

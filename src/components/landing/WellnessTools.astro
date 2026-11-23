@@ -1,6 +1,4 @@
 ---
-import SectionCTA from "../SectionCTA.astro";
-
 const currentLang = Astro.currentLocale || "en";
 
 const ui = {
@@ -240,14 +238,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                     ))
                 }
             </div>
-        </div>
-
-        <div class="container cta-wrapper animate-on-scroll delay-2">
-            <SectionCTA
-                href="/blog"
-                labelEn="Read Wellness Articles"
-                labelHi="वेलनेस ब्लॉग पढ़ें"
-            />
         </div>
     </div>
 </section>

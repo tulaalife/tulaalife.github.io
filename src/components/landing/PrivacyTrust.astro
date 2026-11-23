@@ -1,6 +1,4 @@
 ---
-import SectionCTA from "../SectionCTA.astro";
-
 const currentLang = Astro.currentLocale || "en";
 
 const ui = {
@@ -203,14 +201,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                     ))
                 }
             </div>
-        </div>
-
-        <div class="container cta-wrapper animate-on-scroll delay-2">
-            <SectionCTA
-                href="/faq"
-                labelEn="Frequently Asked Questions"
-                labelHi="अक्सर पूछे जाने वाले प्रश्न"
-            />
         </div>
     </div>
 </section>

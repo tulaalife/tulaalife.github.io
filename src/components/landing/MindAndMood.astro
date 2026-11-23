@@ -1,5 +1,4 @@
 ---
-import SectionCTA from "../SectionCTA.astro";
 import { guidedAudios } from "../../data/generated";
 
 const currentLang = Astro.currentLocale || "en";
@@ -103,14 +102,6 @@ const displayAudios = guidedAudios
                     ))
                 }
             </div>
-        </div>
-
-        <div class="container cta-wrapper animate-on-scroll delay-2">
-            <SectionCTA
-                href="/audio"
-                labelEn={t.ctaEn}
-                labelHi={t.ctaHi}
-            />
         </div>
     </div>
 </section>

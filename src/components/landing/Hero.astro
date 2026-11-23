@@ -5,24 +5,83 @@ import { PLAN_FINDER_BRANCHES } from "../../utils/ui-strings";
 
 const currentLang = (Astro.currentLocale || "en") as "en" | "hi";
 
+const painSubGroups = [
+    {
+        id: "upper_spine",
+        enLabel: "Back, Neck & Shoulders",
+        hiLabel: "कमर, गर्दन और कंधे",
+        enSub: "Lower back, neck stiffness, posture & spine",
+        hiSub: "निचली कमर, गर्दन, कंधे और रीढ़ की जकड़न",
+        enTitleTop: "Where in your back",
+        enTitleBottom: "or neck is the pain?",
+        hiTitleTop: "कमर या गर्दन में",
+        hiTitleBottom: "कहाँ दर्द या जकड़न है?",
+        keys: [
+            "pain:lower_back",
+            "pain:neck",
+            "pain:shoulders",
+            "pain:upper_back",
+            "pain:spine",
+            "pain:chest",
+        ],
+    },
+    {
+        id: "lower_body",
+        enLabel: "Hips, Knees & Legs",
+        hiLabel: "कूल्हे, घुटने और पैर",
+        enSub: "Sciatica, knee pain, ankles, core & pelvic floor",
+        hiSub: "साइटिका, घुटनों का दर्द, टखने और पेल्विक फ्लोर",
+        enTitleTop: "Which lower-body area",
+        enTitleBottom: "needs relief?",
+        hiTitleTop: "पैरों या निचले हिस्से में",
+        hiTitleBottom: "कहाँ आराम चाहिए?",
+        keys: [
+            "pain:knees",
+            "pain:hips",
+            "pain:hamstrings",
+            "pain:ankles_and_feet",
+            "pain:pelvic_floor",
+            "pain:core",
+        ],
+    },
+    {
+        id: "head_full",
+        enLabel: "Head, Hands & Full Body",
+        hiLabel: "सिर, हाथ और पूरा शरीर",
+        enSub: "Headache, eye strain, wrists & full-body stiffness",
+        hiSub: "सिरदर्द, आँखों की थकान, कलाई और पूरे शरीर की जकड़न",
+        enTitleTop: "Which area would you",
+        enTitleBottom: "like to relax?",
+        hiTitleTop: "आप किस हिस्से को",
+        hiTitleBottom: "आराम देना चाहते हैं?",
+        keys: [
+            "pain:head",
+            "pain:eyes",
+            "pain:wrist_and_hands",
+            "pain:face",
+            "pain:full_body",
+        ],
+    },
+];
+
 const ui = {
     en: {
-        badge: "100% Free • No Login • Offline Ready",
+        badge: "100% Free • No Login • No Ads",
         step1TitleTop: "How does your body",
         step1TitleBottom: "feel today?",
         step1Sub:
             "Choose a focus area for your personalized therapeutic yoga plan.",
+        painRegionTitleTop: "Which body region",
+        painRegionTitleBottom: "needs attention?",
         step3TitleTop: "Your Therapeutic",
         step3TitleBottom: "Yoga Plan is Ready.",
         backToStep1: "← Change focus area",
-        backToStep2: "← Change symptom",
+        backToRegion: "← Change body region",
+        backToStep2: "← Change selection",
         startOver: "Start over",
         matchBadge: "Recommended",
         altHeader: "Also helpful:",
         viewDetails: "Plan details →",
-        browseAll: "All 30+ Plans →",
-        authorName: "Curated by Latika Bissa",
-        authorCreds: "Gold Medalist, M.Sc. Yoga Therapy • 12+ Yrs Exp",
         intensityMap: {
             beginner: "Beginner Safe",
             intermediate: "Intermediate",
@@ -30,27 +89,27 @@ const ui = {
         } as Record<string, string>,
         freqMap: {
             daily: "Daily • 15 Min",
-            weekly_3_5: "3–5x / Week",
-            weekly_1_2: "1–2x / Week",
+            weekly_3_5: "3-5x / Week",
+            weekly_1_2: "1-2x / Week",
             as_needed: "As Needed",
         } as Record<string, string>,
     },
     hi: {
-        badge: "100% फ्री • बिना लॉगिन • ऑफलाइन",
+        badge: "100% फ्री • बिना लॉगिन • विज्ञापन मुक्त",
         step1TitleTop: "आज आपका शरीर",
         step1TitleBottom: "कैसा महसूस कर रहा है?",
         step1Sub: "अपने लिए सही योग थेरेपी प्लान जानने के लिए मुख्य ज़रूरत चुनें।",
+        painRegionTitleTop: "शरीर के किस हिस्से में",
+        painRegionTitleBottom: "राहत चाहिए?",
         step3TitleTop: "आपका व्यक्तिगत",
         step3TitleBottom: "योग थेरेपी प्लान।",
         backToStep1: "← मुख्य श्रेणी बदलें",
+        backToRegion: "← शरीर का हिस्सा बदलें",
         backToStep2: "← विकल्प बदलें",
         startOver: "फिर से चुनें",
         matchBadge: "सर्वश्रेष्ठ सुझाव",
         altHeader: "अन्य उपयोगी प्लान:",
         viewDetails: "पूरी जानकारी →",
-        browseAll: "सभी 30+ प्लान →",
-        authorName: "लतिका बिस्सा द्वारा तैयार",
-        authorCreds: "स्वर्ण पदक विजेता, M.Sc. योग थेरेपी • 12+ वर्ष अनुभव",
         intensityMap: {
             beginner: "शुरुआती (Beginner)",
             intermediate: "मध्यम (Intermediate)",
@@ -58,8 +117,8 @@ const ui = {
         } as Record<string, string>,
         freqMap: {
             daily: "प्रतिदिन • 15 मिनट",
-            weekly_3_5: "सप्ताह में 3–5 बार",
-            weekly_1_2: "सप्ताह में 1–2 बार",
+            weekly_3_5: "सप्ताह में 3-5 बार",
+            weekly_1_2: "सप्ताह में 1-2 बार",
             as_needed: "आवश्यकतानुसार",
         } as Record<string, string>,
     },
@@ -156,11 +215,16 @@ const initialAlts = defaultPlanIds
             data-overrides={JSON.stringify(overrides)}
             data-plans={JSON.stringify(clientPlansMap)}
             data-branches={JSON.stringify(PLAN_FINDER_BRANCHES)}
+            data-pain-groups={JSON.stringify(painSubGroups)}
             data-lang={currentLang}
             data-step1-top={t.step1TitleTop}
             data-step1-bottom={t.step1TitleBottom}
+            data-pain-top={t.painRegionTitleTop}
+            data-pain-bottom={t.painRegionTitleBottom}
             data-step3-top={t.step3TitleTop}
             data-step3-bottom={t.step3TitleBottom}
+            data-back-step1={t.backToStep1}
+            data-back-region={t.backToRegion}
         >
             <div class="step-dots" aria-hidden="true">
                 <span class="step-dot active" data-dot="1"></span>
@@ -171,134 +235,146 @@ const initialAlts = defaultPlanIds
             <!-- STEP 1: Pick 1 of 5 Visual Branches -->
             <div class="wizard-step active" id="wizard-step-1">
                 <div class="branch-grid">
-                    {
-                        PLAN_FINDER_BRANCHES.map((branch) => (
-                            <button
-                                type="button"
-                                class="branch-choice"
-                                data-branch-id={branch.id}
+                    {PLAN_FINDER_BRANCHES.map((branch) => (
+                        <button
+                            type="button"
+                            class="branch-choice"
+                            data-branch-id={branch.id}
+                        >
+                            <div
+                                class:list={[
+                                    "branch-icon-badge",
+                                    `icon-${branch.id}`,
+                                ]}
+                                aria-hidden="true"
                             >
-                                <div
-                                    class:list={[
-                                        "branch-icon-badge",
-                                        `icon-${branch.id}`,
-                                    ]}
-                                    aria-hidden="true"
-                                >
-                                    {branch.id === "pain" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <path d="M12 3v18" />
-                                            <path d="M8 6h8" />
-                                            <path d="M7 10h10" />
-                                            <path d="M8 14h8" />
-                                            <path d="M9 18h6" />
-                                        </svg>
-                                    )}
-                                    {branch.id === "medical" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
-                                            <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
-                                        </svg>
-                                    )}
-                                    {branch.id === "pregnancy" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15" />
-                                            <circle cx="12" cy="12" r="2" />
-                                        </svg>
-                                    )}
-                                    {branch.id === "general" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                                            <path d="M19 3v4" />
-                                            <path d="M21 5h-4" />
-                                        </svg>
-                                    )}
-                                    {branch.id === "mobility" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
-                                            <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
-                                        </svg>
-                                    )}
-                                </div>
-                                <div class="branch-choice-text">
-                                    <strong class="branch-title">
-                                        {currentLang === "hi"
-                                            ? branch.hiLabel
-                                            : branch.enLabel}
-                                    </strong>
-                                    <span class="branch-desc">
-                                        {currentLang === "hi"
-                                            ? branch.hiSub
-                                            : branch.enSub}
-                                    </span>
-                                </div>
-                                <span class="branch-arrow" aria-hidden="true">
-                                    →
+                                {branch.id === "pain" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M12 3v18" />
+                                        <path d="M8 6h8" />
+                                        <path d="M7 10h10" />
+                                        <path d="M8 14h8" />
+                                        <path d="M9 18h6" />
+                                    </svg>
+                                )}
+                                {branch.id === "medical" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                        <path d="M3.22 12H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
+                                    </svg>
+                                )}
+                                {branch.id === "pregnancy" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M12 7.5a4.5 4.5 0 1 1 4.5 4.5M12 7.5A4.5 4.5 0 1 0 7.5 12M12 7.5V9m-4.5 3a4.5 4.5 0 1 0 4.5 4.5M7.5 12H9m7.5 0a4.5 4.5 0 1 1-4.5 4.5m4.5-4.5H15m-3 4.5V15" />
+                                        <circle cx="12" cy="12" r="2" />
+                                    </svg>
+                                )}
+                                {branch.id === "general" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
+                                        <path d="M19 3v4" />
+                                        <path d="M21 5h-4" />
+                                    </svg>
+                                )}
+                                {branch.id === "mobility" && (
+                                    <svg
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    >
+                                        <path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+                                        <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" />
+                                    </svg>
+                                )}
+                            </div>
+                            <div class="branch-choice-text">
+                                <strong class="branch-title">
+                                    {currentLang === "hi"
+                                        ? branch.hiLabel
+                                        : branch.enLabel}
+                                </strong>
+                                <span class="branch-desc">
+                                    {currentLang === "hi"
+                                        ? branch.hiSub
+                                        : branch.enSub}
                                 </span>
-                            </button>
-                        ))
-                    }
-                </div>
-
-                <!-- Integrated Single-Line Curator Strip inside Card -->
-                <div class="card-curator-footer">
-                    <div class="curator-left">
-                        <div class="curator-avatar">
-                            <img
-                                src="/images/latika.png"
-                                alt="Latika Bissa"
-                                width="36"
-                                height="36"
-                                loading="eager"
-                            />
-                        </div>
-                        <div class="curator-meta">
-                            <strong class="curator-name">{t.authorName}</strong>
-                            <span class="curator-creds">{t.authorCreds}</span>
-                        </div>
-                    </div>
-                    <a href={basePlanHref} class="browse-inline-link">
-                        {t.browseAll}
-                    </a>
+                            </div>
+                            <span class="branch-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
                 </div>
             </div>
 
-            <!-- STEP 2: Pick specific symptom / goal -->
+            <!-- STEP 1B: Body Region Sub-Step (Only for Body Pain & Stiffness so user isn't overwhelmed by 17 pills) -->
+            <div class="wizard-step" id="wizard-step-region" hidden>
+                <div class="step-topbar">
+                    <button
+                        type="button"
+                        class="back-step-btn"
+                        id="back-from-region"
+                    >
+                        {t.backToStep1}
+                    </button>
+                </div>
+                <div class="region-grid">
+                    {painSubGroups.map((rg) => (
+                        <button
+                            type="button"
+                            class="branch-choice region-choice"
+                            data-region-id={rg.id}
+                        >
+                            <div class="branch-choice-text">
+                                <strong class="branch-title">
+                                    {currentLang === "hi"
+                                        ? rg.hiLabel
+                                        : rg.enLabel}
+                                </strong>
+                                <span class="branch-desc">
+                                    {currentLang === "hi" ? rg.hiSub : rg.enSub}
+                                </span>
+                            </div>
+                            <span class="branch-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <!-- STEP 2: Pick specific symptom / goal (Clean & focused) -->
             <div class="wizard-step" id="wizard-step-2" hidden>
                 <div class="step-topbar">
                     <button
@@ -308,127 +384,118 @@ const initialAlts = defaultPlanIds
                     >
                         {t.backToStep1}
                     </button>
-                    <a href={basePlanHref} class="browse-inline-link">
-                        {t.browseAll}
-                    </a>
                 </div>
                 <div class="sub-pills-wrap" id="finder-sub-options">
-                    {
-                        defaultBranch.options.map((opt) => (
-                            <button
-                                type="button"
-                                class="sub-choice-pill"
-                                data-override-key={opt.key}
-                            >
-                                {currentLang === "hi" ? opt.hi : opt.en}
-                            </button>
-                        ))
-                    }
+                    {defaultBranch.options.slice(0, 6).map((opt) => (
+                        <button
+                            type="button"
+                            class="sub-choice-pill"
+                            data-override-key={opt.key}
+                        >
+                            {currentLang === "hi" ? opt.hi : opt.en}
+                        </button>
+                    ))}
                 </div>
             </div>
 
             <!-- STEP 3: Personalized Result Card -->
-            {
-                initialPrimary && (
-                    <div class="wizard-step" id="wizard-step-3" hidden>
-                        <div class="step-topbar">
-                            <button
-                                type="button"
-                                class="back-step-btn"
-                                id="back-to-step-2"
-                            >
-                                {t.backToStep2}
-                            </button>
-                            <button
-                                type="button"
-                                class="reset-step-btn"
-                                id="reset-wizard"
-                            >
-                                {t.startOver}
-                            </button>
-                        </div>
-
-                        <div class="result-spotlight">
-                            <a
-                                href={initialPrimary.href}
-                                id="rec-img-link"
-                                class="result-visual"
-                            >
-                                <img
-                                    id="rec-img"
-                                    src={initialPrimary.image}
-                                    alt={initialPrimary.title}
-                                    width="520"
-                                    height="320"
-                                    loading="eager"
-                                />
-                                <span class="match-tag">{t.matchBadge}</span>
-                            </a>
-
-                            <div class="result-info">
-                                <div class="result-meta-row">
-                                    <div class="result-meta">
-                                        <span id="rec-intensity">
-                                            {initialPrimary.intensity}
-                                        </span>
-                                        <span>•</span>
-                                        <span id="rec-frequency">
-                                            {initialPrimary.frequency}
-                                        </span>
-                                    </div>
-                                    <a
-                                        href={initialPrimary.href}
-                                        id="rec-detail-link"
-                                        class="plan-guide-link"
-                                    >
-                                        {t.viewDetails}
-                                    </a>
-                                </div>
-
-                                <h2 class="result-title">
-                                    <a
-                                        href={initialPrimary.href}
-                                        id="rec-title-link"
-                                    >
-                                        {initialPrimary.title}
-                                    </a>
-                                </h2>
-
-                                <p class="result-subtitle" id="rec-subtitle">
-                                    {initialPrimary.subtitle}
-                                </p>
-
-                                <ul class="result-highlights" id="rec-benefits">
-                                    {initialPrimary.benefits.map((b) => (
-                                        <li>{b}</li>
-                                    ))}
-                                </ul>
-
-                                <div class="result-download-box">
-                                    <StoreButtons compact={true} />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div
-                            class="alt-suggestions"
-                            id="rec-alt-section"
-                            style={
-                                initialAlts.length === 0 ? "display: none;" : ""
-                            }
+            {initialPrimary && (
+                <div class="wizard-step" id="wizard-step-3" hidden>
+                    <div class="step-topbar">
+                        <button
+                            type="button"
+                            class="back-step-btn"
+                            id="back-to-step-2"
                         >
-                            <span class="alt-label">{t.altHeader}</span>
-                            <div class="alt-pills" id="rec-alt-list">
-                                {initialAlts.map((alt) => (
-                                    <a href={alt.href} class="alt-link-pill">
-                                        {alt.title} →
-                                    </a>
+                            {t.backToStep2}
+                        </button>
+                        <button
+                            type="button"
+                            class="reset-step-btn"
+                            id="reset-wizard"
+                        >
+                            {t.startOver}
+                        </button>
+                    </div>
+
+                    <div class="result-spotlight">
+                        <a
+                            href={initialPrimary.href}
+                            id="rec-img-link"
+                            class="result-visual"
+                        >
+                            <img
+                                id="rec-img"
+                                src={initialPrimary.image}
+                                alt={initialPrimary.title}
+                                width="520"
+                                height="320"
+                                loading="eager"
+                            />
+                            <span class="match-tag">{t.matchBadge}</span>
+                        </a>
+
+                        <div class="result-info">
+                            <div class="result-meta-row">
+                                <div class="result-meta">
+                                    <span id="rec-intensity">
+                                        {initialPrimary.intensity}
+                                    </span>
+                                    <span>•</span>
+                                    <span id="rec-frequency">
+                                        {initialPrimary.frequency}
+                                    </span>
+                                </div>
+                                <a
+                                    href={initialPrimary.href}
+                                    id="rec-detail-link"
+                                    class="plan-guide-link"
+                                >
+                                    {t.viewDetails}
+                                </a>
+                            </div>
+
+                            <h2 class="result-title">
+                                <a
+                                    href={initialPrimary.href}
+                                    id="rec-title-link"
+                                >
+                                    {initialPrimary.title}
+                                </a>
+                            </h2>
+
+                            <p class="result-subtitle" id="rec-subtitle">
+                                {initialPrimary.subtitle}
+                            </p>
+
+                            <ul class="result-highlights" id="rec-benefits">
+                                {initialPrimary.benefits.map((b) => (
+                                    <li>{b}</li>
                                 ))}
+                            </ul>
+
+                            <div class="result-download-box">
+                                <StoreButtons compact={true} />
                             </div>
                         </div>
                     </div>
-                )
-            }
+
+                    <div
+                        class="alt-suggestions"
+                        id="rec-alt-section"
+                        style={initialAlts.length === 0 ? "display: none;" : ""}
+                    >
+                        <span class="alt-label">{t.altHeader}</span>
+                        <div class="alt-pills" id="rec-alt-list">
+                            {initialAlts.map((alt) => (
+                                <a href={alt.href} class="alt-link-pill">
+                                    {alt.title} →
+                                </a>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     </div>
 </section>
@@ -443,20 +510,29 @@ const initialAlts = defaultPlanIds
         );
         const plans = JSON.parse(root.getAttribute("data-plans") || "{}");
         const branches = JSON.parse(root.getAttribute("data-branches") || "[]");
+        const painGroups = JSON.parse(
+            root.getAttribute("data-pain-groups") || "[]",
+        );
         const lang = root.getAttribute("data-lang") || "en";
 
         const step1Top = root.getAttribute("data-step1-top") || "";
         const step1Bottom = root.getAttribute("data-step1-bottom") || "";
+        const painTop = root.getAttribute("data-pain-top") || "";
+        const painBottom = root.getAttribute("data-pain-bottom") || "";
         const step3Top = root.getAttribute("data-step3-top") || "";
         const step3Bottom = root.getAttribute("data-step3-bottom") || "";
+        const backStep1Label = root.getAttribute("data-back-step1") || "";
+        const backRegionLabel = root.getAttribute("data-back-region") || "";
 
         const titleTopEl = document.getElementById("hero-title-top");
         const titleBottomEl = document.getElementById("hero-title-bottom");
         const step1SubEl = document.getElementById("hero-step1-sub");
 
         const step1 = document.getElementById("wizard-step-1");
+        const stepRegion = document.getElementById("wizard-step-region");
         const step2 = document.getElementById("wizard-step-2");
         const step3 = document.getElementById("wizard-step-3");
+        const backToStep1Btn = document.getElementById("back-to-step-1");
         const dots = root.querySelectorAll(".step-dot");
 
         const subOptionsContainer =
@@ -482,38 +558,77 @@ const initialAlts = defaultPlanIds
         const recAltList = document.getElementById("rec-alt-list");
 
         let currentBranch: any = branches[0];
+        let currentRegion: any = null;
         let activeBranchHasSingleOption = false;
 
-        function setStep(stepNumber: 1 | 2 | 3) {
-            [step1, step2, step3].forEach((el, idx) => {
+        function setView(view: "step1" | "region" | "step2" | "step3") {
+            const map: Record<string, HTMLElement | null> = {
+                step1,
+                region: stepRegion,
+                step2,
+                step3,
+            };
+            Object.entries(map).forEach(([k, el]) => {
                 if (!el) return;
-                const isCurrent = idx + 1 === stepNumber;
+                const isCurrent = k === view;
                 el.hidden = !isCurrent;
                 el.classList.toggle("active", isCurrent);
             });
+
+            const dotLevel =
+                view === "step1"
+                    ? 1
+                    : view === "region" || view === "step2"
+                      ? 2
+                      : 3;
             dots.forEach((dot, idx) => {
-                dot.classList.toggle("active", idx + 1 <= stepNumber);
+                dot.classList.toggle("active", idx + 1 <= dotLevel);
             });
 
-            if (stepNumber === 1) {
+            if (view === "step1") {
                 if (titleTopEl) titleTopEl.textContent = step1Top;
                 if (titleBottomEl) titleBottomEl.textContent = step1Bottom;
                 if (step1SubEl) step1SubEl.hidden = false;
-            } else if (stepNumber === 2 && currentBranch) {
-                if (titleTopEl) {
-                    titleTopEl.textContent =
-                        lang === "hi"
-                            ? currentBranch.hiTitleTop
-                            : currentBranch.enTitleTop;
-                }
-                if (titleBottomEl) {
-                    titleBottomEl.textContent =
-                        lang === "hi"
-                            ? currentBranch.hiTitleBottom
-                            : currentBranch.enTitleBottom;
+            } else if (view === "region") {
+                if (titleTopEl) titleTopEl.textContent = painTop;
+                if (titleBottomEl) titleBottomEl.textContent = painBottom;
+                if (step1SubEl) step1SubEl.hidden = true;
+            } else if (view === "step2") {
+                if (currentBranch?.id === "pain" && currentRegion) {
+                    if (titleTopEl) {
+                        titleTopEl.textContent =
+                            lang === "hi"
+                                ? currentRegion.hiTitleTop
+                                : currentRegion.enTitleTop;
+                    }
+                    if (titleBottomEl) {
+                        titleBottomEl.textContent =
+                            lang === "hi"
+                                ? currentRegion.hiTitleBottom
+                                : currentRegion.enTitleBottom;
+                    }
+                    if (backToStep1Btn) {
+                        backToStep1Btn.textContent = backRegionLabel;
+                    }
+                } else if (currentBranch) {
+                    if (titleTopEl) {
+                        titleTopEl.textContent =
+                            lang === "hi"
+                                ? currentBranch.hiTitleTop
+                                : currentBranch.enTitleTop;
+                    }
+                    if (titleBottomEl) {
+                        titleBottomEl.textContent =
+                            lang === "hi"
+                                ? currentBranch.hiTitleBottom
+                                : currentBranch.enTitleBottom;
+                    }
+                    if (backToStep1Btn) {
+                        backToStep1Btn.textContent = backStep1Label;
+                    }
                 }
                 if (step1SubEl) step1SubEl.hidden = true;
-            } else if (stepNumber === 3) {
+            } else if (view === "step3") {
                 if (titleTopEl) titleTopEl.textContent = step3Top;
                 if (titleBottomEl) titleBottomEl.textContent = step3Bottom;
                 if (step1SubEl) step1SubEl.hidden = true;
@@ -567,73 +682,98 @@ const initialAlts = defaultPlanIds
                 }
             }
 
-            setStep(3);
+            setView("step3");
         }
 
-        function attachSubChipListeners() {
+        function populateSubOptions(optionsList: any[]) {
             if (!subOptionsContainer) return;
-            const chips =
-                subOptionsContainer.querySelectorAll(".sub-choice-pill");
-            chips.forEach((chip) => {
-                chip.addEventListener("click", () => {
-                    const key = chip.getAttribute("data-override-key");
-                    if (key) renderRecommendation(key);
+            subOptionsContainer.innerHTML = "";
+            optionsList.forEach((opt: any) => {
+                const pill = document.createElement("button");
+                pill.type = "button";
+                pill.className = "sub-choice-pill";
+                pill.setAttribute("data-override-key", opt.key);
+                pill.textContent = lang === "hi" ? opt.hi : opt.en;
+                pill.addEventListener("click", () => {
+                    renderRecommendation(opt.key);
                 });
+                subOptionsContainer.appendChild(pill);
             });
         }
 
-        root.querySelectorAll(".branch-choice").forEach((btn) => {
-            btn.addEventListener("click", () => {
-                const branchId = btn.getAttribute("data-branch-id");
-                const branch = branches.find((b: any) => b.id === branchId);
-                if (!branch || !subOptionsContainer) return;
+        root.querySelectorAll("#wizard-step-1 .branch-choice").forEach(
+            (btn) => {
+                btn.addEventListener("click", () => {
+                    const branchId = btn.getAttribute("data-branch-id");
+                    const branch = branches.find((b: any) => b.id === branchId);
+                    if (!branch) return;
 
-                currentBranch = branch;
-                activeBranchHasSingleOption = branch.options.length === 1;
+                    currentBranch = branch;
+                    currentRegion = null;
+                    activeBranchHasSingleOption = branch.options.length === 1;
 
-                if (activeBranchHasSingleOption && branch.options[0]) {
-                    renderRecommendation(branch.options[0].key);
-                    return;
-                }
+                    if (activeBranchHasSingleOption && branch.options[0]) {
+                        renderRecommendation(branch.options[0].key);
+                        return;
+                    }
 
-                subOptionsContainer.innerHTML = "";
-                branch.options.forEach((opt: any) => {
-                    const pill = document.createElement("button");
-                    pill.type = "button";
-                    pill.className = "sub-choice-pill";
-                    pill.setAttribute("data-override-key", opt.key);
-                    pill.textContent = lang === "hi" ? opt.hi : opt.en;
-                    subOptionsContainer.appendChild(pill);
+                    if (branch.id === "pain") {
+                        setView("region");
+                        return;
+                    }
+
+                    populateSubOptions(branch.options);
+                    setView("step2");
                 });
+            },
+        );
 
-                attachSubChipListeners();
-                setStep(2);
+        root.querySelectorAll(".region-choice").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const regionId = btn.getAttribute("data-region-id");
+                const region = painGroups.find((r: any) => r.id === regionId);
+                const painBranch = branches.find((b: any) => b.id === "pain");
+                if (!region || !painBranch) return;
+
+                currentBranch = painBranch;
+                currentRegion = region;
+                const filteredOpts = painBranch.options.filter((o: any) =>
+                    region.keys.includes(o.key),
+                );
+                populateSubOptions(filteredOpts);
+                setView("step2");
             });
         });
 
         document
-            .getElementById("back-to-step-1")
+            .getElementById("back-from-region")
             ?.addEventListener("click", () => {
-                setStep(1);
+                setView("step1");
             });
+
+        backToStep1Btn?.addEventListener("click", () => {
+            if (currentBranch?.id === "pain" && currentRegion) {
+                setView("region");
+            } else {
+                setView("step1");
+            }
+        });
 
         document
             .getElementById("back-to-step-2")
             ?.addEventListener("click", () => {
                 if (activeBranchHasSingleOption) {
-                    setStep(1);
+                    setView("step1");
                 } else {
-                    setStep(2);
+                    setView("step2");
                 }
             });
 
         document
             .getElementById("reset-wizard")
             ?.addEventListener("click", () => {
-                setStep(1);
+                setView("step1");
             });
-
-        attachSubChipListeners();
     });
 </script>
 
@@ -670,13 +810,14 @@ const initialAlts = defaultPlanIds
     .hero-centered-shell {
         position: relative;
         z-index: 2;
-        max-width: 780px;
+        max-width: 760px;
+        width: 100%;
         margin: 0 auto;
         display: flex;
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: clamp(0.85rem, 2.2vh, 1.4rem);
+        gap: clamp(0.9rem, 2.2vh, 1.45rem);
     }
 
     .hero-intro {
@@ -685,10 +826,11 @@ const initialAlts = defaultPlanIds
         align-items: center;
         gap: 8px;
         max-width: 640px;
+        width: 100%;
     }
 
     .hero-title {
-        font-size: clamp(1.85rem, 4.4vw, 3.1rem);
+        font-size: clamp(1.85rem, 4.4vw, 3.15rem);
         line-height: 1.1;
         letter-spacing: -0.03em;
     }
@@ -705,8 +847,11 @@ const initialAlts = defaultPlanIds
 
     .dialogue-card {
         width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
         border-radius: var(--radius-lg);
-        padding: clamp(1rem, 2.4vw, 1.65rem);
+        padding: clamp(1.1rem, 2.5vw, 1.75rem);
         display: flex;
         flex-direction: column;
         gap: 14px;
@@ -739,6 +884,8 @@ const initialAlts = defaultPlanIds
         display: flex;
         flex-direction: column;
         gap: 12px;
+        width: 100%;
+        min-width: 0;
         animation: fadeSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
@@ -759,8 +906,18 @@ const initialAlts = defaultPlanIds
 
     .branch-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 10px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .region-grid {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 10px;
+        width: 100%;
+        min-width: 0;
     }
 
     .branch-choice {
@@ -768,6 +925,10 @@ const initialAlts = defaultPlanIds
         align-items: center;
         gap: 12px;
         padding: 13px 15px;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
         border-radius: var(--radius-md);
         background: var(--bg-card-inner);
         border: 1px solid var(--border);
@@ -781,7 +942,7 @@ const initialAlts = defaultPlanIds
             box-shadow 0.2s ease;
     }
 
-    .branch-choice:last-child:nth-child(odd) {
+    .branch-grid .branch-choice:last-child:nth-child(odd) {
         grid-column: 1 / -1;
     }
 
@@ -828,6 +989,7 @@ const initialAlts = defaultPlanIds
         gap: 2px;
         min-width: 0;
         flex: 1;
+        overflow: hidden;
     }
 
     .branch-title {
@@ -835,6 +997,7 @@ const initialAlts = defaultPlanIds
         font-weight: 650;
         color: var(--text-main);
         line-height: 1.25;
+        overflow-wrap: break-word;
     }
 
     .branch-desc {
@@ -844,6 +1007,7 @@ const initialAlts = defaultPlanIds
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        max-width: 100%;
     }
 
     .branch-arrow {
@@ -855,78 +1019,6 @@ const initialAlts = defaultPlanIds
 
     .branch-choice:hover .branch-arrow {
         transform: translateX(3px);
-    }
-
-    /* Integrated Curator Footer Row */
-    .card-curator-footer {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        padding-top: 12px;
-        border-top: 1px solid var(--border);
-        flex-wrap: wrap;
-    }
-
-    .curator-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        min-width: 0;
-    }
-
-    .curator-avatar {
-        width: 36px;
-        height: 36px;
-        border-radius: 50%;
-        overflow: hidden;
-        flex-shrink: 0;
-        border: 1.5px solid var(--primary);
-        background: var(--bg-sub);
-        position: relative;
-    }
-
-    .curator-avatar img {
-        position: absolute;
-        width: 145%;
-        height: auto;
-        left: 50%;
-        top: 18%;
-        transform: translateX(-50%);
-    }
-
-    .curator-meta {
-        display: flex;
-        flex-direction: column;
-        min-width: 0;
-    }
-
-    .curator-name {
-        font-size: 0.83rem;
-        font-weight: 700;
-        color: var(--text-main);
-        line-height: 1.25;
-    }
-
-    .curator-creds {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        line-height: 1.25;
-    }
-
-    .browse-inline-link {
-        font-size: 0.82rem;
-        font-weight: 650;
-        color: var(--primary);
-        white-space: nowrap;
-        padding: 5px 11px;
-        border-radius: 99px;
-        background: var(--primary-soft);
-        transition: transform 0.2s ease;
-    }
-
-    .browse-inline-link:hover {
-        transform: translateX(2px);
     }
 
     .step-topbar {
@@ -954,30 +1046,28 @@ const initialAlts = defaultPlanIds
     }
 
     .sub-pills-wrap {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        gap: 8px;
-        padding: 6px 0;
-        max-height: 44dvh;
-        overflow-y: auto;
-        scrollbar-width: none;
-    }
-
-    .sub-pills-wrap::-webkit-scrollbar {
-        display: none;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 9px;
+        padding: 4px 0;
+        width: 100%;
+        min-width: 0;
     }
 
     :global(.sub-choice-pill) {
-        padding: 10px 16px;
-        border-radius: 999px;
+        padding: 11px 16px;
+        border-radius: var(--radius-md);
         background: var(--bg-card-inner);
         border: 1px solid var(--border-strong);
         color: var(--text-main);
         font-family: inherit;
         font-size: 0.88rem;
         font-weight: 600;
+        text-align: center;
         cursor: pointer;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
         transition:
             transform 0.16s ease,
             background-color 0.16s ease,
@@ -998,9 +1088,11 @@ const initialAlts = defaultPlanIds
 
     .result-spotlight {
         display: grid;
-        grid-template-columns: 230px 1fr;
+        grid-template-columns: 230px minmax(0, 1fr);
         gap: 18px;
         align-items: center;
+        width: 100%;
+        min-width: 0;
     }
 
     .result-visual {
@@ -1174,25 +1266,25 @@ const initialAlts = defaultPlanIds
         }
 
         .hero-title {
-            font-size: clamp(1.6rem, 6.2vw, 2.15rem);
+            font-size: clamp(1.55rem, 6.2vw, 2.1rem);
         }
 
         .hero-sub {
-            font-size: 0.86rem;
+            font-size: 0.84rem;
         }
 
         .dialogue-card {
-            padding: 12px 14px;
+            padding: 12px;
             gap: 10px;
         }
 
         .branch-grid {
-            grid-template-columns: 1fr;
-            gap: 7px;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 8px;
         }
 
         .branch-choice {
-            padding: 9px 12px;
+            padding: 10px 12px;
             gap: 10px;
         }
 
@@ -1215,42 +1307,24 @@ const initialAlts = defaultPlanIds
             font-size: 0.74rem;
         }
 
-        .card-curator-footer {
-            padding-top: 8px;
-            gap: 8px;
+        .sub-pills-wrap {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px;
         }
 
-        .curator-avatar {
-            width: 30px;
-            height: 30px;
-        }
-
-        .curator-name {
-            font-size: 0.78rem;
-        }
-
-        .curator-creds {
-            font-size: 0.7rem;
-        }
-
-        .browse-inline-link {
-            font-size: 0.75rem;
-            padding: 4px 9px;
+        :global(.sub-choice-pill) {
+            padding: 9px 10px;
+            font-size: 0.8rem;
         }
 
         .result-spotlight {
-            grid-template-columns: 1fr;
+            grid-template-columns: minmax(0, 1fr);
             gap: 10px;
         }
 
         .result-visual {
             aspect-ratio: 16 / 9;
-            max-height: 145px;
-        }
-
-        :global(.sub-choice-pill) {
-            padding: 8px 13px;
-            font-size: 0.82rem;
+            max-height: 140px;
         }
     }
 </style>

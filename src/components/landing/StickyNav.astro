@@ -5,6 +5,7 @@ const pages =
     currentLang === "hi"
         ? [
               { id: "hero", label: "आपका प्लान" },
+              { id: "therapist", label: "योग थेरेपिस्ट" },
               { id: "app-preview", label: "ऐप अनुभव" },
               { id: "yoga-library", label: "योग थेरेपी" },
               { id: "mind-sleep", label: "ध्यान व नींद" },
@@ -14,6 +15,7 @@ const pages =
           ]
         : [
               { id: "hero", label: "Your Plan" },
+              { id: "therapist", label: "Yoga Therapist" },
               { id: "app-preview", label: "App Experience" },
               { id: "yoga-library", label: "Yoga Therapy" },
               { id: "mind-sleep", label: "Mind & Sleep" },
@@ -21,6 +23,9 @@ const pages =
               { id: "privacy-trust", label: "100% Private" },
               { id: "sanctuary-footer", label: "Get Tulaa" },
           ];
+
+const scrollHintLabel =
+    currentLang === "hi" ? "आगे जानने के लिए स्क्रॉल करें" : "Scroll to explore";
 ---
 
 <aside class="story-pager" id="story-pager" aria-label="Page navigation">
@@ -39,9 +44,33 @@ const pages =
     }
 </aside>
 
+<button
+    type="button"
+    class="scroll-more-cue"
+    id="scroll-more-cue"
+    aria-label={scrollHintLabel}
+>
+    <span class="cue-text">{scrollHintLabel}</span>
+    <svg
+        class="cue-chevron"
+        viewBox="0 0 24 24"
+        width="15"
+        height="15"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2.2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+</button>
+
 <script>
     document.addEventListener("astro:page-load", () => {
         const pager = document.getElementById("story-pager");
+        const scrollCue = document.getElementById("scroll-more-cue");
         const scrollContainer = document.getElementById(
             "main-scroll-container",
         );
@@ -57,11 +86,14 @@ const pages =
             })
             .filter(Boolean) as HTMLElement[];
 
-        dots.forEach((btn) => {
+        let currentSectionIndex = 0;
+
+        dots.forEach((btn, idx) => {
             btn.addEventListener("click", () => {
                 const id = btn.getAttribute("data-target");
                 const target = id ? document.getElementById(id) : null;
                 if (target) {
+                    currentSectionIndex = idx;
                     target.scrollIntoView({
                         behavior: "smooth",
                         block: "start",
@@ -70,17 +102,39 @@ const pages =
             });
         });
 
+        scrollCue?.addEventListener("click", () => {
+            const nextSection = sections[currentSectionIndex + 1];
+            if (nextSection) {
+                nextSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
+            }
+        });
+
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
                         const id = entry.target.id;
+                        const activeIdx = sections.findIndex(
+                            (s) => s.id === id,
+                        );
+                        if (activeIdx !== -1) {
+                            currentSectionIndex = activeIdx;
+                        }
                         dots.forEach((dot) => {
                             dot.classList.toggle(
                                 "active",
                                 dot.getAttribute("data-target") === id,
                             );
                         });
+                        if (scrollCue) {
+                            const isLast =
+                                id === "sanctuary-footer" ||
+                                currentSectionIndex === sections.length - 1;
+                            scrollCue.classList.toggle("is-hidden", isLast);
+                        }
                     }
                 });
             },
@@ -173,9 +227,73 @@ const pages =
         transform: translateX(0);
     }
 
+    /* Subtle Bottom Scroll Indicator (Mobile & Desktop) */
+    .scroll-more-cue {
+        position: fixed;
+        bottom: clamp(10px, 1.8vh, 18px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 75;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        padding: 5px 13px;
+        border-radius: 999px;
+        background: color-mix(in srgb, var(--bg-elevated) 82%, transparent);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        font-family: inherit;
+        font-size: 0.73rem;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        cursor: pointer;
+        box-shadow: var(--shadow-sm);
+        transition:
+            opacity 0.3s ease,
+            transform 0.3s ease,
+            color 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .scroll-more-cue:hover {
+        color: var(--primary);
+        border-color: var(--primary);
+    }
+
+    .scroll-more-cue.is-hidden {
+        opacity: 0;
+        pointer-events: none;
+        transform: translateX(-50%) translateY(10px);
+    }
+
+    .cue-chevron {
+        color: var(--primary);
+        animation: gentleBounce 2.2s ease-in-out infinite;
+    }
+
+    @keyframes gentleBounce {
+        0%,
+        100% {
+            transform: translateY(-1px);
+        }
+        50% {
+            transform: translateY(2px);
+        }
+    }
+
     @media (max-width: 960px) {
         .story-pager {
             display: none;
+        }
+    }
+
+    @media (max-width: 680px) {
+        .scroll-more-cue {
+            bottom: 8px;
+            padding: 4px 11px;
+            font-size: 0.69rem;
         }
     }
 </style>
