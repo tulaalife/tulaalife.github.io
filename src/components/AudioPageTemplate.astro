@@ -2,6 +2,7 @@
 import { guidedAudios } from "../data/generated";
 import Site from "../layouts/Site.astro";
 import CTAButton from "./CTAButton.astro";
+import StoreButtons from "./StoreButtons.astro";
 
 interface Props {
     audio: any;
@@ -108,12 +109,7 @@ const canonical = `/audio/${audio.slug}`;
             <footer class="audio-footer">
                 <div class="app-prompt">{t.listen}</div>
                 <div class="button-group">
-                    <CTAButton
-                        href="https://tulaa.app"
-                        label={t.btnApp}
-                        variant="solid"
-                        size="md"
-                    />
+                    <StoreButtons />
                     <CTAButton
                         href={t.browseLink}
                         label={t.btnBrowse}

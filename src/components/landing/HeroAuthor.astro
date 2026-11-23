@@ -6,57 +6,65 @@ const ui = {
         badge: "Meet Your Yoga Therapist",
         role: "Founder of Tulaa & YogaWithLatika",
         name: "Latika Bissa",
-        bio: "Every routine in Tulaa is clinically designed by Latika to help you relieve pain, balance hormones, and restore calm—safely at home.",
+        bio: "Every routine in Tulaa is clinically designed by Latika to help you relieve pain, balance hormones, and restore daily calm safely at home.",
         siteLabel: "yogawithlatika.com",
         creds: [
             {
                 metric: "Gold Medalist",
-                label: "M.Sc. in Yoga Therapy",
+                label: "M.Sc. Yoga Therapy",
                 icon: "medal",
+                tone: "warm",
             },
             {
                 metric: "12+ Years",
-                label: "Clinical Therapy Experience",
+                label: "Clinical Experience",
                 icon: "exp",
+                tone: "sage",
             },
             {
-                metric: "50 Lakh+ Views",
-                label: "★ 5.0 Rated on Google",
+                metric: "50L+ Views",
+                label: "★ 5.0 Google Rated",
                 icon: "star",
+                tone: "warm",
             },
             {
                 metric: "Specialist",
-                label: "Pain, PCOS & Prenatal Care",
+                label: "Pain, PCOS & Prenatal",
                 icon: "heart",
+                tone: "sage",
             },
         ],
     },
     hi: {
         badge: "आपकी योग थेरेपिस्ट से मिलें",
-        role: "संस्थापक — Tulaa और YogaWithLatika",
+        role: "संस्थापक, Tulaa और YogaWithLatika",
         name: "लतिका बिस्सा",
         bio: "Tulaa का हर योग प्लान लतिका द्वारा वैज्ञानिक रूप से तैयार किया गया है, ताकि आप घर बैठे दर्द, हार्मोनल असंतुलन और तनाव से सुरक्षित राहत पा सकें।",
         siteLabel: "yogawithlatika.com",
         creds: [
             {
-                metric: "स्वर्ण पदक विजेता",
+                metric: "स्वर्ण पदक",
                 label: "M.Sc. योग थेरेपी",
                 icon: "medal",
+                tone: "warm",
             },
             {
-                metric: "12+ वर्ष अनुभव",
-                label: "क्लिनिकल योग चिकित्सा",
+                metric: "12+ वर्ष",
+                label: "क्लिनिकल अनुभव",
                 icon: "exp",
+                tone: "sage",
             },
             {
-                metric: "50 लाख+ व्यूज़",
+                metric: "50L+ व्यूज़",
                 label: "★ 5.0 गूगल रेटिंग",
                 icon: "star",
+                tone: "warm",
             },
             {
-                metric: "विशेषज्ञता",
-                label: "दर्द निवारण, PCOS व प्रेगनेंसी",
+                metric: "विशेषज्ञ",
+                label: "दर्द, PCOS व प्रेगनेंसी",
                 icon: "heart",
+                tone: "sage",
             },
         ],
     },
@@ -100,20 +108,23 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                     >
                         <svg
                             viewBox="0 0 24 24"
-                            width="14"
-                            height="14"
+                            width="15"
+                            height="15"
                             fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
                             aria-hidden="true"
                         >
-                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                fill="currentColor"
+                                fill-opacity="0.16"
+                                stroke="currentColor"
+                                stroke-width="1.8"></circle>
                             <path
-                                d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"
-                            ></path>
-                            <path d="M2 12h20"></path>
+                                d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"
+                                stroke="currentColor"
+                                stroke-width="1.6"></path>
                         </svg>
                         <span>{t.siteLabel}</span>
                         <span class="ext-arrow" aria-hidden="true">↗</span>
@@ -124,56 +135,84 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             <div class="creds-grid">
                 {
                     t.creds.map((c) => (
-                        <div class="cred-item">
+                        <div class:list={["cred-item", `tone-${c.tone}`]}>
                             <div class="cred-icon" aria-hidden="true">
                                 {c.icon === "medal" && (
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <circle cx="12" cy="8" r="6" />
-                                        <path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11" />
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M9.5 14.5L7.5 25l6.5-3.5L20.5 25l-2-10.5"
+                                            fill="currentColor"
+                                            fill-opacity="0.2"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                        <circle
+                                            cx="14"
+                                            cy="10"
+                                            r="6.5"
+                                            fill="currentColor"
+                                            fill-opacity="0.28"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                        />
+                                        <circle
+                                            cx="14"
+                                            cy="10"
+                                            r="2.5"
+                                            fill="currentColor"
+                                        />
                                     </svg>
                                 )}
                                 {c.icon === "exp" && (
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M12 2v20" />
-                                        <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            fill="currentColor"
+                                            fill-opacity="0.2"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                        />
+                                        <path
+                                            d="M14 9v5l3.5 2"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
                                     </svg>
                                 )}
                                 {c.icon === "star" && (
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <polygon
+                                            points="14 3 17.4 9.9 25 11 19.5 16.4 20.8 24 14 20.4 7.2 24 8.5 16.4 3 11 10.6 9.9 14 3"
+                                            fill="currentColor"
+                                            fill-opacity="0.28"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linejoin="round"
+                                        />
                                     </svg>
                                 )}
                                 {c.icon === "heart" && (
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M22.5 15.8c1.7-1.7 3.5-3.7 3.5-6.4A6.4 6.4 0 0 0 19.6 3c-2 0-3.5.6-5.6 2.4C11.9 3.6 10.4 3 8.4 3A6.4 6.4 0 0 0 2 9.4c0 2.7 1.8 4.7 3.5 6.4L14 24l8.5-8.2Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.25"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M14 10v6M11 13h6"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linecap="round"
+                                        />
                                     </svg>
                                 )}
                             </div>
@@ -211,8 +250,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .author-glow {
         position: absolute;
-        width: 340px;
-        height: 340px;
+        width: 360px;
+        height: 360px;
         border-radius: 50%;
         top: -120px;
         right: -80px;
@@ -234,18 +273,24 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .avatar-frame {
+        position: relative;
         flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .avatar-ring {
         position: relative;
-        width: 144px;
-        height: 144px;
+        width: 138px;
+        height: 138px;
         border-radius: 50%;
         overflow: hidden;
         border: 3px solid color-mix(in srgb, var(--primary) 45%, var(--border));
         background: var(--bg-sub);
-        box-shadow: var(--shadow-sm);
+        box-shadow:
+            0 10px 24px -6px var(--primary-glow),
+            var(--shadow-sm);
     }
 
     .avatar-ring img {
@@ -306,6 +351,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             color 0.2s ease;
     }
 
+    .author-website-pill svg {
+        color: var(--primary);
+    }
+
     .author-website-pill:hover {
         transform: translateY(-2px);
         border-color: var(--primary);
@@ -328,22 +377,38 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .cred-item {
+        --cred-color: var(--primary);
+        --cred-soft: var(--primary-soft);
         display: flex;
         align-items: center;
         gap: 10px;
-        padding: 10px 12px;
+        padding: 11px 12px;
         border-radius: var(--radius-md);
         background: var(--bg-card-inner);
         border: 1px solid var(--border);
         min-width: 0;
+        transition:
+            transform 0.2s ease,
+            border-color 0.2s ease;
+    }
+
+    .cred-item.tone-warm {
+        --cred-color: var(--accent-warm);
+        --cred-soft: var(--accent-warm-soft);
+    }
+
+    .cred-item:hover {
+        transform: translateY(-2px);
+        border-color: var(--cred-color);
     }
 
     .cred-icon {
-        width: 34px;
-        height: 34px;
-        border-radius: 10px;
-        background: var(--primary-soft);
-        color: var(--primary);
+        width: 38px;
+        height: 38px;
+        border-radius: 11px;
+        background: var(--cred-soft);
+        color: var(--cred-color);
+        border: 1px solid color-mix(in srgb, var(--cred-color) 25%, transparent);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -351,8 +416,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .cred-icon svg {
-        width: 17px;
-        height: 17px;
+        width: 20px;
+        height: 20px;
     }
 
     .cred-copy {
@@ -360,6 +425,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         flex-direction: column;
         text-align: left;
         min-width: 0;
+        gap: 2px;
     }
 
     .cred-metric {
@@ -367,12 +433,18 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         font-weight: 750;
         color: var(--text-main);
         line-height: 1.2;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .cred-label {
         font-size: 0.74rem;
         color: var(--text-muted);
         line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     @media (max-width: 820px) {
@@ -391,12 +463,12 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            gap: 0.75rem;
+            gap: 0.65rem;
         }
 
         .avatar-ring {
-            width: 92px;
-            height: 92px;
+            width: 88px;
+            height: 88px;
         }
 
         .author-intro {
@@ -436,14 +508,14 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         }
 
         .cred-icon {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
             border-radius: 8px;
         }
 
         .cred-icon svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
         }
 
         .cred-metric {

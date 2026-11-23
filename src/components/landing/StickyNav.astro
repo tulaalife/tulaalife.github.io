@@ -1,48 +1,8 @@
 ---
 const currentLang = Astro.currentLocale || "en";
-
-const pages =
-    currentLang === "hi"
-        ? [
-              { id: "hero", label: "आपका प्लान" },
-              { id: "therapist", label: "योग थेरेपिस्ट" },
-              { id: "app-preview", label: "ऐप अनुभव" },
-              { id: "yoga-library", label: "योग थेरेपी" },
-              { id: "mind-sleep", label: "ध्यान व नींद" },
-              { id: "wellness-suite", label: "दैनिक ट्रैकर्स" },
-              { id: "privacy-trust", label: "100% गोपनीयता" },
-              { id: "sanctuary-footer", label: "डाउनलोड करें" },
-          ]
-        : [
-              { id: "hero", label: "Your Plan" },
-              { id: "therapist", label: "Yoga Therapist" },
-              { id: "app-preview", label: "App Experience" },
-              { id: "yoga-library", label: "Yoga Therapy" },
-              { id: "mind-sleep", label: "Mind & Sleep" },
-              { id: "wellness-suite", label: "Daily Trackers" },
-              { id: "privacy-trust", label: "100% Private" },
-              { id: "sanctuary-footer", label: "Get Tulaa" },
-          ];
-
 const scrollHintLabel =
-    currentLang === "hi" ? "आगे जानने के लिए स्क्रॉल करें" : "Scroll to explore";
+    currentLang === "hi" ? "नीचे स्क्रॉल करें" : "Scroll down";
 ---
-
-<aside class="story-pager" id="story-pager" aria-label="Page navigation">
-    {
-        pages.map((p, idx) => (
-            <button
-                type="button"
-                class:list={["pager-dot", { active: idx === 0 }]}
-                data-target={p.id}
-                aria-label={p.label}
-            >
-                <span class="pager-tooltip">{p.label}</span>
-                <span class="pager-pip" />
-            </button>
-        ))
-    }
-</aside>
 
 <button
     type="button"
@@ -50,15 +10,14 @@ const scrollHintLabel =
     id="scroll-more-cue"
     aria-label={scrollHintLabel}
 >
-    <span class="cue-text">{scrollHintLabel}</span>
     <svg
         class="cue-chevron"
         viewBox="0 0 24 24"
-        width="15"
-        height="15"
+        width="20"
+        height="20"
         fill="none"
         stroke="currentColor"
-        stroke-width="2.2"
+        stroke-width="1.8"
         stroke-linecap="round"
         stroke-linejoin="round"
         aria-hidden="true"
@@ -69,40 +28,32 @@ const scrollHintLabel =
 
 <script>
     document.addEventListener("astro:page-load", () => {
-        const pager = document.getElementById("story-pager");
         const scrollCue = document.getElementById("scroll-more-cue");
         const scrollContainer = document.getElementById(
             "main-scroll-container",
         );
-        if (!pager || !scrollContainer) return;
+        if (!scrollCue || !scrollContainer) return;
 
-        const dots = Array.from(
-            pager.querySelectorAll(".pager-dot"),
-        ) as HTMLButtonElement[];
-        const sections = dots
-            .map((btn) => {
-                const id = btn.getAttribute("data-target");
-                return id ? document.getElementById(id) : null;
-            })
-            .filter(Boolean) as HTMLElement[];
+        const sections = Array.from(
+            scrollContainer.querySelectorAll(".scroll-section"),
+        ) as HTMLElement[];
 
         let currentSectionIndex = 0;
+        let idleTimer: ReturnType<typeof setTimeout> | null = null;
 
-        dots.forEach((btn, idx) => {
-            btn.addEventListener("click", () => {
-                const id = btn.getAttribute("data-target");
-                const target = id ? document.getElementById(id) : null;
-                if (target) {
-                    currentSectionIndex = idx;
-                    target.scrollIntoView({
-                        behavior: "smooth",
-                        block: "start",
-                    });
+        function resetIdleTimer() {
+            if (!scrollCue) return;
+            scrollCue.classList.remove("is-idle-moving");
+            if (idleTimer) clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => {
+                if (!scrollCue.classList.contains("is-hidden")) {
+                    scrollCue.classList.add("is-idle-moving");
                 }
-            });
-        });
+            }, 5000);
+        }
 
-        scrollCue?.addEventListener("click", () => {
+        scrollCue.addEventListener("click", () => {
+            resetIdleTimer();
             const nextSection = sections[currentSectionIndex + 1];
             if (nextSection) {
                 nextSection.scrollIntoView({
@@ -116,24 +67,18 @@ const scrollHintLabel =
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        const id = entry.target.id;
                         const activeIdx = sections.findIndex(
-                            (s) => s.id === id,
+                            (s) => s === entry.target,
                         );
                         if (activeIdx !== -1) {
                             currentSectionIndex = activeIdx;
                         }
-                        dots.forEach((dot) => {
-                            dot.classList.toggle(
-                                "active",
-                                dot.getAttribute("data-target") === id,
-                            );
-                        });
-                        if (scrollCue) {
-                            const isLast =
-                                id === "sanctuary-footer" ||
-                                currentSectionIndex === sections.length - 1;
-                            scrollCue.classList.toggle("is-hidden", isLast);
+                        const isLast =
+                            entry.target.id === "sanctuary-footer" ||
+                            currentSectionIndex === sections.length - 1;
+                        scrollCue.classList.toggle("is-hidden", isLast);
+                        if (isLast) {
+                            scrollCue.classList.remove("is-idle-moving");
                         }
                     }
                 });
@@ -145,155 +90,77 @@ const scrollHintLabel =
         );
 
         sections.forEach((sec) => observer.observe(sec));
+
+        const activityEvents = [
+            "scroll",
+            "wheel",
+            "touchstart",
+            "touchmove",
+            "pointerdown",
+            "keydown",
+            "click",
+        ];
+        activityEvents.forEach((evt) => {
+            scrollContainer.addEventListener(evt, resetIdleTimer, {
+                passive: true,
+            });
+            window.addEventListener(evt, resetIdleTimer, { passive: true });
+        });
+
+        resetIdleTimer();
     });
 </script>
 
 <style>
-    .story-pager {
-        position: fixed;
-        right: clamp(14px, 2.2vw, 28px);
-        top: 50%;
-        transform: translateY(-50%);
-        z-index: 80;
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px 7px;
-        border-radius: 999px;
-        background: color-mix(in srgb, var(--bg-elevated) 75%, transparent);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid var(--border);
-        box-shadow: var(--shadow-sm);
-    }
-
-    .pager-dot {
-        position: relative;
-        width: 18px;
-        height: 18px;
-        border: none;
-        background: none;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
-
-    .pager-pip {
-        width: 7px;
-        height: 7px;
-        border-radius: 999px;
-        background: color-mix(in srgb, var(--text-muted) 45%, transparent);
-        transition:
-            transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
-            background-color 0.25s ease,
-            height 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .pager-dot:hover .pager-pip {
-        background: var(--primary);
-        transform: scale(1.25);
-    }
-
-    .pager-dot.active .pager-pip {
-        background: var(--primary);
-        height: 16px;
-        width: 7px;
-    }
-
-    .pager-tooltip {
-        position: absolute;
-        right: 28px;
-        white-space: nowrap;
-        padding: 4px 10px;
-        border-radius: 99px;
-        background: var(--bg-elevated);
-        border: 1px solid var(--border-strong);
-        color: var(--text-main);
-        font-size: 0.74rem;
-        font-weight: 600;
-        box-shadow: var(--shadow-sm);
-        opacity: 0;
-        pointer-events: none;
-        transform: translateX(6px);
-        transition:
-            opacity 0.2s ease,
-            transform 0.2s ease;
-    }
-
-    .pager-dot:hover .pager-tooltip {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    /* Subtle Bottom Scroll Indicator (Mobile & Desktop) */
     .scroll-more-cue {
         position: fixed;
-        bottom: clamp(10px, 1.8vh, 18px);
+        bottom: clamp(8px, 1.5vh, 14px);
         left: 50%;
         transform: translateX(-50%);
         z-index: 75;
         display: inline-flex;
         align-items: center;
-        gap: 5px;
-        padding: 5px 13px;
-        border-radius: 999px;
-        background: color-mix(in srgb, var(--bg-elevated) 82%, transparent);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border: 1px solid var(--border);
+        justify-content: center;
+        width: 32px;
+        height: 24px;
+        padding: 0;
+        border: none;
+        background: transparent;
         color: var(--text-muted);
-        font-family: inherit;
-        font-size: 0.73rem;
-        font-weight: 600;
-        letter-spacing: 0.02em;
+        opacity: 0.32;
         cursor: pointer;
-        box-shadow: var(--shadow-sm);
         transition:
-            opacity 0.3s ease,
-            transform 0.3s ease,
-            color 0.2s ease,
-            border-color 0.2s ease;
+            opacity 0.35s ease,
+            transform 0.35s ease,
+            color 0.2s ease;
     }
 
     .scroll-more-cue:hover {
+        opacity: 0.75;
         color: var(--primary);
-        border-color: var(--primary);
+    }
+
+    .scroll-more-cue.is-idle-moving {
+        opacity: 0.58;
+    }
+
+    .scroll-more-cue.is-idle-moving .cue-chevron {
+        animation: subtleIdleFloat 2.2s ease-in-out infinite;
     }
 
     .scroll-more-cue.is-hidden {
-        opacity: 0;
+        opacity: 0 !important;
         pointer-events: none;
-        transform: translateX(-50%) translateY(10px);
+        transform: translateX(-50%) translateY(8px);
     }
 
-    .cue-chevron {
-        color: var(--primary);
-        animation: gentleBounce 2.2s ease-in-out infinite;
-    }
-
-    @keyframes gentleBounce {
+    @keyframes subtleIdleFloat {
         0%,
         100% {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
         50% {
-            transform: translateY(2px);
-        }
-    }
-
-    @media (max-width: 960px) {
-        .story-pager {
-            display: none;
-        }
-    }
-
-    @media (max-width: 680px) {
-        .scroll-more-cue {
-            bottom: 8px;
-            padding: 4px 11px;
-            font-size: 0.69rem;
+            transform: translateY(3px);
         }
     }
 </style>

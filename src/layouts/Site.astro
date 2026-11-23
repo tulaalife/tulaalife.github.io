@@ -47,6 +47,7 @@ const ui = {
         terms: "Terms",
         contact: "Contact",
         download: "Get App",
+        back: "Back",
         yoga: "Yoga Plans",
         audio: "Sleep & Audio",
         blog: "Articles",
@@ -57,6 +58,7 @@ const ui = {
         terms: "शर्तें",
         contact: "संपर्क",
         download: "ऐप पाएं",
+        back: "वापस",
         yoga: "योग प्लान",
         audio: "ध्यान ऑडियो",
         blog: "ब्लॉग",
@@ -86,6 +88,7 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
 <html
     lang={currentLang}
     data-theme="light"
+    data-platform="apple"
     class={isLandingPage ? "is-landing" : ""}
 >
     <head>
@@ -136,6 +139,17 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 const metaColor = document.getElementById("theme-color-meta");
                 const bgColors = { light: "#fbf9f5", dark: "#111915" };
 
+                function detectPlatform() {
+                    const ua = navigator.userAgent || "";
+                    if (/android/i.test(ua)) {
+                        root.dataset.platform = "android";
+                    } else if (/iPad|iPhone|iPod|Macintosh/i.test(ua)) {
+                        root.dataset.platform = "apple";
+                    } else {
+                        root.dataset.platform = "other";
+                    }
+                }
+
                 function getSystemTheme() {
                     return window.matchMedia("(prefers-color-scheme: dark)")
                         .matches
@@ -151,6 +165,7 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 }
 
                 function init() {
+                    detectPlatform();
                     const hasBeenRedirected = localStorage.getItem(
                         "tulaa-lang-detected",
                     );
@@ -298,6 +313,33 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 justify-content: space-between;
                 height: 100%;
                 padding: 0 clamp(16px, 4vw, 28px);
+            }
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+            .header-back-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 5px 11px;
+                border-radius: 99px;
+                background: var(--bg-card-inner);
+                border: 1px solid var(--border);
+                color: var(--text-main);
+                font-family: inherit;
+                font-size: 0.78rem;
+                font-weight: 650;
+                cursor: pointer;
+                transition:
+                    background 0.2s ease,
+                    border-color 0.2s ease,
+                    color 0.2s ease;
+            }
+            .header-back-btn:hover {
+                border-color: var(--primary);
+                color: var(--primary);
             }
             .logo {
                 display: flex;
@@ -499,15 +541,42 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
     <body>
         <header class="site-header">
             <div class="container inner">
-                <a href={getLink("/")} class="logo">
-                    <img
-                        src="/assets/icons/logo_64.webp"
-                        alt="Tulaa Logo"
-                        width="30"
-                        height="30"
-                    />
-                    <span>Tulaa</span>
-                </a>
+                <div class="header-left">
+                    {
+                        !isLandingPage && (
+                            <a
+                                href={getLink("/")}
+                                class="header-back-btn"
+                                data-smart-back="true"
+                                aria-label={t.back}
+                            >
+                                <svg
+                                    viewBox="0 0 24 24"
+                                    width="14"
+                                    height="14"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2.2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <path d="m15 18-6-6 6-6" />
+                                </svg>
+                                <span>{t.back}</span>
+                            </a>
+                        )
+                    }
+                    <a href={getLink("/")} class="logo">
+                        <img
+                            src="/assets/icons/logo_64.webp"
+                            alt="Tulaa Logo"
+                            width="30"
+                            height="30"
+                        />
+                        <span>Tulaa</span>
+                    </a>
+                </div>
                 <div class="header-actions">
                     <button
                         id="nav-download-btn"
@@ -693,6 +762,47 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 }, 2200);
             };
 
+            function getCleanPath(p: string) {
+                return p.replace(/\/$/, "") || "/";
+            }
+
+            function saveCurrentScrollState() {
+                const pathKey = getCleanPath(window.location.pathname);
+                const scrollContainer = document.getElementById(
+                    "main-scroll-container",
+                );
+                const isLanding =
+                    document.documentElement.classList.contains("is-landing");
+
+                const state: Record<string, number> = {
+                    mainTop:
+                        isLanding && scrollContainer
+                            ? scrollContainer.scrollTop
+                            : window.scrollY,
+                };
+
+                document
+                    .querySelectorAll(".carousel-track")
+                    .forEach((track, idx) => {
+                        const id = track.id || `track-${idx}`;
+                        state[id] = (track as HTMLElement).scrollLeft;
+                    });
+
+                try {
+                    sessionStorage.setItem(
+                        `tulaa-scroll:${pathKey}`,
+                        JSON.stringify(state),
+                    );
+                } catch {}
+            }
+
+            document.addEventListener("astro:before-preparation", () => {
+                saveCurrentScrollState();
+                try {
+                    sessionStorage.setItem("tulaa-internal-nav", "1");
+                } catch {}
+            });
+
             document.addEventListener("astro:page-load", () => {
                 const themeBtn = document.getElementById("themeBtn");
                 if (themeBtn) {
@@ -711,10 +821,83 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 );
                 const isLanding =
                     document.documentElement.classList.contains("is-landing");
+                const pathKey = getCleanPath(window.location.pathname);
+
+                // Restore saved scroll position for custom scroll container & carousels
+                try {
+                    const rawScroll = sessionStorage.getItem(
+                        `tulaa-scroll:${pathKey}`,
+                    );
+                    if (rawScroll) {
+                        const savedScroll = JSON.parse(rawScroll);
+                        if (
+                            isLanding &&
+                            scrollContainer &&
+                            typeof savedScroll.mainTop === "number" &&
+                            savedScroll.mainTop > 0
+                        ) {
+                            scrollContainer.style.scrollBehavior = "auto";
+                            scrollContainer.scrollTop = savedScroll.mainTop;
+                            requestAnimationFrame(() => {
+                                scrollContainer.style.scrollBehavior = "smooth";
+                            });
+                        }
+                        document
+                            .querySelectorAll(".carousel-track")
+                            .forEach((track, idx) => {
+                                const id = track.id || `track-${idx}`;
+                                if (typeof savedScroll[id] === "number") {
+                                    (track as HTMLElement).scrollLeft =
+                                        savedScroll[id];
+                                }
+                            });
+                    }
+                } catch {}
+
+                // Continuously save scroll position on landing page
+                if (isLanding && scrollContainer) {
+                    scrollContainer.addEventListener(
+                        "scroll",
+                        saveCurrentScrollState,
+                        { passive: true },
+                    );
+                }
+                document
+                    .querySelectorAll(".carousel-track")
+                    .forEach((track) => {
+                        track.addEventListener(
+                            "scroll",
+                            saveCurrentScrollState,
+                            { passive: true },
+                        );
+                    });
+
+                // Smart back navigation for .back-link and [data-smart-back]
+                document
+                    .querySelectorAll(".back-link, [data-smart-back]")
+                    .forEach((backEl) => {
+                        backEl.addEventListener("click", (e) => {
+                            const hasInternalNav =
+                                sessionStorage.getItem("tulaa-internal-nav") ===
+                                "1";
+                            const sameOriginReferrer =
+                                document.referrer &&
+                                document.referrer.startsWith(
+                                    window.location.origin,
+                                );
+                            if (
+                                (hasInternalNav || sameOriginReferrer) &&
+                                window.history.length > 1
+                            ) {
+                                e.preventDefault();
+                                window.history.back();
+                            }
+                        });
+                    });
 
                 const observerOptions = {
                     root: isLanding ? scrollContainer : null,
-                    threshold: 0.25,
+                    threshold: 0.2,
                 };
 
                 const observer = new IntersectionObserver((entries) => {

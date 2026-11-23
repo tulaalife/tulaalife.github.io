@@ -1,6 +1,7 @@
 ---
 import Site from "../layouts/Site.astro";
 import CTAButton from "./CTAButton.astro";
+import StoreButtons from "./StoreButtons.astro";
 import type { YogaPlanPreview } from "../data/types";
 
 interface Props {
@@ -273,12 +274,7 @@ const structuredData = {
 
             <footer class="plan-footer">
                 <div class="button-group">
-                    <CTAButton
-                        href="https://apps.apple.com/app/id6748626498"
-                        label={labels.openApp}
-                        variant="solid"
-                        size="md"
-                    />
+                    <StoreButtons />
 
                     <CTAButton
                         href={finalBrowseLink}

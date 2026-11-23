@@ -1,7 +1,7 @@
 export const YOGA_UI = {
     en: {
         title: "Yoga Plans",
-        description: "Expert-guided sequences for every need — from pain relief to prenatal care.",
+        description: "Expert-guided routines for pain relief, hormonal health, and prenatal care.",
         filterLabel: "Browse by Lifestyle:",
         filterAll: "All Plans",
         filterGeneral: "General Wellness",
@@ -14,12 +14,12 @@ export const YOGA_UI = {
         metaPage: "Page",
         heroTitleTop: "Yoga for Every Body,",
         heroTitleBottom: "At Every Stage.",
-        heroBody: "Tailored routines for neck & back stiffness, PCOS, prenatal care, thyroid, diabetes, and joint mobility—with zero paywalls.",
+        heroBody: "Targeted routines for neck and back stiffness, PCOS, pregnancy, thyroid, diabetes, and joint mobility.",
         ctaLabel: "Explore All Yoga Plans",
     },
     hi: {
         title: "योग प्लान",
-        description: "हर ज़रूरत के लिए विशेषज्ञ द्वारा निर्देशित अभ्यास — दर्द निवारण से प्रसव पूर्व देखभाल तक।",
+        description: "दर्द निवारण, हार्मोन संतुलन और गर्भावस्था के लिए विशेषज्ञ द्वारा निर्देशित अभ्यास।",
         filterLabel: "लाइफस्टाइल के अनुसार चुनें:",
         filterAll: "सभी प्लान",
         filterGeneral: "स्वस्थ जीवन",
@@ -32,7 +32,7 @@ export const YOGA_UI = {
         metaPage: "पेज",
         heroTitleTop: "हर शरीर के लिए योग,",
         heroTitleBottom: "उम्र और ज़रूरत के हिसाब से।",
-        heroBody: "गर्दन व कमर दर्द, PCOS, प्रेगनेंसी, थायरॉइड, डायबिटीज और जोड़ों के दर्द के लिए खास तौर पर तैयार किए गए रूटीन।",
+        heroBody: "गर्दन व कमर दर्द, PCOS, प्रेगनेंसी, थायरॉइड, डायबिटीज और जोड़ों के दर्द के लिए सरल और सुरक्षित रूटीन।",
         ctaLabel: "सभी योग प्लान देखें",
     },
 } as const;
@@ -72,10 +72,10 @@ export interface FinderBranch {
 export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
     {
         id: "pain",
-        enLabel: "Body Pain & Stiffness",
-        hiLabel: "शरीर दर्द और जकड़न",
-        enSub: "Back, neck, knees, joints & posture",
-        hiSub: "कमर, गर्दन, घुटने और जोड़ों का दर्द",
+        enLabel: "Body Pain & Chair Mobility",
+        hiLabel: "शरीर दर्द और चेयर मोबिलिटी",
+        enSub: "Back, neck, joints, posture & senior chair yoga",
+        hiSub: "कमर, गर्दन, जोड़ और बुजुर्गों के लिए चेयर योग",
         enPrompt: "Where do you feel pain or stiffness?",
         hiPrompt: "आपको कहाँ दर्द या जकड़न महसूस होती है?",
         enTitleTop: "Where do you feel",
@@ -110,6 +110,7 @@ export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
             { key: "pain:chest", en: "Chest & Breathing", hi: "छाती और श्वास" },
             { key: "pain:face", en: "Facial Tension & Glow", hi: "फेस योग और ग्लो" },
             { key: "pain:full_body", en: "Full Body Stiffness", hi: "पूरे शरीर की जकड़न" },
+            { key: "mobility:mobility", en: "Chair Yoga & Senior Mobility", hi: "चेयर योग और जोड़ों की गतिशीलता" },
         ],
     },
     {
@@ -150,7 +151,7 @@ export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
         id: "pregnancy",
         enLabel: "Pregnancy & Postnatal",
         hiLabel: "गर्भावस्था और डिलीवरी के बाद",
-        enSub: "Trimester-wise prenatal & postpartum recovery",
+        enSub: "Trimester-wise prenatal & postpartum care",
         hiSub: "तिमाही के अनुसार सुरक्षित प्रसव-पूर्व और पोस्टनेटल योग",
         enPrompt: "Select your current stage for safe, guided care:",
         hiPrompt: "सुरक्षित अभ्यास के लिए अपना वर्तमान चरण चुनें:",
@@ -203,32 +204,6 @@ export const PLAN_FINDER_BRANCHES: readonly FinderBranch[] = [
             { key: "general:general_health_wellness", en: "Daily Morning Full-Body Energy", hi: "रोज़ाना सुबह की ताज़गी और ऊर्जा" },
             { key: "general:general_strength_correction", en: "Core Strength & Straight Posture", hi: "कोर मजबूती और सीधा पॉश्चर" },
             { key: "general:general_energy_focus", en: "Instant Focus & Concentration", hi: "एकाग्रता और मानसिक फोकस" },
-        ],
-    },
-    {
-        id: "mobility",
-        enLabel: "Seniors & Chair Mobility",
-        hiLabel: "बुजुर्ग और चेयर योग",
-        enSub: "Gentle seated routines & joint mobility",
-        hiSub: "कुर्सी पर बैठकर किए जाने वाले सुरक्षित और आसान अभ्यास",
-        enPrompt: "Gentle, supported movement for every age:",
-        hiPrompt: "हर उम्र के लिए कोमल और सुरक्षित गतिशीलता:",
-        enTitleTop: "Gentle seated mobility",
-        enTitleBottom: "for every age.",
-        hiTitleTop: "हर उम्र के लिए सुरक्षित",
-        hiTitleBottom: "चेयर योग और गतिशीलता।",
-        enHighlights: [
-            "Seated & Joint-Safe Movements",
-            "Clear Voice & Video Guidance",
-            "No Sign-Up or Phone Number Needed",
-        ],
-        hiHighlights: [
-            "कुर्सी पर बैठकर सुरक्षित अभ्यास",
-            "स्पष्ट ऑडियो और वीडियो मार्गदर्शन",
-            "बिना मोबाइल नंबर या लॉगिन",
-        ],
-        options: [
-            { key: "mobility:mobility", en: "Chair Yoga & Joint Mobility", hi: "चेयर योग और जोड़ों की गतिशीलता" },
         ],
     },
 ] as const;

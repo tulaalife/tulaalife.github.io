@@ -6,7 +6,7 @@ const ui = {
         badge: "4-in-1 On-Device Health Suite",
         titleTop: "Daily Trackers,",
         titleBottom: "In One Calm Space.",
-        body: "Replace cluttered single-purpose apps. Log your cycle, fasting windows, water intake, and daily mood—stored 100% locally on your phone.",
+        body: "Replace cluttered single-purpose apps. Log your cycle, fasting windows, water intake, and daily mood locally on your phone.",
         tools: [
             {
                 id: "cycle",
@@ -46,7 +46,7 @@ const ui = {
         badge: "4-इन-1 ऑन-डिवाइस हेल्थ ट्रैकर्स",
         titleTop: "दैनिक सेहत ट्रैकर्स,",
         titleBottom: "एक ही शांत ऐप में।",
-        body: "अलग-अलग ऐप्स की जगह एक ही शांत स्थान पर पीरियड डायरी, फास्टिंग टाइमर, वॉटर गोल और मूड ट्रैक करें — 100% आपके फोन में सुरक्षित।",
+        body: "अलग-अलग ऐप्स की जगह एक ही शांत स्थान पर पीरियड डायरी, फास्टिंग टाइमर, वॉटर गोल और मूड ट्रैक करें। सारा डेटा 100% आपके फोन में सुरक्षित रहता है।",
         tools: [
             {
                 id: "cycle",
@@ -91,7 +91,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     <div class="content-wrapper">
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
-                <span class="badge-small">{t.badge}</span>
+                <span class="badge-small">
+                    <span aria-hidden="true">✦</span>
+                    {t.badge}
+                </span>
                 <h2 class="section-title">
                     {t.titleTop}{" "}
                     <span class="text-gradient">{t.titleBottom}</span>
@@ -110,70 +113,83 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                                 `accent-${tool.accent}`,
                             ]}
                         >
+                            <div class="bento-ambient-glow" aria-hidden="true" />
+
                             <div class="bento-top">
                                 <div class="bento-icon-wrap" aria-hidden="true">
                                     {tool.id === "cycle" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
+                                        <svg viewBox="0 0 28 28" fill="none">
                                             <circle
-                                                cx="12"
-                                                cy="12"
-                                                r="9"
-                                                stroke-dasharray="42 16"
+                                                cx="14"
+                                                cy="14"
+                                                r="10"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-dasharray="45 18"
                                             />
-                                            <circle
-                                                cx="12"
-                                                cy="12"
-                                                r="4"
+                                            <path
+                                                d="M14 7C16.5 11 16.5 15 14 19C11.5 15 11.5 11 14 7Z"
                                                 fill="currentColor"
-                                                fill-opacity="0.2"
+                                                fill-opacity="0.32"
+                                                stroke="currentColor"
+                                                stroke-width="1.6"
                                             />
                                         </svg>
                                     )}
                                     {tool.id === "fast" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <circle cx="12" cy="13" r="8" />
-                                            <path d="M12 9v4l2.5 2.5" />
-                                            <path d="M9 3h6" />
+                                        <svg viewBox="0 0 28 28" fill="none">
+                                            <circle
+                                                cx="14"
+                                                cy="15"
+                                                r="9"
+                                                fill="currentColor"
+                                                fill-opacity="0.22"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                            />
+                                            <path
+                                                d="M14 10.5V15l3 2.5M10.5 3.5h7"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                                stroke-linejoin="round"
+                                            />
                                         </svg>
                                     )}
                                     {tool.id === "water" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+                                        <svg viewBox="0 0 28 28" fill="none">
+                                            <path
+                                                d="M14 3.5l6.4 6.4a9 9 0 1 1-12.8 0L14 3.5z"
+                                                fill="currentColor"
+                                                fill-opacity="0.24"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linejoin="round"
+                                            />
+                                            <path
+                                                d="M10.5 17.5a4.5 4.5 0 0 0 4.5 3"
+                                                stroke="currentColor"
+                                                stroke-width="1.8"
+                                                stroke-linecap="round"
+                                            />
                                         </svg>
                                     )}
                                     {tool.id === "mood" && (
-                                        <svg
-                                            viewBox="0 0 24 24"
-                                            fill="none"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        >
-                                            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" />
-                                            <path d="M19 3v4" />
-                                            <path d="M21 5h-4" />
+                                        <svg viewBox="0 0 28 28" fill="none">
+                                            <path
+                                                d="M14.5 4.5a7.5 7.5 0 0 0 9.5 9.5 9.5 9.5 0 1 1-9.5-9.5Z"
+                                                fill="currentColor"
+                                                fill-opacity="0.24"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linejoin="round"
+                                            />
+                                            <path
+                                                d="M21 4v5M23.5 6.5h-5"
+                                                stroke="currentColor"
+                                                stroke-width="2"
+                                                stroke-linecap="round"
+                                            />
                                         </svg>
                                     )}
                                 </div>
@@ -280,15 +296,17 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .bento-grid {
         display: grid;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 14px;
     }
 
     .bento-card {
         --tool-color: var(--primary);
         --tool-soft: var(--primary-soft);
+        position: relative;
+        overflow: hidden;
         border-radius: var(--radius-lg);
-        padding: clamp(1rem, 2vw, 1.4rem);
+        padding: clamp(1rem, 2vw, 1.45rem);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
@@ -298,6 +316,22 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             border-color 0.25s ease;
     }
 
+    .bento-ambient-glow {
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: radial-gradient(
+            circle,
+            var(--tool-soft) 0%,
+            transparent 70%
+        );
+        pointer-events: none;
+        z-index: 0;
+    }
+
     .bento-card:hover {
         transform: translateY(-3px);
         border-color: var(--tool-color);
@@ -305,7 +339,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .bento-card.accent-rose {
         --tool-color: oklch(64% 0.14 22);
-        --tool-soft: rgba(225, 110, 115, 0.14);
+        --tool-soft: rgba(225, 110, 115, 0.16);
     }
 
     .bento-card.accent-sage {
@@ -315,7 +349,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
     .bento-card.accent-aqua {
         --tool-color: oklch(64% 0.11 215);
-        --tool-soft: rgba(80, 175, 205, 0.15);
+        --tool-soft: rgba(80, 175, 205, 0.16);
     }
 
     .bento-card.accent-amber {
@@ -324,6 +358,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .bento-top {
+        position: relative;
+        z-index: 2;
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -331,21 +367,31 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .bento-icon-wrap {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
-        background: var(--tool-soft);
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        background: linear-gradient(
+            145deg,
+            color-mix(in srgb, var(--tool-soft) 90%, #ffffff 10%),
+            var(--tool-soft)
+        );
         color: var(--tool-color);
         display: flex;
         align-items: center;
         justify-content: center;
         flex-shrink: 0;
-        border: 1px solid color-mix(in srgb, var(--tool-color) 25%, transparent);
+        border: 1px solid color-mix(in srgb, var(--tool-color) 28%, transparent);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        transition: transform 0.25s ease;
+    }
+
+    .bento-card:hover .bento-icon-wrap {
+        transform: scale(1.06) rotate(-2deg);
     }
 
     .bento-icon-wrap svg {
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
     }
 
     .bento-widget-pill {
@@ -369,6 +415,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .bento-visual-bar {
+        position: relative;
+        z-index: 2;
         width: 100%;
         padding: 4px 0;
     }
@@ -389,6 +437,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     .phase-seg.active {
         background: var(--tool-color);
         border-color: var(--tool-color);
+        box-shadow: 0 0 10px var(--tool-soft);
     }
 
     .mini-progress-track {
@@ -440,6 +489,8 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     }
 
     .bento-copy {
+        position: relative;
+        z-index: 2;
         display: flex;
         flex-direction: column;
         gap: 3px;
@@ -460,24 +511,13 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         line-height: 1.38;
     }
 
-    .cta-wrapper {
-        display: flex;
-        justify-content: flex-start;
-    }
-
-    .cta-wrapper :global(.cta-link) {
-        margin-top: 0;
-        padding: 11px 24px;
-        font-size: 0.95rem;
-    }
-
     @media (max-width: 680px) {
         .section-title {
             font-size: clamp(1.65rem, 6vw, 2.15rem);
         }
 
         .bento-grid {
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 10px;
         }
 
@@ -488,14 +528,14 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         }
 
         .bento-icon-wrap {
-            width: 32px;
-            height: 32px;
-            border-radius: 9px;
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
         }
 
         .bento-icon-wrap svg {
-            width: 16px;
-            height: 16px;
+            width: 17px;
+            height: 17px;
         }
 
         .widget-metric {

@@ -7,6 +7,7 @@ import YogaFeatures from "../../components/landing/YogaFeatures.astro";
 import WellnessTools from "../../components/landing/WellnessTools.astro";
 import MindAndMood from "../../components/landing/MindAndMood.astro";
 import PrivacyTrust from "../../components/landing/PrivacyTrust.astro";
+import Reviews from "../../components/landing/Reviews.astro";
 import HeroVideo from "../../components/landing/HeroVideo.astro";
 
 const title = "Tulaa (तुला): योग थेरेपी, ध्यान, नींद व निजी हेल्थ ट्रैकर";
@@ -53,6 +54,7 @@ const structuredData = {
     <MindAndMood />
     <WellnessTools />
     <PrivacyTrust />
+    <Reviews />
     <script
         type="application/ld+json"
         set:html={JSON.stringify(structuredData)}

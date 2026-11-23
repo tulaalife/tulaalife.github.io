@@ -9,7 +9,7 @@ const ui = {
         titleTop: "Your Daily",
         titleBottom: "Wellness Sanctuary.",
         subline:
-            "Heal pain naturally, sleep deeper, and track your body's rhythms in peace—guided by <strong>Gold Medalist Yoga Therapist Latika Bissa</strong>.",
+            "Heal pain naturally, sleep deeper, and track your health in peace with <strong>Gold Medalist Yoga Therapist Latika Bissa</strong>.",
         pills: [
             "✦ 30+ Therapeutic Plans",
             "✦ Offline Video & Audio",
@@ -21,7 +21,7 @@ const ui = {
         titleTop: "आपका दैनिक",
         titleBottom: "स्वास्थ्य और योग साथी।",
         subline:
-            "प्राकृतिक रूप से दर्द से राहत पाएं, गहरी नींद सोएं और अपनी सेहत को ट्रैक करें — <strong>स्वर्ण पदक विजेता लतिका बिस्सा</strong> के मार्गदर्शन में।",
+            "<strong>स्वर्ण पदक विजेता लतिका बिस्सा</strong> के मार्गदर्शन में प्राकृतिक रूप से दर्द से राहत पाएं, गहरी नींद सोएं और अपनी सेहत ट्रैक करें।",
         pills: [
             "✦ 30+ योग थेरेपी प्लान्स",
             "✦ ऑफलाइन वीडियो व ऑडियो",
@@ -43,6 +43,7 @@ const { subline = t.subline } = Astro.props;
 <div class="footer-card-container">
     <div class="footer-card premium-gloss-surface">
         <div class="footer-glow-orb" aria-hidden="true"></div>
+
         <div class="section-header-center content">
             <div class="sanctuary-emblem">
                 <img
@@ -116,13 +117,15 @@ const { subline = t.subline } = Astro.props;
     }
 
     .sanctuary-emblem {
-        width: 52px;
-        height: 52px;
+        width: 54px;
+        height: 54px;
         border-radius: 16px;
         padding: 4px;
         background: var(--bg-card-inner);
         border: 1px solid var(--border-strong);
-        box-shadow: var(--shadow-sm);
+        box-shadow:
+            0 8px 20px -4px var(--primary-glow),
+            var(--shadow-sm);
         display: flex;
         align-items: center;
         justify-content: center;

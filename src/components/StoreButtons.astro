@@ -47,6 +47,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
 <div class:list={["store-buttons", { centered, compact }, className]}>
     <a
         href={iosHref}
+        data-store="ios"
         class:list={["store-btn", { inverted }]}
         target="_blank"
         rel="noopener noreferrer"
@@ -55,9 +56,9 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         <img
             src={iosIconSrc}
             alt=""
-            class="store-btn__icon"
-            width="22"
-            height="22"
+            class="store-btn__icon store-icon-ios"
+            width="20"
+            height="20"
             aria-hidden="true"
         />
         <span class="store-btn__text">
@@ -68,6 +69,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
 
     <a
         href={androidHref}
+        data-store="android"
         class:list={["store-btn", { inverted }]}
         target="_blank"
         rel="noopener noreferrer"
@@ -76,9 +78,9 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         <img
             src={androidIconSrc}
             alt=""
-            class="store-btn__icon"
-            width="22"
-            height="22"
+            class="store-btn__icon store-icon-android"
+            width="20"
+            height="20"
             aria-hidden="true"
         />
         <span class="store-btn__text">
@@ -93,6 +95,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         display: flex;
         gap: 10px;
         flex-wrap: wrap;
+        align-items: center;
         width: 100%;
     }
 
@@ -100,6 +103,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         justify-content: center;
     }
 
+    /* Base Primary Store Button style */
     .store-btn {
         --btn-h: 48px;
         height: var(--btn-h);
@@ -108,7 +112,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         align-items: center;
         justify-content: center;
         gap: 10px;
-        padding: 0 18px;
+        padding: 0 20px;
         text-decoration: none;
         white-space: nowrap;
         font-family: var(--font-sans-en);
@@ -116,25 +120,59 @@ const androidIconSrc = "/assets/icons/playstore.svg";
             transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
             box-shadow 0.2s ease,
             border-color 0.2s ease,
-            background 0.2s ease;
+            background 0.2s ease,
+            opacity 0.2s ease;
         flex: 1 1 138px;
-        max-width: 176px;
-        background: linear-gradient(180deg, #1b241f 0%, #111714 100%);
+        max-width: 182px;
+        background: var(--primary);
         color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.22);
-        box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.25);
+        border: 1px solid color-mix(in srgb, var(--primary) 85%, #ffffff 15%);
+        box-shadow: 0 8px 20px -4px var(--primary-glow);
     }
 
     :global([data-theme="dark"]) .store-btn {
-        background: linear-gradient(
-            180deg,
-            rgba(48, 68, 57, 0.95) 0%,
-            rgba(31, 45, 38, 0.95) 100%
-        );
-        border: 1px solid rgba(155, 225, 185, 0.35);
-        box-shadow:
-            0 6px 20px -4px rgba(0, 0, 0, 0.45),
-            inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        color: oklch(14% 0.02 155);
+        font-weight: 600;
+    }
+
+    :global([data-theme="dark"]) .store-btn .store-icon-ios {
+        filter: brightness(0.12);
+    }
+
+    /* Secondary Store Button style (Platform-Aware) */
+    :global(html[data-platform="apple"]) .store-btn[data-store="android"],
+    :global(html[data-platform="android"]) .store-btn[data-store="ios"],
+    :global(html[data-platform="other"]) .store-btn[data-store="ios"] {
+        background: var(--bg-card-inner);
+        color: var(--text-main);
+        border: 1px solid var(--border-strong);
+        box-shadow: none;
+        opacity: 0.88;
+    }
+
+    :global(html[data-platform="apple"]) .store-btn[data-store="ios"],
+    :global(html[data-platform="android"]) .store-btn[data-store="android"],
+    :global(html[data-platform="other"]) .store-btn[data-store="android"] {
+        order: -1;
+    }
+
+    /* Apple icon contrast when iOS button is secondary in light mode */
+    :global(html[data-theme="light"][data-platform="android"])
+        .store-btn[data-store="ios"]
+        .store-icon-ios,
+    :global(html[data-theme="light"][data-platform="other"])
+        .store-btn[data-store="ios"]
+        .store-icon-ios {
+        filter: brightness(0.18);
+    }
+
+    :global(html[data-theme="dark"][data-platform="android"])
+        .store-btn[data-store="ios"]
+        .store-icon-ios,
+    :global(html[data-theme="dark"][data-platform="other"])
+        .store-btn[data-store="ios"]
+        .store-icon-ios {
+        filter: none;
     }
 
     .store-buttons.compact .store-btn {
@@ -146,7 +184,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         .store-btn {
             flex: initial;
             max-width: none;
-            padding: 0 20px;
+            padding: 0 22px;
             --btn-h: 50px;
         }
         .store-buttons.compact .store-btn {
@@ -159,26 +197,10 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         font-family: var(--font-sans-hi);
     }
 
-    .store-btn.inverted {
-        background: linear-gradient(180deg, var(--bg-main), var(--bg-sub) 60%);
-        color: var(--text-main);
-        border: 1px solid var(--border-strong);
-        box-shadow: var(--shadow-sm);
-    }
-
     .store-btn:hover {
         transform: translateY(-2px);
-        box-shadow: 0 10px 22px -4px rgba(0, 0, 0, 0.28);
         border-color: var(--primary);
-    }
-
-    :global([data-theme="dark"]) .store-btn:hover {
-        background: linear-gradient(
-            180deg,
-            rgba(60, 86, 72, 1) 0%,
-            rgba(38, 56, 47, 1) 100%
-        );
-        border-color: var(--primary);
+        opacity: 1;
     }
 
     .store-btn:active {
@@ -192,10 +214,6 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         flex-shrink: 0;
     }
 
-    :global([data-theme="light"]) .store-btn.inverted .store-btn__icon {
-        filter: brightness(0.2);
-    }
-
     .store-btn__text {
         display: flex;
         flex-direction: column;
@@ -206,7 +224,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
     .store-btn__text small {
         font-size: 9.5px;
         text-transform: none;
-        opacity: 0.85;
+        opacity: 0.86;
     }
 
     :global(:lang(hi)) .store-btn__text small {
@@ -215,7 +233,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
 
     .store-btn__text strong {
         font-size: 13.5px;
-        font-weight: 650;
+        font-weight: 700;
         letter-spacing: -0.01em;
     }
 </style>

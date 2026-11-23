@@ -9,8 +9,6 @@ const ui = {
         titleTop: "Quiet the Mind,",
         titleBottom: "Sleep Deeper.",
         body: "Reset an overworked nervous system in 5 minutes with guided Nadi Shodhana, Bhramari, Vedic chants, and bedtime relaxation.",
-        ctaEn: "Explore Audio Sanctuary",
-        ctaHi: "ऑडियो सेशन देखें",
         play: "Listen Session",
         audioTag: "Guided Audio",
     },
@@ -18,9 +16,7 @@ const ui = {
         badge: "प्राणायाम • वैदिक मंत्र • योग निद्रा",
         titleTop: "मन को दें शांति,",
         titleBottom: "पाएं गहरी नींद।",
-        body: "सिर्फ़ 5 मिनट में तनाव घटाएं — नाड़ी शोधन, भ्रामरी प्राणायाम, वैदिक मंत्र और बेडटाइम मेडिटेशन के साथ।",
-        ctaEn: "Explore Audio Sanctuary",
-        ctaHi: "ऑडियो सेशन देखें",
+        body: "सिर्फ़ 5 मिनट में तनाव घटाएं। नाड़ी शोधन, भ्रामरी प्राणायाम, वैदिक मंत्र और बेडटाइम मेडिटेशन के साथ गहरी शांति पाएं।",
         play: "अभी सुनें",
         audioTag: "गाइडेड ऑडियो",
     },
@@ -109,9 +105,12 @@ const displayAudios = guidedAudios
 <style>
     .section-mind {
         width: 100%;
+        position: relative;
     }
 
     .content-wrapper {
+        position: relative;
+        z-index: 2;
         display: flex;
         flex-direction: column;
         width: 100%;
@@ -141,22 +140,6 @@ const displayAudios = guidedAudios
     .carousel-wrapper {
         position: relative;
         width: 100%;
-    }
-
-    .carousel-wrapper::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 44px;
-        height: 100%;
-        background: linear-gradient(
-            to left,
-            var(--bg-main) 0%,
-            transparent 100%
-        );
-        pointer-events: none;
-        z-index: 5;
     }
 
     .carousel-track {
@@ -276,7 +259,7 @@ const displayAudios = guidedAudios
         display: inline-flex;
         align-items: flex-end;
         gap: 2px;
-        height: 10px;
+        height: 11px;
     }
 
     .wave-bars i {
@@ -353,17 +336,6 @@ const displayAudios = guidedAudios
 
     .carousel-card:hover .icon {
         transform: translateX(3px);
-    }
-
-    .cta-wrapper {
-        display: flex;
-        justify-content: flex-start;
-    }
-
-    .cta-wrapper :global(.cta-link) {
-        margin-top: 0;
-        padding: 11px 24px;
-        font-size: 0.95rem;
     }
 
     @media (max-width: 680px) {

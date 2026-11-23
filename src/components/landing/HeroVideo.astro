@@ -15,22 +15,18 @@ const ui = {
             { label: "Self-Paced Timers", icon: "timer" },
             { label: "Works 100% Offline", icon: "offline" },
         ],
-        floatTop: "15-Min Daily Flow",
-        floatBottom: "Zero Ads • Zero Login",
     },
     hi: {
         basePoster: "poster-hindi",
         badge: "स्पष्ट वीडियो • इन-बिल्ट टाइमर",
         titleTop: "आसान अभ्यास,",
         titleBottom: "गहरा आराम।",
-        body: "15-मिनट के सुरक्षित योग सत्र — स्पष्ट आसन निर्देश, सावधानियां और बिना इंटरनेट ऑफलाइन अभ्यास।",
+        body: "15-मिनट के सुरक्षित योग सत्र। स्पष्ट आसन निर्देश, सावधानियां और बिना इंटरनेट ऑफलाइन अभ्यास।",
         pills: [
             { label: "स्पष्ट वीडियो डेमो", icon: "video" },
             { label: "प्रैक्टिस टाइमर", icon: "timer" },
             { label: "100% ऑफलाइन", icon: "offline" },
         ],
-        floatTop: "15-मिनट दैनिक अभ्यास",
-        floatBottom: "बिना विज्ञापन • बिना लॉगिन",
     },
 };
 
@@ -65,43 +61,52 @@ const videoMp4 =
                         <div class="feature-chip premium-gloss-surface">
                             <span class="chip-icon" aria-hidden="true">
                                 {pill.icon === "video" && (
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <polygon points="5 3 19 12 5 21 5 3" />
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <polygon
+                                            points="6 4 20 12 6 20 6 4"
+                                            fill="currentColor"
+                                            fill-opacity="0.28"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linejoin="round"
+                                        />
                                     </svg>
                                 )}
                                 {pill.icon === "timer" && (
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <circle cx="12" cy="13" r="8" />
-                                        <path d="M12 9v4l2 2" />
-                                        <path d="M9 3h6" />
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <circle
+                                            cx="12"
+                                            cy="13"
+                                            r="8"
+                                            fill="currentColor"
+                                            fill-opacity="0.24"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        />
+                                        <path
+                                            d="M12 9v4l2.5 2M9 3h6"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
                                     </svg>
                                 )}
                                 {pill.icon === "offline" && (
-                                    <svg
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                    >
-                                        <path d="M12 3v12" />
-                                        <path d="m8 11 4 4 4-4" />
-                                        <path d="M4 19h16" />
+                                    <svg viewBox="0 0 24 24" fill="none">
+                                        <circle
+                                            cx="12"
+                                            cy="12"
+                                            r="9"
+                                            fill="currentColor"
+                                            fill-opacity="0.22"
+                                        />
+                                        <path
+                                            d="M12 5v10m-3.5-3.5L12 15l3.5-3.5M6 19h12"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
                                     </svg>
                                 )}
                             </span>
@@ -117,13 +122,6 @@ const videoMp4 =
         </div>
 
         <div class="visual-backlightstage">
-            <div
-                class="floating-pill float-top premium-gloss-surface animate-on-scroll delay-1"
-            >
-                <span class="pulse-dot"></span>
-                <span>{t.floatTop}</span>
-            </div>
-
             <div
                 class="phone-frame-wrapper animate-on-scroll"
                 id="phoneWrapper"
@@ -149,25 +147,6 @@ const videoMp4 =
                     muted
                     playsinline
                     preload="none"></video>
-            </div>
-
-            <div
-                class="floating-pill float-bottom premium-gloss-surface animate-on-scroll delay-2"
-            >
-                <svg
-                    viewBox="0 0 24 24"
-                    width="14"
-                    height="14"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                >
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"
-                    ></path>
-                </svg>
-                <span>{t.floatBottom}</span>
             </div>
         </div>
     </div>
@@ -291,11 +270,12 @@ const videoMp4 =
     }
 
     .chip-icon {
-        width: 24px;
-        height: 24px;
+        width: 26px;
+        height: 26px;
         border-radius: 50%;
         background: var(--primary-soft);
         color: var(--primary);
+        border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -303,8 +283,8 @@ const videoMp4 =
     }
 
     .chip-icon svg {
-        width: 13px;
-        height: 13px;
+        width: 14px;
+        height: 14px;
     }
 
     .chip-label {
@@ -339,39 +319,6 @@ const videoMp4 =
         );
         z-index: 1;
         pointer-events: none;
-    }
-
-    .floating-pill {
-        position: absolute;
-        z-index: 12;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        font-size: 0.78rem;
-        font-weight: 650;
-        color: var(--text-main);
-        white-space: nowrap;
-    }
-
-    .float-top {
-        top: 12%;
-        left: 4%;
-    }
-
-    .float-bottom {
-        bottom: 12%;
-        right: 4%;
-        color: var(--primary);
-    }
-
-    .pulse-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--primary);
-        box-shadow: 0 0 0 4px var(--primary-soft);
     }
 
     .phone-frame-wrapper {
@@ -484,10 +431,6 @@ const videoMp4 =
         }
 
         .desktop-only-cta {
-            display: none;
-        }
-
-        .floating-pill {
             display: none;
         }
 
