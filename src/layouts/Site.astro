@@ -705,6 +705,56 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 }
             }
 
+            function inferAppPathFromUrl(): string {
+                const rawPath = window.location.pathname.replace(/\/+$/, "") || "/";
+                const isHi = rawPath === "/hi" || rawPath.startsWith("/hi/");
+                const stripped = rawPath.replace(/^\/(en|hi)(?=\/|$)/, "") || "/";
+
+                if (stripped === "/" || stripped.startsWith("/faq") || stripped.startsWith("/legal")) {
+                    return "";
+                }
+
+                // Yoga plan detail: /yoga/<slug> or /en/yoga/<slug> or /hi/yoga/<slug>
+                const yogaDetailMatch = stripped.match(/^\/yoga\/([^/]+)$/);
+                if (yogaDetailMatch && !/^\d+$/.test(yogaDetailMatch[1])) {
+                    return `${isHi ? "hi" : "en"}/yoga/${yogaDetailMatch[1]}`;
+                }
+                if (stripped === "/yoga" || /^\/yoga\/\d+$/.test(stripped)) {
+                    return "yoga";
+                }
+
+                // Audio detail or listing
+                const audioDetailMatch = stripped.match(/^\/audio\/([^/]+)$/);
+                if (audioDetailMatch) {
+                    return `audio/${audioDetailMatch[1]}`;
+                }
+                if (stripped === "/audio") {
+                    return "audio";
+                }
+
+                // Blog detail or listing
+                const blogDetailMatch = stripped.match(/^\/blog\/([^/]+)$/);
+                if (blogDetailMatch && !/^\d+$/.test(blogDetailMatch[1])) {
+                    return `blog/${blogDetailMatch[1]}`;
+                }
+                if (stripped === "/blog" || /^\/blog\/\d+$/.test(stripped) || stripped === "/blogs") {
+                    return "blog";
+                }
+
+                // Tips detail or listing
+                const tipMatch = stripped.match(/^\/tips\/([^/]+)$/);
+                if (tipMatch) {
+                    return `tips/${tipMatch[1]}`;
+                }
+                if (stripped === "/tips") {
+                    return "tips";
+                }
+
+                // Feature deeplink routes (/water, /cycle, /mood, /fasting, /rhythm, /journey, /settings, etc.)
+                const clean = stripped.replace(/^\/+/, "");
+                return clean || "";
+            }
+
             window.openTulaaApp = function (opts = {}) {
                 const defaultIos =
                     "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498";
@@ -712,20 +762,24 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                     "https://play.google.com/store/apps/details?id=life.tulaa";
                 const iosUrl = opts.iosUrl || defaultIos;
                 const androidUrl = opts.androidUrl || defaultAndroid;
-                const cleanPath = (opts.appPath || "").replace(/^\/+/, "");
+                const cleanPath = (
+                    opts.appPath || inferAppPathFromUrl()
+                ).replace(/^\/+/, "");
+                const routePath = cleanPath || "home";
                 const ua = navigator.userAgent.toLowerCase();
 
                 if (/android/.test(ua)) {
                     const fallback = encodeURIComponent(androidUrl);
-                    const intentPath = cleanPath || "open";
-                    window.location.href = `intent://${intentPath}#Intent;scheme=tulaa;package=life.tulaa;S.browser_fallback_url=${fallback};end`;
+                    // Use https://tulaalife.com/<path> when a deep link path is provided (matches AndroidManifest autoVerify),
+                    // or tulaa://tulaalife.com/home for generic app open so GoRouter receives uri.path = "/home".
+                    const scheme = cleanPath ? "https" : "tulaa";
+                    window.location.href = `intent://tulaalife.com/${routePath}#Intent;scheme=${scheme};package=life.tulaa;S.browser_fallback_url=${fallback};end`;
                     return;
                 }
 
                 if (/iphone|ipad|ipod/.test(ua)) {
-                    const schemeUrl = cleanPath
-                        ? `tulaa://${cleanPath}`
-                        : "tulaa://";
+                    // Include host "tulaalife.com" so GoRouter parses uri.path as "/<routePath>" (e.g. "/en/yoga/<slug>" or "/home")
+                    const schemeUrl = `tulaa://tulaalife.com/${routePath}`;
                     let didHide = false;
                     const onHide = () => {
                         if (document.hidden) didHide = true;
@@ -879,6 +933,17 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                             scrollContainer.scrollTop = savedScroll.mainTop;
                             requestAnimationFrame(() => {
                                 scrollContainer.style.scrollBehavior = "smooth";
+                            });
+                        } else if (
+                            !isLanding &&
+                            typeof savedScroll.mainTop === "number" &&
+                            savedScroll.mainTop > 0
+                        ) {
+                            requestAnimationFrame(() => {
+                                window.scrollTo({
+                                    top: savedScroll.mainTop,
+                                    behavior: "instant" as ScrollBehavior,
+                                });
                             });
                         }
                         document
