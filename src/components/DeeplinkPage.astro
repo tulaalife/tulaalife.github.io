@@ -1,0 +1,177 @@
+---
+import Site from "../layouts/Site.astro";
+import StoreButtons from "./StoreButtons.astro";
+import type { DeeplinkEntry } from "../data/deeplinks";
+
+interface Props {
+    entry: DeeplinkEntry;
+    lang: "en" | "hi";
+}
+
+const { entry, lang } = Astro.props;
+const copy = entry[lang];
+const canonicalPath = `/${entry.slug}`;
+
+const ui = {
+    en: {
+        openInApp: "Open in Tulaa App",
+        downloadHint: "Don't have Tulaa yet? Download free — no login, no ads.",
+        homeLink: "Get Your Free Yoga Plan →",
+        homeHref: "/",
+    },
+    hi: {
+        openInApp: "Tulaa ऐप में खोलें",
+        downloadHint: "Tulaa ऐप नहीं है? अभी फ्री डाउनलोड करें — बिना लॉगिन, बिना विज्ञापन।",
+        homeLink: "अपना फ्री योग प्लान पाएं →",
+        homeHref: "/hi",
+    },
+}[lang];
+---
+
+<Site
+    title={copy.title}
+    description={copy.description}
+    keywords={copy.keywords}
+    canonicalPath={canonicalPath}
+    ogImage="/images/og-preview.png"
+    hasTranslation={true}
+>
+    <div class="deeplink-shell">
+        <div class="deeplink-card premium-gloss-surface">
+            <div class="brand-mark">
+                <img
+                    src="/assets/icons/logo_64.webp"
+                    alt="Tulaa"
+                    width="48"
+                    height="48"
+                />
+            </div>
+
+            <span class="badge-small">{copy.badge}</span>
+            <h1 class="deeplink-title">{copy.title.replace(" · Tulaa", "")}</h1>
+            <p class="deeplink-desc body-text">{copy.description}</p>
+
+            <a href={entry.appScheme} class="open-app-btn">
+                {ui.openInApp}
+            </a>
+
+            <div class="store-block">
+                <p class="download-hint">{ui.downloadHint}</p>
+                <StoreButtons showBoth={true} centered={true} />
+            </div>
+
+            <a href={ui.homeHref} class="home-back-link">{ui.homeLink}</a>
+        </div>
+    </div>
+</Site>
+
+<style>
+    .deeplink-shell {
+        min-height: calc(100dvh - var(--header-height) - 120px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .deeplink-card {
+        width: 100%;
+        max-width: 560px;
+        border-radius: var(--radius-lg);
+        padding: clamp(1.75rem, 4vw, 2.75rem);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 14px;
+    }
+
+    .brand-mark {
+        width: 58px;
+        height: 58px;
+        border-radius: 16px;
+        padding: 5px;
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border-strong);
+        box-shadow: var(--shadow-sm);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .brand-mark img {
+        width: 100%;
+        height: 100%;
+        border-radius: 12px;
+        object-fit: cover;
+    }
+
+    .deeplink-title {
+        font-size: clamp(1.65rem, 4vw, 2.3rem);
+        line-height: 1.15;
+        letter-spacing: -0.025em;
+        color: var(--text-main);
+        margin: 0;
+    }
+
+    .deeplink-desc {
+        font-size: 0.98rem;
+        line-height: 1.55;
+        color: var(--text-muted);
+        max-width: 44ch;
+        margin: 0;
+    }
+
+    .open-app-btn {
+        margin-top: 6px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 26px;
+        border-radius: 999px;
+        background: var(--primary);
+        color: oklch(15% 0.02 155);
+        font-size: 0.95rem;
+        font-weight: 700;
+        transition:
+            transform 0.2s ease,
+            opacity 0.2s ease;
+    }
+
+    :global([data-theme="light"]) .open-app-btn {
+        color: #ffffff;
+    }
+
+    .open-app-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .store-block {
+        width: 100%;
+        margin-top: 10px;
+        padding-top: 18px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .download-hint {
+        font-size: 0.84rem;
+        color: var(--text-muted);
+        margin: 0;
+    }
+
+    .home-back-link {
+        margin-top: 6px;
+        font-size: 0.88rem;
+        font-weight: 650;
+        color: var(--primary);
+    }
+
+    .home-back-link:hover {
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+</style>

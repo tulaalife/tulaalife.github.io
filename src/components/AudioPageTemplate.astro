@@ -1,7 +1,7 @@
 ---
-import { guidedAudios } from "../data/generated";
 import Site from "../layouts/Site.astro";
 import CTAButton from "./CTAButton.astro";
+import StoreButtons from "./StoreButtons.astro";
 
 interface Props {
     audio: any;
@@ -43,7 +43,11 @@ const canonical = `/audio/${audio.slug}`;
     <div class="content-shell">
         <article class="audio-detail">
             <nav class="audio-nav">
-                <a href={t.browseLink} class="back-link">
+                <a
+                    href={t.browseLink}
+                    class="back-link"
+                    data-smart-back="true"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -56,12 +60,12 @@ const canonical = `/audio/${audio.slug}`;
                         stroke-linejoin="round"
                         ><path d="m15 18-6-6 6-6"></path></svg
                     >
-                    {t.back}
+                    {lang === "hi" ? "वापस जाएं" : "Back"}
                 </a>
             </nav>
 
             <div class="image-stage">
-                <div class="image-frame">
+                <div class="image-frame themed-media">
                     <img
                         src={audio.image}
                         alt={audio.title}
@@ -108,12 +112,7 @@ const canonical = `/audio/${audio.slug}`;
             <footer class="audio-footer">
                 <div class="app-prompt">{t.listen}</div>
                 <div class="button-group">
-                    <CTAButton
-                        href="https://tulaa.app"
-                        label={t.btnApp}
-                        variant="solid"
-                        size="md"
-                    />
+                    <StoreButtons />
                     <CTAButton
                         href={t.browseLink}
                         label={t.btnBrowse}

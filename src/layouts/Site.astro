@@ -6,6 +6,7 @@ import "../styles/global.css";
 interface Props {
     title: string;
     description?: string;
+    keywords?: string;
     canonicalPath?: string;
     ogImage?: string;
     hideFooter?: boolean;
@@ -15,9 +16,10 @@ interface Props {
 
 const {
     title,
-    description = "Your private sanctuary for holistic wellness. Yoga, meditation, and tracking—offline and free.",
+    description = "Expert-led therapeutic yoga, guided pranayama & bedtime meditation, plus 100% private on-device cycle, fasting, and hydration trackers. No sign-up, no ads, offline-ready.",
+    keywords = "therapeutic yoga, yoga for back pain, sciatica, neck pain, PCOS yoga, prenatal yoga, thyroid yoga, pranayama, sleep meditation, private period tracker, intermittent fasting timer, offline yoga app",
     canonicalPath = "/",
-    ogImage = "https://images.tulaa.life/logo.webp",
+    ogImage = "/images/og-preview.png",
     hideFooter = false,
     hasTranslation = true,
     isLandingPage = false,
@@ -40,8 +42,28 @@ const socialImage = ogImage.startsWith("http")
     : new URL(ogImage, site).toString();
 
 const ui = {
-    en: { privacy: "Privacy", terms: "Terms", contact: "Contact" },
-    hi: { privacy: "गोपनीयता", terms: "शर्तें", contact: "संपर्क" },
+    en: {
+        privacy: "Privacy",
+        terms: "Terms",
+        contact: "Contact",
+        download: "Get App",
+        back: "Back",
+        yoga: "Yoga Plans",
+        audio: "Sleep & Audio",
+        blog: "Articles",
+        faq: "FAQ",
+    },
+    hi: {
+        privacy: "गोपनीयता",
+        terms: "शर्तें",
+        contact: "संपर्क",
+        download: "ऐप पाएं",
+        back: "वापस",
+        yoga: "योग प्लान",
+        audio: "ध्यान ऑडियो",
+        blog: "ब्लॉग",
+        faq: "सामान्य प्रश्न",
+    },
 };
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 const getLink = (path: string) =>
@@ -56,21 +78,27 @@ if (currentLang === "en") {
     targetUrl = cleanPath.replace(/^\/hi(\/|$)/, "/") || "/";
 }
 targetUrl = targetUrl.replace(/\/+/g, "/");
+
+const IOS_URL =
+    "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498";
+const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
 ---
 
 <!doctype html>
 <html
     lang={currentLang}
     data-theme="light"
+    data-platform="apple"
     class={isLandingPage ? "is-landing" : ""}
 >
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta name="color-scheme" content="light dark" />
-        <meta name="theme-color" content="#ffffff" id="theme-color-meta" />
+        <meta name="theme-color" content="#fbf9f5" id="theme-color-meta" />
         <title>{title}</title>
         <meta name="description" content={description} />
+        {keywords && <meta name="keywords" content={keywords} />}
         <link rel="canonical" href={currentUrl} />
         <meta name="robots" content="index,follow" />
 
@@ -85,26 +113,70 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
         }
 
         <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Tulaa" />
+        <meta
+            property="og:locale"
+            content={currentLang === "hi" ? "hi_IN" : "en_US"}
+        />
+        {
+            hasTranslation && (
+                <meta
+                    property="og:locale:alternate"
+                    content={currentLang === "hi" ? "en_US" : "hi_IN"}
+                />
+            )
+        }
         <meta property="og:url" content={currentUrl} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={socialImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:image:alt" content={title} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={socialImage} />
 
         <link rel="icon" type="image/webp" href="/assets/icons/logo_64.webp" />
         <ClientRouter />
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
-            rel="stylesheet"
-        />
+        {
+            currentLang === "hi" && (
+                <>
+                    <link
+                        rel="preconnect"
+                        href="https://fonts.googleapis.com"
+                    />
+                    <link
+                        rel="preconnect"
+                        href="https://fonts.gstatic.com"
+                        crossorigin
+                    />
+                    <link
+                        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+                        rel="stylesheet"
+                    />
+                </>
+            )
+        }
 
         <script is:inline>
             (() => {
                 const root = document.documentElement;
                 const metaColor = document.getElementById("theme-color-meta");
-                const bgColors = { light: "#ffffff", dark: "#18181b" };
+                const bgColors = { light: "#fbf9f5", dark: "#111915" };
+
+                function detectPlatform() {
+                    const ua = navigator.userAgent || "";
+                    if (/android/i.test(ua)) {
+                        root.dataset.platform = "android";
+                    } else if (/iPad|iPhone|iPod|Macintosh/i.test(ua)) {
+                        root.dataset.platform = "apple";
+                    } else {
+                        root.dataset.platform = "other";
+                    }
+                }
 
                 function getSystemTheme() {
                     return window.matchMedia("(prefers-color-scheme: dark)")
@@ -121,6 +193,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 }
 
                 function init() {
+                    detectPlatform();
                     const hasBeenRedirected = localStorage.getItem(
                         "tulaa-lang-detected",
                     );
@@ -130,7 +203,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                     if (!hasBeenRedirected && isHomePage) {
                         const userLang =
                             navigator.language || navigator.userLanguage;
-                        if (userLang.startsWith("hi")) {
+                        if (userLang && userLang.startsWith("hi")) {
                             localStorage.setItem("tulaa-lang-detected", "true");
                             window.location.href = "/hi";
                             return;
@@ -186,8 +259,8 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             :lang(hi) .btn-pill,
             :lang(hi) .btn-sm,
             :lang(hi) .filter-btn {
-                padding-top: 10px;
-                padding-bottom: 8px;
+                padding-top: 9px;
+                padding-bottom: 7px;
             }
 
             a {
@@ -198,11 +271,12 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             html.is-landing .scroll-container {
                 height: 100dvh;
                 width: 100%;
-                overflow-y: scroll;
+                overflow-y: auto;
                 scroll-snap-type: y mandatory;
                 scroll-behavior: smooth;
                 scrollbar-width: none;
             }
+
             html.is-landing .scroll-container::-webkit-scrollbar {
                 display: none;
             }
@@ -224,23 +298,24 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 padding-top: var(--header-height);
                 min-height: 100vh;
             }
+
             html:not(.is-landing) .normal-footer {
-                margin-top: 60px;
-                padding-bottom: 40px;
+                margin-top: 48px;
+                padding-bottom: 48px;
             }
 
             .animate-on-scroll {
                 opacity: 0;
-                transform: translateY(30px);
+                transform: translateY(18px);
                 transition:
-                    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
-                    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+                    opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+                    transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
             }
             .delay-1 {
-                transition-delay: 0.15s;
+                transition-delay: 0.1s;
             }
             .delay-2 {
-                transition-delay: 0.3s;
+                transition-delay: 0.2s;
             }
 
             .is-visible .animate-on-scroll {
@@ -248,33 +323,41 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 transform: translateY(0);
             }
 
-            header {
+            .site-header {
                 position: fixed;
                 top: 0;
                 left: 0;
                 right: 0;
                 height: var(--header-height);
-                z-index: 50;
-                background: color-mix(in srgb, var(--bg-main), transparent 15%);
-                backdrop-filter: blur(12px);
+                z-index: 90;
+                background: color-mix(in srgb, var(--bg-main) 82%, transparent);
+                backdrop-filter: blur(16px);
+                -webkit-backdrop-filter: blur(16px);
                 border-bottom: 1px solid var(--border);
             }
-            header .inner {
+            .site-header .inner {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 height: 100%;
-                padding: 0 24px;
+                padding: 0 clamp(16px, 4vw, 28px);
+            }
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 10px;
             }
             .logo {
                 display: flex;
                 align-items: center;
                 gap: 10px;
                 font-weight: var(--fw-bold);
+                font-size: 1.08rem;
+                letter-spacing: -0.02em;
             }
             .logo img {
-                width: 32px;
-                height: 32px;
+                width: 30px;
+                height: 30px;
                 border-radius: 8px;
             }
             .header-actions {
@@ -283,55 +366,126 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 gap: 8px;
             }
 
-            .lang-icon {
-                font-size: 1rem;
-                line-height: 1;
+            .header-download-btn {
+                background: var(--primary);
+                color: oklch(15% 0.02 155);
+                padding: 7px 15px;
+                border-radius: 99px;
+                font-size: 0.8rem;
+                font-weight: 700;
+                border: none;
+                cursor: pointer;
+                transition:
+                    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+                    background-color 0.2s ease;
+                white-space: nowrap;
             }
+
+            :root[data-theme="light"] .header-download-btn {
+                color: #ffffff;
+            }
+
+            .header-download-btn:hover {
+                transform: translateY(-1px) scale(1.02);
+            }
+
             .lang-toggle {
                 display: inline-flex;
                 align-items: center;
-                gap: 4px;
-                padding: 4px 10px;
-                font-size: 0.8rem;
-                font-weight: 600;
+                gap: 5px;
+                padding: 5px 11px;
+                font-size: 0.78rem;
+                font-weight: 650;
                 color: var(--text-main);
-                background: none;
+                background: var(--bg-card-inner);
                 border: 1px solid var(--border);
                 border-radius: 99px;
-                transition: background 0.2s;
+                transition:
+                    background 0.2s,
+                    border-color 0.2s;
             }
             .lang-toggle:hover {
                 background: var(--bg-sub);
+                border-color: var(--primary);
             }
 
             .theme-toggle {
-                background: none;
-                border: none;
+                background: var(--bg-card-inner);
+                border: 1px solid var(--border);
                 cursor: pointer;
                 color: var(--text-main);
-                padding: 8px;
+                width: 34px;
+                height: 34px;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
                 border-radius: 50%;
-                transition: background 0.2s;
+                transition:
+                    background 0.2s,
+                    border-color 0.2s;
             }
             .theme-toggle:hover {
                 background: var(--bg-sub);
+                border-color: var(--primary);
+            }
+
+            .theme-icon-moon {
+                display: block;
+            }
+            .theme-icon-sun {
+                display: none;
+            }
+            :root[data-theme="dark"] .theme-icon-moon {
+                display: none;
+            }
+            :root[data-theme="dark"] .theme-icon-sun {
+                display: block;
+            }
+
+            .footer-scroll-section {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .footer-section-inner {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                width: 100%;
+                gap: clamp(1rem, 2.5vh, 1.75rem);
             }
 
             .legal-wrapper {
                 font-family: var(--font-sans-en);
+                width: 100%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 8px;
             }
-            :global(:lang(hi)) .legal-wrapper {
+            :lang(hi) .legal-wrapper {
                 font-family: var(--font-sans-hi);
+            }
+
+            .footer-nav-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 12px 22px;
+                justify-content: center;
+                align-items: center;
             }
 
             .legal-link,
             .contact-btn {
-                font-size: 0.95rem;
-                font-weight: 500;
+                font-size: 0.84rem;
+                font-weight: 550;
                 color: var(--text-muted);
                 transition:
-                    color 0.3s ease,
-                    opacity 0.3s ease;
+                    color 0.25s ease,
+                    opacity 0.25s ease;
                 cursor: pointer;
             }
 
@@ -344,8 +498,15 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
 
             .legal-link:hover,
             .contact-btn:hover {
-                color: var(--text-main);
-                opacity: 0.85;
+                color: var(--primary);
+            }
+
+            .copyright-line {
+                text-align: center;
+                font-size: 0.75rem;
+                margin: 0;
+                color: var(--text-muted);
+                opacity: 0.8;
             }
 
             .copy-toast {
@@ -353,17 +514,17 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 bottom: 24px;
                 left: 50%;
                 transform: translateX(-50%) translateY(20px);
-                background: color-mix(in srgb, var(--bg-sub), transparent 10%);
+                background: var(--bg-elevated);
                 color: var(--text-main);
-                padding: 10px 16px;
+                padding: 10px 18px;
                 border-radius: 999px;
                 font-size: 0.85rem;
-                border: 1px solid var(--border);
+                border: 1px solid var(--border-strong);
                 box-shadow: var(--shadow);
                 opacity: 0;
                 pointer-events: none;
                 transition: all 0.3s ease;
-                backdrop-filter: blur(10px);
+                backdrop-filter: blur(12px);
                 z-index: 1000;
             }
             .copy-toast.show {
@@ -374,20 +535,47 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
     </head>
 
     <body>
-        <header>
+        <header class="site-header">
             <div class="container inner">
-                <a href={getLink("/")} class="logo">
-                    <img
-                        src="https://images.tulaa.life/logo_64.webp"
-                        alt="Tulaa Logo"
-                    />
-                    <span>Tulaa</span>
-                </a>
+                <div class="header-left">
+                    <a href={getLink("/")} class="logo">
+                        <img
+                            src="/assets/icons/logo_64.webp"
+                            alt="Tulaa Logo"
+                            width="30"
+                            height="30"
+                        />
+                        <span>Tulaa</span>
+                    </a>
+                </div>
                 <div class="header-actions">
+                    <button
+                        id="nav-download-btn"
+                        class="header-download-btn"
+                        data-ios={IOS_URL}
+                        data-android={ANDROID_URL}
+                    >
+                        {t.download}
+                    </button>
                     {
                         hasTranslation && (
                             <a href={targetUrl} class="lang-toggle">
-                                <span class="lang-icon">🌐</span>
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    width="13"
+                                    height="13"
+                                    viewBox="0 0 24 24"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    aria-hidden="true"
+                                >
+                                    <circle cx="12" cy="12" r="10" />
+                                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                                    <path d="M2 12h20" />
+                                </svg>
                                 {currentLang === "en" ? "हिंदी" : "EN"}
                             </a>
                         )
@@ -398,9 +586,10 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                         aria-label="Toggle Theme"
                     >
                         <svg
+                            class="theme-icon-sun"
                             xmlns="http://www.w3.org/2000/svg"
-                            width="20"
-                            height="20"
+                            width="17"
+                            height="17"
                             viewBox="0 0 24 24"
                             fill="none"
                             stroke="currentColor"
@@ -411,6 +600,22 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                             <circle cx="12" cy="12" r="5"></circle>
                             <path
                                 d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"
+                            ></path>
+                        </svg>
+                        <svg
+                            class="theme-icon-moon"
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                        >
+                            <path
+                                d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
                             ></path>
                         </svg>
                     </button>
@@ -424,37 +629,42 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
             {
                 !hideFooter && (
                     <section
+                        id="sanctuary-footer"
                         class={
-                            isLandingPage ? "scroll-section" : "normal-footer"
-                        }
-                        style={
                             isLandingPage
-                                ? "min-height: 100dvh; padding: 0; scroll-snap-align: center; scroll-snap-stop: always; position: relative;"
-                                : "position: relative;"
+                                ? "scroll-section footer-scroll-section"
+                                : "normal-footer"
                         }
                     >
-                        <div
-                            class="container"
-                            style={
-                                isLandingPage
-                                    ? "display: flex; align-items: center; justify-content: center; height: 100%;"
-                                    : ""
-                            }
-                        >
+                        <div class="container footer-section-inner">
                             <FooterCard />
 
-                            <div
-                                class="legal-wrapper"
-                                style={
-                                    isLandingPage
-                                        ? "position: absolute; bottom: 32px; left: 0; right: 0; width: 100%;"
-                                        : "margin-top: 48px;"
-                                }
-                            >
-                                <div
-                                    class="legal"
-                                    style="display:flex; gap:28px; justify-content:center; align-items: center;"
-                                >
+                            <div class="legal-wrapper">
+                                <div class="footer-nav-row">
+                                    <a
+                                        href={getLink("/yoga")}
+                                        class="legal-link"
+                                    >
+                                        {t.yoga}
+                                    </a>
+                                    <a
+                                        href={getLink("/audio")}
+                                        class="legal-link"
+                                    >
+                                        {t.audio}
+                                    </a>
+                                    <a
+                                        href={getLink("/blog")}
+                                        class="legal-link"
+                                    >
+                                        {t.blog}
+                                    </a>
+                                    <a
+                                        href={getLink("/faq")}
+                                        class="legal-link"
+                                    >
+                                        {t.faq}
+                                    </a>
                                     <a
                                         href={getLink("/legal/privacy")}
                                         class="legal-link"
@@ -471,7 +681,7 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                                         {t.contact}
                                     </button>
                                 </div>
-                                <p style="text-align: center; font-size: 0.8rem; margin-top: 14px; color: var(--text-muted);">
+                                <p class="copyright-line">
                                     © {new Date().getFullYear()} Tulaalife
                                     Wellness Private Limited
                                 </p>
@@ -523,6 +733,47 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                 }, 2200);
             };
 
+            function getCleanPath(p: string) {
+                return p.replace(/\/$/, "") || "/";
+            }
+
+            function saveCurrentScrollState() {
+                const pathKey = getCleanPath(window.location.pathname);
+                const scrollContainer = document.getElementById(
+                    "main-scroll-container",
+                );
+                const isLanding =
+                    document.documentElement.classList.contains("is-landing");
+
+                const state: Record<string, number> = {
+                    mainTop:
+                        isLanding && scrollContainer
+                            ? scrollContainer.scrollTop
+                            : window.scrollY,
+                };
+
+                document
+                    .querySelectorAll(".carousel-track")
+                    .forEach((track, idx) => {
+                        const id = track.id || `track-${idx}`;
+                        state[id] = (track as HTMLElement).scrollLeft;
+                    });
+
+                try {
+                    sessionStorage.setItem(
+                        `tulaa-scroll:${pathKey}`,
+                        JSON.stringify(state),
+                    );
+                } catch {}
+            }
+
+            document.addEventListener("astro:before-preparation", () => {
+                saveCurrentScrollState();
+                try {
+                    sessionStorage.setItem("tulaa-internal-nav", "1");
+                } catch {}
+            });
+
             document.addEventListener("astro:page-load", () => {
                 const themeBtn = document.getElementById("themeBtn");
                 if (themeBtn) {
@@ -536,8 +787,87 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                     contactBtn.addEventListener("click", window.copyEmail);
                 }
 
+                const scrollContainer = document.getElementById(
+                    "main-scroll-container",
+                );
+                const isLanding =
+                    document.documentElement.classList.contains("is-landing");
+                const pathKey = getCleanPath(window.location.pathname);
+
+                // Restore saved scroll position for custom scroll container & carousels
+                try {
+                    const rawScroll = sessionStorage.getItem(
+                        `tulaa-scroll:${pathKey}`,
+                    );
+                    if (rawScroll) {
+                        const savedScroll = JSON.parse(rawScroll);
+                        if (
+                            isLanding &&
+                            scrollContainer &&
+                            typeof savedScroll.mainTop === "number" &&
+                            savedScroll.mainTop > 0
+                        ) {
+                            scrollContainer.style.scrollBehavior = "auto";
+                            scrollContainer.scrollTop = savedScroll.mainTop;
+                            requestAnimationFrame(() => {
+                                scrollContainer.style.scrollBehavior = "smooth";
+                            });
+                        }
+                        document
+                            .querySelectorAll(".carousel-track")
+                            .forEach((track, idx) => {
+                                const id = track.id || `track-${idx}`;
+                                if (typeof savedScroll[id] === "number") {
+                                    (track as HTMLElement).scrollLeft =
+                                        savedScroll[id];
+                                }
+                            });
+                    }
+                } catch {}
+
+                // Continuously save scroll position on landing page
+                if (isLanding && scrollContainer) {
+                    scrollContainer.addEventListener(
+                        "scroll",
+                        saveCurrentScrollState,
+                        { passive: true },
+                    );
+                }
+                document
+                    .querySelectorAll(".carousel-track")
+                    .forEach((track) => {
+                        track.addEventListener(
+                            "scroll",
+                            saveCurrentScrollState,
+                            { passive: true },
+                        );
+                    });
+
+                // Smart back navigation for .back-link and [data-smart-back]
+                document
+                    .querySelectorAll(".back-link, [data-smart-back]")
+                    .forEach((backEl) => {
+                        backEl.addEventListener("click", (e) => {
+                            const hasInternalNav =
+                                sessionStorage.getItem("tulaa-internal-nav") ===
+                                "1";
+                            const sameOriginReferrer =
+                                document.referrer &&
+                                document.referrer.startsWith(
+                                    window.location.origin,
+                                );
+                            if (
+                                (hasInternalNav || sameOriginReferrer) &&
+                                window.history.length > 1
+                            ) {
+                                e.preventDefault();
+                                window.history.back();
+                            }
+                        });
+                    });
+
                 const observerOptions = {
-                    root: document.getElementById("main-scroll-container"),
+                    root: isLanding ? scrollContainer : null,
                     threshold: 0.2,
                 };
 
@@ -554,6 +884,33 @@ targetUrl = targetUrl.replace(/\/+/g, "/");
                     .forEach((section) => {
                         observer.observe(section);
                     });
+
+                const dlBtn = document.getElementById("nav-download-btn");
+
+                dlBtn?.addEventListener("click", () => {
+                    const ua = navigator.userAgent.toLowerCase();
+                    const isMobile = /iphone|ipad|ipod|android/.test(ua);
+
+                    if (isMobile) {
+                        const iosUrl = dlBtn.getAttribute("data-ios");
+                        const androidUrl = dlBtn.getAttribute("data-android");
+
+                        if (/iphone|ipad|ipod/.test(ua) && iosUrl) {
+                            window.location.href = iosUrl;
+                        } else if (/android/.test(ua) && androidUrl) {
+                            window.location.href = androidUrl;
+                        }
+                    } else {
+                        const footerEl =
+                            document.getElementById("sanctuary-footer");
+                        if (footerEl) {
+                            footerEl.scrollIntoView({
+                                behavior: "smooth",
+                                block: "start",
+                            });
+                        }
+                    }
+                });
             });
         </script>
     </body>

@@ -1,5 +1,4 @@
 ---
-import SectionCTA from "../SectionCTA.astro";
 import {
     YOGA_UI,
     CATEGORY_MAP,
@@ -9,17 +8,35 @@ import { yogaPlans } from "../../data/generated";
 
 const currentLang = (Astro.currentLocale || "en") as SupportedLang;
 const t = YOGA_UI[currentLang] || YOGA_UI.en;
+const basePlanHref = currentLang === "hi" ? "/hi/yoga" : "/yoga";
+
+const intensityLabel: Record<string, string> =
+    currentLang === "hi"
+        ? {
+              beginner: "शुरुआती",
+              intermediate: "मध्यम",
+              advanced: "उन्नत",
+          }
+        : {
+              beginner: "Beginner Safe",
+              intermediate: "Intermediate",
+              advanced: "Advanced",
+          };
 
 const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 ---
 
-<section class="scroll-section section-yoga">
+<section id="yoga-library" class="scroll-section section-yoga">
     <div class="content-wrapper">
-        <div class="container">
-            <div class="section-header-left text-col animate-on-scroll">
+        <div class="container header-bar animate-on-scroll">
+            <div class="section-header-left text-col">
+                <span class="badge-small">
+                    {currentLang === "hi"
+                        ? "40+ योग थेरेपी प्लान्स"
+                        : "40+ Therapeutic Yoga Plans"}
+                </span>
                 <h2 class="section-title">
-                    <span class="title-main">{t.heroTitleTop}</span>
-                    <br />
+                    <span class="title-main">{t.heroTitleTop}</span>{" "}
                     <span class="text-gradient">{t.heroTitleBottom}</span>
                 </h2>
                 <p class="body-text">{t.heroBody}</p>
@@ -28,60 +45,60 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 
         <div class="container filter-container animate-on-scroll delay-1">
             <div class="filter-scroll">
-                <button class="filter-btn active" data-filter="all"
-                    >{t.filterAll}</button
-                >
-                <button class="filter-btn" data-filter="general"
-                    >{t.filterGeneral}</button
-                >
-                <button class="filter-btn" data-filter="womens"
-                    >{t.filterWomens}</button
-                >
-                <button class="filter-btn" data-filter="seniors"
-                    >{t.filterSeniors}</button
-                >
-                <button class="filter-btn" data-filter="medical"
-                    >{t.filterMedical}</button
-                >
+                <button class="filter-btn active" data-filter="all">
+                    {t.filterAll}
+                </button>
+                <button class="filter-btn" data-filter="general">
+                    {t.filterGeneral}
+                </button>
+                <button class="filter-btn" data-filter="womens">
+                    {t.filterWomens}
+                </button>
+                <button class="filter-btn" data-filter="seniors">
+                    {t.filterSeniors}
+                </button>
+                <button class="filter-btn" data-filter="medical">
+                    {t.filterMedical}
+                </button>
             </div>
         </div>
 
         <div class="container carousel-wrapper animate-on-scroll delay-2">
             <div class="carousel-track" id="featured-plans-track">
-                {
-                    displayPlans.map((p) => (
-                        <a
-                            href={`/${currentLang}/yoga/${p.slug}`}
-                            class="carousel-card premium-gloss-surface"
-                            data-goals={p.goals?.join(",")}
-                        >
-                            <div class="card-image">
-                                <img
-                                    src={p.image}
-                                    alt={p.title}
-                                    loading="lazy"
-                                    decoding="async"
-                                />
-                            </div>
-                            <div class="card-content">
+                {displayPlans.map((p) => (
+                    <a
+                        href={`${basePlanHref}/${p.slug}`}
+                        class="carousel-card premium-gloss-surface"
+                        data-goals={p.goals?.join(",")}
+                    >
+                        <div class="card-image themed-media">
+                            <img
+                                src={p.image}
+                                alt={p.title}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <span class="card-tag">
+                                {p.intensity
+                                    ? intensityLabel[p.intensity] || p.intensity
+                                    : intensityLabel.beginner}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-text-group">
                                 <h3 class="card-title">{p.title}</h3>
-                                <div class="card-footer">
-                                    <span class="view-link">{t.view}</span>
-                                    <span class="icon">→</span>
-                                </div>
+                                {p.subtitle && (
+                                    <p class="card-sub">{p.subtitle}</p>
+                                )}
                             </div>
-                        </a>
-                    ))
-                }
+                            <div class="card-footer">
+                                <span class="view-link">{t.view}</span>
+                                <span class="icon">→</span>
+                            </div>
+                        </div>
+                    </a>
+                ))}
             </div>
-        </div>
-
-        <div class="container cta-wrapper animate-on-scroll delay-2">
-            <SectionCTA
-                href={`/${currentLang}/yoga`}
-                labelEn="Explore All Plans"
-                labelHi="सभी प्लान देखें"
-            />
         </div>
     </div>
 </section>
@@ -121,7 +138,7 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
                         setTimeout(() => (card.style.opacity = "1"), 10);
                     } else {
                         card.style.opacity = "0";
-                        setTimeout(() => (card.style.display = "none"), 300);
+                        setTimeout(() => (card.style.display = "none"), 260);
                     }
                 });
 
@@ -134,10 +151,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 <style>
     .section-yoga {
         width: 100%;
-        display: flex;
-        align-items: center;
-        padding-top: var(--section-v-padding);
-        padding-bottom: var(--section-v-padding);
     }
 
     .content-wrapper {
@@ -145,45 +158,41 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         flex-direction: column;
         width: 100%;
         margin: 0 auto;
+        gap: clamp(0.75rem, 2vh, 1.35rem);
     }
 
     .text-col {
-        margin-bottom: var(--space-md);
-        text-align: left;
+        gap: 8px;
         width: 100%;
     }
 
     .section-title {
-        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
-        letter-spacing: -0.035em;
-        line-height: 1.1;
-        text-align: left;
+        font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+        letter-spacing: -0.03em;
+        line-height: 1.12;
         color: var(--text-main);
     }
 
     .body-text {
-        font-size: clamp(1.05rem, 2vw, 1.2rem);
+        font-size: clamp(0.92rem, 1.6vw, 1.06rem);
         color: var(--text-muted);
-        max-width: 54ch;
-        text-align: left;
-        line-height: 1.6;
-        margin-top: var(--space-xs);
+        max-width: 56ch;
+        line-height: 1.5;
     }
 
     .filter-container {
         display: flex;
         align-items: center;
-        margin-bottom: var(--space-md);
         width: 100%;
     }
 
     .filter-scroll {
         display: flex;
-        gap: var(--space-xs);
+        gap: 8px;
         overflow-x: auto;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
-        padding: 4px 0;
+        padding: 2px 0;
     }
 
     .filter-scroll::-webkit-scrollbar {
@@ -191,62 +200,44 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
     }
 
     .filter-btn {
-        background: var(--bg-sub);
+        background: var(--bg-card-inner);
         border: 1px solid var(--border);
         color: var(--text-muted);
-        padding: 8px 18px;
+        padding: 7px 16px;
         border-radius: 99px;
-        font-size: 0.85rem;
-        font-weight: 600;
+        font-size: 0.82rem;
+        font-weight: 650;
         cursor: pointer;
         white-space: nowrap;
-        will-change: transform;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .filter-btn:hover {
-        border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+        border-color: var(--primary);
         color: var(--text-main);
     }
 
     .filter-btn.active {
         background: var(--primary);
-        color: oklch(100% 0 0);
+        color: oklch(15% 0.02 155);
         border-color: var(--primary);
     }
 
-    .filter-btn:active {
-        transform: scale(0.96);
+    :global([data-theme="light"]) .filter-btn.active {
+        color: #ffffff;
     }
 
     .carousel-wrapper {
         position: relative;
         width: 100%;
-        margin-bottom: var(--space-md);
-    }
-
-    .carousel-wrapper::after {
-        content: "";
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 48px;
-        height: 100%;
-        background: linear-gradient(
-            to left,
-            var(--bg-main) 0%,
-            transparent 100%
-        );
-        pointer-events: none;
-        z-index: 5;
     }
 
     .carousel-track {
         display: flex;
-        gap: var(--space-md);
+        gap: 16px;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        padding: 6px 0 var(--space-sm) 0;
+        padding: 4px 0 8px 0;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
     }
@@ -257,27 +248,22 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 
     .carousel-card {
         scroll-snap-align: start;
-        flex: 0 0 290px;
+        flex: 0 0 268px;
         display: flex;
         flex-direction: column;
         text-decoration: none;
         color: inherit;
-        height: 100%;
-        min-height: 250px;
         border-radius: var(--radius-lg);
         overflow: hidden;
-        will-change: transform, opacity;
         transition:
-            transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
-            opacity 0.3s ease;
+            transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.25s ease,
+            opacity 0.25s ease;
     }
 
     .carousel-card:hover {
         transform: translateY(-4px);
-    }
-
-    .carousel-card:active {
-        transform: translateY(-2px) scale(0.98);
+        border-color: var(--primary);
     }
 
     .card-image {
@@ -285,97 +271,100 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         aspect-ratio: 16 / 10;
         overflow: hidden;
         border-bottom: 1px solid var(--border);
-        background: var(--bg-main);
+        background: var(--bg-sub);
     }
 
     .card-image img {
         width: 100%;
         height: 100%;
         object-fit: cover;
-        will-change: transform;
-        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     .carousel-card:hover .card-image img {
-        transform: scale(1.02);
+        transform: scale(1.04);
+    }
+
+    .card-tag {
+        position: absolute;
+        bottom: 8px;
+        left: 10px;
+        padding: 3px 9px;
+        border-radius: 99px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        background: color-mix(in srgb, var(--bg-main) 86%, transparent);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: var(--text-main);
+        border: 1px solid var(--border);
     }
 
     .card-content {
-        padding: var(--space-md);
+        padding: 14px 16px;
         display: flex;
         flex-direction: column;
-        gap: var(--space-md);
+        gap: 10px;
         flex-grow: 1;
         justify-content: space-between;
     }
 
+    .card-text-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
     .card-title {
-        font-size: 1.2rem;
-        font-weight: 750;
+        font-size: 1.05rem;
+        font-weight: 700;
         margin: 0;
         color: var(--text-main);
         letter-spacing: -0.015em;
+        line-height: 1.3;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .card-sub {
+        font-size: 0.8rem;
+        color: var(--text-muted);
+        margin: 0;
         line-height: 1.35;
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        text-overflow: ellipsis;
-        min-height: calc(1.35em * 2);
     }
 
     .card-footer {
         display: flex;
         align-items: center;
         gap: 6px;
-        font-weight: 600;
+        font-weight: 650;
         color: var(--primary);
-        font-size: 0.9rem;
-        letter-spacing: 0.01em;
-        margin-top: auto;
+        font-size: 0.84rem;
     }
 
     .icon {
-        display: inline-flex;
-        align-items: center;
-        transform: translateY(-1px);
         transition: transform 0.2s ease;
     }
 
     .carousel-card:hover .icon {
-        transform: translateX(2px) translateY(-1px);
+        transform: translateX(3px);
     }
 
-    .cta-wrapper {
-        display: flex;
-        justify-content: flex-start;
-        margin-top: var(--space-xs);
-    }
-
-    :lang(hi) .section-title {
-        line-height: 1.35;
-    }
-    :lang(hi) .filter-btn {
-        padding-top: 9px;
-        padding-bottom: 7px;
-    }
-    :lang(hi) .card-title {
-        line-height: 1.45;
-        min-height: calc(1.45em * 2);
-    }
-
-    @media (max-height: 740px) {
-        .text-col {
-            margin-bottom: var(--space-sm);
-        }
-        .body-text {
-            display: none;
+    @media (max-width: 680px) {
+        .section-title {
+            font-size: clamp(1.65rem, 6vw, 2.2rem);
         }
         .carousel-card {
-            flex: 0 0 250px;
+            flex: 0 0 232px;
         }
         .card-content {
-            padding: var(--space-sm);
+            padding: 12px 14px;
         }
     }
 </style>

@@ -1,6 +1,7 @@
 ---
 import Site from "../layouts/Site.astro";
 import CTAButton from "./CTAButton.astro";
+import StoreButtons from "./StoreButtons.astro";
 import type { YogaPlanPreview } from "../data/types";
 
 interface Props {
@@ -21,9 +22,67 @@ const { plan, canonicalPath, lang, labels, backLink, browseLink } = Astro.props;
 const translations = {
     en: {
         benefitsLabel: "Key Benefits",
+        cautionsLabel: "Safety & Cautions",
+        intensityLabel: "Level",
+        frequencyLabel: "Frequency",
+        bestTimeLabel: "Best Time",
+        mealGapLabel: "Meal Gap",
+        intensityValues: {
+            beginner: "Beginner Friendly",
+            intermediate: "Intermediate",
+            advanced: "Advanced",
+        } as Record<string, string>,
+        frequencyValues: {
+            daily: "Daily Practice",
+            weekly_3_5: "3–5x per Week",
+            weekly_1_2: "1–2x per Week",
+            as_needed: "As Needed",
+        } as Record<string, string>,
+        timeValues: {
+            morning: "Morning",
+            afternoon: "Afternoon",
+            evening: "Evening",
+            night: "Night",
+            anytime: "Anytime",
+        } as Record<string, string>,
+        mealValues: {
+            anytime: "Anytime",
+            after_15_minutes: "15 mins after meal",
+            after_1_hour: "1 hour after meal",
+            after_2_hours: "2 hours after meal",
+        } as Record<string, string>,
     },
     hi: {
         benefitsLabel: "मुख्य लाभ",
+        cautionsLabel: "सावधानियां",
+        intensityLabel: "स्तर",
+        frequencyLabel: "अभ्यास आवृत्ति",
+        bestTimeLabel: "उचित समय",
+        mealGapLabel: "भोजन के बाद",
+        intensityValues: {
+            beginner: "शुरुआती (Beginner)",
+            intermediate: "मध्यम (Intermediate)",
+            advanced: "उन्नत (Advanced)",
+        } as Record<string, string>,
+        frequencyValues: {
+            daily: "प्रतिदिन",
+            weekly_3_5: "सप्ताह में 3–5 बार",
+            weekly_1_2: "सप्ताह में 1–2 बार",
+            as_needed: "आवश्यकतानुसार",
+        } as Record<string, string>,
+        timeValues: {
+            morning: "सुबह",
+            afternoon: "दोपहर",
+            evening: "शाम",
+            night: "रात",
+            anytime: "कभी भी",
+        } as Record<string, string>,
+        mealValues: {
+            anytime: "कभी भी",
+            after_15_minutes: "भोजन के 15 मिनट बाद",
+            after_1_hour: "भोजन के 1 घंटे बाद",
+            after_2_hours: "भोजन के 2 घंटे बाद",
+        } as Record<string, string>,
     },
 };
 
@@ -36,8 +95,60 @@ const benefitsList = plan.benefits
           .filter(Boolean)
     : [];
 
+const cautionsList = plan.cautions
+    ? plan.cautions
+          .split(/\n+/)
+          .map((c) => c.trim())
+          .filter(Boolean)
+    : [];
+
+const intensityText = plan.intensity
+    ? t.intensityValues[plan.intensity] || plan.intensity
+    : "";
+const frequencyText = plan.practiceFrequency
+    ? t.frequencyValues[plan.practiceFrequency] || plan.practiceFrequency
+    : "";
+const bestTimeText =
+    plan.suitableTimeOfDay && plan.suitableTimeOfDay.length > 0
+        ? plan.suitableTimeOfDay
+              .map((time) => t.timeValues[time] || time)
+              .join(", ")
+        : t.timeValues.anytime;
+const mealGapText = plan.minMealGap
+    ? t.mealValues[plan.minMealGap] || plan.minMealGap
+    : "";
+
+const hasQuickSpecs = Boolean(
+    intensityText || frequencyText || bestTimeText || mealGapText,
+);
+
 const finalBackLink = backLink || `/${lang}/yoga`;
 const finalBrowseLink = browseLink || `/${lang}/yoga`;
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ExercisePlan",
+    name: plan.title,
+    alternateName: plan.subtitle,
+    description: plan.description,
+    image: plan.image,
+    url: `https://tulaalife.com${canonicalPath}`,
+    inLanguage: lang === "hi" ? "hi-IN" : "en-US",
+    exerciseType: "Therapeutic Yoga",
+    activityFrequency: frequencyText || "Daily",
+    intensity: intensityText || "Beginner",
+    isAccessibleForFree: true,
+    author: {
+        "@type": "Person",
+        name: "Latika Bissa",
+        jobTitle: "International Yoga Therapist (M.Sc. Gold Medalist)",
+    },
+    provider: {
+        "@type": "Organization",
+        name: "Tulaa",
+        url: "https://tulaalife.com",
+    },
+};
 ---
 
 <Site
@@ -52,7 +163,11 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
     <div class="content-shell">
         <article class="plan-card">
             <nav class="plan-nav">
-                <a href={finalBackLink} class="back-link">
+                <a
+                    href={finalBackLink}
+                    class="back-link"
+                    data-smart-back="true"
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -66,12 +181,12 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                     >
                         <path d="m15 18-6-6 6-6"></path>
                     </svg>
-                    {labels.back}
+                    {lang === "hi" ? "वापस जाएं" : "Back"}
                 </a>
             </nav>
 
             <div class="image-hero">
-                <div class="image-frame">
+                <div class="image-frame themed-media">
                     <img
                         src={plan.image}
                         alt={plan.title}
@@ -98,6 +213,37 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
 
             <div class="plan-body">
                 {
+                    hasQuickSpecs && (
+                        <div class="specs-grid">
+                            {intensityText && (
+                                <div class="spec-chip">
+                                    <span class="spec-label">{t.intensityLabel}</span>
+                                    <strong class="spec-val">{intensityText}</strong>
+                                </div>
+                            )}
+                            {frequencyText && (
+                                <div class="spec-chip">
+                                    <span class="spec-label">{t.frequencyLabel}</span>
+                                    <strong class="spec-val">{frequencyText}</strong>
+                                </div>
+                            )}
+                            {bestTimeText && (
+                                <div class="spec-chip">
+                                    <span class="spec-label">{t.bestTimeLabel}</span>
+                                    <strong class="spec-val">{bestTimeText}</strong>
+                                </div>
+                            )}
+                            {mealGapText && (
+                                <div class="spec-chip">
+                                    <span class="spec-label">{t.mealGapLabel}</span>
+                                    <strong class="spec-val">{mealGapText}</strong>
+                                </div>
+                            )}
+                        </div>
+                    )
+                }
+
+                {
                     plan.description && (
                         <p class="plan-lead body-text">{plan.description}</p>
                     )
@@ -106,7 +252,7 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                 {
                     benefitsList.length > 0 && (
                         <div class="benefits-module">
-                            <h3 class="benefits-label">{t.benefitsLabel}</h3>
+                            <h2 class="benefits-label">{t.benefitsLabel}</h2>
                             <ul class="benefits-list">
                                 {benefitsList.map((benefit) => (
                                     <li>{benefit}</li>
@@ -115,16 +261,24 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                         </div>
                     )
                 }
+
+                {
+                    cautionsList.length > 0 && (
+                        <aside class="cautions-module" role="note">
+                            <h2 class="cautions-label">{t.cautionsLabel}</h2>
+                            <ul class="cautions-list">
+                                {cautionsList.map((caution) => (
+                                    <li>{caution}</li>
+                                ))}
+                            </ul>
+                        </aside>
+                    )
+                }
             </div>
 
             <footer class="plan-footer">
                 <div class="button-group">
-                    <CTAButton
-                        href="https://apps.apple.com/app/id6748626498"
-                        label={labels.openApp}
-                        variant="solid"
-                        size="md"
-                    />
+                    <StoreButtons />
 
                     <CTAButton
                         href={finalBrowseLink}
@@ -135,6 +289,11 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
                 </div>
             </footer>
         </article>
+
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify(structuredData)}
+        />
     </div>
 </Site>
 
@@ -264,6 +423,83 @@ const finalBrowseLink = browseLink || `/${lang}/yoga`;
         color: var(--primary);
         font-size: 0.85rem;
         margin-top: 4px;
+        flex-shrink: 0;
+    }
+
+    .specs-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 12px;
+    }
+
+    .spec-chip {
+        background: var(--bg-sub);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        text-align: left;
+    }
+
+    .spec-label {
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        color: var(--text-muted);
+        font-weight: 700;
+    }
+
+    .spec-val {
+        font-size: 0.95rem;
+        color: var(--text-main);
+        font-weight: 650;
+    }
+
+    .cautions-module {
+        background: color-mix(in srgb, #f59e0b 8%, var(--bg-sub));
+        border: 1px solid color-mix(in srgb, #f59e0b 28%, var(--border));
+        border-radius: var(--radius-lg);
+        padding: 24px 28px;
+        text-align: left;
+    }
+
+    .cautions-label {
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        color: #b45309;
+        margin-bottom: 14px;
+        font-weight: var(--fw-bold);
+        letter-spacing: 0.05em;
+    }
+
+    :global([data-theme="dark"]) .cautions-label {
+        color: #fbbf24;
+    }
+
+    .cautions-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .cautions-list li {
+        font-size: 0.98rem;
+        line-height: 1.55;
+        color: var(--text-main);
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .cautions-list li::before {
+        content: "•";
+        color: #d97706;
+        font-weight: 700;
         flex-shrink: 0;
     }
 

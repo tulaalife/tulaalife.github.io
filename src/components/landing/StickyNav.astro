@@ -1,147 +1,166 @@
 ---
 const currentLang = Astro.currentLocale || "en";
-
-const ui = {
-    en: { download: "Download App" },
-    hi: { download: "ऐप डाउनलोड करें" },
-};
-const t = ui[currentLang as keyof typeof ui] || ui.en;
-
-const IOS_URL =
-    "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498";
-const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
+const scrollHintLabel =
+    currentLang === "hi" ? "नीचे स्क्रॉल करें" : "Scroll down";
 ---
 
-<nav id="sticky-nav" class="sticky-nav">
-    <div class="container sticky-inner">
-        <div class="sticky-logo">
-            <img
-                src="/assets/icons/logo_64.webp"
-                alt="Tulaa"
-                width="32"
-                height="32"
-            />
-            <span class="logo-text">Tulaa</span>
-        </div>
-        <button
-            id="nav-download-btn"
-            class="btn-sm"
-            data-ios={IOS_URL}
-            data-android={ANDROID_URL}
-        >
-            {t.download}
-        </button>
-    </div>
-</nav>
-
-<style>
-    .sticky-nav {
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: var(--header-height);
-        background: color-mix(in srgb, var(--bg-main) 85%, transparent);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        border-bottom: 1px solid var(--border);
-        z-index: 99;
-        transform: translateY(-100%);
-        will-change: transform;
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .sticky-nav.visible {
-        transform: translateY(0);
-    }
-
-    .sticky-inner {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .sticky-logo {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: var(--text-main);
-    }
-
-    .logo-text {
-        font-weight: var(--fw-bold);
-    }
-
-    .btn-sm {
-        background: var(--primary);
-        color: oklch(100% 0 0);
-        padding: 10px 20px;
-        border-radius: 99px;
-        font-size: 0.85rem;
-        font-weight: 600;
-        border: none;
-        cursor: pointer;
-        box-shadow: var(--shadow);
-        will-change: transform;
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .btn-sm:hover {
-        transform: translateY(-1px);
-    }
-
-    .btn-sm:active {
-        transform: translateY(0) scale(0.97);
-    }
-
-    :global(:lang(hi)) .btn-sm {
-        padding-top: 11px;
-        padding-bottom: 9px;
-    }
-</style>
+<button
+    type="button"
+    class="scroll-more-cue"
+    id="scroll-more-cue"
+    aria-label={scrollHintLabel}
+>
+    <svg
+        class="cue-chevron"
+        viewBox="0 0 24 24"
+        width="20"
+        height="20"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+    >
+        <polyline points="6 9 12 15 18 9"></polyline>
+    </svg>
+</button>
 
 <script>
     document.addEventListener("astro:page-load", () => {
-        const nav = document.getElementById("sticky-nav");
-        const hero = document.getElementById("hero");
-        const btn = document.getElementById("nav-download-btn");
+        const scrollCue = document.getElementById("scroll-more-cue");
+        const scrollContainer = document.getElementById(
+            "main-scroll-container",
+        );
+        if (!scrollCue || !scrollContainer) return;
 
-        if (nav && hero) {
-            const observer = new IntersectionObserver(
-                (entries) => {
-                    entries.forEach((entry) => {
-                        nav.classList.toggle("visible", !entry.isIntersecting);
-                    });
-                },
-                { threshold: 0.1 },
-            );
-            observer.observe(hero);
+        const sections = Array.from(
+            scrollContainer.querySelectorAll(".scroll-section"),
+        ) as HTMLElement[];
+
+        let currentSectionIndex = 0;
+        let idleTimer: ReturnType<typeof setTimeout> | null = null;
+
+        function resetIdleTimer() {
+            if (!scrollCue) return;
+            scrollCue.classList.remove("is-idle-moving");
+            if (idleTimer) clearTimeout(idleTimer);
+            idleTimer = setTimeout(() => {
+                if (!scrollCue.classList.contains("is-hidden")) {
+                    scrollCue.classList.add("is-idle-moving");
+                }
+            }, 5000);
         }
 
-        btn?.addEventListener("click", () => {
-            const ua = navigator.userAgent.toLowerCase();
-            const isMobile = /iphone|ipad|ipod|android/.test(ua);
-
-            if (isMobile) {
-                const iosUrl = btn.getAttribute("data-ios");
-                const androidUrl = btn.getAttribute("data-android");
-
-                if (/iphone|ipad|ipod/.test(ua) && iosUrl) {
-                    window.location.href = iosUrl;
-                } else if (/android/.test(ua) && androidUrl) {
-                    window.location.href = androidUrl;
-                }
-            } else {
-                const scrollContainer = document.getElementById(
-                    "main-scroll-container",
-                );
-                if (scrollContainer) {
-                    scrollContainer.scrollTo({ top: 0, behavior: "smooth" });
-                } else {
-                    window.scrollTo({ top: 0, behavior: "smooth" });
-                }
+        scrollCue.addEventListener("click", () => {
+            resetIdleTimer();
+            const nextSection = sections[currentSectionIndex + 1];
+            if (nextSection) {
+                nextSection.scrollIntoView({
+                    behavior: "smooth",
+                    block: "start",
+                });
             }
         });
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const activeIdx = sections.findIndex(
+                            (s) => s === entry.target,
+                        );
+                        if (activeIdx !== -1) {
+                            currentSectionIndex = activeIdx;
+                        }
+                        const isLast =
+                            entry.target.id === "sanctuary-footer" ||
+                            currentSectionIndex === sections.length - 1;
+                        scrollCue.classList.toggle("is-hidden", isLast);
+                        if (isLast) {
+                            scrollCue.classList.remove("is-idle-moving");
+                        }
+                    }
+                });
+            },
+            {
+                root: scrollContainer,
+                threshold: 0.45,
+            },
+        );
+
+        sections.forEach((sec) => observer.observe(sec));
+
+        const activityEvents = [
+            "scroll",
+            "wheel",
+            "touchstart",
+            "touchmove",
+            "pointerdown",
+            "keydown",
+            "click",
+        ];
+        activityEvents.forEach((evt) => {
+            scrollContainer.addEventListener(evt, resetIdleTimer, {
+                passive: true,
+            });
+            window.addEventListener(evt, resetIdleTimer, { passive: true });
+        });
+
+        resetIdleTimer();
     });
 </script>
+
+<style>
+    .scroll-more-cue {
+        position: fixed;
+        bottom: clamp(8px, 1.5vh, 14px);
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 75;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 24px;
+        padding: 0;
+        border: none;
+        background: transparent;
+        color: var(--text-muted);
+        opacity: 0.32;
+        cursor: pointer;
+        transition:
+            opacity 0.35s ease,
+            transform 0.35s ease,
+            color 0.2s ease;
+    }
+
+    .scroll-more-cue:hover {
+        opacity: 0.75;
+        color: var(--primary);
+    }
+
+    .scroll-more-cue.is-idle-moving {
+        opacity: 0.58;
+    }
+
+    .scroll-more-cue.is-idle-moving .cue-chevron {
+        animation: subtleIdleFloat 2.2s ease-in-out infinite;
+    }
+
+    .scroll-more-cue.is-hidden {
+        opacity: 0 !important;
+        pointer-events: none;
+        transform: translateX(-50%) translateY(8px);
+    }
+
+    @keyframes subtleIdleFloat {
+        0%,
+        100% {
+            transform: translateY(-2px);
+        }
+        50% {
+            transform: translateY(3px);
+        }
+    }
+</style>

@@ -1,9 +1,33 @@
 ---
+import StoreButtons from "../StoreButtons.astro";
+
 const currentLang = Astro.currentLocale || "en";
 
 const ui = {
-    en: { basePoster: "poster" },
-    hi: { basePoster: "poster-hindi" },
+    en: {
+        basePoster: "poster",
+        badge: "Guided Video • Built-In Timers",
+        titleTop: "Easy 15-Min Sessions,",
+        titleBottom: "Real Relief.",
+        body: "Follow clear video guides at your own pace—with safety tips and offline access.",
+        pills: [
+            { label: "Clear Video Guides", icon: "video" },
+            { label: "Built-In Timers", icon: "timer" },
+            { label: "Works Offline", icon: "offline" },
+        ],
+    },
+    hi: {
+        basePoster: "poster-hindi",
+        badge: "आसान वीडियो • इन-बिल्ट टाइमर",
+        titleTop: "रोज़ 15 मिनट,",
+        titleBottom: "सच्चा आराम।",
+        body: "आसान वीडियो के साथ अपने समय पर योग करें — सही तरीके, सावधानियों और बिना इंटरनेट के।",
+        pills: [
+            { label: "आसान वीडियो गाइड", icon: "video" },
+            { label: "प्रैक्टिस टाइमर", icon: "timer" },
+            { label: "बिना इंटरनेट चले", icon: "offline" },
+        ],
+    },
 };
 
 const t = ui[currentLang as keyof typeof ui] || ui.en;
@@ -21,8 +45,81 @@ const videoMp4 =
         : "/website-app-demo.mp4";
 ---
 
-<section class="scroll-section video-section">
-    <div class="container visual-centered">
+<section id="app-preview" class="scroll-section video-section">
+    <div class="container video-grid">
+        <div class="video-copy animate-on-scroll">
+            <span class="badge-small">{t.badge}</span>
+            <h2 class="section-title">
+                {t.titleTop}
+                <br />
+                <span class="text-gradient">{t.titleBottom}</span>
+            </h2>
+            <p class="body-text">{t.body}</p>
+
+            <div class="feature-chips-grid">
+                {t.pills.map((pill) => (
+                    <div class="feature-chip premium-gloss-surface">
+                        <span class="chip-icon" aria-hidden="true">
+                            {pill.icon === "video" && (
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <polygon
+                                        points="6 4 20 12 6 20 6 4"
+                                        fill="currentColor"
+                                        fill-opacity="0.28"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            )}
+                            {pill.icon === "timer" && (
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <circle
+                                        cx="12"
+                                        cy="13"
+                                        r="8"
+                                        fill="currentColor"
+                                        fill-opacity="0.24"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                    />
+                                    <path
+                                        d="M12 9v4l2.5 2M9 3h6"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                    />
+                                </svg>
+                            )}
+                            {pill.icon === "offline" && (
+                                <svg viewBox="0 0 24 24" fill="none">
+                                    <circle
+                                        cx="12"
+                                        cy="12"
+                                        r="9"
+                                        fill="currentColor"
+                                        fill-opacity="0.22"
+                                    />
+                                    <path
+                                        d="M12 5v10m-3.5-3.5L12 15l3.5-3.5M6 19h12"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            )}
+                        </span>
+                        <span class="chip-label">{pill.label}</span>
+                    </div>
+                ))}
+            </div>
+
+            <div class="video-cta desktop-only-cta">
+                <StoreButtons compact={true} />
+            </div>
+        </div>
+
         <div class="visual-backlightstage">
             <div
                 class="phone-frame-wrapper animate-on-scroll"
@@ -38,8 +135,10 @@ const videoMp4 =
                         alt="Tulaa App Preview"
                         class="poster-img"
                         id="posterImg"
-                        fetchpriority="high"
+                        width="540"
+                        height="1170"
                         loading="eager"
+                        decoding="async"
                     />
                 </picture>
                 <video
@@ -48,7 +147,8 @@ const videoMp4 =
                     loop
                     muted
                     playsinline
-                    preload="none"></video>
+                    preload="none"
+                ></video>
             </div>
         </div>
     </div>
@@ -63,26 +163,37 @@ const videoMp4 =
 
         if (!wrapper || !video) return;
 
-        const initVideo = () => {
+        video.loop = true;
+        video.muted = true;
+
+        let sourceAttached = false;
+
+        const playLoop = () => {
+            video.loop = true;
+            video.play().catch(() => {
+                if (loader) loader.style.display = "none";
+            });
+        };
+
+        const attachPreferredSource = () => {
+            if (sourceAttached) return;
+            sourceAttached = true;
+
             const webmSrc = wrapper.getAttribute("data-webm");
             const mp4Src = wrapper.getAttribute("data-mp4");
 
-            if (
-                webmSrc &&
-                video.querySelectorAll('source[type="video/webm"]').length === 0
-            ) {
+            // Pick the single best format for this browser so only the right video is downloaded
+            const supportsWebm =
+                video.canPlayType('video/webm; codecs="vp9"') !== "" ||
+                video.canPlayType("video/webm") !== "";
+            const chosenSrc = supportsWebm && webmSrc ? webmSrc : mp4Src;
+            const chosenType =
+                supportsWebm && webmSrc ? "video/webm" : "video/mp4";
+
+            if (chosenSrc && video.querySelectorAll("source").length === 0) {
                 const s = document.createElement("source");
-                s.src = webmSrc;
-                s.type = "video/webm";
-                video.appendChild(s);
-            }
-            if (
-                mp4Src &&
-                video.querySelectorAll('source[type="video/mp4"]').length === 0
-            ) {
-                const s = document.createElement("source");
-                s.src = mp4Src;
-                s.type = "video/mp4";
+                s.src = chosenSrc;
+                s.type = chosenType;
                 video.appendChild(s);
             }
 
@@ -100,17 +211,42 @@ const videoMp4 =
                 { once: true },
             );
 
-            video.load();
-            video.play().catch(() => {
-                if (loader) loader.style.display = "none";
+            // Guarantee seamless restart at frame 0 if a browser ever stops at `ended`
+            video.addEventListener("ended", () => {
+                video.currentTime = 0;
+                playLoop();
             });
+
+            video.preload = "auto";
+            video.load();
         };
+
+        // Preload the exact matching video in the background after initial page load
+        // so it's already buffered before the user scrolls down to this section
+        const schedulePreload = () => {
+            const conn = (navigator as any).connection;
+            if (conn?.saveData) return;
+
+            const run = () => attachPreferredSource();
+            if ("requestIdleCallback" in window) {
+                (window as any).requestIdleCallback(run, { timeout: 2500 });
+            } else {
+                setTimeout(run, 1200);
+            }
+        };
+
+        if (document.readyState === "complete") {
+            schedulePreload();
+        } else {
+            window.addEventListener("load", schedulePreload, { once: true });
+        }
 
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        initVideo();
+                        attachPreferredSource();
+                        playLoop();
                         observer.disconnect();
                     }
                 });
@@ -121,8 +257,11 @@ const videoMp4 =
         observer.observe(wrapper);
 
         document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                video.play().catch(() => {});
+            if (
+                document.visibilityState === "visible" &&
+                video.readyState >= 2
+            ) {
+                playLoop();
             }
         });
     });
@@ -131,17 +270,74 @@ const videoMp4 =
 <style>
     .video-section {
         width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
     }
 
-    .visual-centered {
-        display: flex;
-        justify-content: center;
+    .video-grid {
+        display: grid;
+        grid-template-columns: 1.05fr 0.95fr;
+        gap: clamp(1.5rem, 4vw, 3.5rem);
         align-items: center;
+    }
+
+    .video-copy {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 12px;
+    }
+
+    .video-copy .section-title {
+        font-size: clamp(2rem, 4.4vw, 3.35rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+    }
+
+    .feature-chips-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 6px 0;
+    }
+
+    .feature-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        border-radius: 999px;
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border);
+    }
+
+    .chip-icon {
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: var(--primary-soft);
+        color: var(--primary);
+        border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .chip-icon svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    .chip-label {
+        font-size: 0.85rem;
+        font-weight: 650;
+        color: var(--text-main);
+        white-space: nowrap;
+    }
+
+    .video-cta {
         width: 100%;
-        height: 100%;
+        margin-top: 6px;
     }
 
     .visual-backlightstage {
@@ -150,17 +346,16 @@ const videoMp4 =
         justify-content: center;
         align-items: center;
         width: 100%;
-        padding: 2rem 0;
     }
 
     .visual-backlightstage::before {
         content: "";
         position: absolute;
-        width: 650px;
-        height: 650px;
+        width: 520px;
+        height: 520px;
         background: radial-gradient(
             circle,
-            color-mix(in srgb, var(--primary) 8%, transparent) 0%,
+            color-mix(in srgb, var(--primary) 14%, transparent) 0%,
             transparent 70%
         );
         z-index: 1;
@@ -171,19 +366,16 @@ const videoMp4 =
         position: relative;
         z-index: 2;
         width: auto;
-        height: 72dvh;
-        max-height: 760px;
-        aspect-ratio: 540 / 1174;
+        height: 68dvh;
+        max-height: 680px;
+        aspect-ratio: 540 / 1170;
         background-color: var(--bg-sub);
-        border-radius: 44px;
-
-        border: 1px solid color-mix(in srgb, var(--text-main) 10%, transparent);
+        border-radius: 40px;
+        border: 1px solid var(--border-strong);
         box-shadow:
-            0 0 0 6px color-mix(in srgb, var(--bg-sub) 60%, transparent),
-            0 12px 40px -8px
-                color-mix(in srgb, var(--text-main) 12%, transparent);
+            0 0 0 6px color-mix(in srgb, var(--bg-sub) 65%, transparent),
+            var(--shadow);
         backdrop-filter: blur(16px);
-
         overflow: hidden;
     }
 
@@ -216,9 +408,9 @@ const videoMp4 =
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
-        width: 36px;
-        height: 36px;
-        border: 2px solid color-mix(in srgb, var(--text-muted), transparent 90%);
+        width: 34px;
+        height: 34px;
+        border: 2px solid color-mix(in srgb, var(--text-muted), transparent 85%);
         border-top-color: var(--primary);
         border-radius: 50%;
         animation: spin 0.8s linear infinite;
@@ -232,22 +424,66 @@ const videoMp4 =
         }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 860px) {
+        .video-grid {
+            grid-template-columns: 1fr;
+            gap: 0.85rem;
+            text-align: center;
+        }
+
+        .video-copy {
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+        }
+
+        .video-copy .section-title {
+            font-size: clamp(1.6rem, 6vw, 2.1rem);
+        }
+
+        .video-copy .body-text {
+            font-size: 0.86rem;
+            line-height: 1.4;
+        }
+
+        .feature-chips-grid {
+            justify-content: center;
+            gap: 6px;
+            margin: 2px 0;
+        }
+
+        .feature-chip {
+            padding: 5px 10px;
+            gap: 5px;
+        }
+
+        .chip-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .chip-icon svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .chip-label {
+            font-size: 0.74rem;
+        }
+
+        .desktop-only-cta {
+            display: none;
+        }
+
         .phone-frame-wrapper {
-            height: 66dvh;
-            border-radius: 36px;
-            border: 1px solid
-                color-mix(in srgb, var(--text-main) 10%, transparent);
-            box-shadow:
-                0 0 0 6px color-mix(in srgb, var(--bg-sub) 60%, transparent),
-                0 12px 40px -8px
-                    color-mix(in srgb, var(--text-main) 12%, transparent);
-            backdrop-filter: blur(16px);
+            height: 50dvh;
+            max-height: 430px;
+            border-radius: 28px;
         }
 
         .visual-backlightstage::before {
-            width: 350px;
-            height: 350px;
+            width: 280px;
+            height: 280px;
         }
     }
 </style>

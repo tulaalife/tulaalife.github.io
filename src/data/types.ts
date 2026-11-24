@@ -1,27 +1,33 @@
-export type Locale = 'en' | 'hi';
-
 export interface YogaPlanPreview {
+    id: string;
     slug: string;
     language: string;
     title: string;
     subtitle: string;
     description: string;
     benefits: string;
+    cautions?: string;
     image: string;
-    deeplink: string;
-    goals: string[];
+    goals: readonly string[];
+    intensity?: string;
+    practiceFrequency?: string;
+    suitableTimeOfDay?: readonly string[];
+    minMealGap?: string;
+}
+
+export type RecommendationOverrides = Record<string, readonly string[]>;
+
+export interface ManualRecommendations {
+    overrides: RecommendationOverrides;
 }
 
 export interface GuidedAudioPreview {
     slug: string;
     language: string;
-    translation_group_id: string;
     title: string;
     subtitle: string;
     description: string;
     image: string;
-    deeplink: string;
-    locale?: Locale;
 }
 
 export interface TipPreview {
@@ -31,14 +37,11 @@ export interface TipPreview {
     precaution?: string;
     category?: string;
     icon?: string;
-    deeplink: string;
-    locale?: Locale;
 }
 
 export interface BlogPost {
     slug: string;
     language: string;
-    translation_group_id: string;
     title: string;
     excerpt: string;
     image: string;
@@ -48,10 +51,4 @@ export interface BlogPost {
     content: {
         ops: any[];
     };
-    cta?: {
-        link: string;
-        text: string;
-    } | null;
-    goals?: string[];
-    timeOfDay?: string[];
 }

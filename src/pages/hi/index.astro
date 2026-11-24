@@ -7,16 +7,54 @@ import YogaFeatures from "../../components/landing/YogaFeatures.astro";
 import WellnessTools from "../../components/landing/WellnessTools.astro";
 import MindAndMood from "../../components/landing/MindAndMood.astro";
 import PrivacyTrust from "../../components/landing/PrivacyTrust.astro";
+import Reviews from "../../components/landing/Reviews.astro";
 import HeroVideo from "../../components/landing/HeroVideo.astro";
 
-const title = "Tulaa - संपूर्ण स्वास्थ्य और एक्सपर्ट योग थेरेपी";
+const title = "Tulaa (तुला): फ्री योग प्लान, दर्द से राहत, नींद और पीरियड ट्रैकर";
 const description =
-    "फ्री, ऑफलाइन और एक्सपर्ट-गाइडेड योग। किसी लॉगिन या ट्रैकिंग की ज़रूरत नहीं। 100% प्राइवेट वेलनेस टूल्स।";
+    "कमर दर्द, साइटिका, गर्दन दर्द, PCOS, प्रेगनेंसी और थायरॉइड के लिए अपना फ्री योग प्लान पाएं — साथ ही प्राणायाम, गहरी नींद का ऑडियो और 100% निजी पीरियड, फास्टिंग व वॉटर ट्रैकर। बिना लॉगिन, बिना विज्ञापन और ऑफलाइन।";
+const keywords =
+    "फ्री योग प्लान, फ्री योग ऐप, योग थेरेपी, कमर दर्द योग, साइटिका, गर्दन दर्द, चेयर योग, PCOS योग, प्रेगनेंसी योग, थायरॉइड योग, डायबिटीज योग, प्राणायाम, ध्यान, गहरी नींद, पीरियड ट्रैकर, फास्टिंग टाइमर, वॉटर ट्रैकर, ऑफलाइन योग ऐप, लतिका बिस्सा, free yoga plan, kamar dard yoga, neend ke liye dhyan";
+
+const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: "Tulaa: योग और स्वास्थ्य",
+    operatingSystem: "iOS, Android",
+    applicationCategory: "HealthApplication",
+    inLanguage: "hi-IN",
+    description,
+    keywords,
+    url: "https://tulaalife.com/hi",
+    featureList: [
+        "कमर दर्द, साइटिका, गर्दन दर्द, PCOS, प्रेगनेंसी और थायरॉइड के लिए फ्री योग प्लान",
+        "प्राणायाम, वैदिक मंत्र और गहरी नींद के लिए गाइडेड ऑडियो",
+        "100% निजी ऑन-डिवाइस पीरियड और साइकिल डायरी",
+        "इंटरमिटेंट फास्टिंग टाइमर, वॉटर और मूड ट्रैकर",
+        "बिना लॉगिन, बिना विज्ञापन और ऑफलाइन चलने वाले वीडियो सत्र",
+    ],
+    offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "INR",
+    },
+    aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "5.0",
+        ratingCount: "50",
+    },
+    author: {
+        "@type": "Organization",
+        name: "Tulaalife Wellness Private Limited",
+        url: "https://tulaalife.com",
+    },
+};
 ---
 
 <Layout
     title={title}
     description={description}
+    keywords={keywords}
     canonicalPath="/"
     isLandingPage={true}
 >
@@ -24,8 +62,13 @@ const description =
     <Hero />
     <HeroVideo />
     <HeroAuthor />
+    <Reviews />
     <YogaFeatures />
     <MindAndMood />
     <WellnessTools />
     <PrivacyTrust />
+    <script
+        type="application/ld+json"
+        set:html={JSON.stringify(structuredData)}
+    />
 </Layout>

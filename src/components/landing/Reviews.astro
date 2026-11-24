@@ -1,0 +1,492 @@
+---
+const currentLang = Astro.currentLocale || "en";
+
+const ui = {
+    en: {
+        badge: "★ 5.0 Rated on App Store & Google Play",
+        titleTop: "Loved by People",
+        titleBottom: "Every Day.",
+        desc: "Real 5-star reviews from people using Tulaa for yoga, sleep, and daily health.",
+        reviews: [
+            {
+                highlight: "Rhythm & Zero Ads",
+                text: "After using Tulaa for 5 months, the Rhythm feature alone makes it worth downloading. Yoga therapy, complete privacy, and zero ads make it a rare gem.",
+                author: "Ashish Srivastava",
+                source: "Google Play",
+            },
+            {
+                highlight: "Sleep in 5 Minutes",
+                text: "I listen to the meditations at bedtime, and they help me go to sleep within 5 minutes. I have experienced great health benefits under Latika's guidance.",
+                author: "Sadie P",
+                source: "Google Play",
+            },
+            {
+                highlight: "Thoughtfully Curated",
+                text: "The plans feel carefully curated rather than randomly put together. It never feels one-size-fits-all, whether for daily wellbeing or a specific condition.",
+                author: "Nikrian",
+                source: "App Store",
+            },
+            {
+                highlight: "Beginner Friendly",
+                text: "Great app for beginners to learn basics and targeted exercises without any ads or privacy concerns. Clean design and customisations keep you motivated.",
+                author: "Hari S",
+                source: "Google Play",
+            },
+            {
+                highlight: "Pregnancy Care",
+                text: "I complete my yoga with a relaxed mind. This is a very good app for pregnancy.",
+                author: "Manisha Yadav",
+                source: "Google Play",
+            },
+            {
+                highlight: "Posture & Hydration",
+                text: "It helped me with posture improvement and monitoring my water intake. A beautiful and easy to use yoga app.",
+                author: "Mannaa123",
+                source: "App Store",
+            },
+            {
+                highlight: "Headache & Pain Relief",
+                text: "Really good app with free yoga. It genuinely helped me with headache and pain.",
+                author: "Vijay Srivastava",
+                source: "Google Play",
+            },
+            {
+                highlight: "Peaceful & Ad-Free",
+                text: "Very easy to use, and it is great to have an app without ads and only peaceful yoga to practice anytime.",
+                author: "Prerna1407",
+                source: "App Store",
+            },
+        ],
+    },
+    hi: {
+        badge: "★ 5.0 रेटिंग • App Store व Google Play",
+        titleTop: "हर दिन लोगों का",
+        titleBottom: "भरोसा और प्यार।",
+        desc: "Tulaa के साथ रोज़ योग, नींद और सेहत का ध्यान रखने वाले लोगों के सच्चे 5-स्टार रिव्यू।",
+        reviews: [
+            {
+                highlight: "रिदम और विज्ञापन-मुक्त",
+                text: "5 महीनों से Tulaa इस्तेमाल कर रहा हूँ। इसका रिदम फीचर, योग थेरेपी, पूरी गोपनीयता और जीरो विज्ञापन इसे एक अनमोल ऐप बनाते हैं।",
+                author: "आशीष श्रीवास्तव",
+                source: "Google Play",
+            },
+            {
+                highlight: "5 मिनट में गहरी नींद",
+                text: "मैं सोने से पहले इसके मेडिटेशन सुनती हूँ और 5 मिनट के अंदर गहरी नींद आ जाती है। लतिका जी के मार्गदर्शन में मेरी सेहत में बहुत सुधार हुआ है।",
+                author: "सैडी पी.",
+                source: "Google Play",
+            },
+            {
+                highlight: "विशेष रूप से तैयार",
+                text: "इसके सभी योग प्लान बहुत सोच-समझकर बनाए गए हैं। चाहे रोज़ाना की सेहत हो या कोई विशेष समस्या, हर स्तर के लिए स्पष्ट मार्गदर्शन मिलता है।",
+                author: "निक्रियन",
+                source: "App Store",
+            },
+            {
+                highlight: "शुरुआती के लिए आसान",
+                text: "शुरुआती अभ्यासियों के लिए बिना विज्ञापनों और बिना किसी प्राइवेसी चिंता के योग सीखने का बेहतरीन ऐप। इसका शांत डिज़ाइन प्रेरित रखता है।",
+                author: "हरि एस.",
+                source: "Google Play",
+            },
+            {
+                highlight: "गर्भावस्था के लिए श्रेष्ठ",
+                text: "मैं शांत मन से अपना योग पूरा करती हूँ। गर्भावस्था के लिए यह बहुत ही अच्छा ऐप है।",
+                author: "मनीषा यादव",
+                source: "Google Play",
+            },
+            {
+                highlight: "पॉश्चर और वॉटर ट्रैकर",
+                text: "इस ऐप से मुझे अपना पॉश्चर सुधारने और पानी पीने की आदत बनाए रखने में बहुत मदद मिली। बेहद सुंदर और आसान ऐप।",
+                author: "मन्ना123",
+                source: "App Store",
+            },
+            {
+                highlight: "सिरदर्द और दर्द में राहत",
+                text: "बहुत ही अच्छा फ्री योग ऐप है। इससे मुझे सिरदर्द और शरीर के दर्द में काफी राहत मिली।",
+                author: "विजय श्रीवास्तव",
+                source: "Google Play",
+            },
+            {
+                highlight: "शांत और विज्ञापन-मुक्त",
+                text: "इस्तेमाल करने में बहुत आसान है और बिना विज्ञापनों के कभी भी शांति से योग अभ्यास करने का बेहतरीन अनुभव देता है।",
+                author: "प्रेरणा1407",
+                source: "App Store",
+            },
+        ],
+    },
+};
+
+const t = ui[currentLang as keyof typeof ui] || ui.en;
+---
+
+<section id="community-love" class="scroll-section section-reviews">
+    <div class="content-wrapper">
+        <div class="container">
+            <div class="section-header-left header-content animate-on-scroll">
+                <span class="badge-small">{t.badge}</span>
+                <h2 class="section-title">
+                    <span class="title-main">{t.titleTop}</span>{" "}
+                    <span class="text-gradient">{t.titleBottom}</span>
+                </h2>
+                <p class="body-text">{t.desc}</p>
+            </div>
+        </div>
+
+        <div
+            class="container reviews-container animate-on-scroll delay-1"
+            id="reviews-showcase"
+            data-reviews={JSON.stringify(t.reviews)}
+        >
+            <div class="reviews-grid" id="reviews-grid">
+                {
+                    t.reviews.slice(0, 3).map((rev) => (
+                        <blockquote class="review-card premium-gloss-surface">
+                            <div class="review-card-top">
+                                <div class="stars-row" aria-hidden="true">
+                                    {[1, 2, 3, 4, 5].map(() => (
+                                        <svg
+                                            viewBox="0 0 20 20"
+                                            width="14"
+                                            height="14"
+                                            fill="currentColor"
+                                        >
+                                            <polygon points="10 1.5 12.6 6.8 18.5 7.6 14.2 11.8 15.2 17.6 10 14.8 4.8 17.6 5.8 11.8 1.5 7.6 7.4 6.8 10 1.5" />
+                                        </svg>
+                                    ))}
+                                </div>
+                                <span class="review-highlight-pill">
+                                    {rev.highlight}
+                                </span>
+                            </div>
+
+                            <p class="review-text">“{rev.text}”</p>
+
+                            <footer class="review-author">
+                                <div class="author-initial" aria-hidden="true">
+                                    {rev.author.charAt(0)}
+                                </div>
+                                <div class="author-meta">
+                                    <strong>{rev.author}</strong>
+                                    <span>{rev.source}</span>
+                                </div>
+                            </footer>
+                        </blockquote>
+                    ))
+                }
+            </div>
+
+            <div class="reviews-dots" id="reviews-dots" aria-label="Review pages">
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const container = document.getElementById("reviews-showcase");
+        const grid = document.getElementById("reviews-grid");
+        const dotsWrap = document.getElementById("reviews-dots");
+        if (!container || !grid || !dotsWrap) return;
+
+        const raw = container.getAttribute("data-reviews");
+        if (!raw) return;
+
+        const allReviews: Array<{
+            highlight: string;
+            text: string;
+            author: string;
+            source: string;
+        }> = JSON.parse(raw);
+
+        // Fisher-Yates shuffle for random order on every visit
+        for (let i = allReviews.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [allReviews[i], allReviews[j]] = [allReviews[j], allReviews[i]];
+        }
+
+        const getBatchSize = () => (window.innerWidth <= 820 ? 2 : 3);
+        let batchSize = getBatchSize();
+        let totalPages = Math.ceil(allReviews.length / batchSize);
+        let currentPage = 0;
+        let isPaused = false;
+        let timerId: ReturnType<typeof setInterval> | null = null;
+
+        const starSvg = `<svg viewBox="0 0 20 20" width="14" height="14" fill="currentColor"><polygon points="10 1.5 12.6 6.8 18.5 7.6 14.2 11.8 15.2 17.6 10 14.8 4.8 17.6 5.8 11.8 1.5 7.6 7.4 6.8 10 1.5" /></svg>`;
+
+        function renderDots() {
+            if (!dotsWrap) return;
+            dotsWrap.innerHTML = "";
+            for (let p = 0; p < totalPages; p++) {
+                const btn = document.createElement("button");
+                btn.type = "button";
+                btn.className = `rev-dot${p === currentPage ? " active" : ""}`;
+                btn.setAttribute("aria-label", `Reviews group ${p + 1}`);
+                btn.addEventListener("click", () => {
+                    currentPage = p;
+                    renderPage();
+                });
+                dotsWrap.appendChild(btn);
+            }
+        }
+
+        function renderPage() {
+            if (!grid) return;
+            const start = currentPage * batchSize;
+            const slice = [];
+            for (let i = 0; i < batchSize; i++) {
+                slice.push(allReviews[(start + i) % allReviews.length]);
+            }
+
+            grid.classList.add("is-fading");
+
+            setTimeout(() => {
+                grid.innerHTML = slice
+                    .map(
+                        (rev, idx) => `
+                    <blockquote class="review-card premium-gloss-surface review-enter" style="animation-delay: ${idx * 75}ms">
+                        <div class="review-card-top">
+                            <div class="stars-row" aria-hidden="true">${starSvg.repeat(5)}</div>
+                            <span class="review-highlight-pill">${rev.highlight}</span>
+                        </div>
+                        <p class="review-text">“${rev.text}”</p>
+                        <footer class="review-author">
+                            <div class="author-initial" aria-hidden="true">${rev.author.charAt(0)}</div>
+                            <div class="author-meta">
+                                <strong>${rev.author}</strong>
+                                <span>${rev.source}</span>
+                            </div>
+                        </footer>
+                    </blockquote>
+                `,
+                    )
+                    .join("");
+
+                grid.classList.remove("is-fading");
+                renderDots();
+            }, 220);
+        }
+
+        function startAutoplay() {
+            if (timerId) clearInterval(timerId);
+            timerId = setInterval(() => {
+                if (isPaused) return;
+                currentPage = (currentPage + 1) % totalPages;
+                renderPage();
+            }, 5500);
+        }
+
+        container.addEventListener("mouseenter", () => (isPaused = true));
+        container.addEventListener("mouseleave", () => (isPaused = false));
+        container.addEventListener("touchstart", () => (isPaused = true), {
+            passive: true,
+        });
+
+        renderPage();
+        startAutoplay();
+    });
+</script>
+
+<style>
+    .section-reviews {
+        width: 100%;
+    }
+
+    .content-wrapper {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        margin: 0 auto;
+        gap: clamp(1rem, 2.6vh, 1.85rem);
+    }
+
+    .header-content {
+        max-width: 740px;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .section-title {
+        font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+        letter-spacing: -0.03em;
+        line-height: 1.12;
+        color: var(--text-main);
+    }
+
+    .body-text {
+        font-size: clamp(0.92rem, 1.6vw, 1.05rem);
+        color: var(--text-muted);
+        line-height: 1.5;
+        max-width: 58ch;
+    }
+
+    .reviews-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .reviews-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 16px;
+        transition: opacity 0.22s ease;
+    }
+
+    .reviews-grid.is-fading {
+        opacity: 0;
+    }
+
+    :global(.review-enter) {
+        animation: reviewFadeUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
+    }
+
+    @keyframes reviewFadeUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    :global(.review-card) {
+        margin: 0;
+        padding: clamp(1.15rem, 2.2vw, 1.7rem);
+        border-radius: var(--radius-lg);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 14px;
+        transition:
+            transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.25s ease;
+    }
+
+    :global(.review-card:hover) {
+        transform: translateY(-3px);
+        border-color: var(--primary);
+    }
+
+    :global(.review-card-top) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    :global(.stars-row) {
+        display: inline-flex;
+        align-items: center;
+        gap: 2px;
+        color: var(--accent-warm);
+    }
+
+    :global(.review-highlight-pill) {
+        font-size: 0.72rem;
+        font-weight: 700;
+        padding: 3px 10px;
+        border-radius: 999px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        border: 1px solid color-mix(in srgb, var(--primary) 22%, transparent);
+    }
+
+    :global(.review-text) {
+        margin: 0;
+        font-size: 0.93rem;
+        line-height: 1.52;
+        color: var(--text-main);
+        flex-grow: 1;
+    }
+
+    :global(.review-author) {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding-top: 10px;
+        border-top: 1px solid var(--border);
+    }
+
+    :global(.author-initial) {
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border-strong);
+        color: var(--primary);
+        font-size: 0.82rem;
+        font-weight: 750;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    :global(.author-meta) {
+        display: flex;
+        flex-direction: column;
+        line-height: 1.25;
+    }
+
+    :global(.author-meta strong) {
+        font-size: 0.84rem;
+        font-weight: 700;
+        color: var(--text-main);
+    }
+
+    :global(.author-meta span) {
+        font-size: 0.72rem;
+        color: var(--text-muted);
+    }
+
+    .reviews-dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+    }
+
+    :global(.rev-dot) {
+        width: 6px;
+        height: 6px;
+        border-radius: 99px;
+        border: none;
+        padding: 0;
+        background: var(--text-muted);
+        opacity: 0.28;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    :global(.rev-dot.active) {
+        background: var(--primary);
+        opacity: 0.85;
+        width: 18px;
+    }
+
+    @media (max-width: 820px) {
+        .reviews-grid {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 10px;
+        }
+
+        :global(.review-card) {
+            padding: 13px 15px;
+            gap: 10px;
+            border-radius: var(--radius-md);
+        }
+
+        :global(.review-text) {
+            font-size: 0.85rem;
+            line-height: 1.44;
+        }
+
+        :global(.review-author) {
+            padding-top: 8px;
+        }
+    }
+</style>

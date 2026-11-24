@@ -1,148 +1,1541 @@
 ---
 import StoreButtons from "../StoreButtons.astro";
+import { yogaPlans, manualRecommendations } from "../../data/generated";
+import { PLAN_FINDER_BRANCHES } from "../../utils/ui-strings";
 
-const currentLang = Astro.currentLocale || "en";
+const currentLang = (Astro.currentLocale || "en") as "en" | "hi";
+
+const painSubGroups = [
+    {
+        id: "upper_spine",
+        enLabel: "Back, Neck & Shoulders",
+        hiLabel: "कमर, गर्दन और कंधे",
+        enSub: "Lower back, neck, posture & spine",
+        hiSub: "निचली कमर, गर्दन, कंधे और रीढ़",
+        enTitleTop: "Where in your back",
+        enTitleBottom: "or neck is the pain?",
+        hiTitleTop: "कमर या गर्दन में",
+        hiTitleBottom: "कहाँ दर्द या जकड़न है?",
+        keys: [
+            "pain:lower_back",
+            "pain:neck",
+            "pain:shoulders",
+            "pain:upper_back",
+            "pain:spine",
+            "pain:chest",
+        ],
+    },
+    {
+        id: "lower_body",
+        enLabel: "Hips, Knees & Legs",
+        hiLabel: "कूल्हे, घुटने और पैर",
+        enSub: "Sciatica, knees, ankles & pelvic floor",
+        hiSub: "साइटिका, घुटनों का दर्द, टखने और पैर",
+        enTitleTop: "Which lower-body area",
+        enTitleBottom: "needs relief?",
+        hiTitleTop: "पैरों या निचले हिस्से में",
+        hiTitleBottom: "कहाँ आराम चाहिए?",
+        keys: [
+            "pain:knees",
+            "pain:hips",
+            "pain:hamstrings",
+            "pain:ankles_and_feet",
+            "pain:pelvic_floor",
+            "pain:core",
+        ],
+    },
+    {
+        id: "head_full",
+        enLabel: "Head, Hands & Full Body",
+        hiLabel: "सिर, हाथ और पूरा शरीर",
+        enSub: "Headache, eyes, wrists & full body",
+        hiSub: "सिरदर्द, आँखों की थकान, कलाई और पूरा शरीर",
+        enTitleTop: "Which area would you",
+        enTitleBottom: "like to relax?",
+        hiTitleTop: "आप किस हिस्से को",
+        hiTitleBottom: "आराम देना चाहते हैं?",
+        keys: [
+            "pain:head",
+            "pain:eyes",
+            "pain:wrist_and_hands",
+            "pain:face",
+            "pain:full_body",
+        ],
+    },
+    {
+        id: "senior_chair",
+        enLabel: "Seniors & Chair Yoga",
+        hiLabel: "बुजुर्ग और चेयर योग",
+        enSub: "Gentle seated routines & joint care",
+        hiSub: "कुर्सी पर बैठकर आसान और सुरक्षित योग",
+        enTitleTop: "Gentle seated yoga",
+        enTitleBottom: "for every age.",
+        hiTitleTop: "हर उम्र के लिए आसान",
+        hiTitleBottom: "चेयर योग और स्ट्रेच।",
+        directOverrideKey: "mobility:mobility",
+        keys: ["mobility:mobility"],
+    },
+];
 
 const ui = {
     en: {
-        badge: "No Login • No Ads • 100% Free",
-        titleTop: "Unlock the power of",
-        titleBottom: "Therapeutic Yoga.",
-        subtitle:
-            "Science-backed plans for <strong>Back Pain, PCOS, Thyroid, and 30+ health needs.</strong> Reduce stress, heal naturally, and reclaim your vitality through Yoga Therapy.",
-        ctaLead: "Start your free journey today",
+        badge: "100% Free • No Login • No Ads",
+        step1TitleTop: "Get Your Free",
+        step1TitleBottom: "Yoga Plan.",
+        step1Sub:
+            "Pick what you need help with today and get a simple, safe routine.",
+        painRegionTitleTop: "Which body area",
+        painRegionTitleBottom: "needs relief?",
+        step3TitleTop: "Your Free Yoga",
+        step3TitleBottom: "Plan is Ready.",
+        backToStep1: "← Change focus area",
+        backToRegion: "← Change body area",
+        backToStep2: "← Change selection",
+        startOver: "Start over",
+        permanentMeta: "Beginner Safe • 3–5x / Week",
+        footerPromptPrefix: "Tap an option above to",
+        footerPromptHighlight: "get your free yoga plan",
+        step3FooterNote: "Easy step-by-step video routines in the Tulaa app",
     },
     hi: {
-        badge: "कोई लॉगिन नहीं • कोई विज्ञापन नहीं • 100% फ्री",
-        titleTop: "योग की रोग-मुक्त करने वाली",
-        titleBottom: "शक्तियों को सीखें।",
-        subtitle:
-            "<strong>कमर दर्द, PCOS, थायरॉइड</strong> और 30+ स्वास्थ्य समस्याओं के लिए वैज्ञानिक योग। प्राकृतिक रूप से स्वस्थ बनें—आपका डेटा आपके ही फोन में 100% सुरक्षित है।",
-        ctaLead: "आज ही अपनी फ्री शुरुआत करें",
+        badge: "100% फ्री • बिना लॉगिन • बिना विज्ञापन",
+        step1TitleTop: "अपना फ्री",
+        step1TitleBottom: "योग प्लान पाएं।",
+        step1Sub:
+            "आज आपको किस चीज़ में आराम चाहिए? नीचे चुनें और अपना आसान योग रूटीन पाएं।",
+        painRegionTitleTop: "शरीर के किस हिस्से में",
+        painRegionTitleBottom: "राहत चाहिए?",
+        step3TitleTop: "आपका फ्री योग",
+        step3TitleBottom: "प्लान तैयार है।",
+        backToStep1: "← मुख्य विकल्प बदलें",
+        backToRegion: "← शरीर का हिस्सा बदलें",
+        backToStep2: "← विकल्प बदलें",
+        startOver: "फिर से चुनें",
+        permanentMeta: "शुरुआती के लिए आसान • हफ्ते में 3–5 दिन",
+        footerPromptPrefix: "ऊपर एक विकल्प चुनें और",
+        footerPromptHighlight: "अपना फ्री योग प्लान पाएं",
+        step3FooterNote: "Tulaa ऐप में आसान स्टेप-बाय-स्टेप वीडियो अभ्यास",
     },
 };
 
-const t = ui[currentLang as keyof typeof ui] || ui.en;
+const t = ui[currentLang] || ui.en;
+const basePlanHref = currentLang === "hi" ? "/hi/yoga" : "/yoga";
+
+const localizedPlans = yogaPlans.filter((p) => p.language === currentLang);
+const englishPlans = yogaPlans.filter((p) => p.language === "en");
+
+const planById: Record<string, (typeof yogaPlans)[number]> = {};
+englishPlans.forEach((p) => {
+    if (p.id) planById[p.id] = p;
+});
+localizedPlans.forEach((p) => {
+    if (p.id) planById[p.id] = p;
+});
+
+const clientPlansMap: Record<
+    string,
+    {
+        id: string;
+        slug: string;
+        title: string;
+        subtitle: string;
+        benefits: string[];
+        image: string;
+        href: string;
+    }
+> = {};
+
+Object.values(planById).forEach((p) => {
+    const benefitsArr = p.benefits
+        ? p.benefits
+              .split(/\s*[·\n]\s*/)
+              .map((b) => b.trim())
+              .filter(Boolean)
+              .slice(0, 2)
+        : [];
+    clientPlansMap[p.id] = {
+        id: p.id,
+        slug: p.slug,
+        title: p.title,
+        subtitle: p.subtitle,
+        benefits: benefitsArr,
+        image: p.image,
+        href: `${basePlanHref}/${p.slug}`,
+    };
+});
+
+const overrides = manualRecommendations.overrides;
+const defaultBranch = PLAN_FINDER_BRANCHES[0];
+const defaultOptionKey = defaultBranch.options[0].key;
+const defaultPlanIds = overrides[defaultOptionKey] || [];
+const initialPrimary = defaultPlanIds[0]
+    ? clientPlansMap[defaultPlanIds[0]]
+    : Object.values(clientPlansMap)[0];
 ---
 
-<section id="hero" class="scroll-section hero-section">
-    <div class="container">
-        <div class="section-header-left hero-content">
-            <div class="badge-pill animate-on-scroll">
-                {t.badge}
+<section id="hero" class="scroll-section hero-conversational">
+    <div class="ambient-orb orb-1" aria-hidden="true"></div>
+    <div class="ambient-orb orb-2" aria-hidden="true"></div>
+
+    <div class="container hero-centered-shell">
+        <div class="hero-intro">
+            <span class="badge-small">{t.badge}</span>
+            <h1 class="hero-title" lang={currentLang} id="dynamic-hero-title">
+                <span id="hero-title-top">{t.step1TitleTop}</span>{" "}
+                <span class="text-gradient" id="hero-title-bottom">
+                    {t.step1TitleBottom}
+                </span>
+            </h1>
+            <p class="hero-sub body-text" id="hero-step1-sub">
+                {t.step1Sub}
+            </p>
+        </div>
+
+        <div
+            class="dialogue-card premium-gloss-surface"
+            id="plan-finder-app"
+            data-overrides={JSON.stringify(overrides)}
+            data-plans={JSON.stringify(clientPlansMap)}
+            data-branches={JSON.stringify(PLAN_FINDER_BRANCHES)}
+            data-pain-groups={JSON.stringify(painSubGroups)}
+            data-lang={currentLang}
+            data-step1-top={t.step1TitleTop}
+            data-step1-bottom={t.step1TitleBottom}
+            data-pain-top={t.painRegionTitleTop}
+            data-pain-bottom={t.painRegionTitleBottom}
+            data-step3-top={t.step3TitleTop}
+            data-step3-bottom={t.step3TitleBottom}
+            data-back-step1={t.backToStep1}
+            data-back-region={t.backToRegion}
+        >
+            <div class="step-dots" aria-hidden="true">
+                <span class="step-dot active" data-dot="1"></span>
+                <span class="step-dot" data-dot="2"></span>
+                <span class="step-dot" data-dot="3"></span>
             </div>
 
-            <h1 class="hero-title animate-on-scroll" lang={currentLang}>
-                {t.titleTop}<br />
-                <span class="text-gradient">{t.titleBottom}</span>
-            </h1>
+            <!-- STEP 1: Pick 1 of 4 Focus Areas -->
+            <div class="wizard-step active" id="wizard-step-1">
+                <div class="branch-list-vertical">
+                    {PLAN_FINDER_BRANCHES.map((branch) => (
+                        <button
+                            type="button"
+                            class="branch-choice"
+                            data-branch-id={branch.id}
+                        >
+                            <div
+                                class:list={[
+                                    "branch-icon-badge",
+                                    `icon-${branch.id}`,
+                                ]}
+                                aria-hidden="true"
+                            >
+                                {branch.id === "pain" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <ellipse
+                                            cx="14"
+                                            cy="14"
+                                            rx="9"
+                                            ry="11"
+                                            fill="currentColor"
+                                            fill-opacity="0.14"
+                                        />
+                                        <path
+                                            d="M14 4v20"
+                                            stroke="currentColor"
+                                            stroke-width="2.2"
+                                            stroke-linecap="round"
+                                        />
+                                        <rect
+                                            x="8.5"
+                                            y="6.5"
+                                            width="11"
+                                            height="3"
+                                            rx="1.5"
+                                            fill="currentColor"
+                                            fill-opacity="0.32"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        />
+                                        <rect
+                                            x="7"
+                                            y="12.5"
+                                            width="14"
+                                            height="3"
+                                            rx="1.5"
+                                            fill="currentColor"
+                                            fill-opacity="0.32"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        />
+                                        <rect
+                                            x="9"
+                                            y="18.5"
+                                            width="10"
+                                            height="3"
+                                            rx="1.5"
+                                            fill="currentColor"
+                                            fill-opacity="0.32"
+                                            stroke="currentColor"
+                                            stroke-width="1.5"
+                                        />
+                                    </svg>
+                                )}
+                                {branch.id === "medical" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M22.5 15.8c1.7-1.7 3.5-3.7 3.5-6.4A6.4 6.4 0 0 0 19.6 3c-2 0-3.5.6-5.6 2.4C11.9 3.6 10.4 3 8.4 3A6.4 6.4 0 0 0 2 9.4c0 2.7 1.8 4.7 3.5 6.4L14 24l8.5-8.2Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.18"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M5.5 13.5h4.8l1.2-2.5 2.4 5.5 2.2-7 1.5 4h4.9"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                )}
+                                {branch.id === "pregnancy" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M14 5C17 10 17 16 14 21C11 16 11 10 14 5Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.26"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M14 21C18.5 17 22.5 16 24.5 11.5C19.5 11 16 13.5 14 21Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M14 21C9.5 17 5.5 16 3.5 11.5C8.5 11 12 13.5 14 21Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M7 23.5c4.5 1.5 9.5 1.5 14 0"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                                {branch.id === "general" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M14.5 4.5a7.5 7.5 0 0 0 9.5 9.5 9.5 9.5 0 1 1-9.5-9.5Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.22"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M21 4v5M23.5 6.5h-5"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                        <circle
+                                            cx="17.5"
+                                            cy="11.5"
+                                            r="1.2"
+                                            fill="currentColor"
+                                        />
+                                    </svg>
+                                )}
+                            </div>
+                            <div class="branch-choice-text">
+                                <strong class="branch-title">
+                                    {currentLang === "hi"
+                                        ? branch.hiLabel
+                                        : branch.enLabel}
+                                </strong>
+                                <span class="branch-desc">
+                                    {currentLang === "hi"
+                                        ? branch.hiSub
+                                        : branch.enSub}
+                                </span>
+                            </div>
+                            <span class="branch-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            </div>
 
-            <p
-                class="hero-sub animate-on-scroll delay-1"
-                set:html={t.subtitle}
-            />
+            <!-- STEP 1B: Body Region Sub-Step -->
+            <div class="wizard-step" id="wizard-step-region" hidden>
+                <div class="step-topbar">
+                    <button
+                        type="button"
+                        class="back-step-btn"
+                        id="back-from-region"
+                    >
+                        {t.backToStep1}
+                    </button>
+                </div>
+                <div class="branch-list-vertical">
+                    {painSubGroups.map((rg) => (
+                        <button
+                            type="button"
+                            class="branch-choice region-choice"
+                            data-region-id={rg.id}
+                        >
+                            <div class="branch-icon-badge" aria-hidden="true">
+                                {rg.id === "upper_spine" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                        />
+                                        <path
+                                            d="M14 5v18M9 9h10M8 14h12M10 19h8"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                                {rg.id === "lower_body" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                        />
+                                        <path
+                                            d="M10 7l-1.5 7L10 22M18 7l1.5 7L18 22M10 12h8"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                )}
+                                {rg.id === "head_full" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            fill="currentColor"
+                                            fill-opacity="0.16"
+                                        />
+                                        <circle
+                                            cx="14"
+                                            cy="10"
+                                            r="3.2"
+                                            fill="currentColor"
+                                            fill-opacity="0.3"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                        />
+                                        <path
+                                            d="M8 20c1.5-3 4-4 6-4s4.5 1 6 4"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                                {rg.id === "senior_chair" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M13 22.5A8 8 0 0 1 11.5 6.8C18 5.5 19.8 4.8 22 2c1.2 2.3 2.3 4.8 2.3 9.2 0 6.3-5.4 11.3-11.3 11.3Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.22"
+                                            stroke="currentColor"
+                                            stroke-width="1.9"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M3.5 23.5c0-3.5 2.1-6.2 5.8-6.9 3-.6 5.8-2.3 7-3.5"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                            </div>
+                            <div class="branch-choice-text">
+                                <strong class="branch-title">
+                                    {currentLang === "hi"
+                                        ? rg.hiLabel
+                                        : rg.enLabel}
+                                </strong>
+                                <span class="branch-desc">
+                                    {currentLang === "hi" ? rg.hiSub : rg.enSub}
+                                </span>
+                            </div>
+                            <span class="branch-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            </div>
 
-            <div class="cta-wrapper animate-on-scroll delay-2">
-                <p class="cta-lead">{t.ctaLead}</p>
-                <StoreButtons />
+            <!-- STEP 2: Pick specific symptom / goal -->
+            <div class="wizard-step" id="wizard-step-2" hidden>
+                <div class="step-topbar">
+                    <button
+                        type="button"
+                        class="back-step-btn"
+                        id="back-to-step-1"
+                    >
+                        {t.backToStep1}
+                    </button>
+                </div>
+                <div class="sub-pills-wrap" id="finder-sub-options">
+                    {defaultBranch.options.slice(0, 6).map((opt) => (
+                        <button
+                            type="button"
+                            class="sub-choice-pill"
+                            data-override-key={opt.key}
+                        >
+                            <span>
+                                {currentLang === "hi" ? opt.hi : opt.en}
+                            </span>
+                            <span class="pill-arrow" aria-hidden="true">
+                                →
+                            </span>
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            <!-- STEP 3: Clean Personalized Result Card -->
+            {initialPrimary && (
+                <div class="wizard-step" id="wizard-step-3" hidden>
+                    <div class="step-topbar">
+                        <button
+                            type="button"
+                            class="back-step-btn"
+                            id="back-to-step-2"
+                        >
+                            {t.backToStep2}
+                        </button>
+                        <button
+                            type="button"
+                            class="reset-step-btn"
+                            id="reset-wizard"
+                        >
+                            {t.startOver}
+                        </button>
+                    </div>
+
+                    <div class="result-spotlight">
+                        <div class="result-visual themed-media">
+                            <img
+                                id="rec-img"
+                                src={initialPrimary.image}
+                                alt={initialPrimary.title}
+                                width="520"
+                                height="320"
+                                loading="eager"
+                            />
+                        </div>
+
+                        <div class="result-info">
+                            <span class="permanent-meta-pill">
+                                ✦ {t.permanentMeta}
+                            </span>
+
+                            <h2 class="result-title" id="rec-title">
+                                {initialPrimary.title}
+                            </h2>
+
+                            <p class="result-subtitle" id="rec-subtitle">
+                                {initialPrimary.subtitle}
+                            </p>
+
+                            <ul class="result-highlights" id="rec-benefits">
+                                {initialPrimary.benefits.map((b) => (
+                                    <li>{b}</li>
+                                ))}
+                            </ul>
+
+                            <div class="result-actions-row">
+                                <StoreButtons compact={true} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            <!-- Card Footer Strip -->
+            <div class="card-footer-strip">
+                <p class="footer-prompt-text" id="footer-question-prompt">
+                    <span class="sparkle-icon" aria-hidden="true">
+                        ✦
+                    </span>
+                    <span>{t.footerPromptPrefix}</span>{" "}
+                    <strong class="text-gradient">
+                        {t.footerPromptHighlight}
+                    </strong>
+                </p>
+                <p class="footer-step3-text" id="footer-step3-note" hidden>
+                    <span>{t.step3FooterNote}</span>
+                </p>
             </div>
         </div>
     </div>
 </section>
 
+<script>
+    document.addEventListener("astro:page-load", () => {
+        const root = document.getElementById("plan-finder-app");
+        if (!root) return;
+
+        const STORAGE_KEY = "tulaa-finder-state-v2";
+
+        const overrides = JSON.parse(
+            root.getAttribute("data-overrides") || "{}",
+        );
+        const plans = JSON.parse(root.getAttribute("data-plans") || "{}");
+        const branches = JSON.parse(root.getAttribute("data-branches") || "[]");
+        const painGroups = JSON.parse(
+            root.getAttribute("data-pain-groups") || "[]",
+        );
+        const lang = root.getAttribute("data-lang") || "en";
+
+        const step1Top = root.getAttribute("data-step1-top") || "";
+        const step1Bottom = root.getAttribute("data-step1-bottom") || "";
+        const painTop = root.getAttribute("data-pain-top") || "";
+        const painBottom = root.getAttribute("data-pain-bottom") || "";
+        const step3Top = root.getAttribute("data-step3-top") || "";
+        const step3Bottom = root.getAttribute("data-step3-bottom") || "";
+        const backStep1Label = root.getAttribute("data-back-step1") || "";
+        const backRegionLabel = root.getAttribute("data-back-region") || "";
+
+        const titleTopEl = document.getElementById("hero-title-top");
+        const titleBottomEl = document.getElementById("hero-title-bottom");
+        const step1SubEl = document.getElementById("hero-step1-sub");
+
+        const step1 = document.getElementById("wizard-step-1");
+        const stepRegion = document.getElementById("wizard-step-region");
+        const step2 = document.getElementById("wizard-step-2");
+        const step3 = document.getElementById("wizard-step-3");
+        const backToStep1Btn = document.getElementById("back-to-step-1");
+        const backToStep2Btn = document.getElementById("back-to-step-2");
+        const dots = root.querySelectorAll(".step-dot");
+
+        const footerQuestionPrompt = document.getElementById(
+            "footer-question-prompt",
+        );
+        const footerStep3Note = document.getElementById("footer-step3-note");
+
+        const subOptionsContainer =
+            document.getElementById("finder-sub-options");
+
+        const recImg = document.getElementById(
+            "rec-img",
+        ) as HTMLImageElement | null;
+        const recTitle = document.getElementById("rec-title");
+        const recSubtitle = document.getElementById("rec-subtitle");
+        const recBenefits = document.getElementById("rec-benefits");
+
+        let currentBranch: any = branches[0];
+        let currentRegion: any = null;
+        let currentOverrideKey: string = "";
+        let jumpedDirectlyFromRegion = false;
+
+        function saveFinderState(
+            view: "step1" | "region" | "step2" | "step3",
+            pushHistory = true,
+        ) {
+            const stateObj = {
+                view,
+                branchId: currentBranch?.id || null,
+                regionId: currentRegion?.id || null,
+                overrideKey: currentOverrideKey || null,
+                jumpedDirectlyFromRegion,
+            };
+            try {
+                sessionStorage.setItem(STORAGE_KEY, JSON.stringify(stateObj));
+            } catch {}
+
+            if (pushHistory) {
+                try {
+                    history.pushState({ tulaaWizard: stateObj }, "");
+                } catch {}
+            }
+        }
+
+        function setView(
+            view: "step1" | "region" | "step2" | "step3",
+            pushHistory = true,
+        ) {
+            const map: Record<string, HTMLElement | null> = {
+                step1,
+                region: stepRegion,
+                step2,
+                step3,
+            };
+            Object.entries(map).forEach(([k, el]) => {
+                if (!el) return;
+                const isCurrent = k === view;
+                el.hidden = !isCurrent;
+                el.classList.toggle("active", isCurrent);
+            });
+
+            const dotLevel =
+                view === "step1"
+                    ? 1
+                    : view === "region" || view === "step2"
+                      ? 2
+                      : 3;
+            dots.forEach((dot, idx) => {
+                dot.classList.toggle("active", idx + 1 <= dotLevel);
+            });
+
+            const isFinalStep = view === "step3";
+            if (footerQuestionPrompt) footerQuestionPrompt.hidden = isFinalStep;
+            if (footerStep3Note) footerStep3Note.hidden = !isFinalStep;
+
+            if (view === "step1") {
+                if (titleTopEl) titleTopEl.textContent = step1Top;
+                if (titleBottomEl) titleBottomEl.textContent = step1Bottom;
+                if (step1SubEl) step1SubEl.hidden = false;
+            } else if (view === "region") {
+                if (titleTopEl) titleTopEl.textContent = painTop;
+                if (titleBottomEl) titleBottomEl.textContent = painBottom;
+                if (step1SubEl) step1SubEl.hidden = true;
+            } else if (view === "step2") {
+                if (currentBranch?.id === "pain" && currentRegion) {
+                    if (titleTopEl) {
+                        titleTopEl.textContent =
+                            lang === "hi"
+                                ? currentRegion.hiTitleTop
+                                : currentRegion.enTitleTop;
+                    }
+                    if (titleBottomEl) {
+                        titleBottomEl.textContent =
+                            lang === "hi"
+                                ? currentRegion.hiTitleBottom
+                                : currentRegion.enTitleBottom;
+                    }
+                    if (backToStep1Btn) {
+                        backToStep1Btn.textContent = backRegionLabel;
+                    }
+                } else if (currentBranch) {
+                    if (titleTopEl) {
+                        titleTopEl.textContent =
+                            lang === "hi"
+                                ? currentBranch.hiTitleTop
+                                : currentBranch.enTitleTop;
+                    }
+                    if (titleBottomEl) {
+                        titleBottomEl.textContent =
+                            lang === "hi"
+                                ? currentBranch.hiTitleBottom
+                                : currentBranch.enTitleBottom;
+                    }
+                    if (backToStep1Btn) {
+                        backToStep1Btn.textContent = backStep1Label;
+                    }
+                }
+                if (step1SubEl) step1SubEl.hidden = true;
+            } else if (view === "step3") {
+                if (titleTopEl) titleTopEl.textContent = step3Top;
+                if (titleBottomEl) titleBottomEl.textContent = step3Bottom;
+                if (step1SubEl) step1SubEl.hidden = true;
+            }
+
+            saveFinderState(view, pushHistory);
+        }
+
+        function renderRecommendation(overrideKey: string, pushHistory = true) {
+            const planIds: string[] = overrides[overrideKey] || [];
+            const matchedPlans = planIds.map((id) => plans[id]).filter(Boolean);
+            if (matchedPlans.length === 0) return;
+
+            currentOverrideKey = overrideKey;
+            const primary = matchedPlans[0];
+
+            if (recImg) {
+                recImg.src = primary.image;
+                recImg.alt = primary.title;
+            }
+            if (recTitle) {
+                recTitle.textContent = primary.title;
+            }
+            if (recSubtitle) recSubtitle.textContent = primary.subtitle;
+
+            if (recBenefits) {
+                recBenefits.innerHTML = "";
+                (primary.benefits || []).slice(0, 2).forEach((b: string) => {
+                    const li = document.createElement("li");
+                    li.textContent = b;
+                    recBenefits.appendChild(li);
+                });
+            }
+
+            setView("step3", pushHistory);
+        }
+
+        function populateSubOptions(optionsList: any[]) {
+            if (!subOptionsContainer) return;
+            subOptionsContainer.innerHTML = "";
+            const isVertical = optionsList.length <= 4;
+            subOptionsContainer.classList.toggle("is-vertical", isVertical);
+
+            optionsList.forEach((opt: any) => {
+                const pill = document.createElement("button");
+                pill.type = "button";
+                pill.className = "sub-choice-pill";
+                pill.setAttribute("data-override-key", opt.key);
+
+                const labelSpan = document.createElement("span");
+                labelSpan.textContent = lang === "hi" ? opt.hi : opt.en;
+                pill.appendChild(labelSpan);
+
+                if (isVertical) {
+                    const arrowSpan = document.createElement("span");
+                    arrowSpan.className = "pill-arrow";
+                    arrowSpan.setAttribute("aria-hidden", "true");
+                    arrowSpan.textContent = "→";
+                    pill.appendChild(arrowSpan);
+                }
+
+                pill.addEventListener("click", () => {
+                    jumpedDirectlyFromRegion = false;
+                    renderRecommendation(opt.key, true);
+                });
+                subOptionsContainer.appendChild(pill);
+            });
+        }
+
+        function applySavedState(saved: any) {
+            if (!saved || !saved.view) return;
+            if (saved.branchId) {
+                const b = branches.find((x: any) => x.id === saved.branchId);
+                if (b) currentBranch = b;
+            }
+            if (saved.regionId) {
+                const r = painGroups.find((x: any) => x.id === saved.regionId);
+                if (r) currentRegion = r;
+            }
+            jumpedDirectlyFromRegion = Boolean(saved.jumpedDirectlyFromRegion);
+
+            if (currentBranch) {
+                if (currentBranch.id === "pain" && currentRegion) {
+                    const filteredOpts = currentBranch.options.filter(
+                        (o: any) => currentRegion.keys.includes(o.key),
+                    );
+                    populateSubOptions(filteredOpts);
+                } else {
+                    populateSubOptions(currentBranch.options);
+                }
+            }
+
+            if (saved.view === "step3" && saved.overrideKey) {
+                renderRecommendation(saved.overrideKey, false);
+            } else {
+                setView(saved.view, false);
+            }
+        }
+
+        root.querySelectorAll("#wizard-step-1 .branch-choice").forEach(
+            (btn) => {
+                btn.addEventListener("click", () => {
+                    const branchId = btn.getAttribute("data-branch-id");
+                    const branch = branches.find((b: any) => b.id === branchId);
+                    if (!branch) return;
+
+                    currentBranch = branch;
+                    currentRegion = null;
+                    jumpedDirectlyFromRegion = false;
+
+                    if (branch.id === "pain") {
+                        setView("region", true);
+                        return;
+                    }
+
+                    populateSubOptions(branch.options);
+                    setView("step2", true);
+                });
+            },
+        );
+
+        root.querySelectorAll(".region-choice").forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const regionId = btn.getAttribute("data-region-id");
+                const region = painGroups.find((r: any) => r.id === regionId);
+                const painBranch = branches.find((b: any) => b.id === "pain");
+                if (!region || !painBranch) return;
+
+                currentBranch = painBranch;
+                currentRegion = region;
+
+                if (region.directOverrideKey) {
+                    jumpedDirectlyFromRegion = true;
+                    renderRecommendation(region.directOverrideKey, true);
+                    return;
+                }
+
+                jumpedDirectlyFromRegion = false;
+                const filteredOpts = painBranch.options.filter((o: any) =>
+                    region.keys.includes(o.key),
+                );
+                populateSubOptions(filteredOpts);
+                setView("step2", true);
+            });
+        });
+
+        document
+            .getElementById("back-from-region")
+            ?.addEventListener("click", () => {
+                setView("step1", true);
+            });
+
+        backToStep1Btn?.addEventListener("click", () => {
+            if (currentBranch?.id === "pain" && currentRegion) {
+                setView("region", true);
+            } else {
+                setView("step1", true);
+            }
+        });
+
+        backToStep2Btn?.addEventListener("click", () => {
+            if (jumpedDirectlyFromRegion) {
+                setView("region", true);
+            } else {
+                setView("step2", true);
+            }
+        });
+
+        document
+            .getElementById("reset-wizard")
+            ?.addEventListener("click", () => {
+                setView("step1", true);
+            });
+
+        window.addEventListener("popstate", (e) => {
+            if (e.state && e.state.tulaaWizard) {
+                applySavedState(e.state.tulaaWizard);
+            }
+        });
+
+        try {
+            const raw = sessionStorage.getItem(STORAGE_KEY);
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed && parsed.view && parsed.view !== "step1") {
+                    applySavedState(parsed);
+                }
+            }
+        } catch {}
+    });
+</script>
+
 <style>
-    .hero-section {
-        width: 100%;
-        display: flex;
-        align-items: center;
-        padding-top: var(--section-v-padding);
-        padding-bottom: var(--section-v-padding);
+    .hero-conversational {
+        position: relative;
+        overflow: hidden;
     }
 
-    .hero-content {
-        max-width: 720px;
+    .ambient-orb {
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(76px);
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .orb-1 {
+        width: 440px;
+        height: 440px;
+        top: -100px;
+        left: 6%;
+        background: var(--ambient-glow-1);
+    }
+
+    .orb-2 {
+        width: 400px;
+        height: 400px;
+        bottom: -90px;
+        right: 6%;
+        background: var(--ambient-glow-2);
+    }
+
+    .hero-centered-shell {
+        position: relative;
         z-index: 2;
+        max-width: 780px;
+        width: 100%;
+        margin: 0 auto;
         display: flex;
         flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: clamp(1rem, 2.4vh, 1.65rem);
     }
 
-    .badge-pill {
-        display: inline-flex;
-        padding: 6px 14px;
-        border-radius: 999px;
-        background: var(--bg-sub);
-        color: var(--primary);
-        font-weight: 600;
-        font-size: 0.8rem;
-        letter-spacing: 0.03em;
-        margin-bottom: var(--space-md);
-        border: 1px solid var(--border);
-        align-self: flex-start;
-        will-change: transform;
-        transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-
-    .badge-pill:active {
-        transform: scale(0.97);
+    .hero-intro {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        max-width: 640px;
+        width: 100%;
     }
 
     .hero-title {
-        font-size: clamp(2.4rem, 5.5vw, 4.4rem);
-        margin-bottom: var(--space-md);
-        letter-spacing: -0.035em;
-        line-height: 1.08;
-        color: var(--text-main);
+        font-size: clamp(1.85rem, 4.4vw, 3.15rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
     }
 
     .hero-sub {
-        font-size: clamp(1.1rem, 2vw, 1.25rem);
-        line-height: 1.65;
+        font-size: clamp(0.92rem, 1.5vw, 1.04rem);
         color: var(--text-muted);
-        margin-bottom: var(--space-lg);
-        max-width: 54ch;
+        line-height: 1.5;
     }
 
-    .hero-sub :global(strong) {
+    .hero-sub[hidden] {
+        display: none !important;
+    }
+
+    .dialogue-card {
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+        padding: clamp(1.25rem, 2.8vw, 2rem);
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        text-align: left;
+    }
+
+    .step-dots {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .step-dot {
+        width: 5px;
+        height: 5px;
+        border-radius: 99px;
+        background: var(--text-muted);
+        opacity: 0.25;
+        transition: all 0.3s ease;
+    }
+
+    .step-dot.active {
+        background: var(--primary);
+        opacity: 0.72;
+        width: 14px;
+    }
+
+    .wizard-step {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        width: 100%;
+        min-width: 0;
+        animation: fadeSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .wizard-step[hidden] {
+        display: none !important;
+    }
+
+    @keyframes fadeSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(6px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .branch-list-vertical {
+        display: flex;
+        flex-direction: column;
+        gap: 11px;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .branch-choice {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 13px 16px;
+        width: 100%;
+        min-width: 0;
+        max-width: 100%;
+        box-sizing: border-box;
+        border-radius: var(--radius-md);
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border);
+        cursor: pointer;
+        font-family: inherit;
+        text-align: left;
+        transition:
+            transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.2s ease,
+            background-color 0.2s ease,
+            box-shadow 0.2s ease;
+    }
+
+    .branch-choice:hover {
+        transform: translateY(-1px);
+        background: var(--bg-card-hover);
+        border-color: var(--primary);
+        box-shadow: var(--shadow-sm);
+    }
+
+    .branch-icon-badge {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        background: var(--primary-soft);
+        color: var(--primary);
+        border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .branch-choice:hover .branch-icon-badge {
+        transform: scale(1.05);
+    }
+
+    .branch-icon-badge svg {
+        width: 21px;
+        height: 21px;
+    }
+
+    .branch-choice-text {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        min-width: 0;
+        flex: 1;
+        overflow: hidden;
+    }
+
+    .branch-title {
+        font-size: 0.98rem;
+        font-weight: 650;
         color: var(--text-main);
-        font-weight: 700;
+        line-height: 1.25;
     }
 
-    .cta-wrapper {
+    .branch-desc {
+        font-size: 0.81rem;
+        color: var(--text-muted);
+        line-height: 1.35;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 100%;
+    }
+
+    .branch-arrow {
+        font-size: 0.95rem;
+        color: var(--primary);
+        transition: transform 0.2s ease;
+        flex-shrink: 0;
+    }
+
+    .branch-choice:hover .branch-arrow {
+        transform: translateX(3px);
+    }
+
+    .step-topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+    }
+
+    .back-step-btn,
+    .reset-step-btn {
+        background: none;
+        border: none;
+        padding: 2px 0;
+        font-family: inherit;
+        font-size: 0.86rem;
+        font-weight: 650;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: color 0.2s ease;
+    }
+
+    .back-step-btn:hover,
+    .reset-step-btn:hover {
+        color: var(--primary);
+    }
+
+    .sub-pills-wrap {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+        padding: 2px 0;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .sub-pills-wrap.is-vertical {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    :global(.sub-choice-pill) {
+        padding: 13px 16px;
+        border-radius: var(--radius-md);
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border);
+        color: var(--text-main);
+        font-family: inherit;
+        font-size: 0.92rem;
+        font-weight: 600;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+        transition:
+            transform 0.16s ease,
+            background-color 0.16s ease,
+            border-color 0.16s ease,
+            color 0.16s ease,
+            box-shadow 0.16s ease;
+    }
+
+    .sub-pills-wrap.is-vertical :global(.sub-choice-pill) {
+        justify-content: space-between;
+        text-align: left;
+    }
+
+    :global(.pill-arrow) {
+        color: var(--primary);
+        font-size: 0.92rem;
+        transition: transform 0.2s ease;
+    }
+
+    :global(.sub-choice-pill:hover) {
+        transform: translateY(-1px);
+        background: var(--bg-card-hover);
+        border-color: var(--primary);
+        color: var(--primary);
+        box-shadow: var(--shadow-sm);
+    }
+
+    :global(.sub-choice-pill:hover .pill-arrow) {
+        transform: translateX(3px);
+    }
+
+    /* Step 3 Result Spotlight */
+    .result-spotlight {
+        display: grid;
+        grid-template-columns: 245px minmax(0, 1fr);
+        gap: 24px;
+        align-items: center;
+        padding: 18px;
+        border-radius: var(--radius-md);
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border);
+        width: 100%;
+        min-width: 0;
+        box-sizing: border-box;
+    }
+
+    .result-visual {
+        position: relative;
+        display: block;
+        width: 100%;
+        border-radius: 14px;
+        overflow: hidden;
+        aspect-ratio: 16 / 10;
+        border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+        background: var(--bg-sub);
+    }
+
+    .result-visual img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .result-info {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: var(--space-sm);
+        gap: 8px;
+        min-width: 0;
+    }
+
+    .permanent-meta-pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 4px 11px;
+        border-radius: 999px;
+        background: var(--primary-soft);
+        color: var(--primary);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
+    }
+
+    .result-title {
+        font-size: clamp(1.38rem, 2.5vw, 1.8rem);
+        font-weight: 750;
+        letter-spacing: -0.02em;
+        line-height: 1.18;
+        color: var(--text-main);
+        margin: 0;
+    }
+
+    .result-subtitle {
+        font-size: 0.96rem;
+        color: var(--text-muted);
+        margin: 0;
+        line-height: 1.45;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .result-highlights {
+        list-style: none;
+        padding: 0;
+        margin: 2px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    :global(.result-highlights li) {
+        font-size: 0.91rem;
+        font-weight: 550;
+        color: var(--text-main);
+        display: flex;
+        align-items: flex-start;
+        gap: 7px;
+        line-height: 1.38;
+    }
+
+    :global(.result-highlights li::before) {
+        content: "✦";
+        color: var(--primary);
+        font-size: 0.78rem;
+        margin-top: 2px;
+        flex-shrink: 0;
+    }
+
+    .result-actions-row {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 6px;
         width: 100%;
     }
 
-    .cta-lead {
-        font-weight: 700;
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        margin-bottom: 2px;
+    .result-actions-row :global(.store-buttons) {
+        width: auto;
     }
 
-    @media (max-height: 740px) {
-        .badge-pill {
-            margin-bottom: var(--space-xs);
-            padding: 4px 12px;
+    /* Card Footer Strip */
+    .card-footer-strip {
+        padding-top: 12px;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .footer-prompt-text,
+    .footer-step3-text {
+        margin: 0;
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 5px;
+        line-height: 1.35;
+    }
+
+    .footer-prompt-text[hidden],
+    .footer-step3-text[hidden] {
+        display: none !important;
+    }
+
+    .footer-prompt-text strong {
+        font-weight: 750;
+    }
+
+    .sparkle-icon {
+        color: var(--primary);
+        font-size: 0.8rem;
+    }
+
+    @media (max-width: 680px) {
+        .hero-centered-shell {
+            gap: 0.7rem;
+        }
+
+        .hero-title {
+            font-size: clamp(1.5rem, 5.8vw, 1.95rem);
+            line-height: 1.12;
+        }
+
+        .hero-sub {
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+
+        .dialogue-card {
+            padding: 14px 12px;
+            gap: 10px;
+            border-radius: 20px;
+        }
+
+        .wizard-step {
+            gap: 10px;
+        }
+
+        .branch-list-vertical {
+            gap: 8px;
+        }
+
+        .branch-choice {
+            padding: 10px 12px;
+            gap: 10px;
+        }
+
+        .branch-icon-badge {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+        }
+
+        .branch-icon-badge svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .branch-title {
+            font-size: 0.92rem;
+        }
+
+        .branch-desc {
+            font-size: 0.76rem;
+        }
+
+        .sub-pills-wrap {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        :global(.sub-choice-pill) {
+            padding: 10px 12px;
+            font-size: 0.85rem;
+        }
+
+        /* Clean single-column stack on mobile with un-squished full-width 16:10 image */
+        .result-spotlight {
+            grid-template-columns: minmax(0, 1fr);
+            gap: 12px;
+            padding: 12px;
+            align-items: stretch;
+        }
+
+        .result-visual {
+            width: 100%;
+            aspect-ratio: 16 / 10;
+            max-height: none;
+            border-radius: 12px;
+        }
+
+        .result-info {
+            align-items: flex-start;
+            text-align: left;
+            gap: 6px;
+        }
+
+        .permanent-meta-pill {
+            padding: 3px 10px;
             font-size: 0.75rem;
         }
-        .hero-title {
-            font-size: 2.2rem;
-            margin-bottom: var(--space-xs);
-        }
-        .hero-sub {
-            font-size: 1.05rem;
-            margin-bottom: var(--space-md);
-        }
-    }
 
-    @media (max-width: 768px) {
-        .hero-section {
-            padding-top: calc(var(--header-height) + var(--space-md));
+        .result-title {
+            font-size: 1.32rem;
+            line-height: 1.2;
+        }
+
+        .result-subtitle {
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+
+        .result-highlights {
+            gap: 4px;
+            margin: 2px 0;
+        }
+
+        :global(.result-highlights li) {
+            font-size: 0.86rem;
+            line-height: 1.35;
+        }
+
+        .result-actions-row {
+            margin-top: 4px;
+        }
+
+        .result-actions-row :global(.store-buttons) {
+            width: 100%;
+        }
+
+        .card-footer-strip {
+            padding-top: 10px;
+        }
+
+        .footer-prompt-text,
+        .footer-step3-text {
+            font-size: 0.78rem;
         }
     }
 </style>

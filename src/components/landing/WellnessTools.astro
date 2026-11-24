@@ -1,93 +1,84 @@
 ---
-import SectionCTA from "../SectionCTA.astro";
-import AnimatedFeatureCard from "./AnimatedFeatureCard.astro";
-
 const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        titleTop: "Replace 5 Apps",
-        titleBottom: "With One.",
-        body: "Simplify your digital wellness. Tulaa brings your essential health tools into one secure, offline-first ecosystem. <strong>No data mining. No subscriptions.</strong>",
+        badge: "4-in-1 Private Health Trackers",
+        titleTop: "Daily Health Trackers,",
+        titleBottom: "All in One Place.",
+        body: "No need for 4 different apps. Track your period, fasting, water, and daily mood privately on your phone.",
         tools: [
             {
-                title: "Cycle Tracker",
-                desc: "Predict periods & symptoms.",
-                type: "cycle",
-                color: "oklch(65% 0.18 350)",
+                id: "cycle",
+                title: "Period & Cycle Diary",
+                desc: "Log cycles, phases & symptoms privately.",
+                metric: "Day 14",
+                subMetric: "Cycle Phase • 100% Local",
+                accent: "rose",
             },
             {
-                title: "Habit Rhythm",
-                desc: "Build healthy habits.",
-                type: "habit",
-                color: "oklch(75% 0.15 90)",
+                id: "fast",
+                title: "Intermittent Fasting",
+                desc: "Clean 16:8 & custom fasting timers.",
+                metric: "16:8",
+                subMetric: "14h 20m Active Window",
+                accent: "sage",
             },
             {
-                title: "Hydration",
-                desc: "Monitor water intake.",
-                type: "water",
-                color: "oklch(62% 0.14 220)",
+                id: "water",
+                title: "Daily Hydration",
+                desc: "Effortless water logging & quiet nudges.",
+                metric: "2.0 L",
+                subMetric: "8 / 8 Glasses Today",
+                accent: "aqua",
             },
             {
-                title: "Fast Tracker",
-                desc: "Track intermittent fasting.",
-                type: "fast",
-                color: "oklch(60% 0.12 280)",
-            },
-            {
-                title: "Health Tips",
-                desc: "Research-backed guidance.",
-                type: "tips",
-                color: "oklch(78% 0.13 60)",
-            },
-            {
-                title: "Wellness Blog",
-                desc: "Learn care routines.",
-                type: "blog",
-                color: "oklch(64% 0.12 150)",
+                id: "mood",
+                title: "Mood Tracking",
+                desc: "Log emotions, know yourself better.",
+                metric: "7 Days",
+                subMetric: "Calm Daily Streak",
+                accent: "amber",
             },
         ],
     },
     hi: {
-        titleTop: "5 अलग ऐप्स की जगह",
-        titleBottom: "अब सिर्फ एक।",
-        body: "अपने डिजिटल वेलनेस को सरल बनाएं। Tulaa आपके ज़रूरी स्वास्थ्य टूल्स को एक सुरक्षित, ऑफ़लाइन-फर्स्ट ऐप में लाता है। <strong>कोई डेटा माइनिंग नहीं। कोई सब्सक्रिप्शन नहीं।</strong>",
+        badge: "4-इन-1 निजी हेल्थ ट्रैकर्स",
+        titleTop: "रोज़ की सेहत ट्रैक करें,",
+        titleBottom: "एक ही आसान ऐप में।",
+        body: "अलग-अलग ऐप्स की ज़रूरत नहीं। पीरियड, फास्टिंग, पानी और मूड एक ही जगह ट्रैक करें — सब कुछ सिर्फ़ आपके फोन में सुरक्षित।",
         tools: [
             {
-                title: "पीरियड ट्रैकर",
-                desc: "पीरियड्स और लक्षणों का अनुमान।",
-                type: "cycle",
-                color: "oklch(65% 0.18 350)",
+                id: "cycle",
+                title: "निजी पीरियड व साइकिल डायरी",
+                desc: "मासिक चक्र और लक्षणों का लोकल रिकॉर्ड।",
+                metric: "दिन 14",
+                subMetric: "साइकिल फेज़ • 100% सुरक्षित",
+                accent: "rose",
             },
             {
-                title: "आदत रिदम",
-                desc: "स्वस्थ आदतों की निरंतरता।",
-                type: "habit",
-                color: "oklch(75% 0.15 90)",
+                id: "fast",
+                title: "इंटरमिटेंट फास्टिंग टाइमर",
+                desc: "16:8 उपवास और भोजन का सरल टाइमर।",
+                metric: "16:8",
+                subMetric: "14 घंटे 20 मिनट पूर्ण",
+                accent: "sage",
             },
             {
-                title: "हाइड्रेशन",
-                desc: "पानी पीने पर नज़र रखें।",
-                type: "water",
-                color: "oklch(62% 0.14 220)",
+                id: "water",
+                title: "दैनिक वॉटर ट्रैकर",
+                desc: "पर्याप्त पानी पीने की सहज आदत।",
+                metric: "2.0 L",
+                subMetric: "8 / 8 गिलास आज",
+                accent: "aqua",
             },
             {
-                title: "फास्टिंग",
-                desc: "उपवास का समय ट्रैक करें।",
-                type: "fast",
-                color: "oklch(60% 0.12 280)",
-            },
-            {
-                title: "हेल्थ टिप्स",
-                desc: "रिसर्च आधारित सुझाव।",
-                type: "tips",
-                color: "oklch(78% 0.13 60)",
-            },
-            {
-                title: "थेरेपी ब्लॉग",
-                desc: "विशेषज्ञ देखभाल लेख।",
-                type: "blog",
-                color: "oklch(64% 0.12 150)",
+                id: "mood",
+                title: "मूड ट्रैकर",
+                desc: "खुद को बेहतर तरीके से जानें।",
+                metric: "7 दिन",
+                subMetric: "नियमित शांत अभ्यास",
+                accent: "amber",
             },
         ],
     },
@@ -96,221 +87,474 @@ const ui = {
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 ---
 
-<section class="scroll-section section-tools">
+<section id="wellness-suite" class="scroll-section section-tools">
     <div class="content-wrapper">
         <div class="container">
             <div class="section-header-left text-col animate-on-scroll">
+                <span class="badge-small">
+                    <span aria-hidden="true">✦</span>
+                    {t.badge}
+                </span>
                 <h2 class="section-title">
-                    {t.titleTop}<br />
+                    {t.titleTop}{" "}
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
-                <p class="body-text" set:html={t.body} />
+                <p class="body-text">{t.body}</p>
             </div>
         </div>
 
-        <div class="container stack-stage-container animate-on-scroll delay-1">
-            <div class="stage-frame" id="animation-stage-frame">
-                {
-                    t.tools.map((tool, index) => (
-                        <AnimatedFeatureCard
-                            title={tool.title}
-                            desc={tool.desc}
-                            color={tool.color}
-                            type={tool.type}
-                            index={index}
-                            activeClass="active"
-                        >
-                            <Fragment slot="watermark">
-                                {tool.type === "cycle" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M200,96a72,72,0,1,1-72-72A72,72,0,0,1,200,96Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M208,96a80,80,0,1,0-88,79.6V200H88a8,8,0,0,0,0,16h32v24a8,8,0,0,0,16,0V216h32a8,8,0,0,0,0-16H136V175.6A80.11,80.11,0,0,0,208,96ZM64,96a64,64,0,1,1,64,64A64.07,64.07,0,0,1,64,96Z" />
-                                    </svg>
-                                )}
-                                {tool.type === "habit" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M210.26,210.26c-17.23,17.23-68-5.63-113.46-51.06S28.51,63,45.74,45.74s68,5.63,113.46,51.06S227.49,193,210.26,210.26Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M196.12,128c24.65-34.61,37.22-70.38,19.74-87.86S162.61,35.23,128,59.88C93.39,35.23,57.62,22.66,40.14,40.14S35.23,93.39,59.88,128c-24.65,34.61-37.22,70.38-19.74,87.86h0c5.63,5.63,13.15,8.14,21.91,8.14,18.48,0,42.48-11.17,66-27.88C151.47,212.83,175.47,224,194,224c8.76,0,16.29-2.52,21.91-8.14h0C233.34,198.38,220.77,162.61,196.12,128Zm8.43-76.55c7.64,7.64,2.48,32.4-18.52,63.28a300.33,300.33,0,0,0-21.19-23.57A300.33,300.33,0,0,0,141.27,70C172.15,49,196.91,43.8,204.55,51.45ZM176.29,128a289.14,289.14,0,0,1-22.76,25.53A289.14,289.14,0,0,1,128,176.29a289.14,289.14,0,0,1-25.53-22.76A289.14,289.14,0,0,1,79.71,128,298.62,298.62,0,0,1,128,79.71a289.14,289.14,0,0,1,25.53,22.76A289.14,289.14,0,0,1,176.29,128ZM51.45,51.45c2.2-2.21,5.83-3.35,10.62-3.35C73.89,48.1,92.76,55,114.72,70A304,304,0,0,0,91.16,91.16,300.33,300.33,0,0,0,70,114.73C49,83.85,43.81,59.09,51.45,51.45Zm0,153.1C43.81,196.91,49,172.15,70,141.27a300.33,300.33,0,0,0,21.19,23.57A304.18,304.18,0,0,0,114.73,186C83.85,207,59.09,212.2,51.45,204.55Zm153.1,0c-7.64,7.65-32.4,2.48-63.28-18.52a304.18,304.18,0,0,0,23.57-21.19A300.33,300.33,0,0,0,186,141.27C207,172.15,212.19,196.91,204.55,204.55ZM140,128a12,12,0,1,1-12-12A12,12,0,0,1,140,128Z" />
-                                    </svg>
-                                )}
-                                {tool.type === "water" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M208,144a80,80,0,0,1-160,0c0-72,80-128,80-128S208,72,208,144Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M174,47.75a254.19,254.19,0,0,0-41.45-38.3,8,8,0,0,0-9.18,0A254.19,254.19,0,0,0,82,47.75C54.51,79.32,40,112.6,40,144a88,88,0,0,0,176,0C216,112.6,201.49,79.32,174,47.75ZM128,216a72.08,72.08,0,0,1-72-72c0-57.23,55.47-105,72-118,16.53,13,72,60.75,72,118A72.08,72.08,0,0,1,128,216Zm55.89-62.66a57.6,57.6,0,0,1-46.56,46.55A8.75,8.75,0,0,1,136,200a8,8,0,0,1-1.32-15.89c16.57-2.79,30.63-16.85,33.44-33.45a8,8,0,0,1,15.78,2.68Z" />
-                                    </svg>
-                                )}
-                                {tool.type === "fast" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M216,136a88,88,0,1,1-88-88A88,88,0,0,1,216,136Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M128,40a96,96,0,1,0,96,96A96.11,96.11,0,0,0,128,40Zm0,176a80,80,0,1,1,80-80A80.09,80.09,0,0,1,128,216ZM173.66,90.34a8,8,0,0,1,0,11.32l-40,40a8,8,0,0,1-11.32-11.32l40-40A8,8,0,0,1,173.66,90.34ZM96,16a8,8,0,0,1,8-8h48a8,8,0,0,1,0,16H104A8,8,0,0,1,96,16Z" />
-                                    </svg>
-                                )}
-                                {tool.type === "tips" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M208,104a79.86,79.86,0,0,1-30.59,62.92A24.29,24.29,0,0,0,168,186v6a8,8,0,0,1-8,8H96a8,8,0,0,1-8-8v-6a24.11,24.11,0,0,0-9.3-19A79.87,79.87,0,0,1,48,104.45C47.76,61.09,82.72,25,126.07,24A80,80,0,0,1,208,104Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M176,232a8,8,0,0,1-8,8H88a8,8,0,0,1,0-16h80A8,8,0,0,1,176,232Zm40-128a87.55,87.55,0,0,1-33.64,69.21A16.24,16.24,0,0,0,176,186v6a16,16,0,0,1-16,16H96a16,16,0,0,1-16-16v-6a16,16,0,0,0-6.23-12.66A87.59,87.59,0,0,1,40,104.49C39.74,56.83,78.26,17.14,125.88,16A88,88,0,0,1,216,104Zm-16,0a72,72,0,0,0-73.74-72c-39,.92-70.47,33.39-70.26,72.39a71.65,71.65,0,0,0,27.64,56.3A32,32,0,0,1,96,186v6h64v-6a32.15,32.15,0,0,1,12.47-25.35A71.65,71.65,0,0,0,200,104Zm-16.11-9.34a57.6,57.6,0,0,0-46.56-46.55,8,8,0,0,0-2.66,15.78c16.57,2.79,30.63,16.85,33.44,33.45A8,8,0,0,0,176,104a9,9,0,0,0,1.35-.11A8,8,0,0,0,183.89,94.66Z" />
-                                    </svg>
-                                )}
-                                {tool.type === "blog" && (
-                                    <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="32"
-                                        height="32"
-                                        fill="#000000"
-                                        viewBox="0 0 256 256"
-                                    >
-                                        <path
-                                            d="M232,56V200H160a32,32,0,0,0-32,32V88a32,32,0,0,1,32-32Z"
-                                            opacity="0.2"
-                                        />
-                                        <path d="M232,48H160a40,40,0,0,0-32,16A40,40,0,0,0,96,48H24a8,8,0,0,0-8,8V200a8,8,0,0,0,8,8H96a24,24,0,0,1,24,24,8,8,0,0,0,16,0,24,24,0,0,1,24-24h72a8,8,0,0,0,8-8V56A8,8,0,0,0,232,48ZM96,192H32V64H96a24,24,0,0,1,24,24V200A39.81,39.81,0,0,0,96,192Zm128,0H160a39.81,39.81,0,0,0-24,8V88a24,24,0,0,1,24-24h64ZM160,88h40a8,8,0,0,1,0,16H160a8,8,0,0,1,0-16Zm48,40a8,8,0,0,1-8,8H160a8,8,0,0,1,0-16h40A8,8,0,0,1,208,128Zm0,32a8,8,0,0,1-8,8H160a8,8,0,0,1,0-16h40A8,8,0,0,1,208,160Z" />
-                                    </svg>
-                                )}
-                            </Fragment>
-                        </AnimatedFeatureCard>
-                    ))
-                }
-            </div>
-        </div>
+        <div class="container bento-container animate-on-scroll delay-1">
+            <div class="bento-grid">
+                {t.tools.map((tool) => (
+                    <div
+                        class:list={[
+                            "bento-card premium-gloss-surface",
+                            `accent-${tool.accent}`,
+                        ]}
+                    >
+                        <div class="bento-ambient-glow" aria-hidden="true" />
 
-        <div class="container cta-wrapper animate-on-scroll delay-2">
-            <SectionCTA
-                href="/blog"
-                labelEn="Read Wellness Blogs"
-                labelHi="वेलनेस ब्लॉग पढ़ें"
-            />
+                        <div class="bento-top">
+                            <div class="bento-icon-wrap" aria-hidden="true">
+                                {tool.id === "cycle" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-dasharray="45 18"
+                                        />
+                                        <path
+                                            d="M14 7C16.5 11 16.5 15 14 19C11.5 15 11.5 11 14 7Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.32"
+                                            stroke="currentColor"
+                                            stroke-width="1.6"
+                                        />
+                                    </svg>
+                                )}
+                                {tool.id === "fast" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="15"
+                                            r="9"
+                                            fill="currentColor"
+                                            fill-opacity="0.22"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                        />
+                                        <path
+                                            d="M14 10.5V15l3 2.5M10.5 3.5h7"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
+                                )}
+                                {tool.id === "water" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M14 3.5l6.4 6.4a9 9 0 1 1-12.8 0L14 3.5z"
+                                            fill="currentColor"
+                                            fill-opacity="0.24"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M10.5 17.5a4.5 4.5 0 0 0 4.5 3"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                                {tool.id === "mood" && (
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M14.5 4.5a7.5 7.5 0 0 0 9.5 9.5 9.5 9.5 0 1 1-9.5-9.5Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.24"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M21 4v5M23.5 6.5h-5"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
+                                )}
+                            </div>
+
+                            <div class="bento-widget-pill">
+                                <strong class="widget-metric">
+                                    {tool.metric}
+                                </strong>
+                                <span class="widget-sub">{tool.subMetric}</span>
+                            </div>
+                        </div>
+
+                        <div class="bento-visual-bar" aria-hidden="true">
+                            {tool.id === "cycle" && (
+                                <div class="mini-phase-track">
+                                    <span class="phase-seg seg-1" />
+                                    <span class="phase-seg seg-2 active" />
+                                    <span class="phase-seg seg-3" />
+                                    <span class="phase-seg seg-4" />
+                                </div>
+                            )}
+                            {tool.id === "fast" && (
+                                <div class="mini-progress-track">
+                                    <div
+                                        class="mini-progress-fill"
+                                        style="width: 82%"
+                                    />
+                                </div>
+                            )}
+                            {tool.id === "water" && (
+                                <div class="mini-bars-track">
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                </div>
+                            )}
+                            {tool.id === "mood" && (
+                                <div class="mini-dots-track">
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div class="bento-copy">
+                            <h3 class="bento-title">{tool.title}</h3>
+                            <p class="bento-desc">{tool.desc}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
         </div>
     </div>
 </section>
 
-<script>
-    document.addEventListener("astro:page-load", () => {
-        const stage = document.getElementById("animation-stage-frame");
-        if (!stage) return;
-        const cards = stage.querySelectorAll(".animated-feature-card");
-        let activeIndex = 0;
-        if (cards.length === 0) return;
-
-        setInterval(() => {
-            cards[activeIndex].classList.remove("active");
-            activeIndex = (activeIndex + 1) % cards.length;
-            cards[activeIndex].classList.add("active");
-        }, 4000);
-    });
-</script>
-
 <style>
     .section-tools {
         width: 100%;
-        display: flex;
-        align-items: center;
-        padding-top: var(--section-v-padding);
-        padding-bottom: var(--section-v-padding);
     }
+
     .content-wrapper {
         display: flex;
         flex-direction: column;
         width: 100%;
         margin: 0 auto;
-    }
-    .text-col {
-        margin-bottom: var(--space-md);
-        text-align: left;
-        width: 100%;
-    }
-    .section-title {
-        font-size: clamp(2.2rem, 5.5vw, 3.8rem);
-        letter-spacing: -0.035em;
-        line-height: 1.1;
-        color: var(--text-main);
-    }
-    .body-text {
-        font-size: clamp(1.05rem, 2vw, 1.2rem);
-        color: var(--text-muted);
-        max-width: 54ch;
-        line-height: 1.6;
-        margin-top: var(--space-xs);
-    }
-    .body-text :global(strong) {
-        color: var(--text-main);
-        font-weight: 700;
-    }
-    .stack-stage-container {
-        width: 100%;
-        margin-bottom: var(--space-lg);
-    }
-    .stage-frame {
-        position: relative;
-        width: 100%;
-        max-width: 480px;
-        height: 114px;
-        display: grid;
-        grid-template-columns: 1fr;
-    }
-    .cta-wrapper {
-        display: flex;
-        justify-content: flex-start;
-    }
-    :lang(hi) .section-title {
-        line-height: 1.35;
+        gap: clamp(0.85rem, 2.2vh, 1.5rem);
     }
 
-    @media (max-height: 740px) {
-        .body-text {
+    .text-col {
+        gap: 8px;
+        width: 100%;
+    }
+
+    .section-title {
+        font-size: clamp(1.9rem, 4.4vw, 3.2rem);
+        letter-spacing: -0.03em;
+        line-height: 1.12;
+        color: var(--text-main);
+    }
+
+    .body-text {
+        font-size: clamp(0.92rem, 1.6vw, 1.06rem);
+        color: var(--text-muted);
+        max-width: 58ch;
+        line-height: 1.5;
+    }
+
+    .bento-container {
+        width: 100%;
+    }
+
+    .bento-grid {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 14px;
+    }
+
+    .bento-card {
+        --tool-color: var(--primary);
+        --tool-soft: var(--primary-soft);
+        position: relative;
+        overflow: hidden;
+        border-radius: var(--radius-lg);
+        padding: clamp(1rem, 2vw, 1.45rem);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 12px;
+        transition:
+            transform 0.3s cubic-bezier(0.16, 1, 0.3, 1),
+            border-color 0.25s ease;
+    }
+
+    .bento-ambient-glow {
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: radial-gradient(
+            circle,
+            var(--tool-soft) 0%,
+            transparent 70%
+        );
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .bento-card:hover {
+        transform: translateY(-3px);
+        border-color: var(--tool-color);
+    }
+
+    .bento-card.accent-rose {
+        --tool-color: oklch(64% 0.14 22);
+        --tool-soft: rgba(225, 110, 115, 0.16);
+    }
+
+    .bento-card.accent-sage {
+        --tool-color: var(--primary);
+        --tool-soft: var(--primary-soft);
+    }
+
+    .bento-card.accent-aqua {
+        --tool-color: oklch(64% 0.11 215);
+        --tool-soft: rgba(80, 175, 205, 0.16);
+    }
+
+    .bento-card.accent-amber {
+        --tool-color: var(--accent-warm);
+        --tool-soft: var(--accent-warm-soft);
+    }
+
+    .bento-top {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .bento-icon-wrap {
+        width: 42px;
+        height: 42px;
+        border-radius: 13px;
+        background: linear-gradient(
+            145deg,
+            color-mix(in srgb, var(--tool-soft) 90%, #ffffff 10%),
+            var(--tool-soft)
+        );
+        color: var(--tool-color);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border: 1px solid color-mix(in srgb, var(--tool-color) 28%, transparent);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        transition: transform 0.25s ease;
+    }
+
+    .bento-card:hover .bento-icon-wrap {
+        transform: scale(1.06) rotate(-2deg);
+    }
+
+    .bento-icon-wrap svg {
+        width: 22px;
+        height: 22px;
+    }
+
+    .bento-widget-pill {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        text-align: right;
+    }
+
+    .widget-metric {
+        font-size: 1.05rem;
+        font-weight: 750;
+        color: var(--tool-color);
+        line-height: 1.15;
+    }
+
+    .widget-sub {
+        font-size: 0.72rem;
+        font-weight: 600;
+        color: var(--text-muted);
+    }
+
+    .bento-visual-bar {
+        position: relative;
+        z-index: 2;
+        width: 100%;
+        padding: 4px 0;
+    }
+
+    .mini-phase-track {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 5px;
+    }
+
+    .phase-seg {
+        height: 6px;
+        border-radius: 99px;
+        background: var(--bg-card-inner);
+        border: 1px solid var(--border);
+    }
+
+    .phase-seg.active {
+        background: var(--tool-color);
+        border-color: var(--tool-color);
+        box-shadow: 0 0 10px var(--tool-soft);
+    }
+
+    .mini-progress-track {
+        width: 100%;
+        height: 7px;
+        border-radius: 99px;
+        background: var(--bg-card-inner);
+        overflow: hidden;
+        border: 1px solid var(--border);
+    }
+
+    .mini-progress-fill {
+        height: 100%;
+        border-radius: 99px;
+        background: var(--tool-color);
+    }
+
+    .mini-bars-track {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 5px;
+    }
+
+    .w-bar {
+        height: 7px;
+        border-radius: 99px;
+        background: var(--tool-color);
+        opacity: 0.85;
+    }
+
+    .mini-dots-track {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .s-dot {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: var(--tool-soft);
+        color: var(--tool-color);
+        font-size: 0.65rem;
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid color-mix(in srgb, var(--tool-color) 30%, transparent);
+    }
+
+    .bento-copy {
+        position: relative;
+        z-index: 2;
+        display: flex;
+        flex-direction: column;
+        gap: 3px;
+    }
+
+    .bento-title {
+        font-size: 1.05rem;
+        font-weight: 700;
+        color: var(--text-main);
+        margin: 0;
+        line-height: 1.25;
+    }
+
+    .bento-desc {
+        font-size: 0.84rem;
+        color: var(--text-muted);
+        margin: 0;
+        line-height: 1.38;
+    }
+
+    @media (max-width: 680px) {
+        .section-title {
+            font-size: clamp(1.65rem, 6vw, 2.15rem);
+        }
+
+        .bento-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        .bento-card {
+            padding: 12px;
+            gap: 8px;
+            border-radius: var(--radius-md);
+        }
+
+        .bento-icon-wrap {
+            width: 34px;
+            height: 34px;
+            border-radius: 10px;
+        }
+
+        .bento-icon-wrap svg {
+            width: 17px;
+            height: 17px;
+        }
+
+        .widget-metric {
+            font-size: 0.88rem;
+        }
+
+        .widget-sub {
             display: none;
         }
-        .stage-frame {
-            height: 96px;
+
+        .bento-title {
+            font-size: 0.9rem;
         }
-    }
-    @media (max-width: 768px) {
-        .stage-frame {
-            max-width: 100%;
+
+        .bento-desc {
+            font-size: 0.75rem;
+            line-height: 1.3;
+        }
+
+        .s-dot {
+            width: 16px;
+            height: 16px;
+            font-size: 0.55rem;
         }
     }
 </style>
