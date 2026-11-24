@@ -1,0 +1,19 @@
+---
+import DeeplinkPage from "../../components/DeeplinkPage.astro";
+import { DEEPLINK_PAGES, type DeeplinkEntry } from "../../data/deeplinks";
+
+export function getStaticPaths() {
+    return DEEPLINK_PAGES.map((entry) => ({
+        params: { feature: entry.slug },
+        props: { entry },
+    }));
+}
+
+interface Props {
+    entry: DeeplinkEntry;
+}
+
+const { entry } = Astro.props;
+---
+
+<DeeplinkPage entry={entry} lang="hi" />

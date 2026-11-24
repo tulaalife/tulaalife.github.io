@@ -59,9 +59,6 @@ const contentHtml = renderContent(ops);
 const readingTime = Math.ceil(
     contentHtml.replace(/<[^>]*>/g, "").split(" ").length / 200,
 );
-
-const primaryLink = "https://tulaa.app";
-const primaryLabel = post.cta?.text || t.appLabel;
 ---
 
 <Site

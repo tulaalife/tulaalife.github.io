@@ -81,22 +81,18 @@ async function loadPlans() {
         .from(TABLES.plans)
         .select(`
             id,
-            slug, 
-            title, 
-            subtitle, 
-            description, 
-            insights, 
+            slug,
+            title,
+            subtitle,
+            description,
+            insights,
             cautions,
-            image_url, 
-            visibility,
+            image_url,
             goal_ids,
             suitable_time_of_day,
             practice_frequency,
             min_meal_gap,
-            category,
-            tags,
             intensity,
-            contraindications,
             plan_translations (
                 lang, title, subtitle, description, insights, cautions
             )
@@ -114,10 +110,7 @@ async function loadPlans() {
         const baseSlug = toAbs(r.slug);
         const baseImage = ensureHttps(toAbs(r.image_url));
         const goals = parseJsonSafe(r.goal_ids, []);
-        const tags = parseJsonSafe(r.tags, {});
         const suitableTimeOfDay = parseJsonSafe(r.suitable_time_of_day, []);
-        const contraindications = parseJsonSafe(r.contraindications, []);
-        const category = toAbs(r.category);
         const intensity = toAbs(r.intensity) || 'beginner';
         const practiceFrequency = toAbs(r.practice_frequency);
         const minMealGap = toAbs(r.min_meal_gap);
@@ -134,15 +127,11 @@ async function loadPlans() {
             benefits: formatBenefits(r.insights),
             cautions: toAbs(r.cautions),
             image: baseImage,
-            deeplink: `tulaa://en/yoga/${baseSlug}`,
             goals,
-            category,
-            tags,
             intensity,
             practiceFrequency,
             suitableTimeOfDay,
             minMealGap,
-            contraindications,
         });
 
         if (Array.isArray(r.plan_translations)) {
@@ -159,15 +148,11 @@ async function loadPlans() {
                     benefits: formatBenefits(tr.insights) || formatBenefits(r.insights),
                     cautions: toAbs(tr.cautions) || toAbs(r.cautions),
                     image: baseImage,
-                    deeplink: `tulaa://${tr.lang}/yoga/${baseSlug}`,
                     goals,
-                    category,
-                    tags,
                     intensity,
                     practiceFrequency,
                     suitableTimeOfDay,
                     minMealGap,
-                    contraindications,
                 });
             });
         }
@@ -188,8 +173,6 @@ async function loadRecommendations() {
         throw new Error('[fetch-content] Invalid manual_recommendations.json schema');
     }
     return {
-        version: toAbs(json.version || '1.0'),
-        updated_at: toAbs(json.updated_at || new Date().toISOString()),
         overrides: json.overrides,
     };
 }
@@ -197,7 +180,7 @@ async function loadRecommendations() {
 async function loadAudios() {
     const { data, error } = await sb
         .from(TABLES.audios)
-        .select('slug, language, title, subtitle, description, image_url, updated_at, translation_group_id')
+        .select('slug, language, title, subtitle, description, image_url')
         .not('slug', 'is', null)
         .not('image_url', 'is', null)
         .order('title', { ascending: true });
@@ -208,14 +191,12 @@ async function loadAudios() {
         const lang = r.language || 'en';
         const slug = toAbs(r.slug);
         return {
-            slug: slug,
+            slug,
             language: lang,
-            translation_group_id: r.translation_group_id,
             title: toAbs(r.title),
             subtitle: toAbs(r.subtitle),
             description: toAbs(r.description),
             image: ensureHttps(toAbs(r.image_url)),
-            deeplink: `tulaa://audio/${slug}`,
         };
     }).filter(a => a.slug && a.image);
 }
@@ -223,7 +204,7 @@ async function loadAudios() {
 async function loadAllTips() {
     const { data, error } = await sb
         .from(TABLES.tips)
-        .select('slug,tip,benefit,precaution,category,icon,updated_at')
+        .select('slug, tip, benefit, precaution, category, icon')
         .not('slug', 'is', null)
         .order('slug', { ascending: true });
 
@@ -236,7 +217,6 @@ async function loadAllTips() {
         precaution: toAbs(r.precaution),
         category: toAbs(r.category),
         icon: toAbs(r.icon),
-        deeplink: `tulaa://app/tips/${toAbs(r.slug)}`,
     })).filter(t => t.slug && t.tip && t.benefit);
 }
 
@@ -244,21 +224,15 @@ async function loadPosts() {
     const { data, error } = await sb
         .from(TABLES.posts)
         .select(`
-            slug, 
-            title, 
-            excerpt, 
-            cover_image_url, 
-            status, 
-            published_at, 
-            language, 
-            translation_group_id,
-            seo_title, 
-            seo_description, 
-            content, 
-            goal_ids, 
-            suitable_time_of_day,
-            cta_link, 
-            cta_text
+            slug,
+            title,
+            excerpt,
+            cover_image_url,
+            published_at,
+            language,
+            seo_title,
+            seo_description,
+            content
         `)
         .eq('status', 'published')
         .not('slug', 'is', null)
@@ -273,7 +247,6 @@ async function loadPosts() {
         return {
             slug: toAbs(r.slug),
             language: r.language || 'en',
-            translation_group_id: r.translation_group_id,
             title: toAbs(r.title),
             excerpt: toAbs(r.excerpt),
             image: ensureHttps(toAbs(r.cover_image_url)),
@@ -281,9 +254,6 @@ async function loadPosts() {
             metaTitle: toAbs(metaTitle),
             metaDescription: toAbs(metaDesc),
             content: r.content,
-            cta: (r.cta_link && r.cta_text) ? { link: r.cta_link, text: r.cta_text } : null,
-            goals: r.goal_ids || [],
-            timeOfDay: r.suitable_time_of_day || [],
         };
     });
 }

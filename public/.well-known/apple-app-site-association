@@ -16,7 +16,13 @@
                         "/": "/audio/*"
                     },
                     {
+                        "/": "/hi/audio/*"
+                    },
+                    {
                         "/": "/blog*"
+                    },
+                    {
+                        "/": "/hi/blog*"
                     },
                     {
                         "/": "/blogs*"
@@ -32,9 +38,6 @@
                     },
                     {
                         "/": "/rhythm*"
-                    },
-                    {
-                        "/": "/moments*"
                     },
                     {
                         "/": "/journey*"
@@ -61,13 +64,7 @@
                         "/": "/languages*"
                     },
                     {
-                        "/": "/background*"
-                    },
-                    {
-                        "/": "/backgrounds*"
-                    },
-                    {
-                        "/": "/about/*"
+                        "/": "/about*"
                     },
                     {
                         "/": "/mood*"
