@@ -159,7 +159,7 @@ const readingTime = Math.ceil(
 
             <footer class="article-footer">
                 <div class="button-group">
-                    <StoreButtons appPath="blogs" />
+                    <StoreButtons appPath={`blog/${post.slug}`} />
                     <CTAButton
                         href={lang === "hi" ? "/hi/blog" : "/blog"}
                         label={t.browse}

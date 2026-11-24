@@ -630,7 +630,7 @@ const initialPrimary = defaultPlanIds[0]
                                     type="button"
                                     class="result-app-cta"
                                     id="rec-app-cta"
-                                    data-app-path={`yoga/${initialPrimary.slug}`}
+                                    data-app-path={`${currentLang}/yoga/${initialPrimary.slug}`}
                                 >
                                     <span>{t.resultCta}</span>
                                     <span class="cta-arrow" aria-hidden="true">
@@ -932,7 +932,10 @@ const initialPrimary = defaultPlanIds[0]
                 });
             }
             if (recAppCta) {
-                recAppCta.setAttribute("data-app-path", `yoga/${primary.slug}`);
+                recAppCta.setAttribute(
+                    "data-app-path",
+                    `${lang}/yoga/${primary.slug}`,
+                );
             }
 
             setView("step3", pushHistory);

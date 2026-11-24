@@ -279,11 +279,45 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             }, 5500);
         }
 
+        let touchStartX = 0;
+        let touchStartY = 0;
+
         container.addEventListener("mouseenter", () => (isPaused = true));
         container.addEventListener("mouseleave", () => (isPaused = false));
-        container.addEventListener("touchstart", () => (isPaused = true), {
-            passive: true,
-        });
+        container.addEventListener(
+            "touchstart",
+            (e) => {
+                isPaused = true;
+                const touch = e.touches[0];
+                if (touch) {
+                    touchStartX = touch.clientX;
+                    touchStartY = touch.clientY;
+                }
+            },
+            { passive: true },
+        );
+        container.addEventListener(
+            "touchend",
+            (e) => {
+                const touch = e.changedTouches[0];
+                if (touch) {
+                    const dx = touch.clientX - touchStartX;
+                    const dy = touch.clientY - touchStartY;
+                    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
+                        if (dx < 0) {
+                            currentPage = (currentPage + 1) % totalPages;
+                        } else {
+                            currentPage =
+                                (currentPage - 1 + totalPages) % totalPages;
+                        }
+                        renderPage(true);
+                        startAutoplay();
+                    }
+                }
+                isPaused = false;
+            },
+            { passive: true },
+        );
 
         window.addEventListener("resize", () => {
             const nextBatch = getBatchSize();
@@ -338,6 +372,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         display: flex;
         flex-direction: column;
         gap: 16px;
+        touch-action: pan-y;
     }
 
     .reviews-grid {

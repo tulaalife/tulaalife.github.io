@@ -51,13 +51,18 @@ const ui = {
             <h1 class="deeplink-title">{copy.title.replace(" · Tulaa", "")}</h1>
             <p class="deeplink-desc body-text">{copy.description}</p>
 
-            <a href={entry.appScheme} class="open-app-btn">
+            <button
+                type="button"
+                class="open-app-btn"
+                data-single-download="true"
+                data-app-path={entry.slug}
+            >
                 {ui.openInApp}
-            </a>
+            </button>
 
             <div class="store-block">
                 <p class="download-hint">{ui.downloadHint}</p>
-                <StoreButtons showBoth={true} centered={true} />
+                <StoreButtons showBoth={true} centered={true} appPath={entry.slug} />
             </div>
 
             <a href={ui.homeHref} class="home-back-link">{ui.homeLink}</a>
