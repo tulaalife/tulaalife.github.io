@@ -1203,13 +1203,17 @@ const initialPrimary = defaultPlanIds[0]
         padding-top: 0.08em;
     }
 
+    .hero-conversational.is-wizard-active .hero-centered-shell {
+        gap: clamp(0.75rem, 1.8vh, 1.25rem);
+    }
+
     .hero-conversational.is-wizard-active .hero-title {
-        font-size: clamp(1.75rem, 4vw, 2.85rem);
+        font-size: clamp(1.65rem, 3.4vw, 2.45rem);
         line-height: 1.14;
     }
 
     :global(:lang(hi)) .hero-conversational.is-wizard-active .hero-title {
-        line-height: 1.32;
+        line-height: 1.28;
     }
 
     .hero-title.is-title-anim {
@@ -1341,10 +1345,10 @@ const initialPrimary = defaultPlanIds[0]
         box-sizing: border-box;
         overflow: hidden;
         border-radius: var(--radius-lg);
-        padding: clamp(1.35rem, 3vw, 2.1rem);
+        padding: clamp(1rem, 2.2vh, 1.6rem) clamp(1.15rem, 2.6vw, 1.9rem);
         display: flex;
         flex-direction: column;
-        gap: 18px;
+        gap: clamp(10px, 1.8vh, 16px);
         text-align: left;
     }
 
@@ -1448,7 +1452,7 @@ const initialPrimary = defaultPlanIds[0]
     .branch-list-vertical {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: clamp(8px, 1.4vh, 11px);
         width: 100%;
         min-width: 0;
     }
@@ -1457,7 +1461,7 @@ const initialPrimary = defaultPlanIds[0]
         display: flex;
         align-items: center;
         gap: 14px;
-        padding: 14px 18px;
+        padding: clamp(10px, 1.6vh, 13px) 16px;
         width: 100%;
         min-width: 0;
         max-width: 100%;

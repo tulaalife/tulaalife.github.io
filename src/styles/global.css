@@ -147,6 +147,13 @@ body:lang(hi) {
     line-height: 1.65;
 }
 
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
 h1,
 h2,
 h3,
@@ -211,8 +218,8 @@ h3,
 :lang(hi) .section-title,
 :lang(hi) .hero-title {
     font-weight: 700;
-    letter-spacing: normal;
-    line-height: 1.32;
+    letter-spacing: 0 !important;
+    line-height: 1.32 !important;
     padding-top: 0.04em;
     padding-bottom: 0.04em;
 }
