@@ -92,9 +92,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
                 <div class="author-intro">
                     <span class="badge-small">{t.badge}</span>
-                    <h2 class="author-name">
-                        {t.name}
-                    </h2>
+                    <h2 class="author-name">{t.name}</h2>
                     <p class="author-role">{t.role}</p>
 
                     <a
@@ -117,109 +115,108 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                                 fill="currentColor"
                                 fill-opacity="0.16"
                                 stroke="currentColor"
-                                stroke-width="1.8"></circle>
+                                stroke-width="1.8"
+                            ></circle>
                             <path
                                 d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"
                                 stroke="currentColor"
-                                stroke-width="1.6"></path>
+                                stroke-width="1.6"
+                            ></path>
                         </svg>
                         <span>{t.siteLabel}</span>
-                        <span class="ext-arrow" aria-hidden="true">↗</span>
                     </a>
                 </div>
             </div>
 
             <div class="creds-grid">
-                {
-                    t.creds.map((c) => (
-                        <div class:list={["cred-item", `tone-${c.tone}`]}>
-                            <div class="cred-icon" aria-hidden="true">
-                                {c.icon === "medal" && (
-                                    <svg viewBox="0 0 28 28" fill="none">
-                                        <path
-                                            d="M9.5 14.5L7.5 25l6.5-3.5L20.5 25l-2-10.5"
-                                            fill="currentColor"
-                                            fill-opacity="0.2"
-                                            stroke="currentColor"
-                                            stroke-width="1.8"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                        <circle
-                                            cx="14"
-                                            cy="10"
-                                            r="6.5"
-                                            fill="currentColor"
-                                            fill-opacity="0.28"
-                                            stroke="currentColor"
-                                            stroke-width="1.9"
-                                        />
-                                        <circle
-                                            cx="14"
-                                            cy="10"
-                                            r="2.5"
-                                            fill="currentColor"
-                                        />
-                                    </svg>
-                                )}
-                                {c.icon === "exp" && (
-                                    <svg viewBox="0 0 28 28" fill="none">
-                                        <circle
-                                            cx="14"
-                                            cy="14"
-                                            r="10"
-                                            fill="currentColor"
-                                            fill-opacity="0.2"
-                                            stroke="currentColor"
-                                            stroke-width="1.9"
-                                        />
-                                        <path
-                                            d="M14 9v5l3.5 2"
-                                            stroke="currentColor"
-                                            stroke-width="2"
-                                            stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>
-                                )}
-                                {c.icon === "star" && (
-                                    <svg viewBox="0 0 28 28" fill="none">
-                                        <polygon
-                                            points="14 3 17.4 9.9 25 11 19.5 16.4 20.8 24 14 20.4 7.2 24 8.5 16.4 3 11 10.6 9.9 14 3"
-                                            fill="currentColor"
-                                            fill-opacity="0.28"
-                                            stroke="currentColor"
-                                            stroke-width="1.9"
-                                            stroke-linejoin="round"
-                                        />
-                                    </svg>
-                                )}
-                                {c.icon === "heart" && (
-                                    <svg viewBox="0 0 28 28" fill="none">
-                                        <path
-                                            d="M22.5 15.8c1.7-1.7 3.5-3.7 3.5-6.4A6.4 6.4 0 0 0 19.6 3c-2 0-3.5.6-5.6 2.4C11.9 3.6 10.4 3 8.4 3A6.4 6.4 0 0 0 2 9.4c0 2.7 1.8 4.7 3.5 6.4L14 24l8.5-8.2Z"
-                                            fill="currentColor"
-                                            fill-opacity="0.25"
-                                            stroke="currentColor"
-                                            stroke-width="1.9"
-                                            stroke-linejoin="round"
-                                        />
-                                        <path
-                                            d="M14 10v6M11 13h6"
-                                            stroke="currentColor"
-                                            stroke-width="1.9"
-                                            stroke-linecap="round"
-                                        />
-                                    </svg>
-                                )}
-                            </div>
-                            <div class="cred-copy">
-                                <strong class="cred-metric">{c.metric}</strong>
-                                <span class="cred-label">{c.label}</span>
-                            </div>
+                {t.creds.map((c) => (
+                    <div class:list={["cred-item", `tone-${c.tone}`]}>
+                        <div class="cred-icon" aria-hidden="true">
+                            {c.icon === "medal" && (
+                                <svg viewBox="0 0 28 28" fill="none">
+                                    <path
+                                        d="M9.5 14.5L7.5 25l6.5-3.5L20.5 25l-2-10.5"
+                                        fill="currentColor"
+                                        fill-opacity="0.2"
+                                        stroke="currentColor"
+                                        stroke-width="1.8"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                    <circle
+                                        cx="14"
+                                        cy="10"
+                                        r="6.5"
+                                        fill="currentColor"
+                                        fill-opacity="0.28"
+                                        stroke="currentColor"
+                                        stroke-width="1.9"
+                                    />
+                                    <circle
+                                        cx="14"
+                                        cy="10"
+                                        r="2.5"
+                                        fill="currentColor"
+                                    />
+                                </svg>
+                            )}
+                            {c.icon === "exp" && (
+                                <svg viewBox="0 0 28 28" fill="none">
+                                    <circle
+                                        cx="14"
+                                        cy="14"
+                                        r="10"
+                                        fill="currentColor"
+                                        fill-opacity="0.2"
+                                        stroke="currentColor"
+                                        stroke-width="1.9"
+                                    />
+                                    <path
+                                        d="M14 9v5l3.5 2"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            )}
+                            {c.icon === "star" && (
+                                <svg viewBox="0 0 28 28" fill="none">
+                                    <polygon
+                                        points="14 3 17.4 9.9 25 11 19.5 16.4 20.8 24 14 20.4 7.2 24 8.5 16.4 3 11 10.6 9.9 14 3"
+                                        fill="currentColor"
+                                        fill-opacity="0.28"
+                                        stroke="currentColor"
+                                        stroke-width="1.9"
+                                        stroke-linejoin="round"
+                                    />
+                                </svg>
+                            )}
+                            {c.icon === "heart" && (
+                                <svg viewBox="0 0 28 28" fill="none">
+                                    <path
+                                        d="M22.5 15.8c1.7-1.7 3.5-3.7 3.5-6.4A6.4 6.4 0 0 0 19.6 3c-2 0-3.5.6-5.6 2.4C11.9 3.6 10.4 3 8.4 3A6.4 6.4 0 0 0 2 9.4c0 2.7 1.8 4.7 3.5 6.4L14 24l8.5-8.2Z"
+                                        fill="currentColor"
+                                        fill-opacity="0.25"
+                                        stroke="currentColor"
+                                        stroke-width="1.9"
+                                        stroke-linejoin="round"
+                                    />
+                                    <path
+                                        d="M14 10v6M11 13h6"
+                                        stroke="currentColor"
+                                        stroke-width="1.9"
+                                        stroke-linecap="round"
+                                    />
+                                </svg>
+                            )}
                         </div>
-                    ))
-                }
+                        <div class="cred-copy">
+                            <strong class="cred-metric">{c.metric}</strong>
+                            <span class="cred-label">{c.label}</span>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     </div>
@@ -340,11 +337,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         transform: translateY(-2px);
         border-color: var(--primary);
         color: var(--primary);
-    }
-
-    .ext-arrow {
-        color: var(--primary);
-        font-size: 0.88rem;
     }
 
     /* Spacious 2x2 Grid so credential copies never clip */

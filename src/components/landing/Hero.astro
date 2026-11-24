@@ -661,6 +661,7 @@ const initialPrimary = defaultPlanIds[0]
 <script>
     document.addEventListener("astro:page-load", () => {
         const heroSection = document.getElementById("hero");
+        const heroShell = document.getElementById("hero-shell");
         const root = document.getElementById("plan-finder-app");
         const landingActions = document.getElementById("hero-landing-actions");
         const startBtn = document.getElementById("start-finder-btn");
@@ -768,8 +769,14 @@ const initialPrimary = defaultPlanIds[0]
             }
         }
 
-        function setView(view: ViewState, pushHistory = true) {
-            const isForward = viewOrder[view] >= viewOrder[currentView];
+        let isTransitioning = false;
+
+        function applyViewDOM(
+            view: ViewState,
+            isForward: boolean,
+            animateInnerStep: boolean,
+            pushHistory: boolean,
+        ) {
             currentView = view;
 
             const isIntro = view === "intro";
@@ -780,33 +787,20 @@ const initialPrimary = defaultPlanIds[0]
 
             if (landingActions) {
                 landingActions.hidden = !isIntro;
-                if (isIntro) {
-                    landingActions.classList.remove("is-entering");
-                    void landingActions.offsetWidth;
-                    landingActions.classList.add("is-entering");
-                }
             }
-
             if (heroBadge) {
                 heroBadge.hidden = !isIntro;
             }
-
             if (introSubEl) {
                 introSubEl.hidden = !isIntro;
             }
-
             if (root) {
-                const wasHidden = root.hidden;
                 root.hidden = isIntro;
-                if (!isIntro && wasHidden) {
-                    root.classList.remove("card-enter");
-                    void root.offsetWidth;
-                    root.classList.add("card-enter");
-                }
             }
 
             if (isIntro) {
-                animateTitleSwap(introTop, introBottom);
+                if (titleTopEl) titleTopEl.textContent = introTop;
+                if (titleBottomEl) titleBottomEl.textContent = introBottom;
                 saveFinderState("intro", pushHistory);
                 return;
             }
@@ -823,11 +817,15 @@ const initialPrimary = defaultPlanIds[0]
                 el.hidden = !isCurrent;
                 el.classList.remove("active", "dir-forward", "dir-back");
                 if (isCurrent) {
-                    void el.offsetWidth;
-                    el.classList.add(
-                        "active",
-                        isForward ? "dir-forward" : "dir-back",
-                    );
+                    if (animateInnerStep) {
+                        void el.offsetWidth;
+                        el.classList.add(
+                            "active",
+                            isForward ? "dir-forward" : "dir-back",
+                        );
+                    } else {
+                        el.classList.add("active");
+                    }
                 }
             });
 
@@ -841,13 +839,22 @@ const initialPrimary = defaultPlanIds[0]
                 dot.classList.toggle("active", idx + 1 <= dotLevel);
             });
 
+            const setHeading = (top: string, bottom: string) => {
+                if (animateInnerStep) {
+                    animateTitleSwap(top, bottom);
+                } else {
+                    if (titleTopEl) titleTopEl.textContent = top;
+                    if (titleBottomEl) titleBottomEl.textContent = bottom;
+                }
+            };
+
             if (view === "step1") {
-                animateTitleSwap(step1Top, step1Bottom);
+                setHeading(step1Top, step1Bottom);
             } else if (view === "region") {
-                animateTitleSwap(painTop, painBottom);
+                setHeading(painTop, painBottom);
             } else if (view === "step2") {
                 if (currentBranch?.id === "pain" && currentRegion) {
-                    animateTitleSwap(
+                    setHeading(
                         lang === "hi"
                             ? currentRegion.hiTitleTop
                             : currentRegion.enTitleTop,
@@ -859,7 +866,7 @@ const initialPrimary = defaultPlanIds[0]
                         backToStep1Btn.textContent = backRegionLabel;
                     }
                 } else if (currentBranch) {
-                    animateTitleSwap(
+                    setHeading(
                         lang === "hi"
                             ? currentBranch.hiTitleTop
                             : currentBranch.enTitleTop,
@@ -872,10 +879,34 @@ const initialPrimary = defaultPlanIds[0]
                     }
                 }
             } else if (view === "step3") {
-                animateTitleSwap(step3Top, step3Bottom);
+                setHeading(step3Top, step3Bottom);
             }
 
             saveFinderState(view, pushHistory);
+        }
+
+        function setView(view: ViewState, pushHistory = true) {
+            const prevView = currentView;
+            const isForward = viewOrder[view] >= viewOrder[prevView];
+            const crossesIntro =
+                (prevView === "intro" && view !== "intro") ||
+                (prevView !== "intro" && view === "intro");
+
+            if (crossesIntro && heroShell && pushHistory) {
+                if (isTransitioning) return;
+                isTransitioning = true;
+                heroShell.classList.add("is-fading-out");
+                window.setTimeout(() => {
+                    applyViewDOM(view, isForward, false, pushHistory);
+                    requestAnimationFrame(() => {
+                        heroShell.classList.remove("is-fading-out");
+                        isTransitioning = false;
+                    });
+                }, 180);
+                return;
+            }
+
+            applyViewDOM(view, isForward, !crossesIntro, pushHistory);
         }
 
         function renderRecommendation(overrideKey: string, pushHistory = true) {
@@ -1130,6 +1161,21 @@ const initialPrimary = defaultPlanIds[0]
         align-items: center;
         text-align: center;
         gap: clamp(1.5rem, 3.6vh, 2.4rem);
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+            opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+            transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+        will-change: opacity, transform;
+    }
+
+    .hero-centered-shell.is-fading-out {
+        opacity: 0;
+        transform: translateY(-6px);
+        transition:
+            opacity 0.18s ease,
+            transform 0.18s ease;
+        pointer-events: none;
     }
 
     .hero-intro {
@@ -1149,7 +1195,6 @@ const initialPrimary = defaultPlanIds[0]
         font-size: clamp(2.85rem, 6.8vw, 4.75rem);
         line-height: 1.08;
         letter-spacing: -0.035em;
-        transition: font-size 0.42s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     :global(:lang(hi)) .hero-title {
@@ -1423,13 +1468,17 @@ const initialPrimary = defaultPlanIds[0]
         cursor: pointer;
         font-family: inherit;
         text-align: left;
-        animation: itemStagger 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
-        animation-delay: calc(var(--stagger-idx, 0) * 55ms);
         transition:
             transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
             border-color 0.25s ease,
             background-color 0.25s ease,
             box-shadow 0.25s ease;
+    }
+
+    .wizard-step.dir-forward .branch-choice,
+    .wizard-step.dir-back .branch-choice {
+        animation: itemStagger 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-delay: calc(var(--stagger-idx, 0) * 55ms);
     }
 
     @keyframes itemStagger {

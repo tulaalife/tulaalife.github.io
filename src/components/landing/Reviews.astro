@@ -227,7 +227,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             }
         }
 
-        function renderPage() {
+        function renderPage(animate = true) {
             if (!grid) return;
             const start = currentPage * batchSize;
             const slice = [];
@@ -235,9 +235,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                 slice.push(allReviews[(start + i) % allReviews.length]);
             }
 
-            grid.classList.add("is-fading");
-
-            setTimeout(() => {
+            const updateDom = () => {
                 grid.innerHTML = slice
                     .map(
                         (rev, idx) => `
@@ -261,7 +259,15 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
                 grid.classList.remove("is-fading");
                 renderDots();
-            }, 220);
+            };
+
+            if (!animate) {
+                updateDom();
+                return;
+            }
+
+            grid.classList.add("is-fading");
+            setTimeout(updateDom, 220);
         }
 
         function startAutoplay() {
@@ -269,7 +275,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             timerId = setInterval(() => {
                 if (isPaused) return;
                 currentPage = (currentPage + 1) % totalPages;
-                renderPage();
+                renderPage(true);
             }, 5500);
         }
 
@@ -279,7 +285,17 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             passive: true,
         });
 
-        renderPage();
+        window.addEventListener("resize", () => {
+            const nextBatch = getBatchSize();
+            if (nextBatch !== batchSize) {
+                batchSize = nextBatch;
+                totalPages = Math.ceil(allReviews.length / batchSize);
+                currentPage = currentPage % totalPages;
+                renderPage(false);
+            }
+        });
+
+        renderPage(false);
         startAutoplay();
     });
 </script>
@@ -469,7 +485,11 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     @media (max-width: 820px) {
         .reviews-grid {
             grid-template-columns: minmax(0, 1fr);
-            gap: 10px;
+            gap: 12px;
+        }
+
+        :global(.review-card:nth-child(n + 3)) {
+            display: none;
         }
 
         :global(.review-card) {
