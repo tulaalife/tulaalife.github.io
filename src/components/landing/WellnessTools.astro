@@ -3,10 +3,9 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "4-in-1 Private Health Trackers",
+        badge: "100% On-Device • Private",
         titleTop: "Daily Health Trackers,",
         titleBottom: "All in One Place.",
-        body: "No need for 4 different apps. Track your period, fasting, water, and daily mood privately on your phone.",
         tools: [
             {
                 id: "cycle",
@@ -43,10 +42,9 @@ const ui = {
         ],
     },
     hi: {
-        badge: "4-इन-1 निजी हेल्थ ट्रैकर्स",
+        badge: "100% निजी • सिर्फ़ आपके फोन में",
         titleTop: "रोज़ की सेहत ट्रैक करें,",
         titleBottom: "एक ही आसान ऐप में।",
-        body: "अलग-अलग ऐप्स की ज़रूरत नहीं। पीरियड, फास्टिंग, पानी और मूड एक ही जगह ट्रैक करें — सब कुछ सिर्फ़ आपके फोन में सुरक्षित।",
         tools: [
             {
                 id: "cycle",
@@ -99,7 +97,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                     {t.titleTop}{" "}
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
-                <p class="body-text">{t.body}</p>
             </div>
         </div>
 
@@ -264,7 +261,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         flex-direction: column;
         width: 100%;
         margin: 0 auto;
-        gap: clamp(0.85rem, 2.2vh, 1.5rem);
+        gap: clamp(1.25rem, 3vh, 2rem);
     }
 
     .text-col {

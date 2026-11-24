@@ -1,8 +1,8 @@
-# Tulaa — Privacy Policy
+# Tulaa: Privacy Policy
 
 **Version 1.0 · Effective 2025-09-16**
 
-> **Short version:** Your personal data stays strictly on your device. Analytics and crash reports are off by default. With your explicit consent, anonymous crash logs (Sentry) and feature analytics (PostHog) help us improve app stability — never your mood logs, health data, or period entries. No ads. No sale of personal data.
+> **Short version:** Your personal data stays strictly on your device. Analytics and crash reports are off by default. With your explicit consent, anonymous crash logs (Sentry) and feature analytics (PostHog) help us improve app stability: never your mood logs, health data, or period entries. No ads. No sale of personal data.
 
 ## 1) What We Collect
 
@@ -36,8 +36,8 @@ Tulaa only requests permissions necessary for local features:
 ## 5) Third-Party Services
 
 When telemetry is enabled, we work exclusively with privacy-first infrastructure:
-* [PostHog](https://posthog.com/privacy) — Opt-in, privacy-centric product analytics.
-* [Sentry](https://sentry.io/privacy) — Opt-in, anonymous application crash diagnosis.
+* [PostHog](https://posthog.com/privacy): Opt-in, privacy-centric product analytics.
+* [Sentry](https://sentry.io/privacy): Opt-in, anonymous application crash diagnosis.
 
 ## 6) Data Retention
 

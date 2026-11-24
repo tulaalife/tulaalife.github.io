@@ -1,8 +1,11 @@
 ---
 import AudioListing from "../../../components/AudioListing.astro";
 import { guidedAudios } from "../../../data/generated";
+import { deprioritizeAumAudios } from "../../../utils/ordering";
 
-const displayAudios = guidedAudios.filter((a) => a.language === "hi");
+const displayAudios = deprioritizeAumAudios(
+    guidedAudios.filter((a) => a.language === "hi"),
+);
 ---
 
 <AudioListing

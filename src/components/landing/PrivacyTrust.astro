@@ -3,59 +3,55 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "No Sign-Up • No Phone Number",
         titleTop: "No Login, No Ads.",
         titleBottom: "100% Private.",
-        desc: "Open Tulaa and start right away. Your health logs stay on your phone and are never shared.",
         pillars: [
             {
                 id: "nosignup",
-                tag: "01 • Instant Start",
+                tag: "01",
                 title: "No Sign-Up or OTP",
-                desc: "Start right away without sharing your email or phone number.",
+                desc: "Start immediately. No email or phone number needed.",
                 tone: "sage",
             },
             {
                 id: "vault",
-                tag: "02 • Local Storage",
+                tag: "02",
                 title: "Stays on Your Phone",
-                desc: "All your health data stays on your device. Export or delete it anytime.",
+                desc: "All health logs stay local. Export or delete anytime.",
                 tone: "warm",
             },
             {
                 id: "calm",
-                tag: "03 • Calm Experience",
+                tag: "03",
                 title: "Zero Ads & 30+ Themes",
-                desc: "No pop-ups, no interruptions, and calm color themes to choose from.",
+                desc: "No pop-ups or distractions, just calm color themes.",
                 tone: "sage",
             },
         ],
     },
     hi: {
-        badge: "कोई साइन-अप नहीं • कोई मोबाइल नंबर नहीं",
         titleTop: "कोई लॉगिन नहीं,",
         titleBottom: "100% सुरक्षित।",
-        desc: "बिना मोबाइल नंबर या ईमेल के तुरंत शुरू करें। आपका सारा डेटा सिर्फ़ आपके फोन में ही रहता है।",
         pillars: [
             {
                 id: "nosignup",
-                tag: "01 • तुरंत शुरुआत",
+                tag: "01",
                 title: "न साइन-अप, न OTP",
-                desc: "बिना फोन नंबर या ईमेल डाले तुरंत योग शुरू करें।",
+                desc: "बिना फोन नंबर या ईमेल डाले तुरंत शुरू करें।",
                 tone: "sage",
             },
             {
                 id: "vault",
-                tag: "02 • लोकल स्टोरेज",
+                tag: "02",
                 title: "डेटा सिर्फ़ आपके फोन में",
-                desc: "आपकी सेहत का सारा रिकॉर्ड फोन में ही रहता है, कभी शेयर नहीं होता।",
+                desc: "आपका रिकॉर्ड फोन में ही रहता है, कभी शेयर नहीं होता।",
                 tone: "warm",
             },
             {
                 id: "calm",
-                tag: "03 • शांत अनुभव",
+                tag: "03",
                 title: "बिना विज्ञापन व 30+ थीम्स",
-                desc: "कोई पॉप-अप नहीं, कोई रुकावट नहीं — बस शांत और आसान अनुभव।",
+                desc: "कोई पॉप-अप नहीं, बस शांत और आसान अनुभव।",
                 tone: "sage",
             },
         ],
@@ -69,12 +65,10 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
     <div class="content-wrapper">
         <div class="container">
             <div class="section-header-left header-content animate-on-scroll">
-                <span class="badge-small">{t.badge}</span>
                 <h2 class="section-title">
                     <span class="title-main">{t.titleTop}</span>{" "}
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
-                <p class="body-text">{t.desc}</p>
             </div>
         </div>
 
@@ -189,7 +183,7 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
         flex-direction: column;
         width: 100%;
         margin: 0 auto;
-        gap: clamp(1.1rem, 3vh, 2rem);
+        gap: clamp(1.4rem, 3.4vh, 2.3rem);
     }
 
     .header-content {

@@ -1,22 +1,21 @@
 ---
 import { guidedAudios } from "../../data/generated";
+import { deprioritizeAumAudios } from "../../utils/ordering";
 
 const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "Breathing • Chants • Sleep Audio",
+        badge: "5-Min Pranayama • Chants • Meditation",
         titleTop: "Calm Your Mind,",
         titleBottom: "Sleep Better.",
-        body: "Unwind in just 5 minutes with guided breathing, peaceful chants, and bedtime sleep audio.",
         play: "Listen Now",
         audioTag: "Guided Audio",
     },
     hi: {
-        badge: "प्राणायाम • मंत्र • नींद के लिए ऑडियो",
+        badge: "5 मिनट प्राणायाम • मंत्र • ध्यान",
         titleTop: "मन को शांत करें,",
         titleBottom: "गहरी नींद सोएं।",
-        body: "सिर्फ़ 5 मिनट में तनाव दूर करें — आसान प्राणायाम, शांत मंत्र और सोने से पहले के रिलैक्सेशन ऑडियो के साथ।",
         play: "अभी सुनें",
         audioTag: "गाइडेड ऑडियो",
     },
@@ -25,9 +24,9 @@ const ui = {
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 const baseAudioHref = currentLang === "hi" ? "/hi/audio" : "/audio";
 
-const displayAudios = guidedAudios
-    .filter((a) => a.language === currentLang)
-    .slice(0, 8);
+const displayAudios = deprioritizeAumAudios(
+    guidedAudios.filter((a) => a.language === currentLang),
+);
 ---
 
 <section id="mind-sleep" class="scroll-section section-mind">
@@ -39,7 +38,6 @@ const displayAudios = guidedAudios
                     {t.titleTop}{" "}
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
-                <p class="body-text">{t.body}</p>
             </div>
         </div>
 
@@ -115,7 +113,7 @@ const displayAudios = guidedAudios
         flex-direction: column;
         width: 100%;
         margin: 0 auto;
-        gap: clamp(0.85rem, 2.2vh, 1.5rem);
+        gap: clamp(1.25rem, 3vh, 2rem);
     }
 
     .text-col {

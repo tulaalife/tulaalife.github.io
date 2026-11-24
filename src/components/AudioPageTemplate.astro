@@ -112,7 +112,7 @@ const canonical = `/audio/${audio.slug}`;
             <footer class="audio-footer">
                 <div class="app-prompt">{t.listen}</div>
                 <div class="button-group">
-                    <StoreButtons />
+                    <StoreButtons appPath={`audio/${audio.slug}`} />
                     <CTAButton
                         href={t.browseLink}
                         label={t.btnBrowse}

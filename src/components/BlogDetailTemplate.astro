@@ -38,8 +38,12 @@ const author = {
             ? "योग थेरेपिस्ट · 12+ वर्षों का अनुभव"
             : "Yoga Therapist · 12+ years experience",
     image: "https://api.tulaa.life/storage/v1/object/public/images/latika_profile.jpg",
-    websiteUrl: "https://yogawithlatika.com",
-    websiteDisplay: "yogawithlatika.com",
+    websiteUrl:
+        lang === "hi"
+            ? "https://yogawithlatika.com/hi/"
+            : "https://yogawithlatika.com/",
+    websiteDisplay:
+        lang === "hi" ? "yogawithlatika.com/hi" : "yogawithlatika.com",
 };
 
 const renderContent = (ops: any[]) => {
@@ -155,7 +159,7 @@ const readingTime = Math.ceil(
 
             <footer class="article-footer">
                 <div class="button-group">
-                    <StoreButtons />
+                    <StoreButtons appPath="blogs" />
                     <CTAButton
                         href={lang === "hi" ? "/hi/blog" : "/blog"}
                         label={t.browse}

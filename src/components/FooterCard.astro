@@ -5,28 +5,16 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "Start Today • 100% Free",
         titleTop: "Your Everyday",
         titleBottom: "Yoga & Wellness App.",
-        subline:
-            "Ease pain naturally, sleep better, and track your health with <strong>Gold Medalist Yoga Therapist Latika Bissa</strong>.",
-        pills: [
-            "✦ 40+ Free Yoga Plans",
-            "✦ Works Offline",
-            "✦ No Login or Ads",
-        ],
+        subline: "Find your balance with <strong>Tulaa</strong>.",
+        pills: ["✦ 100% Free", "✦ Works Offline", "✦ No Login or Ads"],
     },
     hi: {
-        badge: "आज ही शुरू करें • 100% फ्री",
         titleTop: "आपका रोज़ का",
         titleBottom: "योग और सेहत साथी।",
-        subline:
-            "<strong>गोल्ड मेडलिस्ट लतिका बिस्सा</strong> के साथ प्राकृतिक रूप से दर्द से आराम पाएं, अच्छी नींद लें और अपनी सेहत ट्रैक करें।",
-        pills: [
-            "✦ 40+ फ्री योग प्लान",
-            "✦ बिना इंटरनेट चले",
-            "✦ कोई लॉगिन या विज्ञापन नहीं",
-        ],
+        subline: "<strong>Tulaa</strong> के साथ अपना संतुलन पाएं।",
+        pills: ["✦ 100% फ्री", "✦ बिना इंटरनेट चले", "✦ बिना लॉगिन व विज्ञापन"],
     },
 };
 
@@ -50,7 +38,6 @@ const { subline = t.subline } = Astro.props;
                     height="44"
                 />
             </div>
-            <span class="badge-small">{t.badge}</span>
             <h2 class="section-title">
                 <span class="title-main">{t.titleTop}</span>{" "}
                 <span class="text-gradient">{t.titleBottom}</span>

@@ -1,5 +1,4 @@
 ---
-import StoreButtons from "../StoreButtons.astro";
 import { yogaPlans, manualRecommendations } from "../../data/generated";
 import { PLAN_FINDER_BRANCHES } from "../../utils/ui-strings";
 
@@ -80,41 +79,45 @@ const painSubGroups = [
 const ui = {
     en: {
         badge: "100% Free • No Login • No Ads",
-        step1TitleTop: "Get Your Free",
-        step1TitleBottom: "Yoga Plan.",
-        step1Sub:
-            "Pick what you need help with today and get a simple, safe routine.",
+        introTitleTop: "Get Your Free",
+        introTitleBottom: "Yoga Plan.",
+        introSub:
+            "Personalized routines for pain relief, hormones, pregnancy, anxiety & sleep.",
+        startCta: "Find My Yoga Plan",
+        downloadCta: "Download App",
+        step1TitleTop: "What do you need",
+        step1TitleBottom: "help with today?",
         painRegionTitleTop: "Which body area",
         painRegionTitleBottom: "needs relief?",
-        step3TitleTop: "Your Free Yoga",
-        step3TitleBottom: "Plan is Ready.",
-        backToStep1: "← Change focus area",
+        step3TitleTop: "Your Plan is",
+        step3TitleBottom: "Ready.",
+        backToIntro: "← Back",
+        backToStep1: "← Change focus",
         backToRegion: "← Change body area",
         backToStep2: "← Change selection",
         startOver: "Start over",
-        permanentMeta: "Beginner Safe • 3–5x / Week",
-        footerPromptPrefix: "Tap an option above to",
-        footerPromptHighlight: "get your free yoga plan",
-        step3FooterNote: "Easy step-by-step video routines in the Tulaa app",
+        resultCta: "Start in Tulaa App",
     },
     hi: {
         badge: "100% फ्री • बिना लॉगिन • बिना विज्ञापन",
-        step1TitleTop: "अपना फ्री",
-        step1TitleBottom: "योग प्लान पाएं।",
-        step1Sub:
-            "आज आपको किस चीज़ में आराम चाहिए? नीचे चुनें और अपना आसान योग रूटीन पाएं।",
+        introTitleTop: "अपना फ्री",
+        introTitleBottom: "योग प्लान पाएं।",
+        introSub:
+            "दर्द से राहत, हार्मोन संतुलन, प्रेगनेंसी, नींद और शांत मन के लिए आसान योग।",
+        startCta: "अपना योग प्लान चुनें",
+        downloadCta: "ऐप डाउनलोड करें",
+        step1TitleTop: "आज आपको किस चीज़ में",
+        step1TitleBottom: "आराम चाहिए?",
         painRegionTitleTop: "शरीर के किस हिस्से में",
         painRegionTitleBottom: "राहत चाहिए?",
-        step3TitleTop: "आपका फ्री योग",
-        step3TitleBottom: "प्लान तैयार है।",
-        backToStep1: "← मुख्य विकल्प बदलें",
+        step3TitleTop: "आपका प्लान",
+        step3TitleBottom: "तैयार है।",
+        backToIntro: "← वापस",
+        backToStep1: "← विकल्प बदलें",
         backToRegion: "← शरीर का हिस्सा बदलें",
         backToStep2: "← विकल्प बदलें",
         startOver: "फिर से चुनें",
-        permanentMeta: "शुरुआती के लिए आसान • हफ्ते में 3–5 दिन",
-        footerPromptPrefix: "ऊपर एक विकल्प चुनें और",
-        footerPromptHighlight: "अपना फ्री योग प्लान पाएं",
-        step3FooterNote: "Tulaa ऐप में आसान स्टेप-बाय-स्टेप वीडियो अभ्यास",
+        resultCta: "Tulaa ऐप में शुरू करें",
     },
 };
 
@@ -138,7 +141,6 @@ const clientPlansMap: Record<
         id: string;
         slug: string;
         title: string;
-        subtitle: string;
         benefits: string[];
         image: string;
         href: string;
@@ -157,7 +159,6 @@ Object.values(planById).forEach((p) => {
         id: p.id,
         slug: p.slug,
         title: p.title,
-        subtitle: p.subtitle,
         benefits: benefitsArr,
         image: p.image,
         href: `${basePlanHref}/${p.slug}`,
@@ -177,28 +178,68 @@ const initialPrimary = defaultPlanIds[0]
     <div class="ambient-orb orb-1" aria-hidden="true"></div>
     <div class="ambient-orb orb-2" aria-hidden="true"></div>
 
-    <div class="container hero-centered-shell">
-        <div class="hero-intro">
-            <span class="badge-small">{t.badge}</span>
+    <div class="container hero-centered-shell" id="hero-shell">
+        <div class="hero-intro" id="hero-intro">
+            <span class="badge-small" id="hero-badge">
+                {t.badge}
+            </span>
             <h1 class="hero-title" lang={currentLang} id="dynamic-hero-title">
-                <span id="hero-title-top">{t.step1TitleTop}</span>{" "}
+                <span id="hero-title-top">{t.introTitleTop}</span>{" "}
                 <span class="text-gradient" id="hero-title-bottom">
-                    {t.step1TitleBottom}
+                    {t.introTitleBottom}
                 </span>
             </h1>
-            <p class="hero-sub body-text" id="hero-step1-sub">
-                {t.step1Sub}
+            <p class="hero-sub body-text" id="hero-intro-sub">
+                {t.introSub}
             </p>
         </div>
 
+        <!-- Clean Landing CTAs (default view) -->
+        <div class="hero-landing-actions" id="hero-landing-actions">
+            <button
+                type="button"
+                class="hero-cta-primary"
+                id="start-finder-btn"
+            >
+                <span>{t.startCta}</span>
+                <span class="cta-arrow" aria-hidden="true">
+                    <svg
+                        viewBox="0 0 24 24"
+                        width="16"
+                        height="16"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2.3"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    >
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </span>
+            </button>
+
+            <button
+                type="button"
+                class="hero-cta-secondary"
+                id="hero-download-btn"
+            >
+                <span>{t.downloadCta}</span>
+            </button>
+        </div>
+
+        <!-- Interactive Questionnaire Card (revealed on CTA click) -->
         <div
             class="dialogue-card premium-gloss-surface"
             id="plan-finder-app"
+            hidden
             data-overrides={JSON.stringify(overrides)}
             data-plans={JSON.stringify(clientPlansMap)}
             data-branches={JSON.stringify(PLAN_FINDER_BRANCHES)}
             data-pain-groups={JSON.stringify(painSubGroups)}
             data-lang={currentLang}
+            data-intro-top={t.introTitleTop}
+            data-intro-bottom={t.introTitleBottom}
             data-step1-top={t.step1TitleTop}
             data-step1-bottom={t.step1TitleBottom}
             data-pain-top={t.painRegionTitleTop}
@@ -216,11 +257,21 @@ const initialPrimary = defaultPlanIds[0]
 
             <!-- STEP 1: Pick 1 of 4 Focus Areas -->
             <div class="wizard-step active" id="wizard-step-1">
+                <div class="step-topbar">
+                    <button
+                        type="button"
+                        class="back-step-btn"
+                        id="back-to-intro"
+                    >
+                        {t.backToIntro}
+                    </button>
+                </div>
                 <div class="branch-list-vertical">
-                    {PLAN_FINDER_BRANCHES.map((branch) => (
+                    {PLAN_FINDER_BRANCHES.map((branch, idx) => (
                         <button
                             type="button"
                             class="branch-choice"
+                            style={`--stagger-idx: ${idx}`}
                             data-branch-id={branch.id}
                         >
                             <div
@@ -391,10 +442,11 @@ const initialPrimary = defaultPlanIds[0]
                     </button>
                 </div>
                 <div class="branch-list-vertical">
-                    {painSubGroups.map((rg) => (
+                    {painSubGroups.map((rg, idx) => (
                         <button
                             type="button"
                             class="branch-choice region-choice"
+                            style={`--stagger-idx: ${idx}`}
                             data-region-id={rg.id}
                         >
                             <div class="branch-icon-badge" aria-hidden="true">
@@ -508,10 +560,11 @@ const initialPrimary = defaultPlanIds[0]
                     </button>
                 </div>
                 <div class="sub-pills-wrap" id="finder-sub-options">
-                    {defaultBranch.options.slice(0, 6).map((opt) => (
+                    {defaultBranch.options.slice(0, 6).map((opt, idx) => (
                         <button
                             type="button"
                             class="sub-choice-pill"
+                            style={`--stagger-idx: ${idx}`}
                             data-override-key={opt.key}
                         >
                             <span>
@@ -525,7 +578,7 @@ const initialPrimary = defaultPlanIds[0]
                 </div>
             </div>
 
-            <!-- STEP 3: Clean Personalized Result Card -->
+            <!-- STEP 3: Compact, High-Conversion Result Card -->
             {initialPrimary && (
                 <div class="wizard-step" id="wizard-step-3" hidden>
                     <div class="step-topbar">
@@ -546,7 +599,11 @@ const initialPrimary = defaultPlanIds[0]
                     </div>
 
                     <div class="result-spotlight">
-                        <div class="result-visual themed-media">
+                        <a
+                            href={initialPrimary.href}
+                            class="result-visual themed-media"
+                            id="rec-visual-link"
+                        >
                             <img
                                 id="rec-img"
                                 src={initialPrimary.image}
@@ -555,20 +612,12 @@ const initialPrimary = defaultPlanIds[0]
                                 height="320"
                                 loading="eager"
                             />
-                        </div>
+                        </a>
 
                         <div class="result-info">
-                            <span class="permanent-meta-pill">
-                                ✦ {t.permanentMeta}
-                            </span>
-
                             <h2 class="result-title" id="rec-title">
                                 {initialPrimary.title}
                             </h2>
-
-                            <p class="result-subtitle" id="rec-subtitle">
-                                {initialPrimary.subtitle}
-                            </p>
 
                             <ul class="result-highlights" id="rec-benefits">
                                 {initialPrimary.benefits.map((b) => (
@@ -577,38 +626,49 @@ const initialPrimary = defaultPlanIds[0]
                             </ul>
 
                             <div class="result-actions-row">
-                                <StoreButtons compact={true} />
+                                <button
+                                    type="button"
+                                    class="result-app-cta"
+                                    id="rec-app-cta"
+                                    data-app-path={`yoga/${initialPrimary.slug}`}
+                                >
+                                    <span>{t.resultCta}</span>
+                                    <span class="cta-arrow" aria-hidden="true">
+                                        <svg
+                                            viewBox="0 0 24 24"
+                                            width="15"
+                                            height="15"
+                                            fill="none"
+                                            stroke="currentColor"
+                                            stroke-width="2.3"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        >
+                                            <path d="M5 12h14"></path>
+                                            <path d="m12 5 7 7-7 7"></path>
+                                        </svg>
+                                    </span>
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             )}
-
-            <!-- Card Footer Strip -->
-            <div class="card-footer-strip">
-                <p class="footer-prompt-text" id="footer-question-prompt">
-                    <span class="sparkle-icon" aria-hidden="true">
-                        ✦
-                    </span>
-                    <span>{t.footerPromptPrefix}</span>{" "}
-                    <strong class="text-gradient">
-                        {t.footerPromptHighlight}
-                    </strong>
-                </p>
-                <p class="footer-step3-text" id="footer-step3-note" hidden>
-                    <span>{t.step3FooterNote}</span>
-                </p>
-            </div>
         </div>
     </div>
 </section>
 
 <script>
     document.addEventListener("astro:page-load", () => {
+        const heroSection = document.getElementById("hero");
+        const heroShell = document.getElementById("hero-shell");
         const root = document.getElementById("plan-finder-app");
-        if (!root) return;
+        const landingActions = document.getElementById("hero-landing-actions");
+        const startBtn = document.getElementById("start-finder-btn");
+        const heroDownloadBtn = document.getElementById("hero-download-btn");
+        if (!root || !heroSection) return;
 
-        const STORAGE_KEY = "tulaa-finder-state-v2";
+        const STORAGE_KEY = "tulaa-finder-state-v3";
 
         const overrides = JSON.parse(
             root.getAttribute("data-overrides") || "{}",
@@ -620,6 +680,8 @@ const initialPrimary = defaultPlanIds[0]
         );
         const lang = root.getAttribute("data-lang") || "en";
 
+        const introTop = root.getAttribute("data-intro-top") || "";
+        const introBottom = root.getAttribute("data-intro-bottom") || "";
         const step1Top = root.getAttribute("data-step1-top") || "";
         const step1Bottom = root.getAttribute("data-step1-bottom") || "";
         const painTop = root.getAttribute("data-pain-top") || "";
@@ -629,9 +691,11 @@ const initialPrimary = defaultPlanIds[0]
         const backStep1Label = root.getAttribute("data-back-step1") || "";
         const backRegionLabel = root.getAttribute("data-back-region") || "";
 
+        const heroBadge = document.getElementById("hero-badge");
+        const heroTitleEl = document.getElementById("dynamic-hero-title");
         const titleTopEl = document.getElementById("hero-title-top");
         const titleBottomEl = document.getElementById("hero-title-bottom");
-        const step1SubEl = document.getElementById("hero-step1-sub");
+        const introSubEl = document.getElementById("hero-intro-sub");
 
         const step1 = document.getElementById("wizard-step-1");
         const stepRegion = document.getElementById("wizard-step-region");
@@ -641,30 +705,52 @@ const initialPrimary = defaultPlanIds[0]
         const backToStep2Btn = document.getElementById("back-to-step-2");
         const dots = root.querySelectorAll(".step-dot");
 
-        const footerQuestionPrompt = document.getElementById(
-            "footer-question-prompt",
-        );
-        const footerStep3Note = document.getElementById("footer-step3-note");
-
         const subOptionsContainer =
             document.getElementById("finder-sub-options");
 
+        const recVisualLink = document.getElementById(
+            "rec-visual-link",
+        ) as HTMLAnchorElement | null;
         const recImg = document.getElementById(
             "rec-img",
         ) as HTMLImageElement | null;
         const recTitle = document.getElementById("rec-title");
-        const recSubtitle = document.getElementById("rec-subtitle");
         const recBenefits = document.getElementById("rec-benefits");
+        const recAppCta = document.getElementById("rec-app-cta");
 
+        type ViewState = "intro" | "step1" | "region" | "step2" | "step3";
+        const viewOrder: Record<ViewState, number> = {
+            intro: 0,
+            step1: 1,
+            region: 2,
+            step2: 3,
+            step3: 4,
+        };
+
+        let currentView: ViewState = "intro";
         let currentBranch: any = branches[0];
         let currentRegion: any = null;
         let currentOverrideKey: string = "";
         let jumpedDirectlyFromRegion = false;
 
-        function saveFinderState(
-            view: "step1" | "region" | "step2" | "step3",
-            pushHistory = true,
-        ) {
+        function animateTitleSwap(top: string, bottom: string) {
+            if (!titleTopEl || !titleBottomEl) return;
+            if (
+                titleTopEl.textContent === top &&
+                titleBottomEl.textContent === bottom
+            ) {
+                return;
+            }
+            titleTopEl.textContent = top;
+            titleBottomEl.textContent = bottom;
+            if (heroTitleEl) {
+                heroTitleEl.classList.remove("is-title-anim");
+                void heroTitleEl.offsetWidth;
+                heroTitleEl.classList.add("is-title-anim");
+            }
+        }
+
+        function saveFinderState(view: ViewState, pushHistory = true) {
             const stateObj = {
                 view,
                 branchId: currentBranch?.id || null,
@@ -683,10 +769,42 @@ const initialPrimary = defaultPlanIds[0]
             }
         }
 
-        function setView(
-            view: "step1" | "region" | "step2" | "step3",
-            pushHistory = true,
+        let isTransitioning = false;
+
+        function applyViewDOM(
+            view: ViewState,
+            isForward: boolean,
+            animateInnerStep: boolean,
+            pushHistory: boolean,
         ) {
+            currentView = view;
+
+            const isIntro = view === "intro";
+            const isResult = view === "step3";
+
+            heroSection?.classList.toggle("is-wizard-active", !isIntro);
+            heroSection?.classList.toggle("is-result-view", isResult);
+
+            if (landingActions) {
+                landingActions.hidden = !isIntro;
+            }
+            if (heroBadge) {
+                heroBadge.hidden = !isIntro;
+            }
+            if (introSubEl) {
+                introSubEl.hidden = !isIntro;
+            }
+            if (root) {
+                root.hidden = isIntro;
+            }
+
+            if (isIntro) {
+                if (titleTopEl) titleTopEl.textContent = introTop;
+                if (titleBottomEl) titleBottomEl.textContent = introBottom;
+                saveFinderState("intro", pushHistory);
+                return;
+            }
+
             const map: Record<string, HTMLElement | null> = {
                 step1,
                 region: stepRegion,
@@ -697,7 +815,18 @@ const initialPrimary = defaultPlanIds[0]
                 if (!el) return;
                 const isCurrent = k === view;
                 el.hidden = !isCurrent;
-                el.classList.toggle("active", isCurrent);
+                el.classList.remove("active", "dir-forward", "dir-back");
+                if (isCurrent) {
+                    if (animateInnerStep) {
+                        void el.offsetWidth;
+                        el.classList.add(
+                            "active",
+                            isForward ? "dir-forward" : "dir-back",
+                        );
+                    } else {
+                        el.classList.add("active");
+                    }
+                }
             });
 
             const dotLevel =
@@ -710,60 +839,74 @@ const initialPrimary = defaultPlanIds[0]
                 dot.classList.toggle("active", idx + 1 <= dotLevel);
             });
 
-            const isFinalStep = view === "step3";
-            if (footerQuestionPrompt) footerQuestionPrompt.hidden = isFinalStep;
-            if (footerStep3Note) footerStep3Note.hidden = !isFinalStep;
+            const setHeading = (top: string, bottom: string) => {
+                if (animateInnerStep) {
+                    animateTitleSwap(top, bottom);
+                } else {
+                    if (titleTopEl) titleTopEl.textContent = top;
+                    if (titleBottomEl) titleBottomEl.textContent = bottom;
+                }
+            };
 
             if (view === "step1") {
-                if (titleTopEl) titleTopEl.textContent = step1Top;
-                if (titleBottomEl) titleBottomEl.textContent = step1Bottom;
-                if (step1SubEl) step1SubEl.hidden = false;
+                setHeading(step1Top, step1Bottom);
             } else if (view === "region") {
-                if (titleTopEl) titleTopEl.textContent = painTop;
-                if (titleBottomEl) titleBottomEl.textContent = painBottom;
-                if (step1SubEl) step1SubEl.hidden = true;
+                setHeading(painTop, painBottom);
             } else if (view === "step2") {
                 if (currentBranch?.id === "pain" && currentRegion) {
-                    if (titleTopEl) {
-                        titleTopEl.textContent =
-                            lang === "hi"
-                                ? currentRegion.hiTitleTop
-                                : currentRegion.enTitleTop;
-                    }
-                    if (titleBottomEl) {
-                        titleBottomEl.textContent =
-                            lang === "hi"
-                                ? currentRegion.hiTitleBottom
-                                : currentRegion.enTitleBottom;
-                    }
+                    setHeading(
+                        lang === "hi"
+                            ? currentRegion.hiTitleTop
+                            : currentRegion.enTitleTop,
+                        lang === "hi"
+                            ? currentRegion.hiTitleBottom
+                            : currentRegion.enTitleBottom,
+                    );
                     if (backToStep1Btn) {
                         backToStep1Btn.textContent = backRegionLabel;
                     }
                 } else if (currentBranch) {
-                    if (titleTopEl) {
-                        titleTopEl.textContent =
-                            lang === "hi"
-                                ? currentBranch.hiTitleTop
-                                : currentBranch.enTitleTop;
-                    }
-                    if (titleBottomEl) {
-                        titleBottomEl.textContent =
-                            lang === "hi"
-                                ? currentBranch.hiTitleBottom
-                                : currentBranch.enTitleBottom;
-                    }
+                    setHeading(
+                        lang === "hi"
+                            ? currentBranch.hiTitleTop
+                            : currentBranch.enTitleTop,
+                        lang === "hi"
+                            ? currentBranch.hiTitleBottom
+                            : currentBranch.enTitleBottom,
+                    );
                     if (backToStep1Btn) {
                         backToStep1Btn.textContent = backStep1Label;
                     }
                 }
-                if (step1SubEl) step1SubEl.hidden = true;
             } else if (view === "step3") {
-                if (titleTopEl) titleTopEl.textContent = step3Top;
-                if (titleBottomEl) titleBottomEl.textContent = step3Bottom;
-                if (step1SubEl) step1SubEl.hidden = true;
+                setHeading(step3Top, step3Bottom);
             }
 
             saveFinderState(view, pushHistory);
+        }
+
+        function setView(view: ViewState, pushHistory = true) {
+            const prevView = currentView;
+            const isForward = viewOrder[view] >= viewOrder[prevView];
+            const crossesIntro =
+                (prevView === "intro" && view !== "intro") ||
+                (prevView !== "intro" && view === "intro");
+
+            if (crossesIntro && heroShell && pushHistory) {
+                if (isTransitioning) return;
+                isTransitioning = true;
+                heroShell.classList.add("is-fading-out");
+                window.setTimeout(() => {
+                    applyViewDOM(view, isForward, false, pushHistory);
+                    requestAnimationFrame(() => {
+                        heroShell.classList.remove("is-fading-out");
+                        isTransitioning = false;
+                    });
+                }, 180);
+                return;
+            }
+
+            applyViewDOM(view, isForward, !crossesIntro, pushHistory);
         }
 
         function renderRecommendation(overrideKey: string, pushHistory = true) {
@@ -774,15 +917,12 @@ const initialPrimary = defaultPlanIds[0]
             currentOverrideKey = overrideKey;
             const primary = matchedPlans[0];
 
+            if (recVisualLink) recVisualLink.href = primary.href;
             if (recImg) {
                 recImg.src = primary.image;
                 recImg.alt = primary.title;
             }
-            if (recTitle) {
-                recTitle.textContent = primary.title;
-            }
-            if (recSubtitle) recSubtitle.textContent = primary.subtitle;
-
+            if (recTitle) recTitle.textContent = primary.title;
             if (recBenefits) {
                 recBenefits.innerHTML = "";
                 (primary.benefits || []).slice(0, 2).forEach((b: string) => {
@@ -790,6 +930,9 @@ const initialPrimary = defaultPlanIds[0]
                     li.textContent = b;
                     recBenefits.appendChild(li);
                 });
+            }
+            if (recAppCta) {
+                recAppCta.setAttribute("data-app-path", `yoga/${primary.slug}`);
             }
 
             setView("step3", pushHistory);
@@ -801,10 +944,11 @@ const initialPrimary = defaultPlanIds[0]
             const isVertical = optionsList.length <= 4;
             subOptionsContainer.classList.toggle("is-vertical", isVertical);
 
-            optionsList.forEach((opt: any) => {
+            optionsList.forEach((opt: any, idx: number) => {
                 const pill = document.createElement("button");
                 pill.type = "button";
                 pill.className = "sub-choice-pill";
+                pill.style.setProperty("--stagger-idx", String(idx));
                 pill.setAttribute("data-override-key", opt.key);
 
                 const labelSpan = document.createElement("span");
@@ -829,6 +973,10 @@ const initialPrimary = defaultPlanIds[0]
 
         function applySavedState(saved: any) {
             if (!saved || !saved.view) return;
+            if (saved.view === "intro") {
+                setView("intro", false);
+                return;
+            }
             if (saved.branchId) {
                 const b = branches.find((x: any) => x.id === saved.branchId);
                 if (b) currentBranch = b;
@@ -856,6 +1004,25 @@ const initialPrimary = defaultPlanIds[0]
                 setView(saved.view, false);
             }
         }
+
+        startBtn?.addEventListener("click", () => {
+            setView("step1", true);
+        });
+
+        heroDownloadBtn?.addEventListener("click", () => {
+            window.openTulaaApp();
+        });
+
+        recAppCta?.addEventListener("click", () => {
+            const appPath = recAppCta.getAttribute("data-app-path") || "";
+            window.openTulaaApp({ appPath });
+        });
+
+        document
+            .getElementById("back-to-intro")
+            ?.addEventListener("click", () => {
+                setView("intro", true);
+            });
 
         root.querySelectorAll("#wizard-step-1 .branch-choice").forEach(
             (btn) => {
@@ -938,11 +1105,14 @@ const initialPrimary = defaultPlanIds[0]
             }
         });
 
+        // Restore wizard state only if user navigated back from a plan detail page
         try {
+            const wasInternalNav =
+                sessionStorage.getItem("tulaa-internal-nav") === "1";
             const raw = sessionStorage.getItem(STORAGE_KEY);
-            if (raw) {
+            if (wasInternalNav && raw) {
                 const parsed = JSON.parse(raw);
-                if (parsed && parsed.view && parsed.view !== "step1") {
+                if (parsed && parsed.view && parsed.view !== "intro") {
                     applySavedState(parsed);
                 }
             }
@@ -990,45 +1160,226 @@ const initialPrimary = defaultPlanIds[0]
         flex-direction: column;
         align-items: center;
         text-align: center;
-        gap: clamp(1rem, 2.4vh, 1.65rem);
+        gap: clamp(1.5rem, 3.6vh, 2.4rem);
+        opacity: 1;
+        transform: translateY(0);
+        transition:
+            opacity 0.36s cubic-bezier(0.22, 1, 0.36, 1),
+            transform 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+        will-change: opacity, transform;
+    }
+
+    .hero-centered-shell.is-fading-out {
+        opacity: 0;
+        transform: translateY(-6px);
+        transition:
+            opacity 0.18s ease,
+            transform 0.18s ease;
+        pointer-events: none;
     }
 
     .hero-intro {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 8px;
-        max-width: 640px;
+        gap: 16px;
+        max-width: 680px;
         width: 100%;
     }
 
+    #hero-badge[hidden] {
+        display: none !important;
+    }
+
     .hero-title {
-        font-size: clamp(1.85rem, 4.4vw, 3.15rem);
-        line-height: 1.1;
-        letter-spacing: -0.03em;
+        font-size: clamp(2.85rem, 6.8vw, 4.75rem);
+        line-height: 1.08;
+        letter-spacing: -0.035em;
+    }
+
+    :global(:lang(hi)) .hero-title {
+        line-height: 1.34;
+        letter-spacing: 0;
+        padding-top: 0.08em;
+    }
+
+    .hero-conversational.is-wizard-active .hero-centered-shell {
+        gap: clamp(0.75rem, 1.8vh, 1.25rem);
+    }
+
+    .hero-conversational.is-wizard-active .hero-title {
+        font-size: clamp(1.65rem, 3.4vw, 2.45rem);
+        line-height: 1.14;
+    }
+
+    :global(:lang(hi)) .hero-conversational.is-wizard-active .hero-title {
+        line-height: 1.28;
+    }
+
+    .hero-title.is-title-anim {
+        animation: titleSwap 0.48s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes titleSwap {
+        from {
+            opacity: 0;
+            transform: translateY(7px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .hero-sub {
-        font-size: clamp(0.92rem, 1.5vw, 1.04rem);
+        font-size: clamp(1rem, 1.8vw, 1.18rem);
         color: var(--text-muted);
-        line-height: 1.5;
+        line-height: 1.55;
+        max-width: 46ch;
     }
 
     .hero-sub[hidden] {
         display: none !important;
     }
 
+    /* Clean Landing Dual CTAs */
+    .hero-landing-actions {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 14px;
+        margin-top: 8px;
+    }
+
+    .hero-landing-actions[hidden] {
+        display: none !important;
+    }
+
+    .hero-landing-actions.is-entering {
+        animation: fadeSlideUp 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hero-cta-primary,
+    .hero-cta-secondary,
+    .result-app-cta {
+        height: 52px;
+        border-radius: 999px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding: 0 28px;
+        font-family: inherit;
+        font-size: 0.98rem;
+        font-weight: 700;
+        letter-spacing: -0.01em;
+        cursor: pointer;
+        white-space: nowrap;
+        transition:
+            transform 0.22s cubic-bezier(0.16, 1, 0.3, 1),
+            box-shadow 0.22s ease,
+            border-color 0.22s ease,
+            background-color 0.22s ease;
+    }
+
+    .hero-cta-primary,
+    .result-app-cta {
+        background: var(--primary);
+        color: #ffffff;
+        border: 1px solid color-mix(in srgb, var(--primary) 85%, #ffffff 15%);
+        box-shadow: 0 10px 24px -6px var(--primary-glow);
+    }
+
+    :global([data-theme="dark"]) .hero-cta-primary,
+    :global([data-theme="dark"]) .result-app-cta {
+        color: oklch(14% 0.02 155);
+    }
+
+    .hero-cta-primary:hover,
+    .result-app-cta:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 28px -6px var(--primary-glow);
+    }
+
+    .hero-cta-primary:active,
+    .result-app-cta:active {
+        transform: scale(0.98);
+    }
+
+    .hero-cta-primary .cta-arrow,
+    .result-app-cta .cta-arrow {
+        display: inline-flex;
+        align-items: center;
+        transition: transform 0.2s ease;
+    }
+
+    .hero-cta-primary:hover .cta-arrow,
+    .result-app-cta:hover .cta-arrow {
+        transform: translateX(3px);
+    }
+
+    .hero-cta-secondary {
+        background: var(--bg-card-inner);
+        color: var(--text-main);
+        border: 1px solid var(--border-strong);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+    }
+
+    .hero-cta-secondary:hover {
+        transform: translateY(-2px);
+        border-color: var(--primary);
+        color: var(--primary);
+        background: var(--bg-card-hover);
+    }
+
+    .hero-cta-secondary:active {
+        transform: scale(0.98);
+    }
+
+    /* Questionnaire Dialogue Card */
     .dialogue-card {
         width: 100%;
         max-width: 100%;
         box-sizing: border-box;
         overflow: hidden;
         border-radius: var(--radius-lg);
-        padding: clamp(1.25rem, 2.8vw, 2rem);
+        padding: clamp(1rem, 2.2vh, 1.6rem) clamp(1.15rem, 2.6vw, 1.9rem);
         display: flex;
         flex-direction: column;
-        gap: 16px;
+        gap: clamp(10px, 1.8vh, 16px);
         text-align: left;
+    }
+
+    .dialogue-card[hidden] {
+        display: none !important;
+    }
+
+    .dialogue-card.card-enter {
+        animation: cardReveal 0.56s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    @keyframes cardReveal {
+        from {
+            opacity: 0;
+            transform: translateY(14px) scale(0.99);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes fadeSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .step-dots {
@@ -1039,48 +1390,69 @@ const initialPrimary = defaultPlanIds[0]
     }
 
     .step-dot {
-        width: 5px;
-        height: 5px;
+        width: 6px;
+        height: 6px;
         border-radius: 99px;
         background: var(--text-muted);
         opacity: 0.25;
-        transition: all 0.3s ease;
+        transition:
+            width 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+            background-color 0.38s ease,
+            opacity 0.38s ease;
     }
 
     .step-dot.active {
         background: var(--primary);
-        opacity: 0.72;
-        width: 14px;
+        opacity: 0.85;
+        width: 18px;
     }
 
     .wizard-step {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 14px;
         width: 100%;
         min-width: 0;
-        animation: fadeSlideIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .wizard-step.dir-forward {
+        animation: stepForward 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .wizard-step.dir-back {
+        animation: stepBack 0.5s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .wizard-step[hidden] {
         display: none !important;
     }
 
-    @keyframes fadeSlideIn {
+    @keyframes stepForward {
         from {
             opacity: 0;
-            transform: translateY(6px);
+            transform: translateX(10px);
         }
         to {
             opacity: 1;
-            transform: translateY(0);
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes stepBack {
+        from {
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
         }
     }
 
     .branch-list-vertical {
         display: flex;
         flex-direction: column;
-        gap: 11px;
+        gap: clamp(8px, 1.4vh, 11px);
         width: 100%;
         min-width: 0;
     }
@@ -1089,7 +1461,7 @@ const initialPrimary = defaultPlanIds[0]
         display: flex;
         align-items: center;
         gap: 14px;
-        padding: 13px 16px;
+        padding: clamp(10px, 1.6vh, 13px) 16px;
         width: 100%;
         min-width: 0;
         max-width: 100%;
@@ -1101,10 +1473,27 @@ const initialPrimary = defaultPlanIds[0]
         font-family: inherit;
         text-align: left;
         transition:
-            transform 0.2s cubic-bezier(0.16, 1, 0.3, 1),
-            border-color 0.2s ease,
-            background-color 0.2s ease,
-            box-shadow 0.2s ease;
+            transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+            border-color 0.25s ease,
+            background-color 0.25s ease,
+            box-shadow 0.25s ease;
+    }
+
+    .wizard-step.dir-forward .branch-choice,
+    .wizard-step.dir-back .branch-choice {
+        animation: itemStagger 0.48s cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-delay: calc(var(--stagger-idx, 0) * 55ms);
+    }
+
+    @keyframes itemStagger {
+        from {
+            opacity: 0;
+            transform: translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .branch-choice:hover {
@@ -1112,6 +1501,10 @@ const initialPrimary = defaultPlanIds[0]
         background: var(--bg-card-hover);
         border-color: var(--primary);
         box-shadow: var(--shadow-sm);
+    }
+
+    .branch-choice:active {
+        transform: scale(0.985);
     }
 
     .branch-icon-badge {
@@ -1187,7 +1580,7 @@ const initialPrimary = defaultPlanIds[0]
         border: none;
         padding: 2px 0;
         font-family: inherit;
-        font-size: 0.86rem;
+        font-size: 0.85rem;
         font-weight: 650;
         color: var(--text-muted);
         cursor: pointer;
@@ -1229,6 +1622,8 @@ const initialPrimary = defaultPlanIds[0]
         width: 100%;
         min-width: 0;
         box-sizing: border-box;
+        animation: itemStagger 0.44s cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-delay: calc(var(--stagger-idx, 0) * 48ms);
         transition:
             transform 0.16s ease,
             background-color 0.16s ease,
@@ -1256,17 +1651,21 @@ const initialPrimary = defaultPlanIds[0]
         box-shadow: var(--shadow-sm);
     }
 
+    :global(.sub-choice-pill:active) {
+        transform: scale(0.98);
+    }
+
     :global(.sub-choice-pill:hover .pill-arrow) {
         transform: translateX(3px);
     }
 
-    /* Step 3 Result Spotlight */
+    /* Step 3 Compact Result Spotlight */
     .result-spotlight {
         display: grid;
-        grid-template-columns: 245px minmax(0, 1fr);
-        gap: 24px;
+        grid-template-columns: 240px minmax(0, 1fr);
+        gap: 22px;
         align-items: center;
-        padding: 18px;
+        padding: 16px;
         border-radius: var(--radius-md);
         background: var(--bg-card-inner);
         border: 1px solid var(--border);
@@ -1291,47 +1690,28 @@ const initialPrimary = defaultPlanIds[0]
         height: 100%;
         object-fit: cover;
         display: block;
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .result-visual:hover img {
+        transform: scale(1.04);
     }
 
     .result-info {
         display: flex;
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 10px;
         min-width: 0;
     }
 
-    .permanent-meta-pill {
-        display: inline-flex;
-        align-items: center;
-        padding: 4px 11px;
-        border-radius: 999px;
-        background: var(--primary-soft);
-        color: var(--primary);
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
-        border: 1px solid color-mix(in srgb, var(--primary) 24%, transparent);
-    }
-
     .result-title {
-        font-size: clamp(1.38rem, 2.5vw, 1.8rem);
+        font-size: clamp(1.35rem, 2.5vw, 1.75rem);
         font-weight: 750;
         letter-spacing: -0.02em;
         line-height: 1.18;
         color: var(--text-main);
         margin: 0;
-    }
-
-    .result-subtitle {
-        font-size: 0.96rem;
-        color: var(--text-muted);
-        margin: 0;
-        line-height: 1.45;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
     }
 
     .result-highlights {
@@ -1364,72 +1744,63 @@ const initialPrimary = defaultPlanIds[0]
     .result-actions-row {
         display: flex;
         align-items: center;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-top: 6px;
+        margin-top: 4px;
         width: 100%;
     }
 
-    .result-actions-row :global(.store-buttons) {
-        width: auto;
-    }
-
-    /* Card Footer Strip */
-    .card-footer-strip {
-        padding-top: 12px;
-        border-top: 1px solid var(--border);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        text-align: center;
-    }
-
-    .footer-prompt-text,
-    .footer-step3-text {
-        margin: 0;
-        font-size: 0.85rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap;
-        gap: 5px;
-        line-height: 1.35;
-    }
-
-    .footer-prompt-text[hidden],
-    .footer-step3-text[hidden] {
-        display: none !important;
-    }
-
-    .footer-prompt-text strong {
-        font-weight: 750;
-    }
-
-    .sparkle-icon {
-        color: var(--primary);
-        font-size: 0.8rem;
+    .result-app-cta {
+        height: 46px;
+        padding: 0 22px;
+        font-size: 0.92rem;
     }
 
     @media (max-width: 680px) {
         .hero-centered-shell {
-            gap: 0.7rem;
+            gap: 1.35rem;
+            max-height: calc(100dvh - var(--header-height) - 20px);
+        }
+
+        .hero-conversational.is-wizard-active .hero-centered-shell {
+            gap: 0.95rem;
+        }
+
+        .hero-intro {
+            gap: 12px;
         }
 
         .hero-title {
-            font-size: clamp(1.5rem, 5.8vw, 1.95rem);
-            line-height: 1.12;
+            font-size: clamp(2.45rem, 10vw, 3.15rem);
+            line-height: 1.08;
+        }
+
+        .hero-conversational.is-wizard-active .hero-title {
+            font-size: clamp(1.45rem, 5.8vw, 1.9rem);
+            line-height: 1.15;
         }
 
         .hero-sub {
-            font-size: 0.85rem;
-            line-height: 1.4;
+            font-size: 0.94rem;
+            line-height: 1.5;
+        }
+
+        .hero-landing-actions {
+            width: 100%;
+            flex-direction: column;
+            gap: 12px;
+            max-width: 300px;
+            margin-top: 6px;
+        }
+
+        .hero-cta-primary,
+        .hero-cta-secondary {
+            width: 100%;
+            height: 50px;
+            font-size: 0.95rem;
         }
 
         .dialogue-card {
-            padding: 14px 12px;
-            gap: 10px;
+            padding: 16px 14px;
+            gap: 12px;
             border-radius: 20px;
         }
 
@@ -1438,12 +1809,12 @@ const initialPrimary = defaultPlanIds[0]
         }
 
         .branch-list-vertical {
-            gap: 8px;
+            gap: 10px;
         }
 
         .branch-choice {
-            padding: 10px 12px;
-            gap: 10px;
+            padding: 11px 13px;
+            gap: 11px;
         }
 
         .branch-icon-badge {
@@ -1475,18 +1846,18 @@ const initialPrimary = defaultPlanIds[0]
             font-size: 0.85rem;
         }
 
-        /* Clean single-column stack on mobile with un-squished full-width 16:10 image */
+        /* Compact, high-conversion single-column result card on mobile */
         .result-spotlight {
             grid-template-columns: minmax(0, 1fr);
-            gap: 12px;
-            padding: 12px;
+            gap: 10px;
+            padding: 10px;
             align-items: stretch;
         }
 
         .result-visual {
             width: 100%;
-            aspect-ratio: 16 / 10;
-            max-height: none;
+            aspect-ratio: 16 / 9;
+            max-height: 155px;
             border-radius: 12px;
         }
 
@@ -1496,28 +1867,18 @@ const initialPrimary = defaultPlanIds[0]
             gap: 6px;
         }
 
-        .permanent-meta-pill {
-            padding: 3px 10px;
-            font-size: 0.75rem;
-        }
-
         .result-title {
-            font-size: 1.32rem;
+            font-size: 1.2rem;
             line-height: 1.2;
         }
 
-        .result-subtitle {
-            font-size: 0.9rem;
-            line-height: 1.4;
-        }
-
         .result-highlights {
-            gap: 4px;
+            gap: 5px;
             margin: 2px 0;
         }
 
         :global(.result-highlights li) {
-            font-size: 0.86rem;
+            font-size: 0.84rem;
             line-height: 1.35;
         }
 
@@ -1525,17 +1886,22 @@ const initialPrimary = defaultPlanIds[0]
             margin-top: 4px;
         }
 
-        .result-actions-row :global(.store-buttons) {
+        .result-app-cta {
             width: 100%;
+            height: 44px;
+            font-size: 0.9rem;
         }
+    }
 
-        .card-footer-strip {
-            padding-top: 10px;
-        }
-
-        .footer-prompt-text,
-        .footer-step3-text {
-            font-size: 0.78rem;
+    @media (prefers-reduced-motion: reduce) {
+        .hero-title.is-title-anim,
+        .hero-landing-actions.is-entering,
+        .dialogue-card.card-enter,
+        .wizard-step.dir-forward,
+        .wizard-step.dir-back,
+        .branch-choice,
+        :global(.sub-choice-pill) {
+            animation: none !important;
         }
     }
 </style>

@@ -187,7 +187,19 @@ async function loadAudios() {
 
     if (error) throw error;
 
-    return (data ?? []).map((r) => {
+    const isAumAudio = (a) => {
+        const slugTokens = (a.slug || '').toLowerCase().split(/[-_\s]+/);
+        const title = (a.title || '').toLowerCase();
+        return (
+            slugTokens.includes('aum') ||
+            slugTokens.includes('om') ||
+            /\b(aum|om)\b/i.test(title) ||
+            title.includes('ओम') ||
+            title.includes('ॐ')
+        );
+    };
+
+    const mapped = (data ?? []).map((r) => {
         const lang = r.language || 'en';
         const slug = toAbs(r.slug);
         return {
@@ -199,6 +211,11 @@ async function loadAudios() {
             image: ensureHttps(toAbs(r.image_url)),
         };
     }).filter(a => a.slug && a.image);
+
+    return [
+        ...mapped.filter(a => !isAumAudio(a)),
+        ...mapped.filter(a => isAumAudio(a)),
+    ];
 }
 
 async function loadAllTips() {
