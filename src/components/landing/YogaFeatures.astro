@@ -220,19 +220,30 @@ const displayPlans = seededShuffle(
 
             track.appendChild(frag);
             if (shouldScroll) {
-                track.scrollTo({ left: 0, behavior: "smooth" });
+                track.scrollLeft = 0;
             }
         }
+
+        let fadeTimer = null;
 
         applyCategoryOrder("all", false);
 
         filterBtns.forEach((btn) => {
             btn.addEventListener("click", () => {
+                if (btn.classList.contains("active")) return;
                 filterBtns.forEach((b) => b.classList.remove("active"));
                 btn.classList.add("active");
 
                 const filterId = btn.getAttribute("data-filter") || "all";
-                applyCategoryOrder(filterId, true);
+                if (fadeTimer) clearTimeout(fadeTimer);
+
+                track.classList.add("is-fading");
+                fadeTimer = setTimeout(() => {
+                    applyCategoryOrder(filterId, true);
+                    requestAnimationFrame(() => {
+                        track.classList.remove("is-fading");
+                    });
+                }, 180);
             });
         });
     });
@@ -330,6 +341,13 @@ const displayPlans = seededShuffle(
         padding: 4px 0 8px 0;
         scrollbar-width: none;
         -webkit-overflow-scrolling: touch;
+        opacity: 1;
+        transition: opacity 0.24s ease;
+    }
+
+    .carousel-track.is-fading {
+        opacity: 0;
+        transition: opacity 0.16s ease;
     }
 
     .carousel-track::-webkit-scrollbar {
