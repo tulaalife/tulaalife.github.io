@@ -34,8 +34,8 @@ const ui = {
             },
             {
                 id: "mood",
-                title: "Mood & Habit Rhythm",
-                desc: "Mindful streaks & gratitude notes.",
+                title: "Mood Tracking",
+                desc: "Log emotions, know yourself better.",
                 metric: "7 Days",
                 subMetric: "Calm Daily Streak",
                 accent: "amber",
@@ -74,8 +74,8 @@ const ui = {
             },
             {
                 id: "mood",
-                title: "मूड और हैबिट रिदम",
-                desc: "भावनाओं और स्वस्थ आदतों का जर्नल।",
+                title: "मूड ट्रैकर",
+                desc: "खुद को बेहतर तरीके से जानें।",
                 metric: "7 दिन",
                 subMetric: "नियमित शांत अभ्यास",
                 accent: "amber",
@@ -105,154 +105,150 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
 
         <div class="container bento-container animate-on-scroll delay-1">
             <div class="bento-grid">
-                {
-                    t.tools.map((tool) => (
-                        <div
-                            class:list={[
-                                "bento-card premium-gloss-surface",
-                                `accent-${tool.accent}`,
-                            ]}
-                        >
-                            <div class="bento-ambient-glow" aria-hidden="true" />
+                {t.tools.map((tool) => (
+                    <div
+                        class:list={[
+                            "bento-card premium-gloss-surface",
+                            `accent-${tool.accent}`,
+                        ]}
+                    >
+                        <div class="bento-ambient-glow" aria-hidden="true" />
 
-                            <div class="bento-top">
-                                <div class="bento-icon-wrap" aria-hidden="true">
-                                    {tool.id === "cycle" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <circle
-                                                cx="14"
-                                                cy="14"
-                                                r="10"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-dasharray="45 18"
-                                            />
-                                            <path
-                                                d="M14 7C16.5 11 16.5 15 14 19C11.5 15 11.5 11 14 7Z"
-                                                fill="currentColor"
-                                                fill-opacity="0.32"
-                                                stroke="currentColor"
-                                                stroke-width="1.6"
-                                            />
-                                        </svg>
-                                    )}
-                                    {tool.id === "fast" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <circle
-                                                cx="14"
-                                                cy="15"
-                                                r="9"
-                                                fill="currentColor"
-                                                fill-opacity="0.22"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                            />
-                                            <path
-                                                d="M14 10.5V15l3 2.5M10.5 3.5h7"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                            />
-                                        </svg>
-                                    )}
-                                    {tool.id === "water" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <path
-                                                d="M14 3.5l6.4 6.4a9 9 0 1 1-12.8 0L14 3.5z"
-                                                fill="currentColor"
-                                                fill-opacity="0.24"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M10.5 17.5a4.5 4.5 0 0 0 4.5 3"
-                                                stroke="currentColor"
-                                                stroke-width="1.8"
-                                                stroke-linecap="round"
-                                            />
-                                        </svg>
-                                    )}
-                                    {tool.id === "mood" && (
-                                        <svg viewBox="0 0 28 28" fill="none">
-                                            <path
-                                                d="M14.5 4.5a7.5 7.5 0 0 0 9.5 9.5 9.5 9.5 0 1 1-9.5-9.5Z"
-                                                fill="currentColor"
-                                                fill-opacity="0.24"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linejoin="round"
-                                            />
-                                            <path
-                                                d="M21 4v5M23.5 6.5h-5"
-                                                stroke="currentColor"
-                                                stroke-width="2"
-                                                stroke-linecap="round"
-                                            />
-                                        </svg>
-                                    )}
-                                </div>
-
-                                <div class="bento-widget-pill">
-                                    <strong class="widget-metric">
-                                        {tool.metric}
-                                    </strong>
-                                    <span class="widget-sub">
-                                        {tool.subMetric}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="bento-visual-bar" aria-hidden="true">
+                        <div class="bento-top">
+                            <div class="bento-icon-wrap" aria-hidden="true">
                                 {tool.id === "cycle" && (
-                                    <div class="mini-phase-track">
-                                        <span class="phase-seg seg-1" />
-                                        <span class="phase-seg seg-2 active" />
-                                        <span class="phase-seg seg-3" />
-                                        <span class="phase-seg seg-4" />
-                                    </div>
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="14"
+                                            r="10"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-dasharray="45 18"
+                                        />
+                                        <path
+                                            d="M14 7C16.5 11 16.5 15 14 19C11.5 15 11.5 11 14 7Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.32"
+                                            stroke="currentColor"
+                                            stroke-width="1.6"
+                                        />
+                                    </svg>
                                 )}
                                 {tool.id === "fast" && (
-                                    <div class="mini-progress-track">
-                                        <div
-                                            class="mini-progress-fill"
-                                            style="width: 82%"
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <circle
+                                            cx="14"
+                                            cy="15"
+                                            r="9"
+                                            fill="currentColor"
+                                            fill-opacity="0.22"
+                                            stroke="currentColor"
+                                            stroke-width="2"
                                         />
-                                    </div>
+                                        <path
+                                            d="M14 10.5V15l3 2.5M10.5 3.5h7"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                        />
+                                    </svg>
                                 )}
                                 {tool.id === "water" && (
-                                    <div class="mini-bars-track">
-                                        <span class="w-bar full" />
-                                        <span class="w-bar full" />
-                                        <span class="w-bar full" />
-                                        <span class="w-bar full" />
-                                        <span class="w-bar full" />
-                                        <span class="w-bar full" />
-                                        <span class="w-bar full" />
-                                        <span class="w-bar full" />
-                                    </div>
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M14 3.5l6.4 6.4a9 9 0 1 1-12.8 0L14 3.5z"
+                                            fill="currentColor"
+                                            fill-opacity="0.24"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M10.5 17.5a4.5 4.5 0 0 0 4.5 3"
+                                            stroke="currentColor"
+                                            stroke-width="1.8"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
                                 )}
                                 {tool.id === "mood" && (
-                                    <div class="mini-dots-track">
-                                        <span class="s-dot done">✓</span>
-                                        <span class="s-dot done">✓</span>
-                                        <span class="s-dot done">✓</span>
-                                        <span class="s-dot done">✓</span>
-                                        <span class="s-dot done">✓</span>
-                                        <span class="s-dot done">✓</span>
-                                        <span class="s-dot done">✓</span>
-                                    </div>
+                                    <svg viewBox="0 0 28 28" fill="none">
+                                        <path
+                                            d="M14.5 4.5a7.5 7.5 0 0 0 9.5 9.5 9.5 9.5 0 1 1-9.5-9.5Z"
+                                            fill="currentColor"
+                                            fill-opacity="0.24"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linejoin="round"
+                                        />
+                                        <path
+                                            d="M21 4v5M23.5 6.5h-5"
+                                            stroke="currentColor"
+                                            stroke-width="2"
+                                            stroke-linecap="round"
+                                        />
+                                    </svg>
                                 )}
                             </div>
 
-                            <div class="bento-copy">
-                                <h3 class="bento-title">{tool.title}</h3>
-                                <p class="bento-desc">{tool.desc}</p>
+                            <div class="bento-widget-pill">
+                                <strong class="widget-metric">
+                                    {tool.metric}
+                                </strong>
+                                <span class="widget-sub">{tool.subMetric}</span>
                             </div>
                         </div>
-                    ))
-                }
+
+                        <div class="bento-visual-bar" aria-hidden="true">
+                            {tool.id === "cycle" && (
+                                <div class="mini-phase-track">
+                                    <span class="phase-seg seg-1" />
+                                    <span class="phase-seg seg-2 active" />
+                                    <span class="phase-seg seg-3" />
+                                    <span class="phase-seg seg-4" />
+                                </div>
+                            )}
+                            {tool.id === "fast" && (
+                                <div class="mini-progress-track">
+                                    <div
+                                        class="mini-progress-fill"
+                                        style="width: 82%"
+                                    />
+                                </div>
+                            )}
+                            {tool.id === "water" && (
+                                <div class="mini-bars-track">
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                    <span class="w-bar full" />
+                                </div>
+                            )}
+                            {tool.id === "mood" && (
+                                <div class="mini-dots-track">
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                    <span class="s-dot done">✓</span>
+                                </div>
+                            )}
+                        </div>
+
+                        <div class="bento-copy">
+                            <h3 class="bento-title">{tool.title}</h3>
+                            <p class="bento-desc">{tool.desc}</p>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     </div>
