@@ -30,7 +30,7 @@ export const DEEPLINK_PAGES: readonly DeeplinkEntry[] = [
             badge: "दैनिक वॉटर ट्रैकर",
             title: "रोज़ाना पानी ट्रैकर · Tulaa",
             description:
-                "रोज़ पर्याप्त पानी पीने की आसान आदत बनाएं। बिना लॉगिन, 100% निजी और फ्री — Tulaa ऐप में।",
+                "रोज़ पर्याप्त पानी पीने की आसान आदत बनाएं। बिना लॉगिन, 100% निजी और फ्री, Tulaa ऐप में।",
             keywords: "वॉटर ट्रैकर, पानी पीने का रिमाइंडर, water tracker hindi, Tulaa",
         },
     },
@@ -120,7 +120,7 @@ export const DEEPLINK_PAGES: readonly DeeplinkEntry[] = [
             badge: "आपकी प्रगति",
             title: "आपकी सेहत की यात्रा · Tulaa",
             description:
-                "अपने योग अभ्यास, ध्यान और रोज़ाना की सेहत की प्रगति एक ही जगह देखें — 100% निजी।",
+                "अपने योग अभ्यास, ध्यान और रोज़ाना की सेहत की प्रगति एक ही जगह देखें, 100% निजी।",
             keywords: "योग प्रगति, सेहत ट्रैकर, wellness journey hindi, Tulaa",
         },
     },
@@ -167,7 +167,7 @@ export const DEEPLINK_PAGES: readonly DeeplinkEntry[] = [
             badge: "App Settings",
             title: "App Settings & Privacy Controls · Tulaa",
             description:
-                "Customize your Tulaa experience—themes, fonts, language, reminders, and local data backup—all on your device.",
+                "Customize your Tulaa experience (themes, fonts, language, reminders, and local data backup), all on your device.",
             keywords: "Tulaa settings, app preferences, local data backup, Tulaa",
         },
         hi: {

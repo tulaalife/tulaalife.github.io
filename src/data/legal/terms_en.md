@@ -1,4 +1,4 @@
-# Tulaa — Terms of Use
+# Tulaa: Terms of Use
 
 **Version 1.0 · Effective 2025-09-16**
 
