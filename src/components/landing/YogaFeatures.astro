@@ -31,11 +31,9 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
         <div class="container header-bar animate-on-scroll">
             <div class="section-header-left text-col">
                 <span class="badge-small">
-                    {
-                        currentLang === "hi"
-                            ? "30+ योग थेरेपी प्लान्स"
-                            : "30+ Therapeutic Yoga Plans"
-                    }
+                    {currentLang === "hi"
+                        ? "40+ योग थेरेपी प्लान्स"
+                        : "40+ Therapeutic Yoga Plans"}
                 </span>
                 <h2 class="section-title">
                     <span class="title-main">{t.heroTitleTop}</span>{" "}
@@ -47,62 +45,59 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 
         <div class="container filter-container animate-on-scroll delay-1">
             <div class="filter-scroll">
-                <button class="filter-btn active" data-filter="all"
-                    >{t.filterAll}</button
-                >
-                <button class="filter-btn" data-filter="general"
-                    >{t.filterGeneral}</button
-                >
-                <button class="filter-btn" data-filter="womens"
-                    >{t.filterWomens}</button
-                >
-                <button class="filter-btn" data-filter="seniors"
-                    >{t.filterSeniors}</button
-                >
-                <button class="filter-btn" data-filter="medical"
-                    >{t.filterMedical}</button
-                >
+                <button class="filter-btn active" data-filter="all">
+                    {t.filterAll}
+                </button>
+                <button class="filter-btn" data-filter="general">
+                    {t.filterGeneral}
+                </button>
+                <button class="filter-btn" data-filter="womens">
+                    {t.filterWomens}
+                </button>
+                <button class="filter-btn" data-filter="seniors">
+                    {t.filterSeniors}
+                </button>
+                <button class="filter-btn" data-filter="medical">
+                    {t.filterMedical}
+                </button>
             </div>
         </div>
 
         <div class="container carousel-wrapper animate-on-scroll delay-2">
             <div class="carousel-track" id="featured-plans-track">
-                {
-                    displayPlans.map((p) => (
-                        <a
-                            href={`${basePlanHref}/${p.slug}`}
-                            class="carousel-card premium-gloss-surface"
-                            data-goals={p.goals?.join(",")}
-                        >
-                            <div class="card-image themed-media">
-                                <img
-                                    src={p.image}
-                                    alt={p.title}
-                                    loading="lazy"
-                                    decoding="async"
-                                />
-                                <span class="card-tag">
-                                    {p.intensity
-                                        ? intensityLabel[p.intensity] ||
-                                          p.intensity
-                                        : intensityLabel.beginner}
-                                </span>
+                {displayPlans.map((p) => (
+                    <a
+                        href={`${basePlanHref}/${p.slug}`}
+                        class="carousel-card premium-gloss-surface"
+                        data-goals={p.goals?.join(",")}
+                    >
+                        <div class="card-image themed-media">
+                            <img
+                                src={p.image}
+                                alt={p.title}
+                                loading="lazy"
+                                decoding="async"
+                            />
+                            <span class="card-tag">
+                                {p.intensity
+                                    ? intensityLabel[p.intensity] || p.intensity
+                                    : intensityLabel.beginner}
+                            </span>
+                        </div>
+                        <div class="card-content">
+                            <div class="card-text-group">
+                                <h3 class="card-title">{p.title}</h3>
+                                {p.subtitle && (
+                                    <p class="card-sub">{p.subtitle}</p>
+                                )}
                             </div>
-                            <div class="card-content">
-                                <div class="card-text-group">
-                                    <h3 class="card-title">{p.title}</h3>
-                                    {p.subtitle && (
-                                        <p class="card-sub">{p.subtitle}</p>
-                                    )}
-                                </div>
-                                <div class="card-footer">
-                                    <span class="view-link">{t.view}</span>
-                                    <span class="icon">→</span>
-                                </div>
+                            <div class="card-footer">
+                                <span class="view-link">{t.view}</span>
+                                <span class="icon">→</span>
                             </div>
-                        </a>
-                    ))
-                }
+                        </div>
+                    </a>
+                ))}
             </div>
         </div>
     </div>
@@ -359,17 +354,6 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
 
     .carousel-card:hover .icon {
         transform: translateX(3px);
-    }
-
-    .cta-wrapper {
-        display: flex;
-        justify-content: flex-start;
-    }
-
-    .cta-wrapper :global(.cta-link) {
-        margin-top: 0;
-        padding: 11px 24px;
-        font-size: 0.95rem;
     }
 
     @media (max-width: 680px) {

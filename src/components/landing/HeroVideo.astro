@@ -7,25 +7,25 @@ const ui = {
     en: {
         basePoster: "poster",
         badge: "Guided Video • Built-In Timers",
-        titleTop: "Simple Sessions,",
-        titleBottom: "Lasting Relief.",
-        body: "15-minute beginner-safe routines with clear posture cues, safety cautions, and offline playback.",
+        titleTop: "Easy 15-Min Sessions,",
+        titleBottom: "Real Relief.",
+        body: "Follow clear video guides at your own pace—with safety tips and offline access.",
         pills: [
-            { label: "HD Posture Demos", icon: "video" },
-            { label: "Self-Paced Timers", icon: "timer" },
-            { label: "Works 100% Offline", icon: "offline" },
+            { label: "Clear Video Guides", icon: "video" },
+            { label: "Built-In Timers", icon: "timer" },
+            { label: "Works Offline", icon: "offline" },
         ],
     },
     hi: {
         basePoster: "poster-hindi",
-        badge: "स्पष्ट वीडियो • इन-बिल्ट टाइमर",
-        titleTop: "आसान अभ्यास,",
-        titleBottom: "गहरा आराम।",
-        body: "15-मिनट के सुरक्षित योग सत्र। स्पष्ट आसन निर्देश, सावधानियां और बिना इंटरनेट ऑफलाइन अभ्यास।",
+        badge: "आसान वीडियो • इन-बिल्ट टाइमर",
+        titleTop: "रोज़ 15 मिनट,",
+        titleBottom: "सच्चा आराम।",
+        body: "आसान वीडियो के साथ अपने समय पर योग करें — सही तरीके, सावधानियों और बिना इंटरनेट के।",
         pills: [
-            { label: "स्पष्ट वीडियो डेमो", icon: "video" },
+            { label: "आसान वीडियो गाइड", icon: "video" },
             { label: "प्रैक्टिस टाइमर", icon: "timer" },
-            { label: "100% ऑफलाइन", icon: "offline" },
+            { label: "बिना इंटरनेट चले", icon: "offline" },
         ],
     },
 };
@@ -135,8 +135,10 @@ const videoMp4 =
                         alt="Tulaa App Preview"
                         class="poster-img"
                         id="posterImg"
-                        fetchpriority="high"
+                        width="540"
+                        height="1170"
                         loading="eager"
+                        decoding="async"
                     />
                 </picture>
                 <video
@@ -164,31 +166,34 @@ const videoMp4 =
         video.loop = true;
         video.muted = true;
 
+        let sourceAttached = false;
+
         const playLoop = () => {
             video.loop = true;
-            video.play().catch(() => {});
+            video.play().catch(() => {
+                if (loader) loader.style.display = "none";
+            });
         };
 
-        const initVideo = () => {
+        const attachPreferredSource = () => {
+            if (sourceAttached) return;
+            sourceAttached = true;
+
             const webmSrc = wrapper.getAttribute("data-webm");
             const mp4Src = wrapper.getAttribute("data-mp4");
 
-            if (
-                webmSrc &&
-                video.querySelectorAll('source[type="video/webm"]').length === 0
-            ) {
+            // Pick the single best format for this browser so only the right video is downloaded
+            const supportsWebm =
+                video.canPlayType('video/webm; codecs="vp9"') !== "" ||
+                video.canPlayType("video/webm") !== "";
+            const chosenSrc = supportsWebm && webmSrc ? webmSrc : mp4Src;
+            const chosenType =
+                supportsWebm && webmSrc ? "video/webm" : "video/mp4";
+
+            if (chosenSrc && video.querySelectorAll("source").length === 0) {
                 const s = document.createElement("source");
-                s.src = webmSrc;
-                s.type = "video/webm";
-                video.appendChild(s);
-            }
-            if (
-                mp4Src &&
-                video.querySelectorAll('source[type="video/mp4"]').length === 0
-            ) {
-                const s = document.createElement("source");
-                s.src = mp4Src;
-                s.type = "video/mp4";
+                s.src = chosenSrc;
+                s.type = chosenType;
                 video.appendChild(s);
             }
 
@@ -212,17 +217,36 @@ const videoMp4 =
                 playLoop();
             });
 
+            video.preload = "auto";
             video.load();
-            video.play().catch(() => {
-                if (loader) loader.style.display = "none";
-            });
         };
+
+        // Preload the exact matching video in the background after initial page load
+        // so it's already buffered before the user scrolls down to this section
+        const schedulePreload = () => {
+            const conn = (navigator as any).connection;
+            if (conn?.saveData) return;
+
+            const run = () => attachPreferredSource();
+            if ("requestIdleCallback" in window) {
+                (window as any).requestIdleCallback(run, { timeout: 2500 });
+            } else {
+                setTimeout(run, 1200);
+            }
+        };
+
+        if (document.readyState === "complete") {
+            schedulePreload();
+        } else {
+            window.addEventListener("load", schedulePreload, { once: true });
+        }
 
         const observer = new IntersectionObserver(
             (entries) => {
                 entries.forEach((entry) => {
                     if (entry.isIntersecting) {
-                        initVideo();
+                        attachPreferredSource();
+                        playLoop();
                         observer.disconnect();
                     }
                 });

@@ -5,27 +5,27 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "Begin Today • 100% Free Sanctuary",
-        titleTop: "Your Daily",
-        titleBottom: "Wellness Sanctuary.",
+        badge: "Start Today • 100% Free",
+        titleTop: "Your Everyday",
+        titleBottom: "Yoga & Wellness App.",
         subline:
-            "Heal pain naturally, sleep deeper, and track your health in peace with <strong>Gold Medalist Yoga Therapist Latika Bissa</strong>.",
+            "Ease pain naturally, sleep better, and track your health with <strong>Gold Medalist Yoga Therapist Latika Bissa</strong>.",
         pills: [
-            "✦ 30+ Therapeutic Plans",
-            "✦ Offline Video & Audio",
-            "✦ Zero Login or Ads",
+            "✦ 40+ Free Yoga Plans",
+            "✦ Works Offline",
+            "✦ No Login or Ads",
         ],
     },
     hi: {
         badge: "आज ही शुरू करें • 100% फ्री",
-        titleTop: "आपका दैनिक",
-        titleBottom: "स्वास्थ्य और योग साथी।",
+        titleTop: "आपका रोज़ का",
+        titleBottom: "योग और सेहत साथी।",
         subline:
-            "<strong>स्वर्ण पदक विजेता लतिका बिस्सा</strong> के मार्गदर्शन में प्राकृतिक रूप से दर्द से राहत पाएं, गहरी नींद सोएं और अपनी सेहत ट्रैक करें।",
+            "<strong>गोल्ड मेडलिस्ट लतिका बिस्सा</strong> के साथ प्राकृतिक रूप से दर्द से आराम पाएं, अच्छी नींद लें और अपनी सेहत ट्रैक करें।",
         pills: [
-            "✦ 30+ योग थेरेपी प्लान्स",
-            "✦ ऑफलाइन वीडियो व ऑडियो",
-            "✦ बिना लॉगिन व विज्ञापन",
+            "✦ 40+ फ्री योग प्लान",
+            "✦ बिना इंटरनेट चले",
+            "✦ कोई लॉगिन या विज्ञापन नहीं",
         ],
     },
 };
@@ -33,7 +33,6 @@ const ui = {
 const t = ui[currentLang as keyof typeof ui] || ui.en;
 
 interface Props {
-    headline?: string;
     subline?: string;
 }
 
@@ -60,7 +59,9 @@ const { subline = t.subline } = Astro.props;
             <p class="sub body-text" set:html={subline} />
 
             <div class="sanctuary-pills">
-                {t.pills.map((pill) => <span class="s-pill">{pill}</span>)}
+                {t.pills.map((pill) => (
+                    <span class="s-pill">{pill}</span>
+                ))}
             </div>
 
             <div class="button-container">

@@ -10,11 +10,11 @@ import PrivacyTrust from "../../components/landing/PrivacyTrust.astro";
 import Reviews from "../../components/landing/Reviews.astro";
 import HeroVideo from "../../components/landing/HeroVideo.astro";
 
-const title = "Tulaa (तुला): योग थेरेपी, ध्यान, नींद व निजी हेल्थ ट्रैकर";
+const title = "Tulaa (तुला): फ्री योग प्लान, दर्द से राहत, नींद और पीरियड ट्रैकर";
 const description =
-    "कमर दर्द, साइटिका, गर्दन दर्द, PCOS, प्रेगनेंसी और थायरॉइड के लिए विशेषज्ञ-निर्देशित योग — साथ ही प्राणायाम, गहरी नींद के लिए ध्यान और 100% निजी पीरियड व फास्टिंग ट्रैकर। बिना लॉगिन, बिना विज्ञापन और ऑफलाइन।";
+    "कमर दर्द, साइटिका, गर्दन दर्द, PCOS, प्रेगनेंसी और थायरॉइड के लिए अपना फ्री योग प्लान पाएं — साथ ही प्राणायाम, गहरी नींद का ऑडियो और 100% निजी पीरियड, फास्टिंग व वॉटर ट्रैकर। बिना लॉगिन, बिना विज्ञापन और ऑफलाइन।";
 const keywords =
-    "योग थेरेपी, कमर दर्द योग, साइटिका, गर्दन दर्द, PCOS योग, प्रेगनेंसी योग, थायरॉइड योग, प्राणायाम, ध्यान, गहरी नींद, पीरियड ट्रैकर, फास्टिंग टाइमर, ऑफलाइन योग ऐप, लतिका बिस्सा, dhyan, pranayama, kamar dard, neend, tanav";
+    "फ्री योग प्लान, फ्री योग ऐप, योग थेरेपी, कमर दर्द योग, साइटिका, गर्दन दर्द, चेयर योग, PCOS योग, प्रेगनेंसी योग, थायरॉइड योग, डायबिटीज योग, प्राणायाम, ध्यान, गहरी नींद, पीरियड ट्रैकर, फास्टिंग टाइमर, वॉटर ट्रैकर, ऑफलाइन योग ऐप, लतिका बिस्सा, free yoga plan, kamar dard yoga, neend ke liye dhyan";
 
 const structuredData = {
     "@context": "https://schema.org",
@@ -26,10 +26,22 @@ const structuredData = {
     description,
     keywords,
     url: "https://tulaalife.com/hi",
+    featureList: [
+        "कमर दर्द, साइटिका, गर्दन दर्द, PCOS, प्रेगनेंसी और थायरॉइड के लिए फ्री योग प्लान",
+        "प्राणायाम, वैदिक मंत्र और गहरी नींद के लिए गाइडेड ऑडियो",
+        "100% निजी ऑन-डिवाइस पीरियड और साइकिल डायरी",
+        "इंटरमिटेंट फास्टिंग टाइमर, वॉटर और मूड ट्रैकर",
+        "बिना लॉगिन, बिना विज्ञापन और ऑफलाइन चलने वाले वीडियो सत्र",
+    ],
     offers: {
         "@type": "Offer",
         price: "0",
         priceCurrency: "INR",
+    },
+    aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: "5.0",
+        ratingCount: "50",
     },
     author: {
         "@type": "Organization",

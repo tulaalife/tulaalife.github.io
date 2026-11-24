@@ -114,6 +114,18 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
 
         <meta property="og:type" content="website" />
         <meta property="og:site_name" content="Tulaa" />
+        <meta
+            property="og:locale"
+            content={currentLang === "hi" ? "hi_IN" : "en_US"}
+        />
+        {
+            hasTranslation && (
+                <meta
+                    property="og:locale:alternate"
+                    content={currentLang === "hi" ? "en_US" : "hi_IN"}
+                />
+            )
+        }
         <meta property="og:url" content={currentUrl} />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
@@ -126,12 +138,25 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
         <link rel="icon" type="image/webp" href="/assets/icons/logo_64.webp" />
         <ClientRouter />
 
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
-            rel="stylesheet"
-        />
+        {
+            currentLang === "hi" && (
+                <>
+                    <link
+                        rel="preconnect"
+                        href="https://fonts.googleapis.com"
+                    />
+                    <link
+                        rel="preconnect"
+                        href="https://fonts.gstatic.com"
+                        crossorigin
+                    />
+                    <link
+                        href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;500;600;700&display=swap"
+                        rel="stylesheet"
+                    />
+                </>
+            )
+        }
 
         <script is:inline>
             (() => {
@@ -318,28 +343,6 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 display: flex;
                 align-items: center;
                 gap: 10px;
-            }
-            .header-back-btn {
-                display: inline-flex;
-                align-items: center;
-                gap: 4px;
-                padding: 5px 11px;
-                border-radius: 99px;
-                background: var(--bg-card-inner);
-                border: 1px solid var(--border);
-                color: var(--text-main);
-                font-family: inherit;
-                font-size: 0.78rem;
-                font-weight: 650;
-                cursor: pointer;
-                transition:
-                    background 0.2s ease,
-                    border-color 0.2s ease,
-                    color 0.2s ease;
-            }
-            .header-back-btn:hover {
-                border-color: var(--primary);
-                color: var(--primary);
             }
             .logo {
                 display: flex;
