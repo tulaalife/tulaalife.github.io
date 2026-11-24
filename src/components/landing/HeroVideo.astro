@@ -6,22 +6,18 @@ const currentLang = Astro.currentLocale || "en";
 const ui = {
     en: {
         basePoster: "poster",
-        badge: "Guided Video • Built-In Timers",
         titleTop: "Easy 15-Min Sessions,",
         titleBottom: "Real Relief.",
-        body: "Follow clear video guides at your own pace—with safety tips and offline access.",
         pills: [
             { label: "Clear Video Guides", icon: "video" },
-            { label: "Built-In Timers", icon: "timer" },
+            { label: "Practice Timer", icon: "timer" },
             { label: "Works Offline", icon: "offline" },
         ],
     },
     hi: {
         basePoster: "poster-hindi",
-        badge: "आसान वीडियो • इन-बिल्ट टाइमर",
         titleTop: "रोज़ 15 मिनट,",
         titleBottom: "सच्चा आराम।",
-        body: "आसान वीडियो के साथ अपने समय पर योग करें — सही तरीके, सावधानियों और बिना इंटरनेट के।",
         pills: [
             { label: "आसान वीडियो गाइड", icon: "video" },
             { label: "प्रैक्टिस टाइमर", icon: "timer" },
@@ -48,13 +44,11 @@ const videoMp4 =
 <section id="app-preview" class="scroll-section video-section">
     <div class="container video-grid">
         <div class="video-copy animate-on-scroll">
-            <span class="badge-small">{t.badge}</span>
             <h2 class="section-title">
                 {t.titleTop}
                 <br />
                 <span class="text-gradient">{t.titleBottom}</span>
             </h2>
-            <p class="body-text">{t.body}</p>
 
             <div class="feature-chips-grid">
                 {t.pills.map((pill) => (

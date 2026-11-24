@@ -3,10 +3,10 @@ const currentLang = Astro.currentLocale || "en";
 
 const ui = {
     en: {
-        badge: "Meet Your Yoga Therapist",
+        badge: "Your Yoga Therapist",
         role: "Founder of Tulaa & YogaWithLatika",
         name: "Latika Bissa",
-        bio: "Every plan in Tulaa is designed by Latika to help you ease pain, balance hormones, and feel calm—safely at home.",
+        siteUrl: "https://yogawithlatika.com/",
         siteLabel: "yogawithlatika.com",
         creds: [
             {
@@ -17,7 +17,7 @@ const ui = {
             },
             {
                 metric: "12+ Years Experience",
-                label: "Clinical Yoga Therapy",
+                label: "Teaching & Clinical Care",
                 icon: "exp",
                 tone: "sage",
             },
@@ -28,19 +28,19 @@ const ui = {
                 tone: "warm",
             },
             {
-                metric: "Clinical Specialist",
-                label: "Pain, PCOS & Prenatal Care",
+                metric: "Focused Care",
+                label: "Pain, PCOS & Prenatal",
                 icon: "heart",
                 tone: "sage",
             },
         ],
     },
     hi: {
-        badge: "आपकी योग टीचर से मिलें",
+        badge: "आपकी योग टीचर",
         role: "Tulaa और YogaWithLatika की संस्थापक",
         name: "लतिका बिस्सा",
-        bio: "Tulaa का हर योग प्लान लतिका ने खुद बनाया है, ताकि आप घर बैठे दर्द, हार्मोन और तनाव में सुरक्षित आराम पा सकें।",
-        siteLabel: "yogawithlatika.com",
+        siteUrl: "https://yogawithlatika.com/hi/",
+        siteLabel: "yogawithlatika.com/hi",
         creds: [
             {
                 metric: "गोल्ड मेडलिस्ट",
@@ -50,7 +50,7 @@ const ui = {
             },
             {
                 metric: "12+ साल का अनुभव",
-                label: "योग थेरेपी विशेषज्ञ",
+                label: "शिक्षण व क्लिनिकल केयर",
                 icon: "exp",
                 tone: "sage",
             },
@@ -96,10 +96,9 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                         {t.name}
                     </h2>
                     <p class="author-role">{t.role}</p>
-                    <p class="author-bio body-text">{t.bio}</p>
 
                     <a
-                        href="https://yogawithlatika.com"
+                        href={t.siteUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         class="author-website-pill"

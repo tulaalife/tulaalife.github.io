@@ -32,6 +32,7 @@ interface Props {
     label?: string;
     iosHref?: string;
     androidHref?: string;
+    appPath?: string;
     class?: string;
 }
 
@@ -43,6 +44,7 @@ const {
     label = t.singleLabel,
     iosHref = "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498",
     androidHref = "https://play.google.com/store/apps/details?id=life.tulaa",
+    appPath = "",
     class: className,
 } = Astro.props;
 
@@ -63,6 +65,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
                 <a
                     href={iosHref}
                     data-store="ios"
+                    data-app-path={appPath}
                     class:list={["store-btn", { inverted }]}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -85,6 +88,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
                 <a
                     href={androidHref}
                     data-store="android"
+                    data-app-path={appPath}
                     class:list={["store-btn", { inverted }]}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -111,6 +115,7 @@ const androidIconSrc = "/assets/icons/playstore.svg";
                 data-single-download="true"
                 data-ios={iosHref}
                 data-android={androidHref}
+                data-app-path={appPath}
             >
                 <span class="cta-label">{label}</span>
                 <span class="cta-arrow" aria-hidden="true">
@@ -138,27 +143,37 @@ const androidIconSrc = "/assets/icons/playstore.svg";
         document
             .querySelectorAll('[data-single-download="true"]')
             .forEach((btn) => {
-                btn.addEventListener("click", () => {
-                    const ua = navigator.userAgent.toLowerCase();
-                    const iosUrl = btn.getAttribute("data-ios");
-                    const androidUrl = btn.getAttribute("data-android");
-
-                    if (/iphone|ipad|ipod/.test(ua) && iosUrl) {
-                        window.location.href = iosUrl;
-                    } else if (/android/.test(ua) && androidUrl) {
-                        window.location.href = androidUrl;
-                    } else {
-                        const footerEl =
-                            document.getElementById("sanctuary-footer");
-                        if (footerEl) {
-                            footerEl.scrollIntoView({
-                                behavior: "smooth",
-                                block: "start",
-                            });
-                        }
-                    }
+                const el = btn as HTMLElement;
+                if (el.dataset.bound) return;
+                el.dataset.bound = "1";
+                el.addEventListener("click", () => {
+                    window.openTulaaApp({
+                        iosUrl: el.getAttribute("data-ios"),
+                        androidUrl: el.getAttribute("data-android"),
+                        appPath: el.getAttribute("data-app-path"),
+                    });
                 });
             });
+
+        const ua = navigator.userAgent.toLowerCase();
+        const isIos = /iphone|ipad|ipod/.test(ua);
+        const isAndroid = /android/.test(ua);
+
+        document.querySelectorAll<HTMLAnchorElement>(".store-btn[data-store]").forEach((link) => {
+            if (link.dataset.bound) return;
+            link.dataset.bound = "1";
+            const store = link.getAttribute("data-store");
+            if ((store === "ios" && isIos) || (store === "android" && isAndroid)) {
+                link.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    window.openTulaaApp({
+                        iosUrl: store === "ios" ? link.href : undefined,
+                        androidUrl: store === "android" ? link.href : undefined,
+                        appPath: link.getAttribute("data-app-path"),
+                    });
+                });
+            }
+        });
     });
 </script>
 

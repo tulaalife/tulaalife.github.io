@@ -5,6 +5,7 @@ import {
     type SupportedLang,
 } from "../../utils/ui-strings";
 import { yogaPlans } from "../../data/generated";
+import { seededShuffle } from "../../utils/ordering";
 
 const currentLang = (Astro.currentLocale || "en") as SupportedLang;
 const t = YOGA_UI[currentLang] || YOGA_UI.en;
@@ -23,7 +24,11 @@ const intensityLabel: Record<string, string> =
               advanced: "Advanced",
           };
 
-const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
+const buildDayKey = new Date().toISOString().slice(0, 10);
+const displayPlans = seededShuffle(
+    yogaPlans.filter((p) => p.language === currentLang),
+    `${buildDayKey}:all`,
+);
 ---
 
 <section id="yoga-library" class="scroll-section section-yoga">
@@ -33,13 +38,12 @@ const displayPlans = yogaPlans.filter((p) => p.language === currentLang);
                 <span class="badge-small">
                     {currentLang === "hi"
                         ? "40+ योग थेरेपी प्लान्स"
-                        : "40+ Therapeutic Yoga Plans"}
+                        : "40+ Therapeutic Plans"}
                 </span>
                 <h2 class="section-title">
                     <span class="title-main">{t.heroTitleTop}</span>{" "}
                     <span class="text-gradient">{t.heroTitleBottom}</span>
                 </h2>
-                <p class="body-text">{t.heroBody}</p>
             </div>
         </div>
 

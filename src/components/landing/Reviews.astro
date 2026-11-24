@@ -6,7 +6,6 @@ const ui = {
         badge: "★ 5.0 Rated on App Store & Google Play",
         titleTop: "Loved by People",
         titleBottom: "Every Day.",
-        desc: "Real 5-star reviews from people using Tulaa for yoga, sleep, and daily health.",
         reviews: [
             {
                 highlight: "Rhythm & Zero Ads",
@@ -62,7 +61,6 @@ const ui = {
         badge: "★ 5.0 रेटिंग • App Store व Google Play",
         titleTop: "हर दिन लोगों का",
         titleBottom: "भरोसा और प्यार।",
-        desc: "Tulaa के साथ रोज़ योग, नींद और सेहत का ध्यान रखने वाले लोगों के सच्चे 5-स्टार रिव्यू।",
         reviews: [
             {
                 highlight: "रिदम और विज्ञापन-मुक्त",
@@ -128,7 +126,6 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
                     <span class="title-main">{t.titleTop}</span>{" "}
                     <span class="text-gradient">{t.titleBottom}</span>
                 </h2>
-                <p class="body-text">{t.desc}</p>
             </div>
         </div>
 
@@ -138,45 +135,46 @@ const t = ui[currentLang as keyof typeof ui] || ui.en;
             data-reviews={JSON.stringify(t.reviews)}
         >
             <div class="reviews-grid" id="reviews-grid">
-                {
-                    t.reviews.slice(0, 3).map((rev) => (
-                        <blockquote class="review-card premium-gloss-surface">
-                            <div class="review-card-top">
-                                <div class="stars-row" aria-hidden="true">
-                                    {[1, 2, 3, 4, 5].map(() => (
-                                        <svg
-                                            viewBox="0 0 20 20"
-                                            width="14"
-                                            height="14"
-                                            fill="currentColor"
-                                        >
-                                            <polygon points="10 1.5 12.6 6.8 18.5 7.6 14.2 11.8 15.2 17.6 10 14.8 4.8 17.6 5.8 11.8 1.5 7.6 7.4 6.8 10 1.5" />
-                                        </svg>
-                                    ))}
-                                </div>
-                                <span class="review-highlight-pill">
-                                    {rev.highlight}
-                                </span>
+                {t.reviews.slice(0, 3).map((rev) => (
+                    <blockquote class="review-card premium-gloss-surface">
+                        <div class="review-card-top">
+                            <div class="stars-row" aria-hidden="true">
+                                {[1, 2, 3, 4, 5].map(() => (
+                                    <svg
+                                        viewBox="0 0 20 20"
+                                        width="14"
+                                        height="14"
+                                        fill="currentColor"
+                                    >
+                                        <polygon points="10 1.5 12.6 6.8 18.5 7.6 14.2 11.8 15.2 17.6 10 14.8 4.8 17.6 5.8 11.8 1.5 7.6 7.4 6.8 10 1.5" />
+                                    </svg>
+                                ))}
                             </div>
+                            <span class="review-highlight-pill">
+                                {rev.highlight}
+                            </span>
+                        </div>
 
-                            <p class="review-text">“{rev.text}”</p>
+                        <p class="review-text">“{rev.text}”</p>
 
-                            <footer class="review-author">
-                                <div class="author-initial" aria-hidden="true">
-                                    {rev.author.charAt(0)}
-                                </div>
-                                <div class="author-meta">
-                                    <strong>{rev.author}</strong>
-                                    <span>{rev.source}</span>
-                                </div>
-                            </footer>
-                        </blockquote>
-                    ))
-                }
+                        <footer class="review-author">
+                            <div class="author-initial" aria-hidden="true">
+                                {rev.author.charAt(0)}
+                            </div>
+                            <div class="author-meta">
+                                <strong>{rev.author}</strong>
+                                <span>{rev.source}</span>
+                            </div>
+                        </footer>
+                    </blockquote>
+                ))}
             </div>
 
-            <div class="reviews-dots" id="reviews-dots" aria-label="Review pages">
-            </div>
+            <div
+                class="reviews-dots"
+                id="reviews-dots"
+                aria-label="Review pages"
+            ></div>
         </div>
     </div>
 </section>

@@ -697,8 +697,76 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
                 interface Window {
                     toggleTheme: () => void;
                     copyEmail: () => void;
+                    openTulaaApp: (opts?: {
+                        iosUrl?: string | null;
+                        androidUrl?: string | null;
+                        appPath?: string | null;
+                    }) => void;
                 }
             }
+
+            window.openTulaaApp = function (opts = {}) {
+                const defaultIos =
+                    "https://apps.apple.com/in/app/tulaa-yoga-wellness/id6748626498";
+                const defaultAndroid =
+                    "https://play.google.com/store/apps/details?id=life.tulaa";
+                const iosUrl = opts.iosUrl || defaultIos;
+                const androidUrl = opts.androidUrl || defaultAndroid;
+                const cleanPath = (opts.appPath || "").replace(/^\/+/, "");
+                const ua = navigator.userAgent.toLowerCase();
+
+                if (/android/.test(ua)) {
+                    const fallback = encodeURIComponent(androidUrl);
+                    const intentPath = cleanPath || "open";
+                    window.location.href = `intent://${intentPath}#Intent;scheme=tulaa;package=life.tulaa;S.browser_fallback_url=${fallback};end`;
+                    return;
+                }
+
+                if (/iphone|ipad|ipod/.test(ua)) {
+                    const schemeUrl = cleanPath
+                        ? `tulaa://${cleanPath}`
+                        : "tulaa://";
+                    let didHide = false;
+                    const onHide = () => {
+                        if (document.hidden) didHide = true;
+                    };
+                    const onBlur = () => {
+                        didHide = true;
+                    };
+                    document.addEventListener("visibilitychange", onHide);
+                    window.addEventListener("pagehide", onBlur, { once: true });
+                    window.addEventListener("blur", onBlur, { once: true });
+
+                    window.location.href = schemeUrl;
+
+                    window.setTimeout(() => {
+                        document.removeEventListener(
+                            "visibilitychange",
+                            onHide,
+                        );
+                        window.removeEventListener("pagehide", onBlur);
+                        window.removeEventListener("blur", onBlur);
+                        if (!didHide && !document.hidden) {
+                            window.location.href = iosUrl;
+                        }
+                    }, 1400);
+                    return;
+                }
+
+                const footerEl = document.getElementById("sanctuary-footer");
+                if (footerEl) {
+                    footerEl.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                    });
+                } else {
+                    window.open(
+                        /macintosh/.test(ua) ? iosUrl : androidUrl,
+                        "_blank",
+                        "noopener,noreferrer",
+                    );
+                }
+            };
 
             window.copyEmail = async function () {
                 const email = "contact@tulaalife.com";
@@ -887,30 +955,15 @@ const ANDROID_URL = "https://play.google.com/store/apps/details?id=life.tulaa";
 
                 const dlBtn = document.getElementById("nav-download-btn");
 
-                dlBtn?.addEventListener("click", () => {
-                    const ua = navigator.userAgent.toLowerCase();
-                    const isMobile = /iphone|ipad|ipod|android/.test(ua);
-
-                    if (isMobile) {
-                        const iosUrl = dlBtn.getAttribute("data-ios");
-                        const androidUrl = dlBtn.getAttribute("data-android");
-
-                        if (/iphone|ipad|ipod/.test(ua) && iosUrl) {
-                            window.location.href = iosUrl;
-                        } else if (/android/.test(ua) && androidUrl) {
-                            window.location.href = androidUrl;
-                        }
-                    } else {
-                        const footerEl =
-                            document.getElementById("sanctuary-footer");
-                        if (footerEl) {
-                            footerEl.scrollIntoView({
-                                behavior: "smooth",
-                                block: "start",
-                            });
-                        }
-                    }
-                });
+                if (dlBtn && !dlBtn.dataset.bound) {
+                    dlBtn.dataset.bound = "1";
+                    dlBtn.addEventListener("click", () => {
+                        window.openTulaaApp({
+                            iosUrl: dlBtn.getAttribute("data-ios"),
+                            androidUrl: dlBtn.getAttribute("data-android"),
+                        });
+                    });
+                }
             });
         </script>
     </body>
